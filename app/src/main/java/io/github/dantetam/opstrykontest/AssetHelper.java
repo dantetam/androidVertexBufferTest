@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,19 @@ public class AssetHelper {
             e.printStackTrace();
             return;
         }
-        getTotalData(inputStream);
+
+        //Get the uncompressed data
+        ArrayList<Object>[] totalData = getTotalData(inputStream);
+        ArrayList<Vector3f> vertices = new ArrayList<>();
+        for (Object obj: totalData[0]) vertices.add((Vector3f)obj);
+        ArrayList<Vector3f> normals = new ArrayList<>();
+        for (Object obj: totalData[1]) normals.add((Vector3f)obj);
+        ArrayList<Vector2f> textures = new ArrayList<>();
+        for (Object obj: totalData[2]) textures.add((Vector2f)obj);
+        ArrayList<Face> faces = new ArrayList<>();
+        for (Object obj: totalData[3]) faces.add((Face)obj);
+
+        compressData(vertices, textures, normals, faces);
 
         try {
             FileOutputStream fos = context.openFileOutput(internalOutputPath, Context.MODE_PRIVATE);
@@ -61,7 +74,16 @@ public class AssetHelper {
         }
     }
 
-    public List<Object>[] getTotalData(InputStream inputStream) {
+    public ArrayList<Object>[] compressData(
+            ArrayList<Vector3f> vertices,
+            ArrayList<Vector2f> tex,
+            ArrayList<Vector3f> vertices,
+            ArrayList<Face> vertices,
+            ) {
+
+    }
+
+    public ArrayList<Object>[] getTotalData(InputStream inputStream) {
         final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader reader = new BufferedReader(inputStreamReader);
 
@@ -133,7 +155,7 @@ public class AssetHelper {
             e.printStackTrace();
         }
 
-        return (List<Object>[]) new Object[]{vertices, normals, textures, faces};
+        return (ArrayList<Object>[]) new Object[]{vertices, normals, textures, faces};
     }
 
     public static class Face {
