@@ -407,16 +407,4 @@ public class ObjLoader {
         normalsArray[currentVertex*3 + 2] = currentNorm.z;
     }
 
-    /*
-    Some helper classes to conveniently wrap two and three floats
-     */
-    public static class Vector2f {
-        public float x,y;
-        public Vector2f(float a, float b) {x = a; y = b;}
-    }
-    public static class Vector3f {
-        public float x,y,z;
-        public Vector3f(float a, float b, float c) {x = a; y = b; z = c;}
-    }
-
 }

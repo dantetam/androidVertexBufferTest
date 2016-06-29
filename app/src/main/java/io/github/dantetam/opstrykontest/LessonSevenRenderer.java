@@ -68,6 +68,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	private float[] mLightModelMatrix = new float[16];
 
     public AssetManager assetManager;
+    private AssetHelper assetHelper;
+
     /** Pass in data to shaders by OpenGL handles */
     private int mProgramHandle;
     private int mAndroidDataHandle;
@@ -127,10 +129,11 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	public LessonSevenRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
 		mLessonSevenActivity = lessonSevenActivity;
         assetManager = mLessonSevenActivity.getAssets();
+        assetHelper = new AssetHelper(assetManager);
 		mGlSurfaceView = glSurfaceView;
         mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
 
-        worldHandler = new WorldHandler(mLessonSevenActivity, assetManager, WORLD_LENGTH, WORLD_LENGTH);
+        worldHandler = new WorldHandler(mLessonSevenActivity, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
         ColorTextureHelper.init(mLessonSevenActivity);
         //world = new World(WORLD_LENGTH, WORLD_LENGTH);
         //worldGenerator = new WorldGenerator(world);
@@ -282,8 +285,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		generateCubes(mActualCubeFactor);
 		
 		// Set the background clear color to black.
-		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		
+		//GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GLES20.glClearColor(0.0f, 140f/255f, 1.0f, 1.0f);
+
 		// Use culling to remove back faces.
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
 		
