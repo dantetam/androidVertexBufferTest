@@ -12,7 +12,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.dantetam.world.Pathfinder;
 
@@ -63,7 +65,7 @@ public class AssetHelper {
         ArrayList<Face> faces = new ArrayList<>();
         for (Object obj: totalData[3]) faces.add((Face)obj);
 
-        compressData(vertices, textures, normals, faces);
+        compressData(vertices, normals, textures, faces);
 
         try {
             FileOutputStream fos = context.openFileOutput(internalOutputPath, Context.MODE_PRIVATE);
@@ -76,11 +78,81 @@ public class AssetHelper {
 
     public ArrayList<Object>[] compressData(
             ArrayList<Vector3f> vertices,
-            ArrayList<Vector2f> tex,
-            ArrayList<Vector3f> vertices,
-            ArrayList<Face> vertices,
+            ArrayList<Vector3f> normals,
+            ArrayList<Vector2f> textures,
+            ArrayList<Face> faces
             ) {
-
+        HashMap<Vector3f, Integer> uniqueNormals = new HashMap<>();
+        HashMap<Vector2f, Integer> uniqueTextures = new HashMap<>();
+        HashMap<Integer, List<Integer>> redirectNormals = new HashMap<>();
+        HashMap<Integer, List<Integer>> redirectTextures = new HashMap<>();
+        for (int i = 0; i < normals.size(); i++) {
+            Vector3f n = (Vector3f) normals.get(i);
+            if (!uniqueNormals.containsKey(n)) {
+                uniqueNormals.put(n, i);
+                redirectNormals.put(i, new ArrayList<Integer>());
+            } else {
+                int originalIndex = uniqueNormals.get(n);
+                redirectNormals.get(originalIndex).add(i);
+            }
+        }
+        for (int i = 0; i < textures.size(); i++) {
+            Vector2f n = (Vector2f) textures.get(i);
+            if (!uniqueTextures.containsKey(n)) {
+                uniqueTextures.put(n, i);
+                redirectTextures.put(i, new ArrayList<Integer>());
+            } else {
+                int originalIndex = uniqueTextures.get(n);
+                redirectTextures.get(originalIndex).add(i);
+            }
+        }
+        for (Map.Entry<Integer, List<Integer>> en: redirectNormals.entrySet()) {
+            Integer originalIndex = en.getKey();
+            List<Integer> indicesToReplace = en.getValue();
+            for (Face face: faces) {
+                if (indicesToReplace.contains(face.v1.z)) {
+                    face.v1.z = originalIndex;
+                }
+                if (indicesToReplace.contains(face.v2.z)) {
+                    face.v2.z = originalIndex;
+                }
+                if (indicesToReplace.contains(face.v3.z)) {
+                    face.v3.z = originalIndex;
+                }
+            }
+        }
+        for (Map.Entry<Integer, List<Integer>> en: redirectTextures.entrySet()) {
+            Integer originalIndex = en.getKey();
+            List<Integer> indicesToReplace = en.getValue();
+            for (Face face: faces) {
+                if (indicesToReplace.contains(face.v1.y)) {
+                    face.v1.y = originalIndex;
+                }
+                if (indicesToReplace.contains(face.v2.y)) {
+                    face.v2.y = originalIndex;
+                }
+                if (indicesToReplace.contains(face.v3.y)) {
+                    face.v3.y = originalIndex;
+                }
+            }
+        }
+        for (Map.Entry<Integer, List<Integer>> en: redirectNormals.entrySet()) {
+            List<Integer> indicesToRemove = en.getValue();
+            for (int i = normals.size() - 1; i >= 0; i--) {
+                if (indicesToRemove.contains(i)) {
+                    normals.remove(i);
+                }
+            }
+        }
+        for (Map.Entry<Integer, List<Integer>> en: redirectTextures.entrySet()) {
+            List<Integer> indicesToRemove = en.getValue();
+            for (int i = textures.size() - 1; i >= 0; i--) {
+                if (indicesToRemove.contains(i)) {
+                    textures.remove(i);
+                }
+            }
+        }
+        return (ArrayList<Object>[]) new Object[]{vertices, normals, textures, faces};
     }
 
     public ArrayList<Object>[] getTotalData(InputStream inputStream) {
