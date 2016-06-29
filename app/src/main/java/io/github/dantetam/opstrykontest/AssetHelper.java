@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.renderscript.ScriptGroup;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class AssetHelper {
     public float[][] loadVertexFromAssets(String path) {
         String truePath = path.toLowerCase().replace(' ', '_');
         try {
+            compress(truePath, "compressed_" + truePath);
             return ObjLoader.loadObjModelByVertex(assetManager.open(truePath));
         } catch (IOException e) {
             System.err.println("Could not find model named " + path + "; looked for " + truePath);
@@ -46,6 +48,8 @@ public class AssetHelper {
     }
 
     public void compress(String assetInputPath, String internalOutputPath) {
+        File file = new File(context.getFilesDir(), internalOutputPath);
+
         InputStream inputStream;
         try {
             inputStream = assetManager.open(assetInputPath);
@@ -65,29 +69,44 @@ public class AssetHelper {
         ArrayList<Face> faces = new ArrayList<>();
         for (Object obj: totalData[3]) faces.add((Face)obj);
 
-        compressData(vertices, normals, textures, faces);
+        //compressData(vertices, normals, textures, faces);
 
         try {
             FileOutputStream fos = context.openFileOutput(internalOutputPath, Context.MODE_PRIVATE);
-            fos.write(string.getBytes());
+            for (Vector3f v: vertices) {
+                String stringy = "v " + v.toString();
+                fos.write(stringy.getBytes());
+            }
+            for (Vector2f v: textures) {
+                String stringy = "vt " + v.toString();
+                fos.write(stringy.getBytes());
+            }
+            for (Vector3f v: normals) {
+                String stringy = "vn " + v.toString();
+                fos.write(stringy.getBytes());
+            }
+            for (Face f: faces) {
+                String stringy = "f " + f.toString();
+                fos.write(stringy.getBytes());
+            }
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public ArrayList<Object>[] compressData(
+    private ArrayList<Object>[] compressData(
             ArrayList<Vector3f> vertices,
             ArrayList<Vector3f> normals,
             ArrayList<Vector2f> textures,
-            ArrayList<Face> faces
-            ) {
+            ArrayList<Face> faces)
+    {
         HashMap<Vector3f, Integer> uniqueNormals = new HashMap<>();
         HashMap<Vector2f, Integer> uniqueTextures = new HashMap<>();
         HashMap<Integer, List<Integer>> redirectNormals = new HashMap<>();
         HashMap<Integer, List<Integer>> redirectTextures = new HashMap<>();
         for (int i = 0; i < normals.size(); i++) {
-            Vector3f n = (Vector3f) normals.get(i);
+            Vector3f n = normals.get(i);
             if (!uniqueNormals.containsKey(n)) {
                 uniqueNormals.put(n, i);
                 redirectNormals.put(i, new ArrayList<Integer>());
@@ -97,7 +116,7 @@ public class AssetHelper {
             }
         }
         for (int i = 0; i < textures.size(); i++) {
-            Vector2f n = (Vector2f) textures.get(i);
+            Vector2f n = textures.get(i);
             if (!uniqueTextures.containsKey(n)) {
                 uniqueTextures.put(n, i);
                 redirectTextures.put(i, new ArrayList<Integer>());
@@ -227,7 +246,9 @@ public class AssetHelper {
             e.printStackTrace();
         }
 
-        return (ArrayList<Object>[]) new Object[]{vertices, normals, textures, faces};
+        return compressData(vertices, normals, textures, faces);
+
+        //return (ArrayList<Object>[]) new Object[]{vertices, normals, textures, faces};
     }
 
     public static class Face {
@@ -236,6 +257,11 @@ public class AssetHelper {
             v1 = new Vector3f(a,b,c);
             v2 = new Vector3f(d,e,f);
             v3 = new Vector3f(g,h,i);
+        }
+        public String toString() {
+            return v1.x + "/" + v1.y + "/" + v1.z + " " +
+                    v2.x + "/" + v2.y + "/" + v2.z + " " +
+                    v3.x + "/" + v3.y + "/" + v3.z;
         }
     }
 

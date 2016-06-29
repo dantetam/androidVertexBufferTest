@@ -18,4 +18,7 @@ public class Vector2f {
         hash = hash * 31 + (int)(y * 1000);
         return hash;
     }
+    public String toString() {
+        return x + " " + y;
+    }
 }

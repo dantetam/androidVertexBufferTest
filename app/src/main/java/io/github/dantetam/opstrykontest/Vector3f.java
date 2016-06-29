@@ -19,4 +19,7 @@ public class Vector3f {
         hash = hash * 31 + (int)(z * 100);
         return hash;
     }
+    public String toString() {
+        return x + " " + y + " " + z;
+    }
 }

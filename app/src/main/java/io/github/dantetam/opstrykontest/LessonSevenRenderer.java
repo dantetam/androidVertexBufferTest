@@ -129,7 +129,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	public LessonSevenRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
 		mLessonSevenActivity = lessonSevenActivity;
         assetManager = mLessonSevenActivity.getAssets();
-        assetHelper = new AssetHelper(assetManager);
+        assetHelper = new AssetHelper(lessonSevenActivity, assetManager);
 		mGlSurfaceView = glSurfaceView;
         mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
 
