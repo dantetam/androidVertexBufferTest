@@ -15,6 +15,7 @@ import android.content.res.AssetManager;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.DisplayMetrics;
 
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
@@ -33,7 +34,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	private static final String TAG = "LessonSevenRenderer";
 
 	private final LessonSevenActivity mLessonSevenActivity;
-	private final GLSurfaceView mGlSurfaceView;
+	private final LessonSevenGLSurfaceView mGlSurfaceView;
 	
 	/**
 	 * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
@@ -119,9 +120,12 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private Lines mLines;
 
 	public Camera camera;
+    public MousePicker mousePicker;
 
     public WorldHandler worldHandler;
     public static final int WORLD_LENGTH = 8;
+
+    private int WIDTH = 0, HEIGHT = 0;
 
 	/**
 	 * Initialize the model data. Initialize other necessary classes.
@@ -130,8 +134,16 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		mLessonSevenActivity = lessonSevenActivity;
         assetManager = mLessonSevenActivity.getAssets();
         assetHelper = new AssetHelper(lessonSevenActivity, assetManager);
-		mGlSurfaceView = glSurfaceView;
+		mGlSurfaceView = (LessonSevenGLSurfaceView)glSurfaceView;
         mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
+
+        camera = new Camera();
+        camera.moveTo(10f, 10f, 10f);
+        camera.pointTo(5f, 5f, 5f);
+
+        updatePerspectiveMatrix(getWidth(), getHeight());
+        mousePicker = new MousePicker(mProjectionMatrix, camera, getWidth(), getHeight());
+        mGlSurfaceView.init(mousePicker);
 
         worldHandler = new WorldHandler(mLessonSevenActivity, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
         ColorTextureHelper.init(mLessonSevenActivity);
@@ -311,9 +323,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		final float upY = 1.0f;
 		final float upZ = 0.0f;*/
 
-		camera = new Camera();
-		camera.moveTo(10f, 10f, 10f);
-		camera.pointTo(5f, 5f, 5f);
 		// Set the view matrix. This matrix can be said to represent the camera position.
 		// NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
 		// view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
@@ -361,16 +370,40 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
 		// Create a new perspective projection matrix. The height will stay the same
 		// while the width will vary as per aspect ratio.
-		final float ratio = (float) width / height;
-		final float left = -ratio;
-		final float right = ratio;
-		final float bottom = -1.0f;
-		final float top = 1.0f;
-		final float near = 1.0f;
-		final float far = 1000.0f;
-		
-		Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+		updatePerspectiveMatrix(width, height);
 	}
+
+    public void updatePerspectiveMatrix(int width, int height) {
+        this.WIDTH = width;
+        this.HEIGHT = height;
+
+        final float ratio = (float) width / height;
+        final float left = -ratio;
+        final float right = ratio;
+        final float bottom = -1.0f;
+        final float top = 1.0f;
+        final float near = 1.0f;
+        final float far = 1000.0f;
+
+        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+    }
+
+    public int getWidth() {
+        if (WIDTH == 0) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            mLessonSevenActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            WIDTH = metrics.widthPixels;
+        }
+        return WIDTH;
+    }
+    public int getHeight() {
+        if (HEIGHT == 0) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            mLessonSevenActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            HEIGHT = metrics.heightPixels;
+        }
+        return HEIGHT;
+    }
 
 	/*
 	This method is the grand render method. It follows these steps:

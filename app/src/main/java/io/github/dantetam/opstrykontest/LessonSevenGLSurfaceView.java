@@ -16,16 +16,22 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
     private float mPreviousY;
     
     private float mDensity;
+
+    private MousePicker mousePicker;
         	
-	public LessonSevenGLSurfaceView(Context context) 
+	public LessonSevenGLSurfaceView(Context context)
 	{
-		super(context);		
+		super(context);
 	}
 	
-	public LessonSevenGLSurfaceView(Context context, AttributeSet attrs) 
+	public LessonSevenGLSurfaceView(Context context, AttributeSet attrs)
 	{
-		super(context, attrs);		
+		super(context, attrs);
 	}
+
+    public void init(MousePicker mousePicker) {
+        this.mousePicker = mousePicker;
+    }
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) 
@@ -46,6 +52,12 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 					//mRenderer.mDeltaY += deltaY;
 					mRenderer.camera.moveShift(-deltaX/10, 0, -deltaY/10);
 					mRenderer.camera.pointShift(-deltaX/10, 0, -deltaY/10);
+
+                    if (mousePicker != null) {
+                        mousePicker.update(x, y);
+                        Vector3f v = mousePicker.rayCastHit;
+                        System.out.println(v.x + " " + v.y + " " + v.z);
+                    }
 				}
 			}	
 			

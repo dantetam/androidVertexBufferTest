@@ -61,7 +61,7 @@ public class MousePicker {
         float[] temp = new float[4];
         Matrix.multiplyMV(temp, 0, inverseView, 0, eye, 0);
         Vector3f rayWorld = new Vector3f(temp[0], temp[1], temp[2]);
-        return rayWorld.normalize();
+        return rayWorld.normalized();
     }
 
     //Reverse of the transformation in the previous function. Although that was the reverse,

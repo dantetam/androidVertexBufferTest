@@ -28,7 +28,7 @@ public class Vector3f {
     public float magnitude() {
         return (float)Math.sqrt(x*x + y*y + z*z);
     }
-    public Vector3f normalize() {
+    public Vector3f normalized() {
         float m = magnitude();
         return new Vector3f(x/m, y/m, z/m);
     }
