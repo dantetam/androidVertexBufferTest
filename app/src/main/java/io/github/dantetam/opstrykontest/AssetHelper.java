@@ -47,6 +47,11 @@ public class AssetHelper {
         return null;
     }
 
+    /**
+     * Compress face data from the input into the output.
+     * @param assetInputPath The input file in the assets folder (read-only)
+     * @param internalOutputPath The output file name in internal data (read & write)
+     */
     public void compress(String assetInputPath, String internalOutputPath) {
         File file = new File(context.getFilesDir(), internalOutputPath);
 
@@ -99,6 +104,11 @@ public class AssetHelper {
         }
     }
 
+    /**
+     * @param vertices,normals,textures,faces A set of non-unique data of an OBJ
+     * @return The same data, now with the faces compressed.
+     * We simply save the extra duplicates and garbage collect after building the buffer
+     */
     private Object[] compressData(
             ArrayList<Vector3f> vertices,
             ArrayList<Vector3f> normals,
@@ -168,7 +178,8 @@ public class AssetHelper {
             }
         }
         //System.out.println(normals.size() + " *** " + textures.size());
-        for (Map.Entry<Integer, List<Integer>> en: redirectNormals.entrySet()) {
+        //TODO: Fix this. Removing duplicate entries shifts everything.
+        /*for (Map.Entry<Integer, List<Integer>> en: redirectNormals.entrySet()) {
             List<Integer> indicesToRemove = en.getValue();
             for (int i = normals.size() - 1; i >= 0; i--) {
                 if (indicesToRemove.contains(i)) {
@@ -183,7 +194,7 @@ public class AssetHelper {
                     textures.remove(i);
                 }
             }
-        }
+        }*/
         //System.out.println(normals.size() + " *** " + textures.size());
         /*ArrayList<Object>[] temp = (ArrayList<Object>[]) new Object[4];
         temp[0] = vertices; temp[1] = normals;
@@ -191,6 +202,12 @@ public class AssetHelper {
         return new Object[]{vertices, normals, textures, faces};
     }
 
+    /**
+     *
+     * @param inputStream The source of the input, from context resources or internal storage
+     * @return A collection of the OBJ data, in vertices, normals, tex coords, and faces.
+     * Not parsed for uniqueness, see compressData(...)
+     */
     public Object[] getTotalData(InputStream inputStream) {
         final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader reader = new BufferedReader(inputStreamReader);
@@ -268,6 +285,9 @@ public class AssetHelper {
         //return (ArrayList<Object>[]) new Object[]{vertices, normals, textures, faces};
     }
 
+    /*
+    This is a wrapper class for 3 Vector3f instances which represent a triangle in vtn data.
+     */
     public static class Face {
         public Vector3f v1, v2, v3;
         public Face(float a, float b, float c, float d, float e, float f, float g, float h, float i) {
