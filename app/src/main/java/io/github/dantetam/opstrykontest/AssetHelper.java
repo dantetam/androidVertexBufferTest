@@ -59,15 +59,15 @@ public class AssetHelper {
         }
 
         //Get the uncompressed data
-        ArrayList<Object>[] totalData = getTotalData(inputStream);
+        Object[] totalData = getTotalData(inputStream);
         ArrayList<Vector3f> vertices = new ArrayList<>();
-        for (Object obj: totalData[0]) vertices.add((Vector3f)obj);
+        for (Object obj: (List<Vector3f>) totalData[0]) vertices.add((Vector3f)obj);
         ArrayList<Vector3f> normals = new ArrayList<>();
-        for (Object obj: totalData[1]) normals.add((Vector3f)obj);
+        for (Object obj: (List<Vector3f>) totalData[1]) normals.add((Vector3f)obj);
         ArrayList<Vector2f> textures = new ArrayList<>();
-        for (Object obj: totalData[2]) textures.add((Vector2f)obj);
+        for (Object obj: (List<Vector2f>) totalData[2]) textures.add((Vector2f)obj);
         ArrayList<Face> faces = new ArrayList<>();
-        for (Object obj: totalData[3]) faces.add((Face)obj);
+        for (Object obj: (List<Face>) totalData[3]) faces.add((Face)obj);
 
         //compressData(vertices, normals, textures, faces);
 
@@ -75,18 +75,22 @@ public class AssetHelper {
             FileOutputStream fos = context.openFileOutput(internalOutputPath, Context.MODE_PRIVATE);
             for (Vector3f v: vertices) {
                 String stringy = "v " + v.toString();
+                //System.out.println(stringy);
                 fos.write(stringy.getBytes());
             }
             for (Vector2f v: textures) {
                 String stringy = "vt " + v.toString();
+                //System.out.println(stringy);
                 fos.write(stringy.getBytes());
             }
             for (Vector3f v: normals) {
                 String stringy = "vn " + v.toString();
+                //System.out.println(stringy);
                 fos.write(stringy.getBytes());
             }
             for (Face f: faces) {
                 String stringy = "f " + f.toString();
+                //System.out.println(stringy);
                 fos.write(stringy.getBytes());
             }
             fos.close();
@@ -95,7 +99,7 @@ public class AssetHelper {
         }
     }
 
-    private ArrayList<Object>[] compressData(
+    private Object[] compressData(
             ArrayList<Vector3f> vertices,
             ArrayList<Vector3f> normals,
             ArrayList<Vector2f> textures,
@@ -123,19 +127,27 @@ public class AssetHelper {
             } else {
                 int originalIndex = uniqueTextures.get(n);
                 redirectTextures.get(originalIndex).add(i);
+                //System.out.println(redirectTextures.get(originalIndex).size());
             }
         }
         for (Map.Entry<Integer, List<Integer>> en: redirectNormals.entrySet()) {
             Integer originalIndex = en.getKey();
             List<Integer> indicesToReplace = en.getValue();
+            /*String stringy = "";
+            for (int i = 0; i < indicesToReplace.size(); i++) {
+                stringy += indicesToReplace.get(i) + " ";
+            }
+            System.out.println(stringy);*/
             for (Face face: faces) {
-                if (indicesToReplace.contains(face.v1.z)) {
+                if (indicesToReplace.contains((int)face.v1.z)) {
+                    //System.out.println("Replace " + face.v1.z + " with " + originalIndex);
+                    //System.out.println(vertices.get((int)face.v1.z).toString() + " " + vertices.get(originalIndex).toString());
                     face.v1.z = originalIndex;
                 }
-                if (indicesToReplace.contains(face.v2.z)) {
+                if (indicesToReplace.contains((int)face.v2.z)) {
                     face.v2.z = originalIndex;
                 }
-                if (indicesToReplace.contains(face.v3.z)) {
+                if (indicesToReplace.contains((int)face.v3.z)) {
                     face.v3.z = originalIndex;
                 }
             }
@@ -144,17 +156,18 @@ public class AssetHelper {
             Integer originalIndex = en.getKey();
             List<Integer> indicesToReplace = en.getValue();
             for (Face face: faces) {
-                if (indicesToReplace.contains(face.v1.y)) {
+                if (indicesToReplace.contains((int)face.v1.y)) {
                     face.v1.y = originalIndex;
                 }
-                if (indicesToReplace.contains(face.v2.y)) {
+                if (indicesToReplace.contains((int)face.v2.y)) {
                     face.v2.y = originalIndex;
                 }
-                if (indicesToReplace.contains(face.v3.y)) {
+                if (indicesToReplace.contains((int)face.v3.y)) {
                     face.v3.y = originalIndex;
                 }
             }
         }
+        //System.out.println(normals.size() + " *** " + textures.size());
         for (Map.Entry<Integer, List<Integer>> en: redirectNormals.entrySet()) {
             List<Integer> indicesToRemove = en.getValue();
             for (int i = normals.size() - 1; i >= 0; i--) {
@@ -171,10 +184,14 @@ public class AssetHelper {
                 }
             }
         }
-        return (ArrayList<Object>[]) new Object[]{vertices, normals, textures, faces};
+        //System.out.println(normals.size() + " *** " + textures.size());
+        /*ArrayList<Object>[] temp = (ArrayList<Object>[]) new Object[4];
+        temp[0] = vertices; temp[1] = normals;
+        temp[2] = textures; temp[3] = faces;*/
+        return new Object[]{vertices, normals, textures, faces};
     }
 
-    public ArrayList<Object>[] getTotalData(InputStream inputStream) {
+    public Object[] getTotalData(InputStream inputStream) {
         final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader reader = new BufferedReader(inputStreamReader);
 
@@ -259,9 +276,9 @@ public class AssetHelper {
             v3 = new Vector3f(g,h,i);
         }
         public String toString() {
-            return v1.x + "/" + v1.y + "/" + v1.z + " " +
-                    v2.x + "/" + v2.y + "/" + v2.z + " " +
-                    v3.x + "/" + v3.y + "/" + v3.z;
+            return (int)v1.x + "/" + (int)v1.y + "/" + (int)v1.z + " " +
+                    (int)v2.x + "/" + (int)v2.y + "/" + (int)v2.z + " " +
+                    (int)v3.x + "/" + (int)v3.y + "/" + (int)v3.z;
         }
     }
 
