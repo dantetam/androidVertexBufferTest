@@ -22,4 +22,14 @@ public class Vector3f {
     public String toString() {
         return x + " " + y + " " + z;
     }
+    public void scale(float f) {
+        x *= f; y *= f; z *= f;
+    }
+    public float magnitude() {
+        return (float)Math.sqrt(x*x + y*y + z*z);
+    }
+    public Vector3f normalize() {
+        float m = magnitude();
+        return new Vector3f(x/m, y/m, z/m);
+    }
 }

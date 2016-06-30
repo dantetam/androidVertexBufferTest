@@ -14,26 +14,29 @@ public class MousePicker {
     public Vector3f rayCastHit;
     public static float constant = 1.0f;
 
-    private final float[] projMatrix = new float[16];
-    private final float[] viewMatrix = new float[16];
-    private final float[] transformMatrix = new float[16];
+    private float[] projMatrix = new float[16];
+    private float[] viewMatrix = new float[16];
+    private float[] transformMatrix = new float[16];
     public Camera camera;
 
-    public MousePicker(Matrix p, Camera c) {
+    private int width, height;
+
+    public MousePicker(float[] p, Camera c, int w, int h) {
+        projMatrix = p;
         camera = c;
-        viewMatrix = createViewMatrix(c);
+        viewMatrix = createViewMatrix(camera);
         //viewMatrix = Maths.createViewMatrix(camera);
     }
 
     public void update(float mouseX, float mouseY)
     {
-        viewMatrix = Maths.createViewMatrix(camera);
+        viewMatrix = createViewMatrix(camera);
         currentRay = calculateMouseRay(mouseX, mouseY);
 
         rayCastHit = new Vector3f(
-                camera.position.x - camera.position.y/currentRay.y*currentRay.x,
+                camera.eyeX - camera.eyeY/currentRay.y*currentRay.x,
                 0,
-                camera.position.z - camera.position.y/currentRay.y*currentRay.z
+                camera.eyeZ - camera.eyeY/currentRay.y*currentRay.z
         );
         rayCastHit.scale(constant);
     }
@@ -41,15 +44,24 @@ public class MousePicker {
     private Vector3f calculateMouseRay(float mouseX, float mouseY)
     {
         //float mouseX = Mouse.getX(), mouseY = Mouse.getY();
-        float normalX = 2f*mouseX/DisplayManager.width - 1f;
-        float normalY = 2f*mouseY/DisplayManager.height - 1f;
+        float normalX = 2f*mouseX/width - 1f;
+        float normalY = 2f*mouseY/height - 1f;
         Vector2f normalized = new Vector2f(normalX, normalY);
-        Vector4f clip = new Vector4f(normalized.x, normalized.y, -1f, 1f);
-        Vector4f eye = Matrix4f.transform(Matrix4f.invert(projMatrix, null), clip, null);
-        eye.z = -1f; eye.w = 0f;
-        Vector4f temp = Matrix4f.transform(Matrix4f.invert(viewMatrix, null), eye, null);
-        Vector3f rayWorld = new Vector3f(temp.x, temp.y, temp.z);
-        return (Vector3f)rayWorld.normalise();
+        float[] clip = {normalized.x, normalized.y, -1f, 1f};
+
+        float[] inverseProj = new float[16];
+        Matrix.invertM(inverseProj, 0, projMatrix, 0);
+        float[] inverseView = new float[16];
+        Matrix.invertM(inverseView, 0, viewMatrix, 0);
+
+        float[] eye = new float[4];
+        Matrix.multiplyMV(eye, 0, inverseProj, 0, clip, 0);
+        eye[2] = -1f; eye[3] = 0f;
+
+        float[] temp = new float[4];
+        Matrix.multiplyMV(temp, 0, inverseView, 0, eye, 0);
+        Vector3f rayWorld = new Vector3f(temp[0], temp[1], temp[2]);
+        return rayWorld.normalize();
     }
 
     //Reverse of the transformation in the previous function. Although that was the reverse,
@@ -59,14 +71,20 @@ public class MousePicker {
         //Create a new transformation matrix for the different position
         float[] transformMatrix = createTransformMatrix(new Vector3f(posX, 0, posZ), 0, 0, 0, 1);
 
-        Vector4f worldPosition = Matrix4f.transform(transformMatrix, new Vector4f(posX, 0, posZ, 1.0f), null);
+        float[] worldPosition = new float[4];
+        Matrix.multiplyMV(worldPosition, 0, transformMatrix, 0, new float[]{posX, 0, posZ, 1.0f}, 0);
+
+        float[] viewTimesWorld = new float[4];
+        Matrix.multiplyMV(viewTimesWorld, 0, viewMatrix, 0, worldPosition, 0);
+
+        float[] glPosition = new float[4];
 
         //equivalent: glPosition = projectionMatrix * (viewMatrix * worldPosition);
-        Vector4f glPosition = Matrix4f.transform(projMatrix, Matrix4f.transform(viewMatrix, worldPosition, null), null);
-        Vector2f normalized = new Vector2f(glPosition.x, glPosition.y);
+        Matrix.multiplyMV(glPosition, 0, projMatrix, 0, viewTimesWorld, 0);
+        Vector2f normalized = new Vector2f(glPosition[0], glPosition[1]);
 
         //Reverse: y = 2x/width - 1, reverse's inverse: (width/2)(y + 1) = x
-        return new Vector2f((normalized.x + 1f)*DisplayManager.width/2f,(normalized.y + 1f)*DisplayManager.height/2f);
+        return new Vector2f((normalized.x + 1f)*width/2f,(normalized.y + 1f)*height/2f);
     }
 
     /**
@@ -104,13 +122,12 @@ public class MousePicker {
     public static float[] createViewMatrix(Camera camera)
     {
         float[] matrix = new float[16];
+        float[] inverse = new float[16];
         Matrix.setIdentityM(matrix, 0);
-        //Rotate first and then translate; opposite of normal translation process
-        Matrix4f.rotate((float)Math.toRadians(camera.pitch), new Vector3f(1,0,0), matrix, matrix);
-        Matrix4f.rotate((float)Math.toRadians(camera.yaw), new Vector3f(0,1,0), matrix, matrix);
-        Vector3f negative = new Vector3f(-camera.position.x, -camera.position.y, -camera.position.z);
-        Matrix4f.translate(negative, matrix, matrix);
-        return matrix;
+        //Invert the camera view matrix
+        Matrix.setLookAtM(matrix, 0, camera.eyeX, camera.eyeY, camera.eyeZ, camera.lookX, camera.lookY, camera.lookZ, 0, 1, 0);
+        Matrix.invertM(inverse, 0, matrix, 0);
+        return inverse;
     }
 
 }
