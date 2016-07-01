@@ -25,11 +25,10 @@ public class GuiTexture extends RenderEntity {
 
     }
 
-    public Solid(int textureHandle, float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int cubeFactor) {
+    public GuiTexture(GuiFrame frame) {
         this.textureHandle = textureHandle;
 
         FloatBuffer cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, cubeFactor);
-        generatedCubeFactor = cubeFactor;
 
         numVerticesToRender = generatedCubeFactor * generatedCubeFactor * 36;
 

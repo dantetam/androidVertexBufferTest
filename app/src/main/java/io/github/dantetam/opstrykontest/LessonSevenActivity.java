@@ -2,8 +2,11 @@ package io.github.dantetam.opstrykontest;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Service;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ConfigurationInfo;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
@@ -11,7 +14,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 public class LessonSevenActivity extends Activity implements
         GestureDetector.OnGestureListener,
@@ -22,6 +27,8 @@ public class LessonSevenActivity extends Activity implements
 	private LessonSevenRenderer mRenderer;
 
     private GestureDetectorCompat mDetector;
+
+    private LinearLayout orientationChanger;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +74,17 @@ public class LessonSevenActivity extends Activity implements
 		});
 
 		//findViewById(R.id.button_switch_VBOs).setOnClickListener
+
+        //Stack overflow credit; force orientation
+        orientationChanger = new LinearLayout(this);
+        // Using TYPE_SYSTEM_OVERLAY is crucial to make your window appear on top
+        // You'll need the permission android.permission.SYSTEM_ALERT_WINDOW
+        WindowManager.LayoutParams orientationLayout = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, 0, PixelFormat.RGBA_8888);
+        // Use whatever constant you need for your desired rotation
+        orientationLayout.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        WindowManager wm = (WindowManager) this.getSystemService(Service.WINDOW_SERVICE);
+        wm.addView(orientationChanger, orientationLayout);
+        orientationChanger.setVisibility(View.VISIBLE);
 		
 		//findViewById(R.id.button_switch_stride).setOnClickListener
         mDetector = new GestureDetectorCompat(this,this);

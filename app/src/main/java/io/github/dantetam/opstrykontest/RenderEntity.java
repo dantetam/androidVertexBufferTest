@@ -38,7 +38,7 @@ public abstract class RenderEntity {
 
     abstract void renderAll();
     abstract void renderAll(int mode);
-    abstract void render(int indexBlock);
+    //abstract void render(int indexBlock);
     abstract void release();
 
    /* FloatBuffer[] getBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
