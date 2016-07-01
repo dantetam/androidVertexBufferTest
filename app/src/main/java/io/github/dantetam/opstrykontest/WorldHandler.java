@@ -165,6 +165,37 @@ public class WorldHandler {
         return generateHexes(textureHandle, world, cond);
     }
 
+    public Solid testMarker(int textureHandle, MousePicker mousePicker) {
+        if (mousePicker == null) return null;
+        if (mousePicker.rayCastHit == null) return null;
+        float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+
+        //Create some appropriately sized tables which will store preliminary buffer data
+        //Combine them all within these pieces of data.
+        final float[] totalCubePositionData = new float[hexData[0].length];
+        int cubePositionDataOffset = 0;
+        final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
+        int cubeNormalDataOffset = 0;
+        final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
+        int cubeTextureDataOffset = 0;
+
+        final float[] scaledData = scaleData(hexData[0], 1, 1, 1);
+        final float[] thisCubePositionData = translateData(scaledData, mousePicker.rayCastHit.x, 0.5f, mousePicker.rayCastHit.z);
+
+        //Interleave all the new vtn data, per hex.
+        System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+        cubePositionDataOffset += thisCubePositionData.length;
+
+        System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+        cubeNormalDataOffset += hexData[1].length;
+        System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+        cubeTextureDataOffset += hexData[2].length;
+
+        tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+        Solid hexes = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
+        return hexes;
+    }
+
     //Store previously generated data in here.
     public float[][] tesselatedHexes;
 
