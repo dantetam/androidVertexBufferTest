@@ -25,6 +25,8 @@ public class MousePicker {
         projMatrix = p;
         camera = c;
         viewMatrix = createViewMatrix(camera);
+        width = w;
+        height = h;
         //viewMatrix = Maths.createViewMatrix(camera);
     }
 
@@ -54,6 +56,13 @@ public class MousePicker {
         float[] inverseView = new float[16];
         Matrix.invertM(inverseView, 0, viewMatrix, 0);
 
+        /*for (int i = 0; i < projMatrix.length; i++) {
+            System.out.print(projMatrix[i] + " ");
+        }
+        System.out.println();*/
+
+        //System.out.println("<<<<< " + inverseView.toString());
+
         float[] eye = new float[4];
         Matrix.multiplyMV(eye, 0, inverseProj, 0, clip, 0);
         eye[2] = -1f; eye[3] = 0f;
@@ -61,6 +70,7 @@ public class MousePicker {
         float[] temp = new float[4];
         Matrix.multiplyMV(temp, 0, inverseView, 0, eye, 0);
         Vector3f rayWorld = new Vector3f(temp[0], temp[1], temp[2]);
+
         return rayWorld.normalized();
     }
 
