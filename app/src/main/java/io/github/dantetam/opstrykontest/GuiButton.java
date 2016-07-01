@@ -7,23 +7,15 @@ public class GuiButton extends GuiFrame {
 
     private Runnable effect;
 
-    class GenDataRunnable implements Runnable {
-        final int mRequestedCubeFactor;
-
-        GenDataRunnable(int requestedCubeFactor) {
-            mRequestedCubeFactor = requestedCubeFactor;
-        }
-
-        @Override
-        public void run() {
-            try {
-
-    public GuiButton(GuiFrame parent) {
+    public GuiButton(GuiFrame parent, Runnable runnable) {
         super(parent);
+        effect = runnable;
     }
 
     public void execute() {
-
+        if (effect != null) {
+            effect.run();
+        }
     }
 
 }
