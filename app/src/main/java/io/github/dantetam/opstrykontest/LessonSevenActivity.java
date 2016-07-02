@@ -36,7 +36,7 @@ public class LessonSevenActivity extends Activity implements
     private LinearLayout orientationChanger;
 
     private PopupMenu mainMenu;
-    private ContextMenu worldGenMenu;
+    private PopupMenu worldGenMenu;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,9 +95,10 @@ public class LessonSevenActivity extends Activity implements
         orientationChanger.setVisibility(View.VISIBLE);
 		*/
 
-        findViewById(R.id.main_menu).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {onClickNewWorld(findViewById(R.id.main_menu));}
-        });
+        /*findViewById(R.id.main_menu).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onClickNewWorld(findViewById(R.id.main_menu));}
+        });*/
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -145,7 +146,10 @@ public class LessonSevenActivity extends Activity implements
 
     public final String DEBUG_TAG = "Debug (Gesture): ";
 
+    private View temp;
     public void onClickNewWorld(View v) {
+        temp = v;
+
         mainMenu = new PopupMenu(this, v);
         MenuInflater inflater = mainMenu.getMenuInflater();
         inflater.inflate(R.menu.main_menu, mainMenu.getMenu());
@@ -159,13 +163,17 @@ public class LessonSevenActivity extends Activity implements
         worldGenMenu.show();
     }*/
     public boolean onClickNewWorldOptions(MenuItem item) {
+        worldGenMenu = new PopupMenu(this, temp);
+        MenuInflater inflater = worldGenMenu.getMenuInflater();
+        inflater.inflate(R.menu.new_world_gen_options, worldGenMenu.getMenu());
+        worldGenMenu.show();
         return true;
     }
 
-    public void onClickNewWorldOptions(View v) {
-       /* super.onCreateContextMenu(menu, v, menuInfo);
+    /*public void onClickNewWorldOptions(View v) {
+       *//* super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.new_world_gen_options, menu);*/
+        inflater.inflate(R.menu.new_world_gen_options, menu);*//*
     }
 
     public void onClickNewWorldOptions(ContextMenu menu, View v,
@@ -173,18 +181,18 @@ public class LessonSevenActivity extends Activity implements
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.new_world_gen_options, menu);
+    }*/
+
+    public boolean onClickNewWorldOption1(MenuItem item) {
+        return true;
     }
 
-    public void onClickNewWorldOption1(View v) {
-
+    public boolean onClickNewWorldOption2(MenuItem item) {
+        return true;
     }
 
-    public void onClickNewWorldOption2(View v) {
-
-    }
-
-    public void onClickNewWorldOption3(View v) {
-
+    public boolean onClickNewWorldOption3(MenuItem item) {
+        return true;
     }
 
     @Override

@@ -14,7 +14,7 @@ public class MousePicker {
     public Vector3f rayCastHit;
     public static float constant = 1.0f;
 
-    private float[] projMatrix = new float[16];
+    public float[] projMatrix = new float[16];
     private float[] viewMatrix = new float[16];
     private float[] transformMatrix = new float[16];
     public Camera camera;
@@ -136,8 +136,44 @@ public class MousePicker {
         Matrix.setIdentityM(matrix, 0);
         //Invert the camera view matrix
         Matrix.setLookAtM(matrix, 0, camera.eyeX, camera.eyeY, camera.eyeZ, camera.lookX, camera.lookY, camera.lookZ, 0, 1, 0);
-        Matrix.invertM(inverse, 0, matrix, 0);
-        return inverse;
+        //Matrix.invertM(inverse, 0, matrix, 0);
+        return matrix;
+        //return inverse;
+    }
+
+    public float[] getMouseRayProjection(float touchX, float touchY, float windowWidth, float windowHeight, float[] view, float[] projection)
+    {
+        float normalizedX = 2f * touchX/windowWidth - 1f;
+        float normalizedY = 1f - 2f*touchY/windowHeight;
+        float normalizedZ = 1.0f;
+
+        float[] rayNDC = new float[]{normalizedX, normalizedY, normalizedZ};
+        float[] rayClip = new float[]{rayNDC[0], rayNDC[1], -1f, 1f};
+
+        float[] inverseProjection = new float[16];
+        Matrix.invertM(inverseProjection, 0, projection, 0);
+        float[] rayEye = new float[4];
+        Matrix.multiplyMV(rayEye, 0, inverseProjection, 0, rayClip, 0);
+
+        //rayClip = new float[]{rayClip[0], rayClip[1], -1f, 0f};
+
+        float[] inverseView = new float[16];
+        Matrix.invertM(inverseView, 0, view, 0);
+        float[] rayWorld4D = new float[4];
+        Matrix.multiplyMV(rayWorld4D, 0, inverseView, 0, rayEye, 0);
+        float[] rayWorld = new float[]{rayWorld4D[0], rayWorld4D[1], rayWorld4D[2]};
+
+        return normalizeVector3(rayWorld);
+    }
+
+    public float[] normalizeVector3(float[] vector3)
+    {
+        float[] normalizedVector = new float[3];
+        float magnitude = (float) Math.sqrt((vector3[0] * vector3[0]) + (vector3[1] * vector3[1]) + (vector3[2] * vector3[2]));
+        normalizedVector[0] = vector3[0] / magnitude;
+        normalizedVector[1] = vector3[1] / magnitude;
+        normalizedVector[2] = vector3[2] / magnitude;
+        return normalizedVector;
     }
 
 }

@@ -19,8 +19,8 @@
             app:layout_heightPercent="15%"
             app:layout_marginTopPercent="0%"
             app:layout_marginLeftPercent="0%"
-            android:contentDescription="@string/new_world" />
-            <!--android:onClick="onClickNewWorld"-->
+            android:contentDescription="@string/new_world"
+            android:onClick="onClickNewWorld" />
     </android.support.percent.PercentRelativeLayout>
         <!--
         <ImageButton
