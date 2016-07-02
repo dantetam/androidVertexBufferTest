@@ -7,18 +7,28 @@
 		android:id="@+id/gl_surface_view"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
-	<LinearLayout		
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom|center_horizontal"
-		android:orientation="horizontal">
+    <android.support.percent.PercentRelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/main_menu"
+            android:text="@string/main_menu"
+            app:layout_widthPercent="20%"
+            app:layout_heightPercent="15%"
+            app:layout_marginTopPercent="0%"
+            app:layout_marginLeftPercent="0%"
+            android:contentDescription="@string/new_world" />
+            <!--android:onClick="onClickNewWorld"-->
+    </android.support.percent.PercentRelativeLayout>
+        <!--
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/usb_android"
             android:contentDescription="@string/new_world"
             android:onClick="onClickNewWorld" />
-        <!--
 		<Button
 			android:id="@+id/button_decrease_num_cubes"
 			android:layout_width="0dp"
@@ -44,6 +54,5 @@
 			android:layout_height="match_parent"					
 			android:text="@string/lesson_seven_using_stride" />
 		-->
-	</LinearLayout>
 
 </FrameLayout>

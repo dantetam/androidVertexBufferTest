@@ -2,21 +2,24 @@ package io.github.dantetam.opstrykontest;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ConfigurationInfo;
-import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
+import android.view.ContextMenu;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
@@ -33,6 +36,7 @@ public class LessonSevenActivity extends Activity implements
     private LinearLayout orientationChanger;
 
     private PopupMenu mainMenu;
+    private ContextMenu worldGenMenu;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -91,12 +95,17 @@ public class LessonSevenActivity extends Activity implements
         orientationChanger.setVisibility(View.VISIBLE);
 		*/
 
+        findViewById(R.id.main_menu).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {onClickNewWorld(findViewById(R.id.main_menu));}
+        });
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 		//findViewById(R.id.button_switch_stride).setOnClickListener
         mDetector = new GestureDetectorCompat(this,this);
         mDetector.setOnDoubleTapListener(this);
 
+        registerForContextMenu(mGLSurfaceView);
         //mainMenu = new PopupMenu(this, mGLSurfaceView);
     }
 
@@ -108,7 +117,7 @@ public class LessonSevenActivity extends Activity implements
 		mGLSurfaceView.onResume();
 	}
 
-	@Override
+    @Override
 	protected void onPause() {
 		// The activity must call the GL surface view's onPause() on activity
 		// onPause().
@@ -118,30 +127,54 @@ public class LessonSevenActivity extends Activity implements
 
 	private void decreaseCubeCount() {
 		mGLSurfaceView.queueEvent(new Runnable() {
-			@Override
-			public void run() {
-				mRenderer.decreaseCubeCount();
-			}
-		});
-	}
+            @Override
+            public void run() {
+                mRenderer.decreaseCubeCount();
+            }
+        });
+    }
 
-	private void increaseCubeCount() {
-		mGLSurfaceView.queueEvent(new Runnable() {
-			@Override
-			public void run() {
-				mRenderer.increaseCubeCount();
-			}
-		});
+    private void increaseCubeCount() {
+        mGLSurfaceView.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                mRenderer.increaseCubeCount();
+            }
+        });
 	}
 
     public final String DEBUG_TAG = "Debug (Gesture): ";
 
-
     public void onClickNewWorld(View v) {
         mainMenu = new PopupMenu(this, v);
         MenuInflater inflater = mainMenu.getMenuInflater();
-        inflater.inflate(R.menu.menu_lesson_seven, mainMenu.getMenu());
+        inflater.inflate(R.menu.main_menu, mainMenu.getMenu());
         mainMenu.show();
+    }
+
+    /*public void onClickNewWorldOptions(View v) {
+        worldGenMenu = new ContextMenu(this, v);
+        MenuInflater inflater = mainMenu.getMenuInflater();
+        inflater.inflate(R.menu.main_menu, mainMenu.getMenu());
+        worldGenMenu.show();
+    }*/
+    public void onClickNewWorldOptions(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.new_world_gen_options, menu);
+    }
+
+    public void onClickNewWorldOption1(View v) {
+
+    }
+
+    public void onClickNewWorldOption2(View v) {
+
+    }
+
+    public void onClickNewWorldOption3(View v) {
+
     }
 
     @Override

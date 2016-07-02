@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/option1"
+        android:title="@string/new_world_option1"
+        android:text="@string/new_world_option1"
+        android:orderInCategory="100"
+        android:onClick="onClickNewWorldOption1" />
+    <item
+        android:id="@+id/option2"
+        android:title="@string/new_world_option2"
+        android:text="@string/new_world_option2"
+        android:orderInCategory="100"
+        android:onClick="onClickNewWorldOption2" />
+    <item
+        android:id="@+id/option3"
+        android:title="@string/new_world_option3"
+        android:text="@string/new_world_option3"
+        android:orderInCategory="100"
+        android:onClick="onClickNewWorldOption3" />
+</menu>
