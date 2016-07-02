@@ -12,6 +12,13 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom|center_horizontal"
 		android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/usb_android"
+            android:contentDescription="@string/new_world"
+            android:onClick="onClickNewWorld" />
+        <!--
 		<Button
 			android:id="@+id/button_decrease_num_cubes"
 			android:layout_width="0dp"
@@ -35,7 +42,8 @@
 			android:layout_width="0dp"
 			android:layout_weight="1"
 			android:layout_height="match_parent"					
-			android:text="@string/lesson_seven_using_stride" />				
+			android:text="@string/lesson_seven_using_stride" />
+		-->
 	</LinearLayout>
 
 </FrameLayout>

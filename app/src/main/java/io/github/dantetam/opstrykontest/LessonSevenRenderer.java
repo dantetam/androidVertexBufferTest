@@ -16,6 +16,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.DisplayMetrics;
+import android.widget.PopupMenu;
 
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
@@ -147,6 +148,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         worldHandler = new WorldHandler(mLessonSevenActivity, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
         ColorTextureHelper.init(mLessonSevenActivity);
+
         //world = new World(WORLD_LENGTH, WORLD_LENGTH);
         //worldGenerator = new WorldGenerator(world);
         //worldGenerator.init();

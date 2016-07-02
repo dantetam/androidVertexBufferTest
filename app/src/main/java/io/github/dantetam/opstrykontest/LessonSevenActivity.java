@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 
 public class LessonSevenActivity extends Activity implements
         GestureDetector.OnGestureListener,
@@ -29,6 +31,8 @@ public class LessonSevenActivity extends Activity implements
     private GestureDetectorCompat mDetector;
 
     private LinearLayout orientationChanger;
+
+    private PopupMenu mainMenu;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,7 @@ public class LessonSevenActivity extends Activity implements
 			return;
 		}
 
-		findViewById(R.id.button_decrease_num_cubes).setOnClickListener(new OnClickListener() {
+		/*findViewById(R.id.button_decrease_num_cubes).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				decreaseCubeCount();
@@ -71,12 +75,12 @@ public class LessonSevenActivity extends Activity implements
 			public void onClick(View v) {
 				increaseCubeCount();
 			}
-		});
+		});*/
 
 		//findViewById(R.id.button_switch_VBOs).setOnClickListener
 
         //Stack overflow credit; force orientation
-        orientationChanger = new LinearLayout(this);
+        /*orientationChanger = new LinearLayout(this);
         // Using TYPE_SYSTEM_OVERLAY is crucial to make your window appear on top
         // You'll need the permission android.permission.SYSTEM_ALERT_WINDOW
         WindowManager.LayoutParams orientationLayout = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, 0, PixelFormat.RGBA_8888);
@@ -85,10 +89,15 @@ public class LessonSevenActivity extends Activity implements
         WindowManager wm = (WindowManager) this.getSystemService(Service.WINDOW_SERVICE);
         wm.addView(orientationChanger, orientationLayout);
         orientationChanger.setVisibility(View.VISIBLE);
-		
+		*/
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
 		//findViewById(R.id.button_switch_stride).setOnClickListener
         mDetector = new GestureDetectorCompat(this,this);
         mDetector.setOnDoubleTapListener(this);
+
+        //mainMenu = new PopupMenu(this, mGLSurfaceView);
     }
 
 	@Override
@@ -126,6 +135,14 @@ public class LessonSevenActivity extends Activity implements
 	}
 
     public final String DEBUG_TAG = "Debug (Gesture): ";
+
+
+    public void onClickNewWorld(View v) {
+        mainMenu = new PopupMenu(this, v);
+        MenuInflater inflater = mainMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_lesson_seven, mainMenu.getMenu());
+        mainMenu.show();
+    }
 
     @Override
     public boolean onDown(MotionEvent event) {
