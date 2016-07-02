@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>    
+    <string name="app_name">Opstrykon</string>
+    <string name="main_menu">Adventure</string>
+    <string name="new_world">New World</string>
+    <string name="new_world_option1">Option 1</string>
+    <string name="new_world_option2">Option 2</string>
+    <string name="new_world_option3">Option 3</string>
+</resources>

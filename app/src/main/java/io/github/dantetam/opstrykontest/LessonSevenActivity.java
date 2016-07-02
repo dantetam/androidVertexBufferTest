@@ -158,6 +158,16 @@ public class LessonSevenActivity extends Activity implements
         inflater.inflate(R.menu.main_menu, mainMenu.getMenu());
         worldGenMenu.show();
     }*/
+    public boolean onClickNewWorldOptions(MenuItem item) {
+        return true;
+    }
+
+    public void onClickNewWorldOptions(View v) {
+       /* super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.new_world_gen_options, menu);*/
+    }
+
     public void onClickNewWorldOptions(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
