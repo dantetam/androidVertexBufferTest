@@ -24,7 +24,10 @@ public class WorldHandler {
     private AssetHelper assetHelper;
 
     private Model tilesStored = null;
+
+    //This block is to be rendered
     public HashMap<Tile.Biome, Solid> storedBiomeTiles; //Store all the hexes grouped by biomes, this way each biome can be rendered with its own texture.
+    public Solid storedSelectedTileSolid;
 
     public HashMap<Tile, Vector3f> storedTileVertexPositions; //Used for placing future improvements at the center of tiles
     public HashMap<Tile, Solid> storedTileImprovements; //For storing the models placed at the tiles which can change
@@ -56,6 +59,7 @@ public class WorldHandler {
      */
     public Model worldRep() {
         if (tilesStored == null) {
+
             tilesStored = new Model();
             storedBiomeTiles = new HashMap<>();
             storedTileVertexPositions = new HashMap<>();
@@ -71,12 +75,14 @@ public class WorldHandler {
                     public boolean allowed(Object obj) {
                         if (!(obj instanceof Tile)) return false;
                         Tile t = (Tile) obj;
+                        //if (t.equals(mousePicker.selectedTile)) return false;
                         return t.biome.type == desiredType;
                     }
                 };
                 cond.init(i);
                 float[] color = Tile.Biome.colorFromInt(i);
                 //float[] color = {(int)(Math.random()*256f), (int)(Math.random()*256f), (int)(Math.random()*256f), 255f};
+                //System.out.println(color[0] + " " + color[1] + " " + color[2] + " " + color[3]);
                 int textureHandle = ColorTextureHelper.loadColor(color);
 
                 GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
@@ -92,6 +98,15 @@ public class WorldHandler {
                 //tilesStored.add(solidsOfBiome[0]);
                 //tilesStored.add(solidsOfBiome[1]);
             }
+            /*LessonSevenRenderer.Condition cond = new LessonSevenRenderer.Condition() {
+                public boolean allowed(Object obj) {
+                    if (!(obj instanceof Tile)) return false;
+                    Tile t = (Tile) obj;
+                    return t.equals(mousePicker.selectedTile);
+                }
+            };
+            storedSelectedTileSolid = generateHexes(TextureHelper.loadTexture("usb_android"), world, cond);
+            tilesStored.add(storedSelectedTileSolid);*/
         }
         return tilesStored;
     }
@@ -170,35 +185,45 @@ public class WorldHandler {
         return generateHexes(textureHandle, world, cond);
     }
 
-    public Solid testMarker(int textureHandle, MousePicker mousePicker) {
-        if (mousePicker == null) return null;
-        if (mousePicker.rayCastHit == null) return null;
-        float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+    //TODO: Create a method which generalizes this process of getting preliminary centered OBJ data from a file,
+    //modifying it by coordinates, and then turning it into a solid.
+    //Perhaps in OBJLoader?
+    public Solid selectedMarkerRep(int textureHandle) {
+        if (mousePicker.selectedNeedsUpdating) {
+            if (mousePicker == null) return null;
+            if (mousePicker.selectedTile == null) return null;
+            float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
 
-        //Create some appropriately sized tables which will store preliminary buffer data
-        //Combine them all within these pieces of data.
-        final float[] totalCubePositionData = new float[hexData[0].length];
-        int cubePositionDataOffset = 0;
-        final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
-        int cubeNormalDataOffset = 0;
-        final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
-        int cubeTextureDataOffset = 0;
+            //Create some appropriately sized tables which will store preliminary buffer data
+            //Combine them all within these pieces of data.
+            final float[] totalCubePositionData = new float[hexData[0].length];
+            int cubePositionDataOffset = 0;
+            final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
+            int cubeNormalDataOffset = 0;
+            final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
+            int cubeTextureDataOffset = 0;
 
-        final float[] scaledData = scaleData(hexData[0], 1, 1, 1);
-        final float[] thisCubePositionData = translateData(scaledData, mousePicker.rayCastHit.x, 0.5f, mousePicker.rayCastHit.z);
+            final float[] scaledData = scaleData(hexData[0], 1, 0, 1);
 
-        //Interleave all the new vtn data, per hex.
-        System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
-        cubePositionDataOffset += thisCubePositionData.length;
+            Tile selected = mousePicker.selectedTile;
+            Vector3f selectedPos = storedTileVertexPositions.get(selected);
 
-        System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
-        cubeNormalDataOffset += hexData[1].length;
-        System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
-        cubeTextureDataOffset += hexData[2].length;
+            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.1f, selectedPos.z);
 
-        tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-        Solid hexes = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
-        return hexes;
+            //Interleave all the new vtn data, per hex.
+            System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+            cubePositionDataOffset += thisCubePositionData.length;
+
+            System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+            cubeNormalDataOffset += hexData[1].length;
+            System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+            cubeTextureDataOffset += hexData[2].length;
+
+            tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+
+            storedSelectedTileSolid = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
+        }
+        return storedSelectedTileSolid;
     }
 
     //Store previously generated data in here.

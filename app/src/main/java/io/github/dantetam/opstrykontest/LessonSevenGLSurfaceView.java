@@ -21,7 +21,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
     private MousePicker mousePicker;
 
-    private Tile selectedTile = null;
+    //private Tile selectedTile = null;
         	
 	public LessonSevenGLSurfaceView(Context context)
 	{
@@ -59,8 +59,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
                     if (mousePicker != null) {
                         mousePicker.update(x, y);
-                        Vector3f v = mousePicker.rayCastHit;
-                        selectedTile = mousePicker.getTileClickedOn();
+                        /*Vector3f v = mousePicker.rayCastHit;
+                        mousePicker.getTileClickedOn();*/
                     }
 				}
 			}	

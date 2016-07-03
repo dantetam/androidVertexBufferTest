@@ -84,9 +84,9 @@ public class Tile extends Representable implements Traversable<Tile> {
         }
     }
 
-    public Tile(World world, int a, int c) {
+    public Tile(World world, int a, int b) {
         this.world = world;
-        q = a; r = c;
+        q = a; r = b;
         resources = new ArrayList<Resource>();
         occupants = new ArrayList<Entity>();
     }

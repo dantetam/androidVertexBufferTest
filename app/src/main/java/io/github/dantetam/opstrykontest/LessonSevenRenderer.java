@@ -119,6 +119,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	private Model mCubes;
     private Model improvements;
     private Lines mLines;
+    private Solid testMarker;
 
 	public Camera camera;
     public MousePicker mousePicker;
@@ -139,7 +140,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
 
         camera = new Camera();
-        camera.moveTo(10f, 10f, 10f);
+        camera.moveTo(5f, 10f, 10f);
         camera.pointTo(5f, 5f, 5f);
 
         mousePicker = new MousePicker(mProjectionMatrix, camera, getWidth(), getHeight());
@@ -148,13 +149,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         worldHandler = new WorldHandler(mLessonSevenActivity, mousePicker, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
         ColorTextureHelper.init(mLessonSevenActivity);
-
-        mCubes = worldHandler.worldRep();
-        improvements = worldHandler.tileImprovementRep();
-        mLines = new Lines(mWhiteTextureHandle, worldHandler.tesselatedHexes[0], worldHandler.tesselatedHexes[1], worldHandler.tesselatedHexes[2]);
-        mCubes.add(mLines);
-
-        mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
 
         //testMarker = worldHandler.testMarker(mAndroidDataHandle, mousePicker);
         //world = new World(WORLD_LENGTH, WORLD_LENGTH);
@@ -437,14 +431,22 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
 		//for (int i = 0; i < mCubes.parts.size(); i++) {
         if (mCubes == null || improvements == null || mCubes.parts.size() == 0) {
+            mCubes = worldHandler.worldRep();
+            improvements = worldHandler.tileImprovementRep();
+            mLines = new Lines(mWhiteTextureHandle, worldHandler.tesselatedHexes[0], worldHandler.tesselatedHexes[1], worldHandler.tesselatedHexes[2]);
+            mCubes.add(mLines);
+
+            mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
             return;
         }
+        mCubes = worldHandler.worldRep();
+        testMarker = worldHandler.selectedMarkerRep(R.drawable.usb_android);
+
         renderModel(mCubes);
         renderModel(improvements);
-        //renderSolid(testMarker);
+        renderSolid(testMarker);
 	}
 
-    private Solid testMarker;
     private void renderModel(Model model) {
         for (int i = 0; i < model.parts.size(); i++) {
             RenderEntity solid = model.parts.get(i);
@@ -453,6 +455,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     }
 
     private void renderSolid(RenderEntity solid) {
+        if (solid == null) return;
         //RenderEntity solid = model.parts.get(i);
         //int x = (i / (mActualCubeFactor * mActualCubeFactor)) % mActualCubeFactor;
         //int y = (i / mActualCubeFactor) % mActualCubeFactor;

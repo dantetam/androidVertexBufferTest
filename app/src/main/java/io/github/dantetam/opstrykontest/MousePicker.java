@@ -26,7 +26,10 @@ public class MousePicker {
 
     private int width, height;
 
+    public Tile selectedTile = null;
     public HashMap<Tile, Vector3f> storedTileVertices = null;
+
+    public boolean selectedNeedsUpdating;
 
     public MousePicker(float[] p, Camera c, int w, int h) {
         projMatrix = p;
@@ -49,6 +52,16 @@ public class MousePicker {
         );
         rayCastHit.scale(constant);
 
+        //boolean tilesNeedUpdating = false;
+        Tile previousSelected = selectedTile;
+        getTileClickedOn();
+        if (previousSelected != null) {
+            selectedNeedsUpdating = !previousSelected.equals(selectedTile);
+        }
+        else {
+            selectedNeedsUpdating = selectedTile != null;
+        }
+
         /*if (storedTileVertices != null) {
             getTileClickedOn(rayCastHit);
         }*/
@@ -58,7 +71,7 @@ public class MousePicker {
         return getTileClickedOn(rayCastHit);
     }
     public Tile getTileClickedOn(Vector3f v) {
-        if (storedTileVertices != null) {
+        if (storedTileVertices == null) {
             return null;
         }
         Tile key = null;
@@ -70,6 +83,7 @@ public class MousePicker {
                 min = dist;
             }
         }
+        selectedTile = key;
         return key;
     }
 

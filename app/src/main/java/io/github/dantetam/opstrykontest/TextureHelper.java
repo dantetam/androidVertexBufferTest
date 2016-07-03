@@ -75,7 +75,7 @@ public class TextureHelper
             bindBitmap(bitmap, textureHandle[0]);
         }
         else {
-            throw new RuntimeException("Error loading texture.");
+            throw new RuntimeException("Error loading texture: " + name);
         }
 
         texturesByName.put(name, textureHandle[0]);
