@@ -18,10 +18,20 @@ public class Vector2f {
         hash = hash * 31 + (int)(y * 1000);
         return hash;
     }
+    public float dist(Vector2f v) {
+        return (float)Math.sqrt(Math.pow(x - v.x, 2) + Math.pow(y - v.y, 2));
+    }
     public String toString() {
         return x + " " + y;
     }
     public void scale(float f) {
         x *= f; y *= f;
+    }
+    public float magnitude() {
+        return (float)Math.sqrt(x*x + y*y);
+    }
+    public Vector2f normalized() {
+        float m = magnitude();
+        return new Vector2f(x/m, y/m);
     }
 }

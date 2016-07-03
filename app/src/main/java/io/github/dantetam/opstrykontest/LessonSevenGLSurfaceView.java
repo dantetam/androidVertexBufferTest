@@ -7,8 +7,10 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import io.github.dantetam.world.Tile;
+
 public class LessonSevenGLSurfaceView extends GLSurfaceView
-        {
+{
 	private LessonSevenRenderer mRenderer;
 	
 	// Offsets for touch events	 
@@ -18,6 +20,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
     private float mDensity;
 
     private MousePicker mousePicker;
+
+    private Tile selectedTile = null;
         	
 	public LessonSevenGLSurfaceView(Context context)
 	{
@@ -56,6 +60,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     if (mousePicker != null) {
                         mousePicker.update(x, y);
                         Vector3f v = mousePicker.rayCastHit;
+                        selectedTile = mousePicker.getTileClickedOn();
                     }
 				}
 			}	

@@ -22,6 +22,9 @@ public class Vector3f {
     public String toString() {
         return x + " " + y + " " + z;
     }
+    public float dist(Vector3f v) {
+        return (float)Math.sqrt(Math.pow(x - v.x, 2) + Math.pow(y - v.y, 2) + Math.pow(z - v.z, 2));
+    }
     public void scale(float f) {
         x *= f; y *= f; z *= f;
     }

@@ -20,14 +20,17 @@ public class WorldHandler {
     public World world;
     public WorldGenerator worldGenerator;
 
+    private MousePicker mousePicker;
     private AssetHelper assetHelper;
 
     private Model tilesStored = null;
-    public HashMap<Tile.Biome, Solid> storedBiomeTiles;
+    public HashMap<Tile.Biome, Solid> storedBiomeTiles; //Store all the hexes grouped by biomes, this way each biome can be rendered with its own texture.
 
-    public HashMap<Tile, float[]> storedTileVertexPositions;
-    public HashMap<Tile, Solid> storedTileImprovements;
+    public HashMap<Tile, Vector3f> storedTileVertexPositions; //Used for placing future improvements at the center of tiles
+    public HashMap<Tile, Solid> storedTileImprovements; //For storing the models placed at the tiles which can change
     public Model improvementsStored;
+
+    //public HashMap<Tile, Polygon> hexesShape; //Originally intended to be used for mouse picking. More efficient to use center vertices.
 
     private LessonSevenActivity mActivity;
 
@@ -36,11 +39,12 @@ public class WorldHandler {
     static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
     static final int BYTES_PER_FLOAT = 4;
 
-    public WorldHandler(LessonSevenActivity mActivity, AssetHelper assetHelper, int len1, int len2) {
+    public WorldHandler(LessonSevenActivity mActivity, MousePicker mousePicker, AssetHelper assetHelper, int len1, int len2) {
         world = new World(len1, len2);
         worldGenerator = new WorldGenerator(world);
         worldGenerator.init();
         this.mActivity = mActivity;
+        this.mousePicker = mousePicker;
         this.assetHelper = assetHelper;
     }
 
@@ -56,6 +60,7 @@ public class WorldHandler {
             storedBiomeTiles = new HashMap<>();
             storedTileVertexPositions = new HashMap<>();
             storedTileImprovements = new HashMap<>();
+            //hexesShape = new HashMap<>();
             //tilesStored.add(generateHexes(world));
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
                 LessonSevenRenderer.Condition cond = new LessonSevenRenderer.Condition() {
@@ -112,12 +117,12 @@ public class WorldHandler {
                     final float[] totalNormalPositionData = new float[objData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
                     final float[] totalTexturePositionData = new float[objData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
 
-                    float[] vertices = storedTileVertexPositions.get(tile);
+                    Vector3f vertices = storedTileVertexPositions.get(tile);
 
                     final float[] scaledData = scaleData(objData[0], 0.2f, 0.2f, 0.2f);
                     storedTileVertexPositions.put(tile, vertices);
 
-                    final float[] thisCubePositionData = translateData(scaledData, vertices[0], vertices[1], vertices[2]);
+                    final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y, vertices.z);
                     System.arraycopy(thisCubePositionData, 0, totalCubePositionData, 0, thisCubePositionData.length);
 
                     System.arraycopy(objData[1], 0, totalNormalPositionData, 0, objData[1].length);
@@ -319,10 +324,10 @@ public class WorldHandler {
                     final float[] scaledData = scaleData(hexData[0], 1, tile.elevation / 5f, 1);
 
                     //Store these positions for later use when we place tile improvements and such
-                    float[] vertices = {x * TRANSLATE_FACTORX, tile.elevation / 5f, z * TRANSLATE_FACTORZ + extra};
+                    Vector3f vertices = new Vector3f(x * TRANSLATE_FACTORX, tile.elevation / 5f, z * TRANSLATE_FACTORZ + extra);
                     storedTileVertexPositions.put(tile, vertices);
 
-                    final float[] thisCubePositionData = translateData(scaledData, vertices[0], vertices[1]/2f, vertices[2]);
+                    final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y/2f, vertices.z);
 
                     //Interleave all the new vtn data, per hex.
                     System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);

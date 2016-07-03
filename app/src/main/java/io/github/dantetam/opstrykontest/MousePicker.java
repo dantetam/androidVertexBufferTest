@@ -2,6 +2,11 @@ package io.github.dantetam.opstrykontest;
 
 import android.opengl.Matrix;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import io.github.dantetam.world.Tile;
+
 /**
  * Created by Dante on 6/30/2016.
  */
@@ -20,6 +25,8 @@ public class MousePicker {
     public Camera camera;
 
     private int width, height;
+
+    public HashMap<Tile, Vector3f> storedTileVertices = null;
 
     public MousePicker(float[] p, Camera c, int w, int h) {
         projMatrix = p;
@@ -41,6 +48,29 @@ public class MousePicker {
                 camera.eyeZ - camera.eyeY/currentRay.y*currentRay.z
         );
         rayCastHit.scale(constant);
+
+        /*if (storedTileVertices != null) {
+            getTileClickedOn(rayCastHit);
+        }*/
+    }
+
+    public Tile getTileClickedOn() {
+        return getTileClickedOn(rayCastHit);
+    }
+    public Tile getTileClickedOn(Vector3f v) {
+        if (storedTileVertices != null) {
+            return null;
+        }
+        Tile key = null;
+        float min = -1;
+        for (Map.Entry<Tile, Vector3f> en: storedTileVertices.entrySet()) {
+            float dist = en.getValue().dist(v);
+            if (min == -1 || dist < min) {
+                key = en.getKey();
+                min = dist;
+            }
+        }
+        return key;
     }
 
     private Vector3f calculateMouseRay(float mouseX, float mouseY)
@@ -139,6 +169,10 @@ public class MousePicker {
         //Matrix.invertM(inverse, 0, matrix, 0);
         return matrix;
         //return inverse;
+    }
+
+    public void passInTileVertices(HashMap<Tile, Vector3f> map) {
+        storedTileVertices = map;
     }
 
 }

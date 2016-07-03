@@ -39,7 +39,7 @@ public class Polygon
     public boolean contains(float x, float y)
     {
         boolean c = false;
-        int i, j = 0;
+        int i, j;
         for (i = 0, j = polySides - 1; i < polySides; j = i++) {
             if (((polyY[i] > y) != (polyY[j] > y))
                     && (x < (polyX[j] - polyX[i]) * (y - polyY[i]) / (polyY[j] - polyY[i]) + polyX[i]))

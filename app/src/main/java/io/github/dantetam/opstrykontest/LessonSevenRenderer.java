@@ -146,9 +146,17 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         updatePerspectiveMatrix(getWidth(), getHeight());
         mGlSurfaceView.init(mousePicker);
 
-        worldHandler = new WorldHandler(mLessonSevenActivity, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
+        worldHandler = new WorldHandler(mLessonSevenActivity, mousePicker, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
         ColorTextureHelper.init(mLessonSevenActivity);
 
+        mCubes = worldHandler.worldRep();
+        improvements = worldHandler.tileImprovementRep();
+        mLines = new Lines(mWhiteTextureHandle, worldHandler.tesselatedHexes[0], worldHandler.tesselatedHexes[1], worldHandler.tesselatedHexes[2]);
+        mCubes.add(mLines);
+
+        mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
+
+        //testMarker = worldHandler.testMarker(mAndroidDataHandle, mousePicker);
         //world = new World(WORLD_LENGTH, WORLD_LENGTH);
         //worldGenerator = new WorldGenerator(world);
         //worldGenerator.init();
@@ -429,21 +437,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
 		//for (int i = 0; i < mCubes.parts.size(); i++) {
         if (mCubes == null || improvements == null || mCubes.parts.size() == 0) {
-            //generateCubes(mActualCubeFactor);
-            //mCubes = new Model();
-            mCubes = worldHandler.worldRep();
-            improvements = worldHandler.tileImprovementRep();
-            mLines = new Lines(mWhiteTextureHandle, worldHandler.tesselatedHexes[0], worldHandler.tesselatedHexes[1], worldHandler.tesselatedHexes[2]);
-            mCubes.add(mLines);
-
-            testMarker = worldHandler.testMarker(mAndroidDataHandle, mousePicker);
-            //mCubes.add(ObjLoader.loadSolid(mLessonSevenActivity, R.raw.hexagon));
-            //mCubes.add(worldHandler.generateHexes());
             return;
-            /*mCubes = new Model();
-            mCubes.add(ObjLoader.loadSolid(mLessonSevenActivity, R.raw.teapot));
-            System.out.println("Render1");
-            return;*/
         }
         renderModel(mCubes);
         renderModel(improvements);
