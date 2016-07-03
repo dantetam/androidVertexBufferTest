@@ -56,7 +56,6 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     if (mousePicker != null) {
                         mousePicker.update(x, y);
                         Vector3f v = mousePicker.rayCastHit;
-                        System.out.println(v.x + " " + v.y + " " + v.z);
                     }
 				}
 			}	

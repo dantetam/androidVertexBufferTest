@@ -142,8 +142,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         camera.moveTo(10f, 10f, 10f);
         camera.pointTo(5f, 5f, 5f);
 
-        updatePerspectiveMatrix(getWidth(), getHeight());
         mousePicker = new MousePicker(mProjectionMatrix, camera, getWidth(), getHeight());
+        updatePerspectiveMatrix(getWidth(), getHeight());
         mGlSurfaceView.init(mousePicker);
 
         worldHandler = new WorldHandler(mLessonSevenActivity, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
@@ -379,7 +379,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         this.WIDTH = width;
         this.HEIGHT = height;
 
-        final float ratio = (float) height / width;
+        final float ratio = (float) width / height;
         final float left = -ratio;
         final float right = ratio;
         final float bottom = -1.0f;
