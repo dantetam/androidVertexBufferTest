@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
 import io.github.dantetam.world.Tile;
 
@@ -65,8 +66,24 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         mousePicker.update(x, y);
 
                         if (mousePicker.selectedNeedsUpdating) {
-                            int visibleEnum = mousePicker.selectedTile != null ? View.VISIBLE : View.INVISIBLE;
-                            mActivity.findViewById(R.id.build_menu).setVisibility(visibleEnum);
+                            //mousePicker.selectedNeedsUpdating = false;
+
+                            boolean selectedTileExists = mousePicker.getSelectedTile() != null;
+                            boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
+
+                            mActivity.findViewById(R.id.build_menu).setVisibility(selectedTileExists ? View.VISIBLE : View.INVISIBLE);
+
+                            Button unitMenu = (Button) mActivity.findViewById(R.id.unit_menu);
+                            unitMenu.setVisibility(
+                                    selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
+                            );
+                            if (selectedTileExists) {
+                                unitMenu.setText("Units (" + mousePicker.getSelectedTile().occupants.size() + ")");
+                            }
+                            else if (selectedEntityExists) {
+                                unitMenu.setText("Units (" + mousePicker.getSelectedEntity().location().occupants.size() + ")");
+                            }
+
                         }
                         /*Vector3f v = mousePicker.rayCastHit;
                         mousePicker.getTileClickedOn();*/

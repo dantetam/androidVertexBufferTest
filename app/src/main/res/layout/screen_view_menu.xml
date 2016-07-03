@@ -35,6 +35,18 @@
             android:visibility="invisible"
             android:contentDescription="@string/build_menu"
             android:onClick="onClickBuildMenu" />
+        <Button
+            android:id="@+id/unit_menu"
+            android:text="@string/unit_menu"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_widthPercent="20%"
+            app:layout_heightPercent="15%"
+            app:layout_marginTopPercent="85%"
+            app:layout_marginLeftPercent="80%"
+            android:visibility="invisible"
+            android:contentDescription="@string/unit_menu"
+            android:onClick="onClickUnitMenu" />
     </android.support.percent.PercentRelativeLayout>
         <!--
         <ImageButton

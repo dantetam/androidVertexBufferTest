@@ -343,8 +343,8 @@ public class ObjLoader {
         float[] textureArray = new float[allVertices.size() * 2];
         float[] normalsArray = new float[allVertices.size() * 3];
 
-        System.out.println(">>> " + vertices.size() + " " + textures.size() + " " + normals.size());
-        System.out.println(">>> " + allVertices.size() + " " + allTextures.size() + " " + allNormals.size());
+        //System.out.println(">>> " + vertices.size() + " " + textures.size() + " " + normals.size());
+        //System.out.println(">>> " + allVertices.size() + " " + allTextures.size() + " " + allNormals.size());
 
         for (int i = 0; i < allVertices.size(); i++) {
             Vector3f v = allVertices.get(i);

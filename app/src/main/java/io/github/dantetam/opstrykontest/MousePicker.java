@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Tile;
 
 /**
@@ -26,10 +27,12 @@ public class MousePicker {
 
     private int width, height;
 
-    public Tile selectedTile = null;
+    private Tile selectedTile = null;
+    private Entity selectedEntity = null;
+
     public HashMap<Tile, Vector3f> storedTileVertices = null;
 
-    public boolean selectedNeedsUpdating;
+    public boolean selectedNeedsUpdating = false;
 
     public MousePicker(float[] p, Camera c, int w, int h) {
         projMatrix = p;
@@ -62,9 +65,28 @@ public class MousePicker {
             selectedNeedsUpdating = selectedTile != null;
         }
 
+        if (selectedTile != null) {
+            selectedEntity = null;
+        }
         /*if (storedTileVertices != null) {
             getTileClickedOn(rayCastHit);
         }*/
+    }
+
+    public void changeSelectedTile(Tile t) {
+        selectedNeedsUpdating = true;
+        selectedTile = t;
+    }
+    public Tile getSelectedTile() {
+        return selectedTile;
+    }
+
+    public void changeSelectedUnit(Entity en) {
+        selectedNeedsUpdating = true;
+        selectedEntity = en;
+    }
+    public Entity getSelectedEntity() {
+        return selectedEntity;
     }
 
     public Tile getTileClickedOn() {
@@ -83,8 +105,7 @@ public class MousePicker {
                 min = dist;
             }
         }
-        System.out.println(min);
-        selectedTile = key;
+        selectedTile = min <= 5 ? key : null;
         return key;
     }
 

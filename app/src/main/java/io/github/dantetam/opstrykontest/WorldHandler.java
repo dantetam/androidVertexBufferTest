@@ -191,7 +191,12 @@ public class WorldHandler {
     public Solid selectedMarkerRep(int textureHandle) {
         if (mousePicker.selectedNeedsUpdating) {
             if (mousePicker == null) return null;
-            if (mousePicker.selectedTile == null) return null;
+            Tile selected = mousePicker.getSelectedTile();
+            if (selected == null) return null;
+            if (storedTileVertexPositions.get(selected) == null) return null;
+
+            mousePicker.selectedNeedsUpdating = false;
+
             float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
 
             //Create some appropriately sized tables which will store preliminary buffer data
@@ -205,7 +210,6 @@ public class WorldHandler {
 
             final float[] scaledData = scaleData(hexData[0], 1, 0, 1);
 
-            Tile selected = mousePicker.selectedTile;
             Vector3f selectedPos = storedTileVertexPositions.get(selected);
 
             final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.1f, selectedPos.z);

@@ -2,26 +2,25 @@ package io.github.dantetam.opstrykontest;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ConfigurationInfo;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
-import android.view.ContextMenu;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+
+import io.github.dantetam.world.Entity;
+import io.github.dantetam.world.Tile;
 
 public class LessonSevenActivity extends Activity implements
         GestureDetector.OnGestureListener,
@@ -37,12 +36,13 @@ public class LessonSevenActivity extends Activity implements
 
     private PopupMenu mainMenu;
     private PopupMenu worldGenMenu;
+    private PopupMenu unitSelectionMenu;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.lesson_seven);
+		setContentView(R.layout.screen_view_menu);
 
 		mGLSurfaceView = (LessonSevenGLSurfaceView) findViewById(R.id.gl_surface_view);
 
@@ -170,19 +170,6 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
-    /*public void onClickNewWorldOptions(View v) {
-       *//* super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.new_world_gen_options, menu);*//*
-    }
-
-    public void onClickNewWorldOptions(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.new_world_gen_options, menu);
-    }*/
-
     public boolean onClickNewWorldOption1(MenuItem item) {
         return true;
     }
@@ -198,6 +185,57 @@ public class LessonSevenActivity extends Activity implements
     public void onClickBuildMenu(View v) {
 
     }
+
+    public void onClickUnitMenu(View v) {
+        unitSelectionMenu = new PopupMenu(this, v);
+        MenuInflater inflater = unitSelectionMenu.getMenuInflater();
+        inflater.inflate(R.menu.unit_selection_menu, unitSelectionMenu.getMenu());
+        onCreateUnitSelectionMenu(unitSelectionMenu.getMenu());
+        unitSelectionMenu.show();
+    }
+
+    public boolean onCreateUnitSelectionMenu(Menu menu) {
+        Tile selected = mRenderer.mousePicker.getSelectedTile();
+        if (selected == null) {
+            selected = mRenderer.mousePicker.getSelectedEntity().location();
+        }
+        if (selected != null) {
+            if (selected.occupants.size() == 0) {
+                menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "No units to select");
+            }
+            else {
+                for (int i = 0; i < selected.occupants.size(); i++) {
+                    final Entity en = selected.occupants.get(i);
+                    MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, en.name);
+                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            mRenderer.mousePicker.changeSelectedTile(null);
+                            mRenderer.mousePicker.changeSelectedUnit(en);
+                            return false;
+                        }
+                    });
+                }
+            }
+        }
+        return true;
+    }
+
+    /*@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 1:
+                System.out.println("1");
+                return true;
+            case 2:
+                System.out.println("2");
+                return true;
+            case 3:
+                System.out.println("3");
+                return true;
+            default:
+                return false;
+        }
+    }*/
 
     @Override
     public boolean onDown(MotionEvent event) {
