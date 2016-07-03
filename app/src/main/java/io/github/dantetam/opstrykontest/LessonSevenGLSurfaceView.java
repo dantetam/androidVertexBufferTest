@@ -1,16 +1,19 @@
 package io.github.dantetam.opstrykontest;
 
+import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 
 import io.github.dantetam.world.Tile;
 
 public class LessonSevenGLSurfaceView extends GLSurfaceView
 {
+    private LessonSevenActivity mActivity;
 	private LessonSevenRenderer mRenderer;
 	
 	// Offsets for touch events	 
@@ -33,7 +36,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 		super(context, attrs);
 	}
 
-    public void init(MousePicker mousePicker) {
+    public void init(LessonSevenActivity activity, MousePicker mousePicker) {
+        mActivity = activity;
         this.mousePicker = mousePicker;
     }
 
@@ -59,6 +63,11 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
                     if (mousePicker != null) {
                         mousePicker.update(x, y);
+
+                        if (mousePicker.selectedNeedsUpdating) {
+                            int visibleEnum = mousePicker.selectedTile != null ? View.VISIBLE : View.INVISIBLE;
+                            mActivity.findViewById(R.id.build_menu).setVisibility(visibleEnum);
+                        }
                         /*Vector3f v = mousePicker.rayCastHit;
                         mousePicker.getTileClickedOn();*/
                     }

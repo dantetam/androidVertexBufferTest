@@ -146,9 +146,9 @@ public class LessonSevenActivity extends Activity implements
 
     public final String DEBUG_TAG = "Debug (Gesture): ";
 
-    private View temp;
+    private View newWorldMenu;
     public void onClickNewWorld(View v) {
-        temp = v;
+        newWorldMenu = v;
 
         mainMenu = new PopupMenu(this, v);
         MenuInflater inflater = mainMenu.getMenuInflater();
@@ -163,7 +163,7 @@ public class LessonSevenActivity extends Activity implements
         worldGenMenu.show();
     }*/
     public boolean onClickNewWorldOptions(MenuItem item) {
-        worldGenMenu = new PopupMenu(this, temp);
+        worldGenMenu = new PopupMenu(this, newWorldMenu);
         MenuInflater inflater = worldGenMenu.getMenuInflater();
         inflater.inflate(R.menu.new_world_gen_options, worldGenMenu.getMenu());
         worldGenMenu.show();
@@ -193,6 +193,10 @@ public class LessonSevenActivity extends Activity implements
 
     public boolean onClickNewWorldOption3(MenuItem item) {
         return true;
+    }
+
+    public void onClickBuildMenu(View v) {
+
     }
 
     @Override

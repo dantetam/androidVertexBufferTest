@@ -83,6 +83,7 @@ public class MousePicker {
                 min = dist;
             }
         }
+        System.out.println(min);
         selectedTile = key;
         return key;
     }

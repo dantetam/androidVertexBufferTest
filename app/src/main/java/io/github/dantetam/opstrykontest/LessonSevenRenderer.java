@@ -145,7 +145,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         mousePicker = new MousePicker(mProjectionMatrix, camera, getWidth(), getHeight());
         updatePerspectiveMatrix(getWidth(), getHeight());
-        mGlSurfaceView.init(mousePicker);
+        mGlSurfaceView.init(mLessonSevenActivity, mousePicker);
 
         worldHandler = new WorldHandler(mLessonSevenActivity, mousePicker, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
         ColorTextureHelper.init(mLessonSevenActivity);

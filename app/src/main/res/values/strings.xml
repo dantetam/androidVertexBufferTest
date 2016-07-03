@@ -2,8 +2,11 @@
 <resources>    
     <string name="app_name">Opstrykon</string>
     <string name="main_menu">Adventure</string>
+
     <string name="new_world">New World</string>
     <string name="new_world_option1">Option 1</string>
     <string name="new_world_option2">Option 2</string>
     <string name="new_world_option3">Option 3</string>
+
+    <string name="build_menu">Build</string>
 </resources>
