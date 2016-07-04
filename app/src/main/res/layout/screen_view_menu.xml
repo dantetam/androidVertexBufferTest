@@ -12,6 +12,26 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <android.support.percent.PercentRelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_widthPercent="40%"
+            app:layout_heightPercent="50%"
+            app:layout_marginTopPercent="50%"
+            app:layout_marginLeftPercent="60%">
+            <Button
+                android:id="@+id/test"
+                android:text="@string/main_menu"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_widthPercent="20%"
+                app:layout_heightPercent="15%"
+                app:layout_marginTopPercent="0%"
+                app:layout_marginLeftPercent="0%"
+                android:contentDescription="@string/new_world" />
+        </android.support.percent.PercentRelativeLayout>
         <Button
             android:id="@+id/main_menu"
             android:text="@string/main_menu"

@@ -447,8 +447,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         renderModel(mCubes);
         renderModel(improvements);
 
-        System.out.println(mousePicker.getSelectedTile());
-
         renderSolid(testMarker);
 
         mousePicker.updateAfterFrame();
