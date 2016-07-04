@@ -211,6 +211,7 @@ public class LessonSevenActivity extends Activity implements
                         public boolean onMenuItemClick(MenuItem item) {
                             mRenderer.mousePicker.changeSelectedTile(null);
                             mRenderer.mousePicker.changeSelectedUnit(en);
+                            //System.out.println(mRenderer.mousePicker.getSelectedEntity());
                             return false;
                         }
                     });
@@ -218,6 +219,10 @@ public class LessonSevenActivity extends Activity implements
             }
         }
         return true;
+    }
+
+    public void onClickUnitSelectedButton(View v) {
+
     }
 
     /*@Override

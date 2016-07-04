@@ -189,13 +189,14 @@ public class WorldHandler {
     //modifying it by coordinates, and then turning it into a solid.
     //Perhaps in OBJLoader?
     public Solid selectedMarkerRep(int textureHandle) {
-        if (mousePicker.selectedNeedsUpdating) {
+        if (mousePicker.selectedNeedsUpdating()) {
             if (mousePicker == null) return null;
             Tile selected = mousePicker.getSelectedTile();
             if (selected == null) return null;
             if (storedTileVertexPositions.get(selected) == null) return null;
 
-            mousePicker.selectedNeedsUpdating = false;
+            mousePicker.nextFrameSelectedNeedsUpdating = false;
+            //mousePicker.selectedNeedsUpdating = false;
 
             float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
 

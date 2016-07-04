@@ -10,4 +10,5 @@
 
     <string name="build_menu">Build</string>
     <string name="unit_menu">Units</string>
+    <string name="selected_unit_menu">Unit</string>
 </resources>

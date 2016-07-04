@@ -442,9 +442,13 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         mCubes = worldHandler.worldRep();
         testMarker = worldHandler.selectedMarkerRep(R.drawable.usb_android);
 
+        mGlSurfaceView.update();
+
         renderModel(mCubes);
         renderModel(improvements);
         renderSolid(testMarker);
+
+        mousePicker.updateAfterFrame();
 	}
 
     private void renderModel(Model model) {

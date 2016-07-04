@@ -32,7 +32,10 @@ public class MousePicker {
 
     public HashMap<Tile, Vector3f> storedTileVertices = null;
 
-    public boolean selectedNeedsUpdating = false;
+    private boolean selectedNeedsUpdating = false;
+    public boolean selectedNeedsUpdating() {return selectedNeedsUpdating;}
+
+    public boolean nextFrameSelectedNeedsUpdating = false;
 
     public MousePicker(float[] p, Camera c, int w, int h) {
         projMatrix = p;
@@ -59,10 +62,10 @@ public class MousePicker {
         Tile previousSelected = selectedTile;
         getTileClickedOn();
         if (previousSelected != null) {
-            selectedNeedsUpdating = !previousSelected.equals(selectedTile);
+            nextFrameSelectedNeedsUpdating = !previousSelected.equals(selectedTile);
         }
         else {
-            selectedNeedsUpdating = selectedTile != null;
+            nextFrameSelectedNeedsUpdating = selectedTile != null;
         }
 
         if (selectedTile != null) {
@@ -74,7 +77,7 @@ public class MousePicker {
     }
 
     public void changeSelectedTile(Tile t) {
-        selectedNeedsUpdating = true;
+        nextFrameSelectedNeedsUpdating = true;
         selectedTile = t;
     }
     public Tile getSelectedTile() {
@@ -82,7 +85,7 @@ public class MousePicker {
     }
 
     public void changeSelectedUnit(Entity en) {
-        selectedNeedsUpdating = true;
+        nextFrameSelectedNeedsUpdating = true;
         selectedEntity = en;
     }
     public Entity getSelectedEntity() {
@@ -107,6 +110,10 @@ public class MousePicker {
         }
         selectedTile = min <= 5 ? key : null;
         return key;
+    }
+
+    public void updateAfterFrame() {
+        selectedNeedsUpdating = nextFrameSelectedNeedsUpdating;
     }
 
     private Vector3f calculateMouseRay(float mouseX, float mouseY)

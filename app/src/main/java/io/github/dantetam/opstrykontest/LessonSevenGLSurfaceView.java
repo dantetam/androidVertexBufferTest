@@ -64,27 +64,6 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
                     if (mousePicker != null) {
                         mousePicker.update(x, y);
-
-                        if (mousePicker.selectedNeedsUpdating) {
-                            //mousePicker.selectedNeedsUpdating = false;
-
-                            boolean selectedTileExists = mousePicker.getSelectedTile() != null;
-                            boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
-
-                            mActivity.findViewById(R.id.build_menu).setVisibility(selectedTileExists ? View.VISIBLE : View.INVISIBLE);
-
-                            Button unitMenu = (Button) mActivity.findViewById(R.id.unit_menu);
-                            unitMenu.setVisibility(
-                                    selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
-                            );
-                            if (selectedTileExists) {
-                                unitMenu.setText("Units (" + mousePicker.getSelectedTile().occupants.size() + ")");
-                            }
-                            else if (selectedEntityExists) {
-                                unitMenu.setText("Units (" + mousePicker.getSelectedEntity().location().occupants.size() + ")");
-                            }
-
-                        }
                         /*Vector3f v = mousePicker.rayCastHit;
                         mousePicker.getTileClickedOn();*/
                     }
@@ -101,6 +80,42 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 			return super.onTouchEvent(event);
 		}		
 	}
+
+    public void update() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateMenu();
+            }
+        });
+    }
+
+    private void updateMenu() {
+        if (mousePicker.selectedNeedsUpdating()) {
+            mousePicker.nextFrameSelectedNeedsUpdating = false;
+
+            boolean selectedTileExists = mousePicker.getSelectedTile() != null;
+            boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
+
+            mActivity.findViewById(R.id.build_menu).setVisibility(selectedTileExists ? View.VISIBLE : View.INVISIBLE);
+
+            Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
+            selectedEntityMenu.setVisibility(selectedEntityExists ? View.VISIBLE : View.INVISIBLE);
+            if (selectedEntityExists) {
+                selectedEntityMenu.setText(mousePicker.getSelectedEntity().name);
+            }
+
+            Button unitMenu = (Button) mActivity.findViewById(R.id.unit_menu);
+            unitMenu.setVisibility(
+                    selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
+            );
+            if (selectedTileExists) {
+                unitMenu.setText("Units (" + mousePicker.getSelectedTile().occupants.size() + ")");
+            } else if (selectedEntityExists) {
+                unitMenu.setText("Units (" + mousePicker.getSelectedEntity().location().occupants.size() + ")");
+            }
+        }
+    }
 
     // Hides superclass method.
 	public void setRenderer(LessonSevenRenderer renderer, float density) 
