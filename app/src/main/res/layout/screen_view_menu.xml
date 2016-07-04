@@ -23,18 +23,59 @@
             app:layout_heightPercent="40%"
             app:layout_marginTopPercent="45%"
             app:layout_marginLeftPercent="60%">
-            <!--
+
             <Button
                 android:contentDescription="@string/new_world"
-                android:id="@+id/test"
+                android:id="@+id/selected_stat_1"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="@string/main_menu"
-                app:layout_widthPercent="20%"
-                app:layout_heightPercent="15%"
+                app:layout_widthPercent="100%"
+                app:layout_heightPercent="20%"
                 app:layout_marginTopPercent="0%"
                 app:layout_marginLeftPercent="0%" />
-            -->
+            <Button
+                android:contentDescription="@string/new_world"
+                android:id="@+id/selected_stat_2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="@string/main_menu"
+                app:layout_widthPercent="100%"
+                app:layout_heightPercent="20%"
+                app:layout_marginTopPercent="20%"
+                app:layout_marginLeftPercent="0%" />
+            <Button
+                android:contentDescription="@string/new_world"
+                android:id="@+id/selected_stat_3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="@string/main_menu"
+                app:layout_widthPercent="100%"
+                app:layout_heightPercent="20%"
+                app:layout_marginTopPercent="40%"
+                app:layout_marginLeftPercent="0%" />
+            <Button
+                android:contentDescription="@string/new_world"
+                android:id="@+id/selected_stat_4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="@string/main_menu"
+                app:layout_widthPercent="100%"
+                app:layout_heightPercent="20%"
+                app:layout_marginTopPercent="60%"
+                app:layout_marginLeftPercent="0%" />
+            <Button
+                android:contentDescription="@string/new_world"
+                android:id="@+id/selected_stat_5"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="@string/main_menu"
+                app:layout_widthPercent="100%"
+                app:layout_heightPercent="20%"
+                app:layout_marginTopPercent="80%"
+                app:layout_marginLeftPercent="0%" />
+
+
         </android.support.percent.PercentRelativeLayout>
         <Button
             android:id="@+id/main_menu"

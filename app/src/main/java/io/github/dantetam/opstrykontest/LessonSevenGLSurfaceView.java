@@ -1,5 +1,6 @@
 package io.github.dantetam.opstrykontest;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -16,6 +17,7 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
+import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Tile;
 
 public class LessonSevenGLSurfaceView extends GLSurfaceView
@@ -143,18 +145,6 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             selectedStatMenu.setVisibility(
                     selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
             );
-            /*
-            <Button
-                android:contentDescription="@string/new_world"
-                android:id="@+id/test"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/main_menu"
-                app:layout_widthPercent="20%"
-                app:layout_heightPercent="15%"
-                app:layout_marginTopPercent="0%"
-                app:layout_marginLeftPercent="0%" />
-            */
             if (selectedEntityExists || selectedTileExists) generateSelectionStatMenu(selectedStatMenu);
         }
     }
@@ -164,7 +154,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
 
         ArrayList<String> strings = new ArrayList<>();
-        if (selectedEntityExists) {
+        if (selectedTileExists) {
             Tile selected = mousePicker.getSelectedTile();
             strings.add(Tile.Biome.nameFromInt(selected.biome.type));
             strings.add(Tile.Terrain.nameFromInt(selected.terrain.type));
@@ -181,15 +171,46 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     if (!s.equals("No resource"))
                         stringy += s + " ";
                 }
+                strings.add(stringy);
             }
         }
-        else if (selectedTileExists) {
-
+        else if (selectedEntityExists) {
+            Entity entity = mousePicker.getSelectedEntity();
+            strings.add(entity.name);
+            if (entity.clan != null) {
+                strings.add(entity.clan.name);
+            }
+            else {
+                strings.add("Free");
+            }
         }
 
-        Button bt = new Button(mActivity);
-        bt.setText("A Button");
-        selectedStatMenu.addView(bt);
+        int[] ids = {
+                R.id.selected_stat_1,
+                R.id.selected_stat_2,
+                R.id.selected_stat_3,
+                R.id.selected_stat_4,
+                R.id.selected_stat_5
+        };
+        for (int i = 0; i <= strings.size(); i++) {
+            Button bt = (Button) findViewById(ids[i]);
+            bt.setText(strings.get(i));
+            bt.setVisibility(View.VISIBLE);
+            selectedStatMenu.addView(bt);
+        }
+
+                    /*
+            <Button
+                android:contentDescription="@string/new_world"
+                android:id="@+id/test"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="@string/main_menu"
+                app:layout_widthPercent="20%"
+                app:layout_heightPercent="15%"
+                app:layout_marginTopPercent="0%"
+                app:layout_marginLeftPercent="0%" />
+            */
     }
 
     // Hides superclass method.
