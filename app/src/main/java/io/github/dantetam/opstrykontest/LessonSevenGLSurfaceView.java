@@ -145,7 +145,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             selectedStatMenu.setVisibility(
                     selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
             );
-            if (selectedEntityExists || selectedTileExists) generateSelectionStatMenu(selectedStatMenu);
+            //if (selectedEntityExists || selectedTileExists) generateSelectionStatMenu(selectedStatMenu);
+            generateSelectionStatMenu(selectedStatMenu);
         }
     }
 
@@ -171,7 +172,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     if (!s.equals("No resource"))
                         stringy += s + " ";
                 }
-                strings.add(stringy);
+                if (!stringy.equals(""))
+                    strings.add(stringy);
             }
         }
         else if (selectedEntityExists) {
@@ -192,11 +194,18 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 R.id.selected_stat_4,
                 R.id.selected_stat_5
         };
-        for (int i = 0; i <= strings.size(); i++) {
-            Button bt = (Button) findViewById(ids[i]);
+        for (int id: ids) {
+            Button bt = (Button) selectedStatMenu.findViewById(id);
+            bt.setText("");
+            bt.setVisibility(View.INVISIBLE);
+            bt.setEnabled(false);
+        }
+        for (int i = 0; i < strings.size(); i++) {
+            Button bt = (Button) selectedStatMenu.findViewById(ids[i]);
             bt.setText(strings.get(i));
             bt.setVisibility(View.VISIBLE);
-            selectedStatMenu.addView(bt);
+            bt.setEnabled(true);
+            //selectedStatMenu.addView(bt);
         }
 
                     /*

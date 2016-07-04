@@ -450,6 +450,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         renderSolid(testMarker);
 
         mousePicker.updateAfterFrame();
+
+        System.out.println(mousePicker.getSelectedTile() + " " + mousePicker.getSelectedEntity());
 	}
 
     private void renderModel(Model model) {

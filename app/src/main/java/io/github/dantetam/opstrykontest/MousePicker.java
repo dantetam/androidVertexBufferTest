@@ -60,12 +60,21 @@ public class MousePicker {
 
         //boolean tilesNeedUpdating = false;
         Tile previousSelected = selectedTile;
+        Entity previousEntity = selectedEntity;
         getTileClickedOn();
-        if (previousSelected != null) {
-            nextFrameSelectedNeedsUpdating = !previousSelected.equals(selectedTile);
+        if (!nextFrameSelectedNeedsUpdating) {
+            if (previousSelected != null) {
+                nextFrameSelectedNeedsUpdating = !previousSelected.equals(selectedTile);
+            } else {
+                nextFrameSelectedNeedsUpdating = selectedTile != null;
+            }
         }
-        else {
-            nextFrameSelectedNeedsUpdating = selectedTile != null;
+        if (!nextFrameSelectedNeedsUpdating) {
+            if (previousEntity != null) {
+                nextFrameSelectedNeedsUpdating = !previousEntity.equals(selectedEntity);
+            } else {
+                nextFrameSelectedNeedsUpdating = selectedEntity != null;
+            }
         }
 
         if (selectedTile != null) {
@@ -110,7 +119,8 @@ public class MousePicker {
                 min = dist;
             }
         }
-        selectedTile = min <= 5 ? key : null;
+        //selectedTile = min <= 5 ? key : null;
+        changeSelectedTile(min <= 5 ? key : null);
         selectedEntity = null;
         return key;
     }

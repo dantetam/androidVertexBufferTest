@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.DiamondSquare;
+import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
 
@@ -65,6 +66,9 @@ public class WorldGenerator {
         for (Tile tile: tiles) {
             if (Math.random() < 0.3 && tile != null) {
                 Building building = new Building(tile, Building.BuildingType.randomBuilding());
+                Entity en = new Entity();
+                en.name = "TestUnit";
+                en.move(tile);
                 //building.buildingType = Building.BuildingType.randomBuilding();
                 //building.move(tile);
             }

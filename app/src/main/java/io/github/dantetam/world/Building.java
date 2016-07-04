@@ -49,7 +49,8 @@ public class Building extends Entity {
     public BuildingType buildingType;
 
     public Building(Tile t, BuildingType type) {
-        super(t);
+        //super(t);
+        //move(t);
         move(t);
         name = type.name;
     }
@@ -59,7 +60,8 @@ public class Building extends Entity {
             location.improvement = null;
         }
         t.improvement = this;
-        super.move(t);
+        super.location = t;
+        //super.move(t);
     }
 
 }
