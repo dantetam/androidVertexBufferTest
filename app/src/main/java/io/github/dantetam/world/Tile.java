@@ -28,6 +28,7 @@ public class Tile extends Representable implements Traversable<Tile> {
         public int type;
         Biome(int t) {type = t;}
         private static Biome[] types = {SEA, ICE, TUNDRA, DESERT, STEPPE, FOREST, RAINFOREST};
+        private static String[] names = {"Sea", "Ice", "Tundra", "Desert", "Steppe", "Forest", "Rainforest"};
         private static float[][] colors = {
                 {0,0,255,255},
                 {0,150,1,255},
@@ -40,6 +41,12 @@ public class Tile extends Representable implements Traversable<Tile> {
         public static Biome fromInt(int n) {
             if (n >= 0 && n < types.length) {
                 return types[n];
+            }
+            throw new IllegalArgumentException("Invalid biome type: " + n);
+        }
+        public static String nameFromInt(int n) {
+            if (n >= 0 && n < names.length) {
+                return names[n];
             }
             throw new IllegalArgumentException("Invalid biome type: " + n);
         }
@@ -57,9 +64,16 @@ public class Tile extends Representable implements Traversable<Tile> {
         public int type;
         Terrain(int t) {type = t;}
         private static Terrain[] types = {PLAINS, HILLS, CLIFFS, MOUNTAINS, SHALLOW_SEA, DEEP_SEA};
+        private static String[] names = {"Plains", "Hills", "Cliffs", "Mountains", "Shallow Sea", "Deep Sea"};
         public static Terrain fromInt(int n) {
             if (n >= 0 && n < types.length) {
                 return types[n];
+            }
+            throw new IllegalArgumentException("Invalid terrain type: " + n);
+        }
+        public static String nameFromInt(int n) {
+            if (n >= 0 && n < names.length) {
+                return names[n];
             }
             throw new IllegalArgumentException("Invalid terrain type: " + n);
         }
@@ -67,15 +81,26 @@ public class Tile extends Representable implements Traversable<Tile> {
     }
 
     public enum Resource {
-        NO_RESOURCE,
-        WHEAT,
-        FISH,
-        IRON;
+        NO_RESOURCE (0),
+        WHEAT (1),
+        FISH (2),
+        IRON (3);
+        public int type;
+        Resource(int n) {
+            type = n;
+        }
         private static Resource[] types = {NO_RESOURCE, WHEAT, FISH, IRON};
+        private static String[] names = {"No resource", "Wheat", "Fish", "Iron"};
         public static final int numResources = types.length;
         public static Resource fromInt(int n) {
             if (n >= 0 && n < types.length) {
                 return types[n];
+            }
+            throw new IllegalArgumentException("Invalid resource type: " + n);
+        }
+        public static String nameFromInt(int n) {
+            if (n >= 0 && n < names.length) {
+                return names[n];
             }
             throw new IllegalArgumentException("Invalid resource type: " + n);
         }
