@@ -128,7 +128,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
             selectedEntityMenu.setVisibility(selectedEntityExists ? View.VISIBLE : View.INVISIBLE);
             if (selectedEntityExists) {
-                selectedEntityMenu.setText(mousePicker.getSelectedEntity().name);
+                //selectedEntityMenu.setText(mousePicker.getSelectedEntity().name);
+                selectedEntityMenu.setText("Actions");
             }
 
             Button unitMenu = (Button) mActivity.findViewById(R.id.unit_menu);
@@ -150,6 +151,12 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         }
     }
 
+    private static final int[] UNIT_SELECTED_MENU_IDS = {
+            R.id.selected_stat_1,
+            R.id.selected_stat_2,
+            R.id.selected_stat_3,
+            R.id.selected_stat_4
+    };
     public void generateSelectionStatMenu(PercentRelativeLayout selectedStatMenu) {
         boolean selectedTileExists = mousePicker.getSelectedTile() != null;
         boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
@@ -187,21 +194,15 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             }
         }
 
-        int[] ids = {
-                R.id.selected_stat_1,
-                R.id.selected_stat_2,
-                R.id.selected_stat_3,
-                R.id.selected_stat_4,
-                R.id.selected_stat_5
-        };
-        for (int id: ids) {
+        for (int id: UNIT_SELECTED_MENU_IDS) {
             Button bt = (Button) selectedStatMenu.findViewById(id);
             bt.setText("");
             bt.setVisibility(View.INVISIBLE);
             bt.setEnabled(false);
         }
+        int off = UNIT_SELECTED_MENU_IDS.length - strings.size();
         for (int i = 0; i < strings.size(); i++) {
-            Button bt = (Button) selectedStatMenu.findViewById(ids[i]);
+            Button bt = (Button) selectedStatMenu.findViewById(UNIT_SELECTED_MENU_IDS[i + off]);
             bt.setText(strings.get(i));
             bt.setVisibility(View.VISIBLE);
             bt.setEnabled(true);

@@ -64,7 +64,7 @@ public class Tile extends Representable implements Traversable<Tile> {
         public int type;
         Terrain(int t) {type = t;}
         private static Terrain[] types = {PLAINS, HILLS, CLIFFS, MOUNTAINS, SHALLOW_SEA, DEEP_SEA};
-        private static String[] names = {"Plains", "Hills", "Cliffs", "Mountains", "Shallow Sea", "Deep Sea"};
+        private static String[] names = {"Plains", "Hills", "Cliffs", "Mountains", "Shallow Waters", "Deep Waters"};
         public static Terrain fromInt(int n) {
             if (n >= 0 && n < types.length) {
                 return types[n];
