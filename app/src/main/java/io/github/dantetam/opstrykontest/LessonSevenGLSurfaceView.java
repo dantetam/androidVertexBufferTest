@@ -3,6 +3,7 @@ package io.github.dantetam.opstrykontest;
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -18,8 +19,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 	private LessonSevenRenderer mRenderer;
 	
 	// Offsets for touch events	 
-    private float mPreviousX;
-    private float mPreviousY;
+    private float mPreviousX = -1;
+    private float mPreviousY = -1;
     
     private float mDensity;
 
@@ -42,11 +43,26 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         this.mousePicker = mousePicker;
     }
 
+    public static String actionToString(int action) {
+        switch (action) {
+
+            case MotionEvent.ACTION_DOWN: return "Down";
+            case MotionEvent.ACTION_MOVE: return "Move";
+            case MotionEvent.ACTION_POINTER_DOWN: return "Pointer Down";
+            case MotionEvent.ACTION_UP: return "Up";
+            case MotionEvent.ACTION_POINTER_UP: return "Pointer Up";
+            case MotionEvent.ACTION_OUTSIDE: return "Outside";
+            case MotionEvent.ACTION_CANCEL: return "Cancel";
+        }
+        return "";
+    }
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) 
 	{
 		if (event != null)
-		{			
+		{
+            //System.out.println(actionToString(MotionEventCompat.getActionMasked(event)));
 			float x = event.getX();
 			float y = event.getY();
 			
@@ -56,6 +72,9 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 				{
 					float deltaX = (x - mPreviousX) / mDensity / 2f;
 					float deltaY = (y - mPreviousY) / mDensity / 2f;
+                    /*if (mPreviousX == -1 || mPreviousY == -1) {
+                        deltaX = 0; deltaY = 0;
+                    }*/
 					
 					//mRenderer.mDeltaX += deltaX;
 					//mRenderer.mDeltaY += deltaY;

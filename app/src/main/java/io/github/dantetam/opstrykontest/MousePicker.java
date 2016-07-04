@@ -79,6 +79,7 @@ public class MousePicker {
     public void changeSelectedTile(Tile t) {
         nextFrameSelectedNeedsUpdating = true;
         selectedTile = t;
+        selectedEntity = null;
     }
     public Tile getSelectedTile() {
         return selectedTile;
@@ -86,6 +87,7 @@ public class MousePicker {
 
     public void changeSelectedUnit(Entity en) {
         nextFrameSelectedNeedsUpdating = true;
+        selectedTile = null;
         selectedEntity = en;
     }
     public Entity getSelectedEntity() {
@@ -109,6 +111,7 @@ public class MousePicker {
             }
         }
         selectedTile = min <= 5 ? key : null;
+        selectedEntity = null;
         return key;
     }
 

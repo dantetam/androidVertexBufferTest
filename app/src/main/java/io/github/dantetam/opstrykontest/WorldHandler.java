@@ -190,12 +190,23 @@ public class WorldHandler {
     //Perhaps in OBJLoader?
     public Solid selectedMarkerRep(int textureHandle) {
         if (mousePicker.selectedNeedsUpdating()) {
-            if (mousePicker == null) return null;
-            Tile selected = mousePicker.getSelectedTile();
-            if (selected == null) return null;
-            if (storedTileVertexPositions.get(selected) == null) return null;
-
             mousePicker.nextFrameSelectedNeedsUpdating = false;
+
+            if (mousePicker == null) {
+                storedSelectedTileSolid = null;
+                return null;
+            }
+            Tile selected = mousePicker.getSelectedTile();
+            if (selected == null)
+            {
+                storedSelectedTileSolid = null;
+                return null;
+            }
+            if (storedTileVertexPositions.get(selected) == null) {
+                storedSelectedTileSolid = null;
+                return null;
+            }
+
             //mousePicker.selectedNeedsUpdating = false;
 
             float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
