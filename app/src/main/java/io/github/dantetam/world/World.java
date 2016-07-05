@@ -17,6 +17,8 @@ public class World {
 
     private List<Tile> validTiles;
 
+    private List<Clan> clans;
+
     //x represents height, z represents length
     public World(int q, int r) {
         //tree = new WorldTree();
@@ -44,6 +46,8 @@ public class World {
             }
             System.out.println();
         }
+
+        clans = new ArrayList<>();
     }
 
     public void init(int[][] biomes, int[][] terrain, Tile.Resource[][] resources, int[][] elevations) {
@@ -93,6 +97,13 @@ public class World {
         }
         return tiles;*/
         return validTiles;
+    }
+
+    public List<Clan> getClans() {
+        return clans;
+    }
+    public void initClans(List<Clan> c) {
+        clans = c;
     }
 
     public static final int[][] neighborDirections = {

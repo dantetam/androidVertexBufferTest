@@ -1,8 +1,10 @@
 package io.github.dantetam.opstrykontest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dantetam.world.Building;
+import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.DiamondSquare;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Tile;
@@ -35,6 +37,7 @@ public class WorldGenerator {
         int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(916).getIntTerrain(1, 10);
         world.init(biomes, terrains, resources, elevations);
         makeRandomBuildings();
+        world.initClans(makeClans());
     }
 
     /**
@@ -73,6 +76,18 @@ public class WorldGenerator {
                 //building.move(tile);
             }
         }
+    }
+
+    private List<Clan> makeClans() {
+        List<Clan> clans = new ArrayList<>();
+        int num = world.getAllValidTiles().size() / 15;
+        for (int i = 0; i < num; i++) {
+            Clan clan = new Clan("Clan" + i);
+            clan.clanType = Clan.ClanType.random();
+            clan.clanFaction = Clan.ClanFaction.random();
+            clans.add(clan);
+        }
+        return clans;
     }
 
 }
