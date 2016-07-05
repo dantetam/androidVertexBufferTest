@@ -56,4 +56,13 @@ public class Influence {
         return maxClan;
     }
 
+    public float percentInfluenceOfClan(Clan clan) {
+        HashMap<Clan, Float> data = calculatePercentages();
+        for (Map.Entry<Clan, Float> en: data.entrySet()) {
+            if (en.getKey().equals(clan))
+                return en.getValue();
+        }
+        return 0;
+    }
+
 }

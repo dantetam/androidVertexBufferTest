@@ -19,8 +19,8 @@ public class World {
     private List<Tile> validTiles;
 
     private List<Clan> clans;
-    private HashMap<Tile, Clan> owner;
-    private HashMap<Tile, Influence> influenceHashMap;
+    private HashMap<Tile, Clan> tileOwnerHashMap;
+    private HashMap<Tile, Influence> tileInfluenceHashMap;
 
     //x represents height, z represents length
     public World(int q, int r) {
@@ -78,6 +78,33 @@ public class World {
         }
     }
 
+    public List<Clan> getClans() {
+        return clans;
+    }
+    public void initClans(List<Clan> c) {
+        clans = c;
+        tileOwnerHashMap = new HashMap<>();
+        for (Tile t: getAllValidTiles()) {
+            tileInfluenceHashMap.put(t, new Influence(clans));
+        }
+    }
+
+    public float buildingModifier(Tile tile, Clan builder) {
+        if (builder.equals(tileOwnerHashMap.get(tile))) {
+            return 0.7f;
+        }
+        else if (builder.equals(tileInfluenceHashMap.get(tile).influencingClan())) {
+            return 0.85f;
+        }
+        else {
+            float clanInfluencePercentage = tileInfluenceHashMap.get(tile).percentInfluenceOfClan(builder);
+            clanInfluencePercentage /= 0.5f;
+            float extraTime = (1f - clanInfluencePercentage) / 2f;
+            return extraTime + 0.9f;
+        }
+        //return 1f;
+    }
+
     public Tile getTile(int r, int c) {
         if (r < 0 || c < 0 || r >= hexes.length || c >= hexes[0].length) {
             //throw new IllegalArgumentException("Out of bounds or degenerate grid");
@@ -100,13 +127,6 @@ public class World {
         }
         return tiles;*/
         return validTiles;
-    }
-
-    public List<Clan> getClans() {
-        return clans;
-    }
-    public void initClans(List<Clan> c) {
-        clans = c;
     }
 
     public static final int[][] neighborDirections = {

@@ -50,4 +50,10 @@ public class Clan {
         }
     }
 
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Clan)) return false;
+        Clan clan = (Clan) obj;
+        return name.equals(clan.name);
+    }
+
 }
