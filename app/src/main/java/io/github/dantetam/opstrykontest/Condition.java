@@ -7,6 +7,7 @@ on some objects, and we guarantee the existence of the method allowed(Object obj
 */
 public abstract class Condition {
     public abstract boolean allowed(Object obj);
+    public void init(String stringy) {}
     public void init(int i) {}
     public void init() {}
 }

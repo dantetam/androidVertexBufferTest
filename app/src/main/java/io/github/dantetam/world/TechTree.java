@@ -38,6 +38,31 @@ public class TechTree {
         return techFulfillingCond;
     }
 
+    public List<Tech> findBorderTech() {
+        Condition borderCondition = new Condition() {
+            public String match = null;
+            public boolean allowed(Object obj) {
+                if (!(obj instanceof Tech)) return false; //Safety check
+                Tech tech = (Tech) obj;
+                return tech.unlocked() && tech.hasUnresearchedChildren();
+            }
+        };
+        return traverse(borderCondition);
+    }
+
+    public List<Tech> getResearchableTech() {
+        List<Tech> borderTech = findBorderTech();
+        List<Tech> researchable = new ArrayList<>();
+        for (Tech t: borderTech) {
+            for (Tech child: t.unlockedTechs) {
+                if (!child.unlocked()) {
+                    researchable.add(child);
+                }
+            }
+        }
+        return researchable;
+    }
+
     public void unlock(String techNameToUnlock) {
         Condition matchCondition = new Condition() {
             public String match = null;
@@ -51,7 +76,7 @@ public class TechTree {
             }
         };
         matchCondition.init(techNameToUnlock); //Circumvent anonymous extends restriction
-        List<Tech> candidate = traverse();
+        List<Tech> candidate = traverse(matchCondition);
         if (candidate.size() != 1) {
             return;
         }

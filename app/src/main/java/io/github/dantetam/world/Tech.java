@@ -9,14 +9,34 @@ import java.util.List;
 public class Tech {
 
     public String name;
+    private boolean unlocked;
     public List<Tech> unlockedTechs;
 
-    public List<String> unlockedAbilities;
+    private List<String> unlockedAbilities;
 
     public Tech(String n) {
         name = n;
+        unlocked = false;
         unlockedTechs = new ArrayList<>();
         unlockedAbilities = new ArrayList<>();
+    }
+
+    public boolean unlocked() {
+        return unlocked;
+    }
+
+    public List<String> unlock() {
+        unlocked = true;
+        return unlockedAbilities;
+    }
+
+    public boolean hasUnresearchedChildren() {
+        for (Tech tech: unlockedTechs) {
+            if (!tech.unlocked) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
