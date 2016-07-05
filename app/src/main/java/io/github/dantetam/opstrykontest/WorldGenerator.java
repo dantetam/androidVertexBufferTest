@@ -80,7 +80,7 @@ public class WorldGenerator {
 
     private List<Clan> makeClans() {
         List<Clan> clans = new ArrayList<>();
-        int num = world.getAllValidTiles().size() / 15;
+        int num = world.getAllValidTiles().size() / 10;
         for (int i = 0; i < num; i++) {
             Clan clan = new Clan("Clan" + i);
             clan.clanType = Clan.ClanType.random();

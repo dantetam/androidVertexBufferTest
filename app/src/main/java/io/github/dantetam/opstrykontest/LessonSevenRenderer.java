@@ -160,16 +160,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		mSingleThreadedExecutor.submit(new GenDataRunnable(cubeFactor));
 	}
 
-    /*
-    We use this class as a convenient way to impose lambda style statements
-    on some objects, and we guarantee the existence of the method allowed(Object obj).
-     */
-    static abstract class Condition {
-        abstract boolean allowed(Object obj);
-        void init(int i) {}
-        void init() {}
-    }
-
 	class GenDataRunnable implements Runnable {
 		final int mRequestedCubeFactor;
 		
