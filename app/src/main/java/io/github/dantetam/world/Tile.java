@@ -55,16 +55,16 @@ public class Tile extends Representable implements Traversable<Tile> {
     }
 
     public enum Terrain {
-        PLAINS (0),
-        HILLS (1),
-        CLIFFS (2),
-        MOUNTAINS (3),
-        SHALLOW_SEA (4),
-        DEEP_SEA (5);
+        SHALLOW_SEA (0),
+        DEEP_SEA (1),
+        PLAINS (2),
+        HILLS (3),
+        CLIFFS (4),
+        MOUNTAINS (5);
         public int type;
         Terrain(int t) {type = t;}
-        private static Terrain[] types = {PLAINS, HILLS, CLIFFS, MOUNTAINS, SHALLOW_SEA, DEEP_SEA};
-        private static String[] names = {"Plains", "Hills", "Cliffs", "Mountains", "Shallow Waters", "Deep Waters"};
+        private static Terrain[] types = {SHALLOW_SEA, DEEP_SEA, PLAINS, HILLS, CLIFFS, MOUNTAINS};
+        private static String[] names = {"Shallow Waters", "Deep Waters", "Plains", "Hills", "Cliffs", "Mountains"};
         public static Terrain fromInt(int n) {
             if (n >= 0 && n < types.length) {
                 return types[n];
@@ -78,6 +78,7 @@ public class Tile extends Representable implements Traversable<Tile> {
             throw new IllegalArgumentException("Invalid terrain type: " + n);
         }
         public static final int numTerrains = types.length;
+        public static final int numSeaTerrains = 2;
     }
 
     public enum Resource {

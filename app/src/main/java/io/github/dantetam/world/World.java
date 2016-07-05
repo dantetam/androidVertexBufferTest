@@ -53,7 +53,16 @@ public class World {
                 Tile tile = getTile(r,c);
                 if (tile == null) continue;
                 tile.biome = Tile.Biome.fromInt(biomes[r][c]);
-                tile.terrain = Tile.Terrain.fromInt(terrain[r][c]);
+                if (tile.biome == Tile.Biome.SEA) {
+                    //Normalize to values 0 and 1, shallow_sea and deep_sea
+                    int typeOfSea = Math.round(tile.biome.type / Tile.Biome.numBiomes);
+                    tile.terrain = Tile.Terrain.fromInt(typeOfSea);
+                } else {
+                    if (terrain[r][c] <= 1) {
+                        terrain[r][c] = (int)(Math.random() * (Tile.Terrain.numTerrains - Tile.Terrain.numSeaTerrains)) + 2;
+                    }
+                    tile.terrain = Tile.Terrain.fromInt(terrain[r][c]);
+                }
                 tile.resources = new ArrayList<Tile.Resource>();
                 //tile.resources.add(Tile.Resource.fromInt(resources[r][c]));
                 tile.resources.add(resources[r][c]);
