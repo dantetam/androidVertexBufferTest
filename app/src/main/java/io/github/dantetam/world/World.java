@@ -1,6 +1,7 @@
 package io.github.dantetam.world;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,6 +19,8 @@ public class World {
     private List<Tile> validTiles;
 
     private List<Clan> clans;
+    private HashMap<Tile, Clan> owner;
+    private HashMap<Tile, Influence> influenceHashMap;
 
     //x represents height, z represents length
     public World(int q, int r) {
