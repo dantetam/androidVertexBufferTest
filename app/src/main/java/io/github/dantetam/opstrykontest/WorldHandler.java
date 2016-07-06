@@ -67,7 +67,7 @@ public class WorldHandler {
             //hexesShape = new HashMap<>();
             //tilesStored.add(generateHexes(world));
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
-                LessonSevenRenderer.Condition cond = new LessonSevenRenderer.Condition() {
+                Condition cond = new Condition() {
                     public int desiredType = 0;
                     public void init(int i) {
                         desiredType = i;
@@ -177,7 +177,7 @@ public class WorldHandler {
     }*/
 
     private Solid generateAllHexes(int textureHandle, World world) {
-        LessonSevenRenderer.Condition cond = new LessonSevenRenderer.Condition() {
+        Condition cond = new Condition() {
             public boolean allowed(Object obj) {
                 return true;
             }
@@ -323,7 +323,7 @@ public class WorldHandler {
      *                  under the same texture and VBO.
      * @return A new solid which is a representation of the provided world
      */
-    private Solid generateHexes(int textureHandle, World world, LessonSevenRenderer.Condition condition) {
+    private Solid generateHexes(int textureHandle, World world, Condition condition) {
         //Load the vtn data of one hex obj
         float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
 

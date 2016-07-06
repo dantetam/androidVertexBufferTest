@@ -2,11 +2,13 @@ package io.github.dantetam.opstrykontest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.DiamondSquare;
 import io.github.dantetam.world.Entity;
+import io.github.dantetam.world.Person;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
 
@@ -36,7 +38,7 @@ public class WorldGenerator {
         Tile.Resource[][] resources = makeNewResources(width, width);
         int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(916).getIntTerrain(1, 10);
         world.init(biomes, terrains, resources, elevations);
-        makeRandomBuildings();
+        //makeRandomBuildings();
         world.initClans(makeClans());
         setClanLands(world);
     }
@@ -65,19 +67,20 @@ public class WorldGenerator {
     /*
     Initialize some buildings to the tiles for testing purposes.
      */
-    private void makeRandomBuildings() {
+    /*private void makeRandomBuildings() {
         List<Tile> tiles = world.getAllValidTiles();
         for (Tile tile: tiles) {
             if (Math.random() < 0.3 && tile != null) {
-                Building building = new Building(tile, Building.BuildingType.randomBuilding());
-                Entity en = new Entity();
+                Building building = new Building(null, Building.BuildingType.randomBuilding());
+                building.move(tile);
+                Person en = new Person();
                 en.name = "TestUnit";
                 en.move(tile);
                 //building.buildingType = Building.BuildingType.randomBuilding();
                 //building.move(tile);
             }
         }
-    }
+    }*/
 
     private List<Clan> makeClans() {
         List<Clan> clans = new ArrayList<>();
@@ -115,9 +118,19 @@ public class WorldGenerator {
         }
 
         for (int i = 0; i < clans.size(); i++) {
+            Clan clan = clans.get(i);
             Tile clanHome = clanStartingLocations.get(i);
-
+            Set<Tile> territory = world.getRing(clanHome, 2);
+            for (Tile territoryTile: territory) {
+                world.setTileOwner(territoryTile, clan);
+            }
+            Building first = new Building(clan, Building.BuildingType.ENCAMPMENT);
+            first.move(clanHome);
+            Person unit = new Person(clan, "Warrior");
+            unit.move(clanHome);
         }
+
+        
     }
     private Tile findFurthestTileAway(World world, int q, int r) {
         List<Tile> tiles = world.getAllValidTiles();

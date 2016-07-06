@@ -2,7 +2,9 @@ package io.github.dantetam.world;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Dante on 6/13/2016.
@@ -89,6 +91,13 @@ public class World {
         }
     }
 
+    public void setTileOwner(Tile t, Clan c) {
+        tileOwnerHashMap.put(t, c);
+    }
+    public Clan getTileOwner(Tile t) {
+        return tileOwnerHashMap.get(t);
+    }
+
     public float buildingModifier(Tile tile, Clan builder) {
         if (builder.equals(tileOwnerHashMap.get(tile))) {
             return 0.7f;
@@ -141,6 +150,46 @@ public class World {
         }
         return temp;
     }
+
+    /*public List<Tile> getRotationsInOrder(Tile t, int radius) {
+
+    }*/
+
+    /**
+     * Generalize with a recursive traversal.
+     */
+    public Set<Tile> getRing(Tile t, int radius) {
+        Set<Tile> rings = new HashSet<>();
+        rings.add(t);
+        if (radius > 0) {
+            for (Tile neighbor: neighbors(t)) {
+                Set<Tile> neighborRing = getRing(neighbor, radius - 1);
+                for (Tile neighborRingTile: neighborRing) {
+                    rings.add(neighborRingTile);
+                }
+            }
+        }
+        return rings;
+    }
+
+    /*public Set<Tile> getRingTwo(Tile t, int radius) {
+        if (radius < 0) radius = -radius;
+        if (radius == 0) {
+            Set<Tile> neighbors = new HashSet<>();
+            neighbors.add(t);
+            return neighbors;
+        }
+        List<Tile> neighbors = neighbors(t);
+        HashMap<Tile, Boolean> stored = new HashMap<>();
+        for (Tile neighbor: neighbors) {
+            for (Tile neighborNeighbor: neighbors(neighbor)) {
+                if (!stored.containsKey(neighborNeighbor)) {
+                    stored.put(neighborNeighbor, true);
+                }
+            }
+        }
+        return stored.keySet();
+    }*/
 
     public int getNumHexes() {
         if (numHexes == -1) {
