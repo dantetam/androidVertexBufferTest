@@ -38,6 +38,7 @@ public class WorldGenerator {
         world.init(biomes, terrains, resources, elevations);
         makeRandomBuildings();
         world.initClans(makeClans());
+        setClanLands(world);
     }
 
     /**
@@ -88,6 +89,49 @@ public class WorldGenerator {
             clans.add(clan);
         }
         return clans;
+    }
+
+    private void setClanLands(World world) {
+        List<Clan> clans = world.getClans();
+        List<Tile> clanStartingLocations = new ArrayList<>();
+        List<Tile> validTiles = world.getAllValidTiles();
+        Tile start = validTiles.get((int)(Math.random()*validTiles.size()));
+        clanStartingLocations.add(start);
+        for (int i = 0; i < clans.size() - 1; i++) {
+            //Find the averaged arithmetic center of the existing conditions
+            float centerQ = 0, centerR = 0;
+            for (Tile t: clanStartingLocations) {
+                centerQ += t.q;
+                centerR += t.r;
+            }
+            centerQ /= clanStartingLocations.size();
+            centerR /= clanStartingLocations.size();
+
+            Tile furthest = findFurthestTileAway(world, Math.round(centerQ), Math.round(centerR));
+            while (clanStartingLocations.contains(furthest)) {
+                furthest = validTiles.get((int)(Math.random()*validTiles.size()));
+            }
+            clanStartingLocations.add(furthest);
+        }
+
+        for (int i = 0; i < clans.size(); i++) {
+            Tile clanHome = clanStartingLocations.get(i);
+
+        }
+    }
+    private Tile findFurthestTileAway(World world, int q, int r) {
+        List<Tile> tiles = world.getAllValidTiles();
+        Vector2f t = new Vector2f(q,r);
+        float maxDist = 0;
+        Tile maxTile = null;
+        for (Tile candidate: tiles) {
+            float dist = t.dist(new Vector2f(candidate.q, candidate.r));
+            if (maxTile == null || dist > maxDist) {
+                maxTile = candidate;
+                maxDist = dist;
+            }
+        }
+        return maxTile;
     }
 
 }

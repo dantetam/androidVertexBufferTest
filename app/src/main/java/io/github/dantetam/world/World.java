@@ -98,9 +98,9 @@ public class World {
         }
         else {
             float clanInfluencePercentage = tileInfluenceHashMap.get(tile).percentInfluenceOfClan(builder);
-            clanInfluencePercentage /= 0.5f;
-            float extraTime = (1f - clanInfluencePercentage) / 2f;
-            return extraTime + 0.9f;
+            //clanInfluencePercentage /= 0.5f;
+            float extraTime = 0.5f - clanInfluencePercentage;
+            return extraTime + 1.0f;
         }
         //return 1f;
     }

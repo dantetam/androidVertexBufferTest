@@ -13,9 +13,12 @@ public class Clan {
     public ClanType clanType;
     public ClanFaction clanFaction;
 
+    public List<Building> buildings;
+
     public Clan(String n) {
         name = n;
-        people = new ArrayList<Person>();
+        people = new ArrayList<>();
+        buildings = new ArrayList<>();
     }
 
     public enum ClanType {

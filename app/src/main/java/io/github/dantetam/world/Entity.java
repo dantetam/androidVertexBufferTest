@@ -6,21 +6,17 @@ import java.util.List;
 /**
  * Created by Dante on 6/13/2016.
  */
-public class Entity extends Representable {
+public abstract class Entity extends Representable {
 
     protected Tile location;
     public String name;
     public Clan clan;
     public List<Item> items;
 
-    public Entity() {
+    public Entity(Clan c) {
         //locations = new ArrayList<Tile>();
+        clan = c;
         items = new ArrayList<Item>();
-    }
-
-    public Entity(Tile t) {
-        this();
-        move(t);
     }
 
     public void move(Tile t) {

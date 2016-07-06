@@ -10,10 +10,11 @@ public class Building extends Entity {
     public enum BuildingType {
         //WHEAT_PLOT (0, "Wheat Plot"),
         //SHALLOW_MINE (1, "Shallow Mine");
-        FARM1 (0, "Farm1"),
-        FARM2 (1, "Farm2"),
-        FARM3 (2, "Farm3"),
-        FARM4 (3, "Farm4");
+        ENCAMPMENT (0, "Encampment"),
+        FARM1 (10, "Farm1"),
+        FARM2 (11, "Farm2"),
+        FARM3 (12, "Farm3"),
+        FARM4 (13, "Farm4");
         public int id; public String name;
         BuildingType(int t, String n) {id = t; name = n;}
         private static BuildingType[] rawTypes = BuildingType.class.getEnumConstants();
@@ -48,12 +49,19 @@ public class Building extends Entity {
 
     public BuildingType buildingType;
 
-    public Building(Tile t, BuildingType type) {
+    public Building(Clan clan, BuildingType type) {
+        super(clan);
+        clan.buildings.add(this);
+        buildingType = type;
+        name = type.name;
+    }
+
+    /*public Building(Tile t, BuildingType type) {
         //super(t);
         //move(t);
         move(t);
         name = type.name;
-    }
+    }*/
 
     public void move(Tile t) {
         if (location != null) {
