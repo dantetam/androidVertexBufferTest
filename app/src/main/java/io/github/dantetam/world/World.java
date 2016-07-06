@@ -97,6 +97,14 @@ public class World {
     public Clan getTileOwner(Tile t) {
         return tileOwnerHashMap.get(t);
     }
+    public void addTileInfluence(Tile t, Clan c, int influenceNum) {
+        Influence influence = tileInfluenceHashMap.get(t);
+        influence.addClanInfluence(c, influenceNum);
+    }
+    public Clan getTileInfluence(Tile tile) {
+        Clan owner = tileOwnerHashMap.get(tile);
+        return owner != null ? owner : tileInfluenceHashMap.get(tile).influencingClan();
+    }
 
     public float buildingModifier(Tile tile, Clan builder) {
         if (builder.equals(tileOwnerHashMap.get(tile))) {

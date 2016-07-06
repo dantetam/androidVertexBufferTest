@@ -130,7 +130,23 @@ public class WorldGenerator {
             unit.move(clanHome);
         }
 
-        
+        for (Tile tile: validTiles) {
+            if (world.getTileOwner(tile) == null) {
+                //Find the closest clan if no set owner
+                //TODO: Really should write a map or comparator to handle this paradigm more elegantly.
+                int indexMin = 0;
+                float distMin = -1;
+                for (int i = 0; i < clanStartingLocations.size(); i++) {
+                    float dist = clanStartingLocations.get(i).dist(tile);
+                    if (distMin == -1 || dist < distMin) {
+                        indexMin = i;
+                        distMin = dist;
+                    }
+                }
+                Clan influencing = clans.get(indexMin);
+                world.addTileInfluence(tile, influencing, 2);
+            }
+        }
     }
     private Tile findFurthestTileAway(World world, int q, int r) {
         List<Tile> tiles = world.getAllValidTiles();
