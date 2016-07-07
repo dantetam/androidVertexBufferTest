@@ -1,10 +1,5 @@
 package io.github.dantetam.opstrykontest;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,10 +11,8 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.DisplayMetrics;
-import android.widget.PopupMenu;
 
 import io.github.dantetam.world.Tile;
-import io.github.dantetam.world.World;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter
@@ -116,8 +109,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	/** Thread executor for generating cube data in the background. */
 	private final ExecutorService mSingleThreadedExecutor = Executors.newSingleThreadExecutor();
 
-	private Model mCubes;
-    private Model improvements;
+	private ListModel mCubes;
+    private ListModel improvements;
     private Lines mLines;
     private Solid testMarker;
 
@@ -227,7 +220,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 						System.gc();
 						
 						try {
-							mCubes = new Model();
+							mCubes = new ListModel();
 							//for (int i = 0; i < mRequestedCubeFactor * mRequestedCubeFactor * mRequestedCubeFactor; i++) {
 								//mCubes.add(new Solid(cubePositionData, cubeNormalData, cubeTextureCoordinateData, 1));
 							//}
@@ -444,7 +437,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //System.out.println(mousePicker.getSelectedTile() + " " + mousePicker.getSelectedEntity());
 	}
 
-    private void renderModel(Model model) {
+    private void renderModel(ListModel model) {
         for (int i = 0; i < model.parts.size(); i++) {
             RenderEntity solid = model.parts.get(i);
             renderSolid(solid);

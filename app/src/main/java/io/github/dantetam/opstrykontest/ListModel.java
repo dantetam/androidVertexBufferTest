@@ -10,16 +10,20 @@ import java.util.List;
  * but that approach was too computationally taxing on OpenGL ES,
  * since data of hundreds of vertices had to be transmitted every frame.
  */
-public class Model {
+public class ListModel implements BaseModel {
 
-    public List<RenderEntity> parts;
+    protected List<RenderEntity> parts;
 
-    public Model() {
+    public ListModel() {
         parts = new ArrayList<RenderEntity>();
     }
 
     public void add(RenderEntity solid) {
         parts.add(solid);
+    }
+
+    public List<RenderEntity> parts() {
+        return parts;
     }
 
     public void release() {

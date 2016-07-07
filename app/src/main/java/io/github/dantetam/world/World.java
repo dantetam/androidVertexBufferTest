@@ -24,6 +24,8 @@ public class World {
     private HashMap<Tile, Clan> tileOwnerHashMap;
     private HashMap<Tile, Influence> tileInfluenceHashMap;
 
+    public List<Tile> clanTerritoriesUpdate;
+
     //x represents height, z represents length
     public World(int q, int r) {
         //tree = new WorldTree();
@@ -53,6 +55,7 @@ public class World {
         }
 
         clans = new ArrayList<>();
+        clanTerritoriesUpdate = new ArrayList<>();
     }
 
     public void init(int[][] biomes, int[][] terrain, Tile.Resource[][] resources, int[][] elevations) {
@@ -93,6 +96,7 @@ public class World {
 
     public void setTileOwner(Tile t, Clan c) {
         tileOwnerHashMap.put(t, c);
+        clanTerritoriesUpdate.add(t);
     }
     public Clan getTileOwner(Tile t) {
         return tileOwnerHashMap.get(t);
@@ -100,6 +104,7 @@ public class World {
     public void addTileInfluence(Tile t, Clan c, int influenceNum) {
         Influence influence = tileInfluenceHashMap.get(t);
         influence.addClanInfluence(c, influenceNum);
+        clanTerritoriesUpdate.add(t);
     }
     public Clan getTileInfluence(Tile tile) {
         Clan owner = tileOwnerHashMap.get(tile);

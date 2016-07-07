@@ -1,9 +1,7 @@
 package io.github.dantetam.opstrykontest;
 
-import android.content.res.AssetManager;
 import android.opengl.GLES20;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +21,7 @@ public class WorldHandler {
     private MousePicker mousePicker;
     private AssetHelper assetHelper;
 
-    private Model tilesStored = null;
+    private ListModel tilesStored = null;
 
     //This block is to be rendered
     public HashMap<Tile.Biome, Solid> storedBiomeTiles; //Store all the hexes grouped by biomes, this way each biome can be rendered with its own texture.
@@ -31,7 +29,9 @@ public class WorldHandler {
 
     public HashMap<Tile, Vector3f> storedTileVertexPositions; //Used for placing future improvements at the center of tiles
     public HashMap<Tile, Solid> storedTileImprovements; //For storing the models placed at the tiles which can change
-    public Model improvementsStored;
+    public ListModel improvementsStored;
+
+    public ListModel tileHighlightStored;
 
     //public HashMap<Tile, Polygon> hexesShape; //Originally intended to be used for mouse picking. More efficient to use center vertices.
 
@@ -57,10 +57,10 @@ public class WorldHandler {
      * TODO: Link tiles to positions? So that it is easy to add and remove model VBOs at certain tiles.
      * @return The new VBO.
      */
-    public Model worldRep() {
+    public ListModel worldRep() {
         if (tilesStored == null) {
 
-            tilesStored = new Model();
+            tilesStored = new ListModel();
             storedBiomeTiles = new HashMap<>();
             storedTileVertexPositions = new HashMap<>();
             storedTileImprovements = new HashMap<>();
@@ -111,18 +111,28 @@ public class WorldHandler {
         return tilesStored;
     }
 
-    public Model tileImprovementRep() {
+    public ListModel tileHighlightRep() {
+        if (tileHighlightStored == null) {
+
+        }
+        else if (world.clanTerritoriesUpdate.size() > 0) {
+
+        }
+        return tileHighlightStored;
+    }
+
+    public ListModel tileImprovementRep() {
         if (improvementsStored == null)
             updateTileImprovement(world.getAllValidTiles());
         return improvementsStored;
     }
 
-    public Model updateTileImprovement(List<Tile> tiles) {
+    public ListModel updateTileImprovement(List<Tile> tiles) {
         /*if (improvementsStored == null) {
             improvementsStored = new Model();
         }*/
         if (improvementsStored == null) {
-            improvementsStored = new Model();
+            improvementsStored = new ListModel();
             for (Tile tile : tiles) {
                 if (tile != null && tile.improvement != null) {
                     //Solid improvement = ObjLoader.loadSolid(R.drawable.usb_android, tile.improvement.buildingType.name, assetManager.open(tile.improvement.name + ".obj"));

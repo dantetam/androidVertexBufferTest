@@ -1,8 +1,6 @@
 package io.github.dantetam.world;
 
-import java.util.List;
-
-import io.github.dantetam.opstrykontest.Model;
+import io.github.dantetam.opstrykontest.ListModel;
 
 /**
  * Created by Dante on 6/17/2016.
@@ -11,6 +9,6 @@ import io.github.dantetam.opstrykontest.Model;
  */
 public abstract class Representable {
 
-    protected Model model;
+    protected ListModel model;
 
 }
