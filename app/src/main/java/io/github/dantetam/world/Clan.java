@@ -3,20 +3,26 @@ package io.github.dantetam.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.dantetam.opstrykontest.Vector3f;
+import io.github.dantetam.opstrykontest.Vector4f;
+
 /**
  * Created by Dante on 6/13/2016.
  */
 public class Clan {
 
     public String name;
+    public Vector4f color, reducedColor;
     public List<Person> people;
     public ClanType clanType;
     public ClanFaction clanFaction;
 
     public List<Building> buildings;
 
-    public Clan(String n) {
+    public Clan(String n, Vector4f c) {
         name = n;
+        color = c;
+        reducedColor = color.scaled(0.7f);
         people = new ArrayList<>();
         buildings = new ArrayList<>();
     }

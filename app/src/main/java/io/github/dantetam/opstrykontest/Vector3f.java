@@ -14,9 +14,9 @@ public class Vector3f {
     }
     public int hashCode() {
         int hash = 17;
-        hash = hash * 31 + (int)(x * 100);
-        hash = hash * 31 + (int)(y * 100);
-        hash = hash * 31 + (int)(z * 100);
+        hash = hash * 31 + (int)(x * 127);
+        hash = hash * 31 + (int)(y * 127);
+        hash = hash * 31 + (int)(z * 127);
         return hash;
     }
     public String toString() {

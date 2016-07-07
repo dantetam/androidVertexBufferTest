@@ -1,6 +1,7 @@
 package io.github.dantetam.opstrykontest;
 
 import android.opengl.GLES20;
+import android.support.percent.PercentRelativeLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class WorldHandler {
     public HashMap<Tile, Solid> storedTileImprovements; //For storing the models placed at the tiles which can change
     public ListModel improvementsStored;
 
-    public ListModel tileHighlightStored;
+    public MapModel<Tile> tileHighlightStored;
 
     //public HashMap<Tile, Polygon> hexesShape; //Originally intended to be used for mouse picking. More efficient to use center vertices.
 
@@ -111,14 +112,53 @@ public class WorldHandler {
         return tilesStored;
     }
 
-    public ListModel tileHighlightRep() {
+    public MapModel tileHighlightRep() {
         if (tileHighlightStored == null) {
-
+            List<Tile> validTiles = world.getAllValidTiles();
+            tileHighlightStored = new MapModel<>();
+            createHighlightRep(tileHighlightStored, validTiles);
         }
         else if (world.clanTerritoriesUpdate.size() > 0) {
-
+            createHighlightRep(tileHighlightStored, world.clanTerritoriesUpdate);
+            world.clanTerritoriesUpdate.clear();
         }
         return tileHighlightStored;
+    }
+
+    public void createHighlightRep(MapModel mapModel, List<Tile> tiles) {
+        for (Tile tile: tiles) {
+            Vector4f drawColor = null;
+            Clan owner = world.getTileOwner(tile);
+            Clan influence = world.getTileInfluence(tile);
+            if (owner != null) {
+                drawColor = owner.color;
+            }
+            else if (influence != null) {
+                drawColor = influence.reducedColor;
+            }
+            else {
+                continue;
+            }
+            int textureHandle = ColorTextureHelper.loadColor(drawColor);
+
+            float[][] objData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagonflat);
+
+            final float[] totalCubePositionData = new float[objData[0].length];
+            final float[] totalNormalPositionData = new float[objData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
+            final float[] totalTexturePositionData = new float[objData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
+
+            Vector3f vertices = storedTileVertexPositions.get(tile);
+
+            final float[] thisCubePositionData = translateData(objData[0], vertices.x, vertices.y, vertices.z);
+
+            System.arraycopy(thisCubePositionData, 0, totalCubePositionData, 0, thisCubePositionData.length);
+            System.arraycopy(objData[1], 0, totalNormalPositionData, 0, objData[1].length);
+            System.arraycopy(objData[2], 0, totalTexturePositionData, 0, objData[2].length);
+            float[][] improvementData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+            Solid improvement = ObjLoader.loadSolid(textureHandle, null, improvementData);
+
+            mapModel.put(tile, improvement);
+        }
     }
 
     public ListModel tileImprovementRep() {

@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class MapModel<K> implements BaseModel {
 
-    public Map<K, RenderEntity> map;
+    private Map<K, RenderEntity> map;
 
     public MapModel() {
         map = new HashMap<>();
@@ -17,6 +17,10 @@ public class MapModel<K> implements BaseModel {
 
     public Collection<RenderEntity> parts() {
         return map.values();
+    }
+
+    public void put(K key, RenderEntity value) {
+        map.put(key, value);
     }
 
     public void release() {

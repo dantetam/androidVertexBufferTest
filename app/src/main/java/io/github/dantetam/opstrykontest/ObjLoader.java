@@ -99,6 +99,9 @@ public class ObjLoader {
         }*/
         return loadSolid(textureHandle, textureName, data);
     }
+    /*
+    Do not save the texture under the name.
+     */
     public static Solid loadSolid(int textureHandle,
                                   final Context context,
                                   final int resourceId)

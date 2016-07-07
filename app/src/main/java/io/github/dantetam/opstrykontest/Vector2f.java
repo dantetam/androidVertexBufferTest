@@ -14,8 +14,8 @@ public class Vector2f {
     }
     public int hashCode() {
         int hash = 17;
-        hash = hash * 31 + (int)(x * 1000);
-        hash = hash * 31 + (int)(y * 1000);
+        hash = hash * 31 + (int)(x * 127);
+        hash = hash * 31 + (int)(y * 127);
         return hash;
     }
     public float dist(Vector2f v) {

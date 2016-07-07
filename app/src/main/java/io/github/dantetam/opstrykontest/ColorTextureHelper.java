@@ -25,6 +25,10 @@ public class ColorTextureHelper {
         return TextureHelper.loadTexture("rgba/" + intFromColor(r, g, b, a), bitmap);
     }
 
+    public static int loadColor(Vector4f v) {
+        return loadColor((int)v.x, (int)v.y, (int)v.z, (int)v.w);
+    }
+
     /**
      * @param color A float array in either RGB or RGBA format, and 0-1 or 0-255
      * @return The handle of a new generated texture
