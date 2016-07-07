@@ -113,6 +113,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private ListModel improvements;
     private Lines mLines;
     private Solid testMarker;
+    private MapModel highlights;
 
 	public Camera camera;
     public MousePicker mousePicker;
@@ -424,6 +425,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         }
         mCubes = worldHandler.worldRep();
         testMarker = worldHandler.selectedMarkerRep(R.drawable.usb_android);
+        highlights = worldHandler.tileHighlightRep();
 
         mGlSurfaceView.update();
 
@@ -431,16 +433,20 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         renderModel(improvements);
 
         renderSolid(testMarker);
+        renderModel(highlights);
 
         mousePicker.updateAfterFrame();
 
         //System.out.println(mousePicker.getSelectedTile() + " " + mousePicker.getSelectedEntity());
 	}
 
-    private void renderModel(ListModel model) {
-        for (int i = 0; i < model.parts.size(); i++) {
+    private void renderModel(BaseModel model) {
+        /*for (int i = 0; i < model.parts.size(); i++) {
             RenderEntity solid = model.parts.get(i);
             renderSolid(solid);
+        }*/
+        for (RenderEntity renderEntity: model.parts()) {
+            renderSolid(renderEntity);
         }
     }
 

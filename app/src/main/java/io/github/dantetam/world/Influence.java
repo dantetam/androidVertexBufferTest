@@ -14,6 +14,7 @@ public class Influence {
     private HashMap<Clan, Integer> clanInfluences;
 
     public Influence(List<Clan> clans) {
+        clanInfluences = new HashMap<Clan, Integer>();
         for (Clan c: clans) {
             addClan(c);
         }

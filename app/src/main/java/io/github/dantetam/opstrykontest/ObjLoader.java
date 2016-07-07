@@ -52,12 +52,18 @@ All other data within the OBJ is ignored, for now.
  */
 public class ObjLoader {
 
+    /*
+    Save data that's already been loaded under certain aliases.
+    It is much more efficient to store and retrieve than to initialize hundreds of InputStreams and parsers.
+     */
     public static HashMap<String, float[][]> solidData = new HashMap<>();
 
     public static Solid loadSolid(int textureHandle, String textureName) {
         if (textureName != null && solidData.containsKey(textureName)) {
-            return loadSolid(textureHandle, null, solidData.get(textureName));
+            System.out.println("Loading from memory: " + textureName);
+            return loadSolid(textureHandle, textureName, solidData.get(textureName));
         }
+        System.out.println("Not loading from memory: " + textureName);
         return null;
     }
 
@@ -82,9 +88,11 @@ public class ObjLoader {
                                   final int resourceId)
     {
         if (textureName != null && solidData.containsKey(textureName)) {
-            return loadSolid(textureHandle, null, solidData.get(textureName));
+            System.out.println("Loading from memory too: " + textureName);
+            return loadSolid(textureHandle, textureName, solidData.get(textureName));
         }
-        float[][] data = loadObjModelByVertex(context, resourceId);
+        System.out.println("Not loading from memory too: " + textureName);
+        float[][] data = loadObjModelByVertex(textureName, context, resourceId);
         //solidData.put(textureName, data);
         //Solid solid = new Solid(data[0], data[1], data[2], 1);
         /*for (int t = 0; t < 3; t++) {
@@ -118,7 +126,11 @@ public class ObjLoader {
      */
     public static Solid loadSolid(int textureHandle, String textureName, float[][] data) {
         Solid solid = new Solid(textureHandle, data[0], data[1], data[2], 1);
-        if (textureName != null) solidData.put(textureName, data);
+        if (textureName != null) {
+            if (!solidData.containsKey(textureName)) {
+                solidData.put(textureName, data);
+            }
+        }
         solid.numVerticesToRender = data[0].length;
         return solid;
     }
@@ -237,22 +249,33 @@ public class ObjLoader {
      * This method loads from the specified resource all the vertices, normal, and tex coords.
      * It then compiles them in interleaved groups, where are each face
      * is a set of three triplets of a vertex, a texture and a normal.
+     * @param textureName A name "handle" to save under
      * @param context An activity
      * @param resourceId A resource "handle" such as R.drawable.usb_android (presumably an OBJ)
      * @return an array of float[][] containing vertices, normal, and texture coords respectively
      */
-    public static float[][] loadObjModelByVertex(final Context context,
+    public static float[][] loadObjModelByVertex(String textureName, final Context context,
                                                 final int resourceId)
     {
         final InputStream inputStream = context.getResources().openRawResource(resourceId);
-        return loadObjModelByVertex(inputStream);
+        return loadObjModelByVertex(textureName, inputStream);
     }
-    public static float[][] loadObjModelByVertex(final InputStream inputStream)
+    /*
+    Same as the above method but in this case, we generate the key name
+    from the resource's name (e.g. R.raw.usb_android -> "usb_android").
+     */
+    public static float[][] loadObjModelByVertex(final Context context, final int resourceId) {
+        final InputStream inputStream = context.getResources().openRawResource(resourceId);
+        return loadObjModelByVertex(context.getResources().getResourceEntryName(resourceId), inputStream);
+    }
+    public static float[][] loadObjModelByVertex(String textureName, final InputStream inputStream)
     {
         final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-        return readFloatDataByVertex(bufferedReader);
+        float[][] data = readFloatDataByVertex(bufferedReader);
+        solidData.put(textureName, data);
+        return data;
     }
 
     /*

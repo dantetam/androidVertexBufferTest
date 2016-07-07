@@ -89,6 +89,7 @@ public class World {
     public void initClans(List<Clan> c) {
         clans = c;
         tileOwnerHashMap = new HashMap<>();
+        tileInfluenceHashMap = new HashMap<>();
         for (Tile t: getAllValidTiles()) {
             tileInfluenceHashMap.put(t, new Influence(clans));
         }
@@ -96,7 +97,7 @@ public class World {
 
     public void setTileOwner(Tile t, Clan c) {
         tileOwnerHashMap.put(t, c);
-        clanTerritoriesUpdate.add(t);
+        if (!clanTerritoriesUpdate.contains(t)) clanTerritoriesUpdate.add(t);
     }
     public Clan getTileOwner(Tile t) {
         return tileOwnerHashMap.get(t);
@@ -104,7 +105,7 @@ public class World {
     public void addTileInfluence(Tile t, Clan c, int influenceNum) {
         Influence influence = tileInfluenceHashMap.get(t);
         influence.addClanInfluence(c, influenceNum);
-        clanTerritoriesUpdate.add(t);
+        if (!clanTerritoriesUpdate.contains(t)) clanTerritoriesUpdate.add(t);
     }
     public Clan getTileInfluence(Tile tile) {
         Clan owner = tileOwnerHashMap.get(tile);

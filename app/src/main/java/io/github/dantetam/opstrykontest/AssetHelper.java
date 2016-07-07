@@ -39,7 +39,7 @@ public class AssetHelper {
         String truePath = path.toLowerCase().replace(' ', '_');
         try {
             compress(truePath, "compressed_" + truePath);
-            return ObjLoader.loadObjModelByVertex(assetManager.open(truePath));
+            return ObjLoader.loadObjModelByVertex(path, assetManager.open(truePath));
         } catch (IOException e) {
             System.err.println("Could not find model named " + path + "; looked for " + truePath);
             e.printStackTrace();

@@ -86,7 +86,8 @@ public class WorldGenerator {
         List<Clan> clans = new ArrayList<>();
         int num = world.getAllValidTiles().size() / 10;
         for (int i = 0; i < num; i++) {
-            Clan clan = new Clan("Clan" + i);
+            Vector4f color = new Vector4f((int)(Math.random()*255f), 0f, (int)(Math.random()*255f), 1f);
+            Clan clan = new Clan("Clan" + i, color);
             clan.clanType = Clan.ClanType.random();
             clan.clanFaction = Clan.ClanFaction.random();
             clans.add(clan);

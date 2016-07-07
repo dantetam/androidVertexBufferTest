@@ -117,15 +117,17 @@ public class WorldHandler {
             List<Tile> validTiles = world.getAllValidTiles();
             tileHighlightStored = new MapModel<>();
             createHighlightRep(tileHighlightStored, validTiles);
+            //System.out.println("Update main");
         }
         else if (world.clanTerritoriesUpdate.size() > 0) {
             createHighlightRep(tileHighlightStored, world.clanTerritoriesUpdate);
-            world.clanTerritoriesUpdate.clear();
+            //System.out.println("Update tiles " + world.clanTerritoriesUpdate.size());
         }
+        world.clanTerritoriesUpdate.clear();
         return tileHighlightStored;
     }
 
-    public void createHighlightRep(MapModel mapModel, List<Tile> tiles) {
+    private void createHighlightRep(MapModel mapModel, List<Tile> tiles) {
         for (Tile tile: tiles) {
             Vector4f drawColor = null;
             Clan owner = world.getTileOwner(tile);
@@ -149,7 +151,8 @@ public class WorldHandler {
 
             Vector3f vertices = storedTileVertexPositions.get(tile);
 
-            final float[] thisCubePositionData = translateData(objData[0], vertices.x, vertices.y, vertices.z);
+            final float[] scaled = scaleData(objData[0], 0.6f, 0.6f, 0.6f);
+            final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.2f, vertices.z);
 
             System.arraycopy(thisCubePositionData, 0, totalCubePositionData, 0, thisCubePositionData.length);
             System.arraycopy(objData[1], 0, totalNormalPositionData, 0, objData[1].length);
