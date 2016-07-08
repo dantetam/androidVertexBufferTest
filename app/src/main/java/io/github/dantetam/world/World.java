@@ -120,6 +120,7 @@ public class World {
         HashMap<Clan, List<Tile>> owners = new HashMap<>(), influencers = new HashMap<>();
         for (Clan c: clans) {
             owners.put(c, new ArrayList<Tile>());
+            influencers.put(c, new ArrayList<Tile>());
         }
         for (int i = tiles.size() - 1; i >= 0; i--) {
             Tile t = tiles.get(i);
@@ -134,6 +135,11 @@ public class World {
                 tiles.remove(i);
             }
         }
+        /*System.out.println("Tiles total: " + getAllValidTiles().size());
+        for (Clan c: clans) {
+            System.out.println("Tiles owned by clan " + c.name + ": " + owners.get(c).size());
+            System.out.println("Tiles influenced by clan " + c.name + ": " + influencers.get(c).size());
+        }*/
         return new Object[]{owners, influencers, tiles};
     }
     /*public HashMap<Clan, List<Tile>> aggregateInfluence(List<Tile> tiles) {

@@ -147,7 +147,7 @@ public class WorldHandler {
             final float[] totalTexturePositionData = new float[objData[0].length * tiles.size() / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
 
             int posOffset = 0, norOffset = 0, texOffset = 0;
-            for (Tile tile: tiles) {
+            for (Tile tile: ownerTiles) {
                 Vector3f vertices = storedTileVertexPositions.get(tile);
 
                 final float[] scaled = scaleData(objData[0], 0.6f, 0.6f, 0.6f);
@@ -166,7 +166,7 @@ public class WorldHandler {
             mapOwner.put(clan, solid);
         }
         for (Map.Entry<Clan, List<Tile>> en: influencers.entrySet()) {
-            List<Tile> ownerTiles = en.getValue();
+            List<Tile> influenceTiles = en.getValue();
             Clan clan = en.getKey();
             Vector4f drawColor = clan.reducedColor;
             int textureHandle = ColorTextureHelper.loadColor(drawColor);
@@ -177,7 +177,7 @@ public class WorldHandler {
 
             //TODO: Make a function to repeat this tile aggregation process
             int posOffset = 0, norOffset = 0, texOffset = 0;
-            for (Tile tile: tiles) {
+            for (Tile tile: influenceTiles) {
                 Vector3f vertices = storedTileVertexPositions.get(tile);
 
                 final float[] scaled = scaleData(objData[0], 0.6f, 0.6f, 0.6f);
