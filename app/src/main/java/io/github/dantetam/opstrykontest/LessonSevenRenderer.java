@@ -115,6 +115,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private Solid testMarker;
     private MapModel highlights;
 
+    private Solid testDuplicate;
+
 	public Camera camera;
     public MousePicker mousePicker;
 
@@ -421,11 +423,18 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             mCubes.add(mLines);
 
             mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
+
+            float[][] objData = ObjLoader.loadObjModelByVertex(mLessonSevenActivity, R.raw.hexagonflat);
+            testDuplicate = ObjLoader.loadSolid(TextureHelper.loadTexture("usb_android", mLessonSevenActivity, R.drawable.usb_android), null, objData);
+
             return;
         }
         mCubes = worldHandler.worldRep();
         testMarker = worldHandler.selectedMarkerRep(R.drawable.usb_android);
-        highlights = worldHandler.tileHighlightRep();
+        ///highlights = worldHandler.tileHighlightRep();
+        worldHandler.tileHighlightRep();
+        //TODO: Turn highlights into a combined VBO, like biome representation
+        //TODO: Convert to IBOs next?
 
         mGlSurfaceView.update();
 
@@ -433,12 +442,69 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         renderModel(improvements);
 
         renderSolid(testMarker);
-        renderModel(highlights);
+
+        //renderSolidClones(testDuplicate);
+        //renderModel(highlights);
+
+        renderModel(worldHandler.tileHighlightOwnerStored);
+        renderModel(worldHandler.tileHighlightInfluenceStored);
 
         mousePicker.updateAfterFrame();
 
         //System.out.println(mousePicker.getSelectedTile() + " " + mousePicker.getSelectedEntity());
 	}
+
+    private void renderSolidClones(RenderEntity solid) {
+        for (int r = 0; r < 10; r++) {
+            for (int c = 0; c < 10; c++) {
+                GLES20.glUseProgram(mProgramHandle);
+
+                mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
+                mMVMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVMatrix");
+                mLightPosHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_LightPos");
+                mCameraPosHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_CameraPos");
+                mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_Texture");
+                solid.mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
+                solid.mNormalHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Normal");
+                solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
+
+                Matrix.setIdentityM(mLightModelMatrix, 0);
+                Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, -1.0f);
+                Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
+                Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
+
+                Matrix.setIdentityM(mModelMatrix, 0);
+                Matrix.translateM(mModelMatrix, 0, r*3, 0, c*3);
+
+                Matrix.setIdentityM(mCurrentRotation, 0);
+                Matrix.rotateM(mCurrentRotation, 0, mDeltaX, 0.0f, 1.0f, 0.0f);
+                Matrix.rotateM(mCurrentRotation, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
+                mDeltaX = 0.0f;
+                mDeltaY = 0.0f;
+
+                Matrix.multiplyMM(mTemporaryMatrix, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
+                System.arraycopy(mTemporaryMatrix, 0, mAccumulatedRotation, 0, 16);
+                Matrix.multiplyMM(mTemporaryMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
+                System.arraycopy(mTemporaryMatrix, 0, mModelMatrix, 0, 16);
+                Matrix.scaleM(mModelMatrix, 0, r/10f, 1f, c/10f);
+                Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+                GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
+                Matrix.multiplyMM(mTemporaryMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+                System.arraycopy(mTemporaryMatrix, 0, mMVPMatrix, 0, 16);
+
+                GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+                GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
+                GLES20.glUniform3f(mCameraPosHandle, camera.eyeX, camera.eyeY, camera.eyeZ);
+
+                GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, solid.textureHandle);
+                GLES20.glUniform1i(mTextureUniformHandle, 0);
+
+                //---
+                solid.renderAll(solid.renderMode);
+            }
+        }
+    }
 
     private void renderModel(BaseModel model) {
         /*for (int i = 0; i < model.parts.size(); i++) {
@@ -479,7 +545,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         // Draw a cube.
         // Translate the cube into the screen.
         Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0f, 0f, 0f);
+        Matrix.translateM(mModelMatrix, 0, 0, 0, 0);
         //Matrix.translateM(mModelMatrix, 0, x, y*2, z);
 
         // Set a matrix that contains the current rotation.

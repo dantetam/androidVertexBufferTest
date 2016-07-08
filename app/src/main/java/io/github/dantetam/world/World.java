@@ -112,6 +112,44 @@ public class World {
         return owner != null ? owner : tileInfluenceHashMap.get(tile).influencingClan();
     }
 
+    public Object[] aggregateOwners(List<Tile> src) {
+        List<Tile> tiles = new ArrayList<>();
+        for (Tile t: src) {
+            tiles.add(t);
+        }
+        HashMap<Clan, List<Tile>> owners = new HashMap<>(), influencers = new HashMap<>();
+        for (Clan c: clans) {
+            owners.put(c, new ArrayList<Tile>());
+        }
+        for (int i = tiles.size() - 1; i >= 0; i--) {
+            Tile t = tiles.get(i);
+            Clan owner = getTileOwner(t);
+            Clan influence = getTileInfluence(t);
+            if (owner != null) {
+                owners.get(owner).add(t);
+                tiles.remove(i);
+            }
+            else if (influence != null) {
+                influencers.get(influence).add(t);
+                tiles.remove(i);
+            }
+        }
+        return new Object[]{owners, influencers, tiles};
+    }
+    /*public HashMap<Clan, List<Tile>> aggregateInfluence(List<Tile> tiles) {
+        HashMap<Clan, List<Tile>> result = new HashMap<>();
+        for (Clan c: clans) {
+            result.put(c, new ArrayList<Tile>());
+        }
+        for (Tile t: tiles) {
+            Clan owner = getTileInfluence(t);
+            if (owner != null) {
+                result.get(owner).add(t);
+            }
+        }
+        return result;
+    }*/
+
     public float buildingModifier(Tile tile, Clan builder) {
         if (builder.equals(tileOwnerHashMap.get(tile))) {
             return 0.7f;
@@ -122,8 +160,8 @@ public class World {
         else {
             float clanInfluencePercentage = tileInfluenceHashMap.get(tile).percentInfluenceOfClan(builder);
             //clanInfluencePercentage /= 0.5f;
-            float extraTime = 0.5f - clanInfluencePercentage;
-            return extraTime + 1.0f;
+            //float extraTime = 0.5f - clanInfluencePercentage;
+            return 1.5f - clanInfluencePercentage;
         }
         //return 1f;
     }

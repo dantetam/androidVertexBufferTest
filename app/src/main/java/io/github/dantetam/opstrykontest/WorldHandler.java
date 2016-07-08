@@ -6,6 +6,7 @@ import android.support.percent.PercentRelativeLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.dantetam.world.*;
 
@@ -32,7 +33,8 @@ public class WorldHandler {
     public HashMap<Tile, Solid> storedTileImprovements; //For storing the models placed at the tiles which can change
     public ListModel improvementsStored;
 
-    public MapModel<Tile> tileHighlightStored;
+    public MapModel<Clan> tileHighlightOwnerStored;
+    public MapModel<Clan> tileHighlightInfluenceStored;
 
     //public HashMap<Tile, Polygon> hexesShape; //Originally intended to be used for mouse picking. More efficient to use center vertices.
 
@@ -112,56 +114,88 @@ public class WorldHandler {
         return tilesStored;
     }
 
-    public MapModel tileHighlightRep() {
-        if (tileHighlightStored == null) {
+    public void tileHighlightRep() {
+        if (tileHighlightOwnerStored == null) {
             List<Tile> validTiles = world.getAllValidTiles();
-            tileHighlightStored = new MapModel<>();
-            createHighlightRep(tileHighlightStored, validTiles);
+            tileHighlightOwnerStored = new MapModel<>();
+            tileHighlightInfluenceStored = new MapModel<>();
+            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, validTiles);
             //System.out.println("Update main");
         }
         else if (world.clanTerritoriesUpdate.size() > 0) {
-            createHighlightRep(tileHighlightStored, world.clanTerritoriesUpdate);
+            //TODO: Fix -> createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, world.clanTerritoriesUpdate);
             //System.out.println("Update tiles " + world.clanTerritoriesUpdate.size());
         }
         world.clanTerritoriesUpdate.clear();
-        return tileHighlightStored;
+        //return tileHighlightStored;
     }
 
-    private void createHighlightRep(MapModel mapModel, List<Tile> tiles) {
-        for (Tile tile: tiles) {
-            Vector4f drawColor = null;
-            Clan owner = world.getTileOwner(tile);
-            Clan influence = world.getTileInfluence(tile);
-            if (owner != null) {
-                drawColor = owner.color;
-            }
-            else if (influence != null) {
-                drawColor = influence.reducedColor;
-            }
-            else {
-                continue;
-            }
+    //TODO: Update only at every end of turn?
+    private void createHighlightRep(MapModel mapOwner, MapModel mapInfluence, List<Tile> tiles) {
+        Object[] data = world.aggregateOwners(tiles);
+        HashMap<Clan, List<Tile>> owners = (HashMap<Clan, List<Tile>>) data[0];
+        HashMap<Clan, List<Tile>> influencers = (HashMap<Clan, List<Tile>>) data[1];
+        List<Tile> neutral = (List<Tile>) data[2];
+        for (Map.Entry<Clan, List<Tile>> en: owners.entrySet()) {
+            List<Tile> ownerTiles = en.getValue();
+            Clan clan = en.getKey();
+            Vector4f drawColor = clan.color;
             int textureHandle = ColorTextureHelper.loadColor(drawColor);
-
             float[][] objData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagonflat);
+            final float[] totalCubePositionData = new float[objData[0].length * tiles.size()];
+            final float[] totalNormalPositionData = new float[objData[0].length * tiles.size() / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
+            final float[] totalTexturePositionData = new float[objData[0].length * tiles.size() / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
 
-            final float[] totalCubePositionData = new float[objData[0].length];
-            final float[] totalNormalPositionData = new float[objData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
-            final float[] totalTexturePositionData = new float[objData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
+            int posOffset = 0, norOffset = 0, texOffset = 0;
+            for (Tile tile: tiles) {
+                Vector3f vertices = storedTileVertexPositions.get(tile);
 
-            Vector3f vertices = storedTileVertexPositions.get(tile);
+                final float[] scaled = scaleData(objData[0], 0.6f, 0.6f, 0.6f);
+                final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.2f, vertices.z);
 
-            final float[] scaled = scaleData(objData[0], 0.6f, 0.6f, 0.6f);
-            final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.2f, vertices.z);
+                System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
+                System.arraycopy(objData[1], 0, totalNormalPositionData, norOffset, objData[1].length);
+                System.arraycopy(objData[2], 0, totalTexturePositionData, texOffset, objData[2].length);
 
-            System.arraycopy(thisCubePositionData, 0, totalCubePositionData, 0, thisCubePositionData.length);
-            System.arraycopy(objData[1], 0, totalNormalPositionData, 0, objData[1].length);
-            System.arraycopy(objData[2], 0, totalTexturePositionData, 0, objData[2].length);
+                posOffset += thisCubePositionData.length;
+                norOffset += objData[1].length;
+                texOffset += objData[2].length;
+            }
             float[][] improvementData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-            Solid improvement = ObjLoader.loadSolid(textureHandle, null, improvementData);
-
-            mapModel.put(tile, improvement);
+            Solid solid = ObjLoader.loadSolid(textureHandle, null, improvementData);
+            mapOwner.put(clan, solid);
         }
+        for (Map.Entry<Clan, List<Tile>> en: influencers.entrySet()) {
+            List<Tile> ownerTiles = en.getValue();
+            Clan clan = en.getKey();
+            Vector4f drawColor = clan.reducedColor;
+            int textureHandle = ColorTextureHelper.loadColor(drawColor);
+            float[][] objData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagonflat);
+            final float[] totalCubePositionData = new float[objData[0].length * tiles.size()];
+            final float[] totalNormalPositionData = new float[objData[0].length * tiles.size() / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
+            final float[] totalTexturePositionData = new float[objData[0].length * tiles.size() / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
+
+            //TODO: Make a function to repeat this tile aggregation process
+            int posOffset = 0, norOffset = 0, texOffset = 0;
+            for (Tile tile: tiles) {
+                Vector3f vertices = storedTileVertexPositions.get(tile);
+
+                final float[] scaled = scaleData(objData[0], 0.6f, 0.6f, 0.6f);
+                final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.2f, vertices.z);
+
+                System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
+                System.arraycopy(objData[1], 0, totalNormalPositionData, norOffset, objData[1].length);
+                System.arraycopy(objData[2], 0, totalTexturePositionData, texOffset, objData[2].length);
+
+                posOffset += thisCubePositionData.length;
+                norOffset += objData[1].length;
+                texOffset += objData[2].length;
+            }
+            float[][] improvementData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+            Solid solid = ObjLoader.loadSolid(textureHandle, null, improvementData);
+            mapInfluence.put(clan, solid);
+        }
+
     }
 
     public ListModel tileImprovementRep() {

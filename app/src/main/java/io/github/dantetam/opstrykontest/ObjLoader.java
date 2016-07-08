@@ -58,7 +58,7 @@ public class ObjLoader {
      */
     public static HashMap<String, float[][]> solidData = new HashMap<>();
 
-    public static Solid loadSolid(int textureHandle, String textureName) {
+    private static Solid loadSolid(int textureHandle, String textureName) {
         if (textureName != null && solidData.containsKey(textureName)) {
             System.out.println("Loading from memory: " + textureName);
             return loadSolid(textureHandle, textureName, solidData.get(textureName));
@@ -67,7 +67,7 @@ public class ObjLoader {
         return null;
     }
 
-    public static Solid loadSolid(int textureHandle, String textureName, InputStream assetInputStream) {
+    private static Solid loadSolid(int textureHandle, String textureName, InputStream assetInputStream) {
         final InputStreamReader inputStreamReader = new InputStreamReader(assetInputStream);
         final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
@@ -110,7 +110,7 @@ public class ObjLoader {
     /*
     Do not save the texture under the name.
      */
-    public static Solid loadSolid(int textureHandle,
+    private static Solid loadSolid(int textureHandle,
                                   final Context context,
                                   final int resourceId)
     {
@@ -124,11 +124,11 @@ public class ObjLoader {
      * @param data
      * @return A new Solid (a VBO) containing the data contained with the resource
      */
-    public static Solid loadSolid(int textureHandle, String textureName, float[][] data) {
+    public static Solid loadSolid(int textureHandle, String solidName, float[][] data) {
         Solid solid = new Solid(textureHandle, data[0], data[1], data[2], 1);
-        if (textureName != null) {
-            if (!solidData.containsKey(textureName)) {
-                solidData.put(textureName, data);
+        if (solidName != null) {
+            if (!solidData.containsKey(solidName)) {
+                solidData.put(solidName, data);
             }
         }
         solid.numVerticesToRender = data[0].length;
@@ -273,8 +273,16 @@ public class ObjLoader {
         final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-        float[][] data = readFloatDataByVertex(bufferedReader);
-        solidData.put(textureName, data);
+        float[][] data = null;
+        if (solidData.containsKey(textureName)) {
+            data = solidData.get(textureName);
+            System.out.println("Loaded from memory obj model: " + textureName);
+        }
+        else {
+            data = readFloatDataByVertex(bufferedReader);
+            solidData.put(textureName, data);
+            System.out.println("Not loaded, created obj model: " + textureName);
+        }
         return data;
     }
 
