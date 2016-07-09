@@ -72,6 +72,9 @@ public class AssetHelper {
 
         //Get the compressed data
         ObjResult totalData = getTotalData(inputStream);
+        return compressIntoFloatData(totalData);
+    }
+    public static float[][] compressIntoFloatData(ObjResult totalData) {
         ArrayList<Vector3f> vertices = totalData.vertices;
         ArrayList<Vector3f> normals = totalData.normals;
         ArrayList<Vector2f> textures = totalData.textures;
@@ -151,7 +154,7 @@ public class AssetHelper {
      * @return The same data, now with the faces compressed.
      * We simply save the extra duplicates and garbage collect after building the buffer
      */
-    private ObjResult compressData(
+    private static ObjResult compressData(
             ArrayList<Vector3f> vertices,
             ArrayList<Vector3f> normals,
             ArrayList<Vector2f> textures,
@@ -250,13 +253,14 @@ public class AssetHelper {
      * @return A collection of the OBJ data, in vertices, normals, tex coords, and faces.
      * Not parsed for uniqueness, see compressData(...)
      */
-    public ObjResult getTotalData(InputStream inputStream) {
+    public static ObjResult getTotalData(InputStream inputStream) {
         final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader reader = new BufferedReader(inputStreamReader);
 
-        String nextLine;
-        final StringBuilder body = new StringBuilder();
-
+        return getTotalDataFromBuffered(reader);
+        //return (ArrayList<Object>[]) new Object[]{vertices, normals, textures, faces};
+    }
+    public static ObjResult getTotalDataFromBuffered(BufferedReader reader) {
         String line;
         ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
         ArrayList<Vector2f> textures = new ArrayList<Vector2f>();
@@ -315,16 +319,11 @@ public class AssetHelper {
                     faces.add(face);
                 }
             }
-
             reader.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return compressData(vertices, normals, textures, faces);
-
-        //return (ArrayList<Object>[]) new Object[]{vertices, normals, textures, faces};
     }
 
     /*

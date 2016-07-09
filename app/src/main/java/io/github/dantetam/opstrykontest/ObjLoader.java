@@ -71,7 +71,8 @@ public class ObjLoader {
         final InputStreamReader inputStreamReader = new InputStreamReader(assetInputStream);
         final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-        return loadSolid(textureHandle, textureName, readFloatDataByVertex(bufferedReader));
+        float[][] data = AssetHelper.compressIntoFloatData(AssetHelper.getTotalData(assetInputStream));
+        return loadSolid(textureHandle, textureName, data);
     }
 
     /**
@@ -149,11 +150,6 @@ public class ObjLoader {
                 resourceId);
         final InputStreamReader inputStreamReader = new InputStreamReader(
                 inputStream);
-        final BufferedReader bufferedReader = new BufferedReader(
-                inputStreamReader);
-
-        String nextLine;
-        final StringBuilder body = new StringBuilder();
 
         BufferedReader reader = new BufferedReader(inputStreamReader);
         String line;
@@ -286,6 +282,10 @@ public class ObjLoader {
         return data;
     }
 
+    private static float[][] readFloatDataByVertex(BufferedReader reader) {
+        return AssetHelper.compressIntoFloatData(AssetHelper.getTotalDataFromBuffered(reader));
+    }
+
     /*
     This is a convenience method to stop code duplication.
     This reads from any correctly formatted BufferedReader, which is either from
@@ -293,8 +293,8 @@ public class ObjLoader {
     an InputStream from the activity's assets
     (the new second approach since Assets can be read by file names).
      */
-    private static float[][] readFloatDataByVertex(BufferedReader reader) {
-        String nextLine;
+    //private static float[][] readFloatDataByVertex(BufferedReader reader) {
+        /*String nextLine;
         final StringBuilder body = new StringBuilder();
 
         String line;
@@ -396,8 +396,8 @@ public class ObjLoader {
             normalsArray[i*3 + 2] = n.z;
         }
 
-        return new float[][]{verticesArray, normalsArray, textureArray};
-    }
+        return new float[][]{verticesArray, normalsArray, textureArray};*/
+    //}
 
     /*
     This is a helper method that specifically takes in a string
