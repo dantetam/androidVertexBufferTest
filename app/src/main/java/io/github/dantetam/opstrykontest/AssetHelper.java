@@ -64,15 +64,17 @@ public class AssetHelper {
         InputStream inputStream;
         try {
             inputStream = assetManager.open(assetInputPath);
-            System.err.println("Could not find model in path: " + assetInputPath);
         } catch (IOException e) {
+            System.err.println("Could not find model in path (assets): " + assetInputPath);
             e.printStackTrace();
             return null;
         }
 
         //Get the compressed data
-        ObjResult totalData = getTotalData(inputStream);
-        return compressIntoFloatData(totalData);
+        //ObjResult totalData = getTotalData(inputStream);
+        //return compressIntoFloatData(totalData);
+
+        return ObjLoader.loadObjModelByVertex(assetInputPath, inputStream);
     }
     public static float[][] compressIntoFloatData(ObjResult totalData) {
         ArrayList<Vector3f> vertices = totalData.vertices;
@@ -80,19 +82,46 @@ public class AssetHelper {
         ArrayList<Vector2f> textures = totalData.textures;
         ArrayList<Face> faces = totalData.faces;
 
+        //These help offset the data because of the OBJ's 1-index convention.
+        vertices.add(new Vector3f(0,0,0));
+        normals.add(new Vector3f(0,0,0));
+        textures.add(new Vector2f(0,0));
+
         float[][] newData = new float[3][];
-        newData[0] = new float[faces.size() * POSITION_DATA_SIZE];
-        newData[1] = new float[faces.size() * NORMAL_DATA_SIZE];
-        newData[2] = new float[faces.size() * TEXTURE_COORDINATE_DATA_SIZE];
+        newData[0] = new float[faces.size() * POSITION_DATA_SIZE * 3];
+        newData[1] = new float[faces.size() * NORMAL_DATA_SIZE * 3];
+        newData[2] = new float[faces.size() * TEXTURE_COORDINATE_DATA_SIZE * 3];
         for (int i = 0; i < faces.size(); i++) {
-            newData[0][POSITION_DATA_SIZE*i] = vertices.get(i).x;
-            newData[0][POSITION_DATA_SIZE*i+1] = vertices.get(i).y;
-            newData[0][POSITION_DATA_SIZE*i+2] = vertices.get(i).z;
-            newData[1][NORMAL_DATA_SIZE*i] = normals.get(i).x;
-            newData[1][NORMAL_DATA_SIZE*i+1] = normals.get(i).y;
-            newData[1][NORMAL_DATA_SIZE*i+2] = normals.get(i).z;
-            newData[2][TEXTURE_COORDINATE_DATA_SIZE*i] = textures.get(i).x;
-            newData[2][TEXTURE_COORDINATE_DATA_SIZE*i+1] = textures.get(i).y;
+            Face f = faces.get(i);
+            Vector3f v1 = f.v1, v2 = f.v2, v3 = f.v3; // v/t/n v/t/n v/t/n
+            System.out.println(f.toString());
+            //System.out.println(v1.x + " " + vertices.size());
+            newData[0][POSITION_DATA_SIZE*3*i] = vertices.get((int)v1.x).x;
+            newData[0][POSITION_DATA_SIZE*3*i+1] = vertices.get((int)v1.x).y;
+            newData[0][POSITION_DATA_SIZE*3*i+2] = vertices.get((int)v1.x).z;
+            newData[0][POSITION_DATA_SIZE*3*i+3] = vertices.get((int)v2.x).x;
+            newData[0][POSITION_DATA_SIZE*3*i+4] = vertices.get((int)v2.x).y;
+            newData[0][POSITION_DATA_SIZE*3*i+5] = vertices.get((int)v2.x).z;
+            newData[0][POSITION_DATA_SIZE*3*i+6] = vertices.get((int)v3.x).x;
+            newData[0][POSITION_DATA_SIZE*3*i+7] = vertices.get((int)v3.x).y;
+            newData[0][POSITION_DATA_SIZE*3*i+8] = vertices.get((int)v3.x).z;
+
+            newData[1][NORMAL_DATA_SIZE*3*i] = normals.get((int)v1.z).x;
+            newData[1][NORMAL_DATA_SIZE*3*i+1] = normals.get((int)v1.z).y;
+            newData[1][NORMAL_DATA_SIZE*3*i+2] = normals.get((int)v1.z).z;
+            newData[1][NORMAL_DATA_SIZE*3*i+3] = normals.get((int)v2.z).x;
+            newData[1][NORMAL_DATA_SIZE*3*i+4] = normals.get((int)v2.z).y;
+            newData[1][NORMAL_DATA_SIZE*3*i+5] = normals.get((int)v2.z).z;
+            newData[1][NORMAL_DATA_SIZE*3*i+6] = normals.get((int)v3.z).x;
+            newData[1][NORMAL_DATA_SIZE*3*i+7] = normals.get((int)v3.z).y;
+            newData[1][NORMAL_DATA_SIZE*3*i+8] = normals.get((int)v3.z).z;
+
+            newData[2][TEXTURE_COORDINATE_DATA_SIZE*3*i] = textures.get((int)v1.y).x;
+            newData[2][TEXTURE_COORDINATE_DATA_SIZE*3*i+1] = textures.get((int)v1.y).y;
+            newData[2][TEXTURE_COORDINATE_DATA_SIZE*3*i+2] = textures.get((int)v2.y).x;
+            newData[2][TEXTURE_COORDINATE_DATA_SIZE*3*i+3] = textures.get((int)v2.y).y;
+            newData[2][TEXTURE_COORDINATE_DATA_SIZE*3*i+4] = textures.get((int)v3.y).x;
+            newData[2][TEXTURE_COORDINATE_DATA_SIZE*3*i+5] = textures.get((int)v3.y).y;
         }
         return newData;
     }
@@ -323,7 +352,8 @@ public class AssetHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return compressData(vertices, normals, textures, faces);
+        return new ObjResult(vertices, normals, textures, faces);
+        //return compressData(vertices, normals, textures, faces);
     }
 
     /*

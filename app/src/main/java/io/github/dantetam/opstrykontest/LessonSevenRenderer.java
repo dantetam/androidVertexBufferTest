@@ -110,7 +110,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	private final ExecutorService mSingleThreadedExecutor = Executors.newSingleThreadExecutor();
 
 	private ListModel mCubes;
-    private ListModel improvements;
+    private MapModel improvements;
     private Lines mLines;
     private Solid testMarker;
     private MapModel highlights;

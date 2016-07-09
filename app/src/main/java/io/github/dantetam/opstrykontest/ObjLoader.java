@@ -264,27 +264,27 @@ public class ObjLoader {
         final InputStream inputStream = context.getResources().openRawResource(resourceId);
         return loadObjModelByVertex(context.getResources().getResourceEntryName(resourceId), inputStream);
     }
-    public static float[][] loadObjModelByVertex(String textureName, final InputStream inputStream)
+    public static float[][] loadObjModelByVertex(String solidName, final InputStream inputStream)
     {
         final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
         float[][] data = null;
-        if (solidData.containsKey(textureName)) {
-            data = solidData.get(textureName);
-            System.out.println("Loaded from memory obj model: " + textureName);
+        if (solidData.containsKey(solidName)) {
+            data = solidData.get(solidName);
+            System.out.println("Loaded from memory obj model: " + solidName);
         }
         else {
             data = readFloatDataByVertex(bufferedReader);
-            solidData.put(textureName, data);
-            System.out.println("Not loaded, created obj model: " + textureName);
+            solidData.put(solidName, data);
+            System.out.println("Not loaded, created obj model: " + solidName);
         }
         return data;
     }
 
-    private static float[][] readFloatDataByVertex(BufferedReader reader) {
+    /*private static float[][] readFloatDataByVertex(BufferedReader reader) {
         return AssetHelper.compressIntoFloatData(AssetHelper.getTotalDataFromBuffered(reader));
-    }
+    }*/
 
     /*
     This is a convenience method to stop code duplication.
@@ -293,8 +293,8 @@ public class ObjLoader {
     an InputStream from the activity's assets
     (the new second approach since Assets can be read by file names).
      */
-    //private static float[][] readFloatDataByVertex(BufferedReader reader) {
-        /*String nextLine;
+    private static float[][] readFloatDataByVertex(BufferedReader reader) {
+        String nextLine;
         final StringBuilder body = new StringBuilder();
 
         String line;
@@ -311,6 +311,7 @@ public class ObjLoader {
             while (true)
             {
                 line = reader.readLine();
+                if (line == null) break;
                 String[] currentLine = line.split(" ");
                 if (line.startsWith("v ")) //vertex position
                 {
@@ -340,14 +341,17 @@ public class ObjLoader {
                 }
                 else if (line.startsWith("f ")) //face object
                 {
-                    //All the v, vt, vn lines have been passed, end the loop
-                    //textureArray = new float[vertices.size()*2];
-                    //normalsArray = new float[vertices.size()*3];
-                    break;
+                    String[] vertex1 = currentLine[1].split("/");
+                    String[] vertex2 = currentLine[2].split("/");
+                    String[] vertex3 = currentLine[3].split("/");
+
+                    processVertex(vertex1, vertices, textures, normals, allVertices, allTextures, allNormals);
+                    processVertex(vertex2, vertices, textures, normals, allVertices, allTextures, allNormals);
+                    processVertex(vertex3, vertices, textures, normals, allVertices, allTextures, allNormals);
                 }
             }
 
-            while (line != null)
+            /*while (line != null)
             {
                 //Make sure a face line is being read
                 if (!line.startsWith("f "))
@@ -368,7 +372,7 @@ public class ObjLoader {
                 processVertex(vertex3, vertices, textures, normals, allVertices, allTextures, allNormals);
 
                 line = reader.readLine();
-            }
+            }*/
             reader.close();
 
         } catch(Exception e) {e.printStackTrace();}
@@ -396,8 +400,8 @@ public class ObjLoader {
             normalsArray[i*3 + 2] = n.z;
         }
 
-        return new float[][]{verticesArray, normalsArray, textureArray};*/
-    //}
+        return new float[][]{verticesArray, normalsArray, textureArray};
+    }
 
     /*
     This is a helper method that specifically takes in a string

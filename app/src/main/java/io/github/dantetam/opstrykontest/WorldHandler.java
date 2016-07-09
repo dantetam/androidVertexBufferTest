@@ -250,7 +250,7 @@ public class WorldHandler {
         /*if (improvementsStored == null) {
             improvementsStored = new Model();
         }*/
-        TODO: Impl. the use of this method
+        //TODO: Impl. the use of this method
         if (unitsStored == null) {
             unitsStored = new MapModel<>();
         }
