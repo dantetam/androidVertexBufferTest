@@ -454,7 +454,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //System.out.println(mousePicker.getSelectedTile() + " " + mousePicker.getSelectedEntity());
 	}
 
-    private void renderSolidClones(RenderEntity solid) {
+    /*private void renderSolidClones(RenderEntity solid) {
         for (int r = 0; r < 10; r++) {
             for (int c = 0; c < 10; c++) {
                 GLES20.glUseProgram(mProgramHandle);
@@ -504,7 +504,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
                 solid.renderAll(solid.renderMode);
             }
         }
-    }
+    }*/
 
     private void renderModel(BaseModel model) {
         /*for (int i = 0; i < model.parts.size(); i++) {

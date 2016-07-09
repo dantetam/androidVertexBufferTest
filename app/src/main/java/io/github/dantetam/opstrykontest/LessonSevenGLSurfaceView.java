@@ -17,6 +17,7 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
+import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Tile;
 
@@ -164,8 +165,19 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         ArrayList<String> strings = new ArrayList<>();
         if (selectedTileExists) {
             Tile selected = mousePicker.getSelectedTile();
-            strings.add(Tile.Biome.nameFromInt(selected.biome.type));
-            strings.add(Tile.Terrain.nameFromInt(selected.terrain.type));
+            String affiliation = "";
+            Clan owner = selected.world.getTileOwner(selected), influence = selected.world.getTileInfluence(selected);
+            if (owner != null) {
+                affiliation = owner.name;
+            }
+            else if (influence != null) {
+                affiliation = "(" + influence.name + ")";
+            }
+            else {
+                affiliation = "Free";
+            }
+            strings.add(affiliation);
+            strings.add(Tile.Biome.nameFromInt(selected.biome.type) + ", " + Tile.Terrain.nameFromInt(selected.terrain.type));
             if (selected.improvement == null) {
                 strings.add("Can build improvement");
             }
@@ -185,13 +197,14 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         }
         else if (selectedEntityExists) {
             Entity entity = mousePicker.getSelectedEntity();
-            strings.add(entity.name);
+            String stringy = entity.name + " (";
             if (entity.clan != null) {
-                strings.add(entity.clan.name);
+                stringy += entity.clan.name + ")";
             }
             else {
-                strings.add("Free");
+                stringy += "Free)";
             }
+            strings.add(stringy);
         }
 
         for (int id: UNIT_SELECTED_MENU_IDS) {

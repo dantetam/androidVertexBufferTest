@@ -30,6 +30,11 @@ public class AssetHelper {
     private Context context;
     private AssetManager assetManager;
 
+    public static final int POSITION_DATA_SIZE = 3;
+    public static final int NORMAL_DATA_SIZE = 3;
+    public static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
+    public static final int BYTES_PER_FLOAT = 4;
+
     public AssetHelper(Context context, AssetManager assetManager) {
         this.context = context;
         this.assetManager = assetManager;
@@ -37,22 +42,59 @@ public class AssetHelper {
 
     public float[][] loadVertexFromAssets(String path) {
         String truePath = path.toLowerCase().replace(' ', '_');
-        try {
-            compress(truePath, "compressed_" + truePath);
-            return ObjLoader.loadObjModelByVertex(path, assetManager.open(truePath));
+        float[][] data = compressIntoFloatData(truePath);
+        /*try {
+            return compressIntoFloatData(truePath);
+            //compress(truePath, "compressed_" + truePath);
+            //return ObjLoader.solidData.get()
+            //return ObjLoader.loadObjModelByVertex(path, assetManager.open(truePath));
         } catch (IOException e) {
-            System.err.println("Could not find model named " + path + "; looked for " + truePath);
+
             e.printStackTrace();
         }
-        return null;
+        return null;*/
+        return data;
     }
 
     /**
      * Compress face data from the input into the output.
      * @param assetInputPath The input file in the assets folder (read-only)
-     * @param internalOutputPath The output file name in internal data (read & write)
      */
-    public void compress(String assetInputPath, String internalOutputPath) {
+    public float[][] compressIntoFloatData(String assetInputPath) {
+        InputStream inputStream;
+        try {
+            inputStream = assetManager.open(assetInputPath);
+            System.err.println("Could not find model in path: " + assetInputPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        //Get the compressed data
+        ObjResult totalData = getTotalData(inputStream);
+        ArrayList<Vector3f> vertices = totalData.vertices;
+        ArrayList<Vector3f> normals = totalData.normals;
+        ArrayList<Vector2f> textures = totalData.textures;
+        ArrayList<Face> faces = totalData.faces;
+
+        float[][] newData = new float[3][];
+        newData[0] = new float[faces.size() * POSITION_DATA_SIZE];
+        newData[1] = new float[faces.size() * NORMAL_DATA_SIZE];
+        newData[2] = new float[faces.size() * TEXTURE_COORDINATE_DATA_SIZE];
+        for (int i = 0; i < faces.size(); i++) {
+            newData[0][POSITION_DATA_SIZE*i] = vertices.get(i).x;
+            newData[0][POSITION_DATA_SIZE*i+1] = vertices.get(i).y;
+            newData[0][POSITION_DATA_SIZE*i+2] = vertices.get(i).z;
+            newData[1][NORMAL_DATA_SIZE*i] = normals.get(i).x;
+            newData[1][NORMAL_DATA_SIZE*i+1] = normals.get(i).y;
+            newData[1][NORMAL_DATA_SIZE*i+2] = normals.get(i).z;
+            newData[2][TEXTURE_COORDINATE_DATA_SIZE*i] = textures.get(i).x;
+            newData[2][TEXTURE_COORDINATE_DATA_SIZE*i+1] = textures.get(i).y;
+        }
+        return newData;
+    }
+
+    /*public void compress(String assetInputPath, String internalOutputPath) {
         File file = new File(context.getFilesDir(), internalOutputPath);
 
         InputStream inputStream;
@@ -102,14 +144,14 @@ public class AssetHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     /**
      * @param vertices,normals,textures,faces A set of non-unique data of an OBJ
      * @return The same data, now with the faces compressed.
      * We simply save the extra duplicates and garbage collect after building the buffer
      */
-    private Object[] compressData(
+    private ObjResult compressData(
             ArrayList<Vector3f> vertices,
             ArrayList<Vector3f> normals,
             ArrayList<Vector2f> textures,
@@ -199,7 +241,7 @@ public class AssetHelper {
         /*ArrayList<Object>[] temp = (ArrayList<Object>[]) new Object[4];
         temp[0] = vertices; temp[1] = normals;
         temp[2] = textures; temp[3] = faces;*/
-        return new Object[]{vertices, normals, textures, faces};
+        return new ObjResult(vertices, normals, textures, faces);
     }
 
     /**
@@ -208,7 +250,7 @@ public class AssetHelper {
      * @return A collection of the OBJ data, in vertices, normals, tex coords, and faces.
      * Not parsed for uniqueness, see compressData(...)
      */
-    public Object[] getTotalData(InputStream inputStream) {
+    public ObjResult getTotalData(InputStream inputStream) {
         final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         final BufferedReader reader = new BufferedReader(inputStreamReader);
 
@@ -299,6 +341,22 @@ public class AssetHelper {
             return (int)v1.x + "/" + (int)v1.y + "/" + (int)v1.z + " " +
                     (int)v2.x + "/" + (int)v2.y + "/" + (int)v2.z + " " +
                     (int)v3.x + "/" + (int)v3.y + "/" + (int)v3.z;
+        }
+    }
+
+    /*
+    This is a wrapper class for compression method results.
+     */
+    public static class ObjResult {
+        public ArrayList<Vector3f> vertices;
+        public ArrayList<Vector3f> normals;
+        public ArrayList<Vector2f> textures;
+        public ArrayList<Face> faces;
+        public ObjResult(ArrayList<Vector3f> a, ArrayList<Vector3f> b, ArrayList<Vector2f> c, ArrayList<Face> d) {
+            vertices = a;
+            normals = b;
+            textures = c;
+            faces = d;
         }
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Tile extends Representable implements Traversable<Tile> {
 
-    private World world;
+    public World world;
     public int q, r;
     public int elevation;
     public Biome biome; //combined climate of land
