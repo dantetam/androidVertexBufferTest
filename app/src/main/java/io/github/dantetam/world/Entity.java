@@ -12,11 +12,15 @@ public abstract class Entity extends Representable {
     public String name;
     public Clan clan;
     public List<Item> items;
+    public static int globalIdCounter = 0;
+    public int id;
 
     public Entity(Clan c) {
         //locations = new ArrayList<Tile>();
         clan = c;
         items = new ArrayList<Item>();
+        id = globalIdCounter;
+        Entity.globalIdCounter++;
     }
 
     public void move(Tile t) {
@@ -38,6 +42,15 @@ public abstract class Entity extends Representable {
 
     public Tile location() {
         return location;
+    }
+
+    public boolean equals(Object other) {
+        if (!(other instanceof Entity)) {
+            return false;
+        }
+        Entity en = (Entity) other;
+        //return location.equals(en.location) && name.equals(en.name) &&
+        return id == en.id;
     }
 
 }

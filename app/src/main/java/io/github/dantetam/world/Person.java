@@ -10,6 +10,7 @@ public class Person extends Entity {
 
     public int age;
     public List<Tech> skills;
+    public int actionPoints, maxActionPoints;
 
     public Person(Clan clan, String name) {
         super(clan);
