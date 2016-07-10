@@ -377,7 +377,7 @@ public class WorldHandler {
             System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
             cubeTextureDataOffset += hexData[2].length;
 
-            tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+            float[][] tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
 
             storedSelectedTileSolid = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
         }
@@ -398,7 +398,8 @@ public class WorldHandler {
                 storedSelectedUnitSolid = null;
                 return null;
             }
-            if (storedTileVertexPositions.get(selected) == null) {
+            Tile selectedLocation = selected.location();
+            if (storedTileVertexPositions.get(selectedLocation) == null) {
                 storedSelectedUnitSolid = null;
                 return null;
             }
@@ -417,11 +418,17 @@ public class WorldHandler {
             final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
             int cubeTextureDataOffset = 0;
 
-            final float[] scaledData = scaleData(hexData[0], 1, 0, 1);
+            //final float[] scaledData = scaleData(hexData[0], 0.3f, 0.3f, 0.3f);
 
-            Vector3f selectedPos = storedTileVertexPositions.get(selected);
+            //Vector3f selectedPos = storedTileVertexPositions.get(selectedLocation);
 
-            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.1f, selectedPos.z);
+            //final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 2f, selectedPos.z + 1.4f);
+
+            final float[] scaledData = scaleData(hexData[0], 0.3f, 0.3f, 0.3f);
+
+            Vector3f selectedPos = storedTileVertexPositions.get(selectedLocation);
+
+            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 2f, selectedPos.z + 1.4f);
 
             //Interleave all the new vtn data, per hex.
             System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
@@ -432,7 +439,7 @@ public class WorldHandler {
             System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
             cubeTextureDataOffset += hexData[2].length;
 
-            tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+            float[][] tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
 
             storedSelectedUnitSolid = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
         }

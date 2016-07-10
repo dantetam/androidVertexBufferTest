@@ -375,7 +375,7 @@ public class ObjLoader {
             }*/
             reader.close();
 
-        } catch(Exception e) {e.printStackTrace();}
+        } catch (Exception e) {e.printStackTrace();}
 
         float[] verticesArray = new float[allVertices.size() * 3];
         float[] textureArray = new float[allVertices.size() * 2];

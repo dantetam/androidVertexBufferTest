@@ -126,6 +126,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
     private int WIDTH = 0, HEIGHT = 0;
 
+    public static int frames = 0;
+
 	/**
 	 * Initialize the model data. Initialize other necessary classes.
 	 */
@@ -144,7 +146,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         updatePerspectiveMatrix(getWidth(), getHeight());
         mGlSurfaceView.init(mLessonSevenActivity, mousePicker);
 
-        worldHandler = new WorldHandler(mLessonSevenActivity, mousePicker, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
+        worldHandler = new WorldHandler(mLessonSevenActivity, this, mousePicker, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
         ColorTextureHelper.init(mLessonSevenActivity);
 
         //testMarker = worldHandler.testMarker(mAndroidDataHandle, mousePicker);
@@ -411,7 +413,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	 */
 	@Override
 	public void onDrawFrame(GL10 glUnused) 
-	{		
+	{
+        frames++;
+        System.out.println(frames);
+
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		//GLES20.glClearColor(0f/255f, 140f/255f, 255f/255f, 255f/255f);
 		mViewMatrix = camera.getViewMatrix();
@@ -431,8 +436,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             return;
         }
         mCubes = worldHandler.worldRep();
-        testMarker = worldHandler.selectedMarkerRep(R.drawable.usb_android);
-        selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255,255,255,255));
+        testMarker = worldHandler.selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
+        selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         ///highlights = worldHandler.tileHighlightRep();
         worldHandler.tileHighlightRep();
         //TODO: Turn highlights into a combined VBO, like biome representation

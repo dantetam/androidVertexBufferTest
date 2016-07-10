@@ -21,8 +21,13 @@ public class ColorTextureHelper {
      * @return The handle of a new generated texture
      */
     public static int loadColor(int r, int g, int b, int a) {
-        Bitmap bitmap = createColor(r, g, b, a);
-        return TextureHelper.loadTexture("rgba/" + intFromColor(r, g, b, a), bitmap);
+        int savedTextureHandle = TextureHelper.loadTexture("rgba/" + intFromColor(r, g, b, a));
+        if (savedTextureHandle != -1) {
+            return savedTextureHandle;
+        } else {
+            Bitmap bitmap = createColor(r, g, b, a);
+            return TextureHelper.loadTexture("rgba/" + intFromColor(r, g, b, a), bitmap);
+        }
     }
 
     public static int loadColor(Vector4f v) {
