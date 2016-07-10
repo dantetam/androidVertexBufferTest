@@ -63,7 +63,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	private float[] mLightModelMatrix = new float[16];
 
     public AssetManager assetManager;
-    private AssetHelper assetHelper;
+    public AssetHelper assetHelper;
 
     /** Pass in data to shaders by OpenGL handles */
     private int mProgramHandle;
@@ -113,6 +113,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private MapModel improvements;
     private Lines mLines;
     private Solid testMarker;
+    private Solid selectedUnitMarker;
     private MapModel highlights;
 
     private Solid testDuplicate;
@@ -431,6 +432,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         }
         mCubes = worldHandler.worldRep();
         testMarker = worldHandler.selectedMarkerRep(R.drawable.usb_android);
+        selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255,255,255,255));
         ///highlights = worldHandler.tileHighlightRep();
         worldHandler.tileHighlightRep();
         //TODO: Turn highlights into a combined VBO, like biome representation
@@ -442,6 +444,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         renderModel(improvements);
 
         renderSolid(testMarker);
+        renderSolid(selectedUnitMarker);
 
         //renderSolidClones(testDuplicate);
         //renderModel(highlights);
