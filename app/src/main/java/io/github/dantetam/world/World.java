@@ -156,6 +156,10 @@ public class World {
         return result;
     }*/
 
+    public boolean isCoastal(Tile tile) {
+
+    }
+
     public float buildingModifier(Tile tile, Clan builder) {
         if (builder.equals(tileOwnerHashMap.get(tile))) {
             return 0.7f;

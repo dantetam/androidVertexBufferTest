@@ -12,8 +12,8 @@ public class Person extends Entity {
     public List<Tech> skills;
     public int actionPoints, maxActionPoints;
 
-    public Person(Clan clan, String name) {
-        super(clan);
+    public Person(World world, Clan clan, String name) {
+        super(world, clan);
         clan.people.add(this);
         this.name = name;
         skills = new ArrayList<>();

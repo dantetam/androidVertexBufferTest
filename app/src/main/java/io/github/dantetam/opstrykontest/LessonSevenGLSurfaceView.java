@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
+import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Tile;
 
 public class LessonSevenGLSurfaceView extends GLSurfaceView
@@ -91,10 +92,12 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 					mRenderer.camera.pointShift(-deltaX/10, 0, -deltaY/10);
 
                     if (mousePicker != null) {
+                        Tile previousSelectedTile = mousePicker.getSelectedTile();
+                        Entity previousSelectedEntity = mousePicker.getSelectedEntity();
                         mousePicker.update(x, y);
                         /*Vector3f v = mousePicker.rayCastHit;
                         mousePicker.getTileClickedOn();*/
-                        executeSelectedAction(mousePicker);
+                        executeSelectedAction(mousePicker, previousSelectedTile, previousSelectedEntity);
                     }
 				}
 			}	
@@ -110,19 +113,18 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 		}		
 	}
 
-    public void executeSelectedAction(MousePicker mousePicker) {
+    public void executeSelectedAction(MousePicker mousePicker, Tile previousSelectedTile, Entity previousSelectedEntity) {
         String action = mousePicker.getSelectedAction();
         if (action == null || action.equals("")) {
             return; //Default, select the unit and only display its stats.
         }
         if (action.equals("Move")) {
-            Entity selected = mousePicker.getSelectedEntity();
-            if (selected == null) {
-                System.err.println("Invalid 'Move' action, no selected entity");
+            if (previousSelectedEntity == null) {
+                System.err.println("Invalid 'Move' action, no selected entity before click");
                 mousePicker.changeSelectedAction("");
                 return;
             }
-            selected.move(mousePicker.getSelectedTile());
+            previousSelectedEntity.move(mousePicker.getSelectedTile());
             mousePicker.changeSelectedTile(null);
             mousePicker.changeSelectedAction("");
         } else {
@@ -209,8 +211,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             }
             if (selected.resources.size() > 0) {
                 String stringy = "";
-                for (Tile.Resource resource: selected.resources) {
-                    String s = Tile.Resource.nameFromInt(resource.type);
+                for (Item resource: selected.resources) {
+                    String s = resource.name;
                     if (!s.equals("No resource"))
                         stringy += s + " ";
                 }

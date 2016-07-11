@@ -44,11 +44,11 @@ public class WorldGenerator {
     }
 
     /**
-     * @param rows,cols Size of world to be worked with
+     * //@param rows,cols Size of world to be worked with
      * @return a Tile.Resource[][]. We specifically work with Tile.Resource and not int, for convenience.
      */
-    private Tile.Resource[][] makeNewResources(int rows, int cols) {
-        Tile.Resource[][] temp = new Tile.Resource[rows][cols];
+    private void makeNewResources(World world) {
+        /*Tile.Resource[][] temp = new Tile.Resource[rows][cols];
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 Tile.Resource index;
@@ -61,7 +61,10 @@ public class WorldGenerator {
                 temp[r][c] = index;
             }
         }
-        return temp;
+        return temp;*/
+        for (Tile t: world.getAllValidTiles()) {
+
+        }
     }
 
     /*
@@ -125,9 +128,9 @@ public class WorldGenerator {
             for (Tile territoryTile: territory) {
                 world.setTileOwner(territoryTile, clan);
             }
-            Building first = new Building(clan, Building.BuildingType.ENCAMPMENT);
+            Building first = new Building(world, clan, Building.BuildingType.ENCAMPMENT);
             first.move(clanHome);
-            Person unit = new Person(clan, "Warrior");
+            Person unit = new Person(world, clan, "Warrior");
             unit.move(clanHome);
         }
 

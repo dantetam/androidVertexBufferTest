@@ -49,8 +49,8 @@ public class Building extends Entity {
 
     public BuildingType buildingType;
 
-    public Building(Clan clan, BuildingType type) {
-        super(clan);
+    public Building(World world, Clan clan, BuildingType type) {
+        super(world, clan);
         clan.buildings.add(this);
         buildingType = type;
         name = type.name;

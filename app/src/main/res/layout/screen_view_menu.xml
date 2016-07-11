@@ -111,7 +111,7 @@
             app:layout_marginLeftPercent="0%"
             android:visibility="invisible"
             android:contentDescription="@string/selected_unit_menu"
-            android:onClick="onClickUnitSelectedButton" />
+            android:onClick="onClickActionsMenu" />
         <Button
             android:id="@+id/unit_menu"
             android:text="@string/unit_menu"

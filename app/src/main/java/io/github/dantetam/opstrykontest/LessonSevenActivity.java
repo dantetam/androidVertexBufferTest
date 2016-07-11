@@ -184,6 +184,10 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public void onClickBuildMenu(View v) {
+
+    }
+
+    public void onClickActionsMenu(View v) {
         actionSelectionMenu = new PopupMenu(this, v);
         MenuInflater inflater = actionSelectionMenu.getMenuInflater();
         inflater.inflate(R.menu.action_selection_menu, actionSelectionMenu.getMenu());

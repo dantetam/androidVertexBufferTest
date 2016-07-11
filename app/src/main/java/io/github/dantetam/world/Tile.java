@@ -15,7 +15,7 @@ public class Tile extends Representable implements Traversable<Tile> {
     public Biome biome; //combined climate of land
     public Terrain terrain; //shape of the land
     public Building improvement;
-    public List<Resource> resources;
+    public List<Item> resources;
     public List<Entity> occupants;
 
     public enum Biome {
@@ -82,39 +82,10 @@ public class Tile extends Representable implements Traversable<Tile> {
         public static final int numSeaTerrains = 2;
     }
 
-    public enum Resource {
-        NO_RESOURCE (0),
-        WHEAT (1),
-        FISH (2),
-        IRON (3);
-        public int type;
-        Resource(int n) {
-            type = n;
-        }
-        private static Resource[] types = {NO_RESOURCE, WHEAT, FISH, IRON};
-        private static String[] names = {"No resource", "Wheat", "Fish", "Iron"};
-        public static final int numResources = types.length;
-        public static Resource fromInt(int n) {
-            if (n >= 0 && n < types.length) {
-                return types[n];
-            }
-            throw new IllegalArgumentException("Invalid resource type: " + n);
-        }
-        public static String nameFromInt(int n) {
-            if (n >= 0 && n < names.length) {
-                return names[n];
-            }
-            throw new IllegalArgumentException("Invalid resource type: " + n);
-        }
-        public static Resource randomResource() {
-            return Resource.fromInt((int) (Math.random() * (numResources - 1)) + 1);
-        }
-    }
-
     public Tile(World world, int a, int b) {
         this.world = world;
         q = a; r = b;
-        resources = new ArrayList<Resource>();
+        resources = new ArrayList<Item>();
         occupants = new ArrayList<Entity>();
     }
 
@@ -127,6 +98,10 @@ public class Tile extends Representable implements Traversable<Tile> {
 
     public List<Tile> neighbors() {
         return world.neighbors(this);
+    }
+
+    public String toString() {
+        return "Tile: (" + q + ", " + r;
     }
 
     public int compare(Tile a, Tile b) { //Default behavior

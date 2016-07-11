@@ -382,7 +382,7 @@ public class WorldHandler {
             storedSelectedTileSolid = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
         }
         if (storedSelectedTileSolid != null) {
-            storedSelectedTileSolid.rotate(mRenderer.frames % 360, 0, 0, 0);
+            storedSelectedTileSolid.rotate(mRenderer.frames % 360, 0, 1, 0);
         }
         return storedSelectedTileSolid;
     }
@@ -435,12 +435,8 @@ public class WorldHandler {
 
             //Interleave all the new vtn data, per hex.
             System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
-            cubePositionDataOffset += thisCubePositionData.length;
-
             System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
-            cubeNormalDataOffset += hexData[1].length;
             System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
-            cubeTextureDataOffset += hexData[2].length;
 
             float[][] tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
 
