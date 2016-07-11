@@ -127,7 +127,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private int WIDTH = 0, HEIGHT = 0;
 
     public static int frames = 0;
-
+    public boolean buildingWorldFinished = false;
 	/**
 	 * Initialize the model data. Initialize other necessary classes.
 	 */
@@ -443,6 +443,11 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //TODO: Convert to IBOs next?
 
         mGlSurfaceView.update();
+
+        if (!buildingWorldFinished) {
+            buildingWorldFinished = true;
+            System.out.println("Done loading.");
+        }
 
         renderModel(mCubes);
         renderModel(improvements);

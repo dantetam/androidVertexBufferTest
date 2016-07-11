@@ -12,4 +12,6 @@
     <string name="unit_menu">Units</string>
     <string name="selected_unit_menu">Unit</string>
     <string name="action_select_move_unit">Move</string>
+
+    <string name="resources_tooltip">Resources are used to build buildings, and items to equip units.</string>
 </resources>

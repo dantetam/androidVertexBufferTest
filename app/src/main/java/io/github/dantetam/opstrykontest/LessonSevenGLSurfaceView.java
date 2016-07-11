@@ -9,6 +9,8 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +19,9 @@ import android.widget.Button;
 import android.widget.PopupMenu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
@@ -187,7 +192,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         boolean selectedTileExists = mousePicker.getSelectedTile() != null;
         boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
 
-        ArrayList<String> strings = new ArrayList<>();
+        LinkedHashMap<String, String> strings = new LinkedHashMap<>();
         if (selectedTileExists) {
             Tile selected = mousePicker.getSelectedTile();
             String affiliation = "";
@@ -201,13 +206,13 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             else {
                 affiliation = "Free";
             }
-            strings.add(affiliation);
-            strings.add(Tile.Biome.nameFromInt(selected.biome.type) + ", " + Tile.Terrain.nameFromInt(selected.terrain.type));
+            strings.put("text1", affiliation);
+            strings.put("text2", Tile.Biome.nameFromInt(selected.biome.type) + ", " + Tile.Terrain.nameFromInt(selected.terrain.type));
             if (selected.improvement == null) {
-                strings.add("Can build improvement");
+                strings.put("text3", "Can build improvement");
             }
             else {
-                strings.add(selected.improvement.name);
+                strings.put("text3", selected.improvement.name);
             }
             if (selected.resources.size() > 0) {
                 String stringy = "";
@@ -217,7 +222,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         stringy += s + " ";
                 }
                 if (!stringy.equals(""))
-                    strings.add(stringy);
+                    strings.put("text4", stringy);
             }
         }
         else if (selectedEntityExists) {
@@ -229,7 +234,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             else {
                 stringy += "Free)";
             }
-            strings.add(stringy);
+            strings.put("text1", stringy);
         }
 
         for (int id: UNIT_SELECTED_MENU_IDS) {
@@ -239,12 +244,28 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             bt.setEnabled(false);
         }
         int off = UNIT_SELECTED_MENU_IDS.length - strings.size();
-        for (int i = 0; i < strings.size(); i++) {
+        int i = 0;
+        for (Map.Entry<String, String> en: strings.entrySet()) {
             Button bt = (Button) selectedStatMenu.findViewById(UNIT_SELECTED_MENU_IDS[i + off]);
-            bt.setText(strings.get(i));
+            bt.setText(en.getValue());
             bt.setVisibility(View.VISIBLE);
             bt.setEnabled(true);
+            System.out.println(en.getKey());
+            if (en.getKey().equals("text4")) {
+                bt.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("yes");
+                        PopupMenu unitSelectionMenu = new PopupMenu(mActivity, v);
+                        MenuInflater inflater = unitSelectionMenu.getMenuInflater();
+                        inflater.inflate(R.menu.resources_tooltip, unitSelectionMenu.getMenu());
+                        unitSelectionMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, "Resources are used to build buildings, and items to equip units.");
+                        unitSelectionMenu.show();
+                    }
+                });
+            }
             //selectedStatMenu.addView(bt);
+            i++;
         }
 
                     /*
