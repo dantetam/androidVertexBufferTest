@@ -16,8 +16,9 @@ public class Item {
     public ItemType type;
     public int quantity;
 
-    public Item(String stringy, int n) {
-        name = stringy;
+    public Item(ItemType t, int n) {
+        type = t;
+        name = t.renderName;
         quantity = n;
     }
 
@@ -30,6 +31,7 @@ public class Item {
         BRANCHES (50),
         LOGS (51),
 
+        ICE (99),
         STONE (100),
         CLAY (101),
         SAND (102),
@@ -54,6 +56,7 @@ public class Item {
                 "Fish",
                 "Branches",
                 "Logs",
+                "Ice",
                 "Stone",
                 "Clay",
                 "Sand",
@@ -78,7 +81,13 @@ public class Item {
             if (types == null) {
                 init();
             }
-            
+            for (ItemType item: values()) {
+                if (item.renderName.equalsIgnoreCase(name)) {
+                    return item;
+                }
+            }
+            System.out.println("Could not find resource name: " + name);
+            return null;
         }
 
         public static ItemType fromInt(int n) {
@@ -101,11 +110,34 @@ public class Item {
         }
     }
 
-    public List<Item> evaluateResourceConditions(Tile tile, HashMap<String, Condition> possibleResources) {
-        List<Item> items = new ArrayList<>();
+    /*public static void generateResourcesForTile(Tile tile) {
+
+    }*/
+
+    public static HashMap<String, Condition> conditionsForTile(Tile tile) {
+        HashMap<String, Condition> conditions = new HashMap<>();
+        if (tile.biome == Tile.Biome.ICE) {
+            conditions.put("Ice", new Condition() {
+                public boolean allowedTile(Tile tile) {
+                    return true;
+                }
+            });
+        }
+        else if (tile.biome == Tile.Biome.DESERT) {
+            conditions.put("Sand", new Condition() {
+                public boolean allowedTile(Tile tile) {
+                    return Math.random() < 0.7;
+                }
+            });
+        }
+        return conditions;
+    }
+
+    public static List<ItemType> evaluateResourceConditions(Tile tile, HashMap<String, Condition> possibleResources) {
+        List<ItemType> items = new ArrayList<>();
         for (Map.Entry<String, Condition> en: possibleResources.entrySet()) {
-            if (en.getValue().allowed(tile)) {
-                items.add(en.getKey());
+            if (en.getValue().allowedTile(tile)) {
+                items.add(ItemType.fromString(en.getKey()));
             }
         }
         return items;

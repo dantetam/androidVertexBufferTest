@@ -58,7 +58,7 @@ public class World {
         clanTerritoriesUpdate = new ArrayList<>();
     }
 
-    public void init(int[][] biomes, int[][] terrain, Tile.Resource[][] resources, int[][] elevations) {
+    public void init(int[][] biomes, int[][] terrain, int[][] elevations) {
         for (int r = 0; r < biomes.length; r++) {
             for (int c = 0; c < biomes[0].length; c++) {
                 //Tile tile = new Tile(r, c);
@@ -75,9 +75,9 @@ public class World {
                     }
                     tile.terrain = Tile.Terrain.fromInt(terrain[r][c]);
                 }
-                tile.resources = new ArrayList<Tile.Resource>();
+                tile.resources = new ArrayList<Item>();
                 //tile.resources.add(Tile.Resource.fromInt(resources[r][c]));
-                tile.resources.add(resources[r][c]);
+                //tile.resources.add(resources[r][c]);
                 tile.elevation = elevations[r][c];
             }
         }
@@ -157,7 +157,13 @@ public class World {
     }*/
 
     public boolean isCoastal(Tile tile) {
-
+        List<Tile> neighbors = neighbors(tile);
+        for (Tile t: neighbors) {
+            if (t.biome == Tile.Biome.SEA) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public float buildingModifier(Tile tile, Clan builder) {

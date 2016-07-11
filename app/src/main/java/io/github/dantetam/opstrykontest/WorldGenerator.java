@@ -1,6 +1,7 @@
 package io.github.dantetam.opstrykontest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.DiamondSquare;
 import io.github.dantetam.world.Entity;
+import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Person;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
@@ -35,10 +37,11 @@ public class WorldGenerator {
         int width = Math.max(world.arrayLengthX, world.arrayLengthZ);
         int[][] biomes = new DiamondSquare(width, 10, 0.4).seed(870).getIntTerrain(0, Tile.Biome.numBiomes - 1);
         int[][] terrains = new DiamondSquare(width, 10, 0.4).seed(0417).getIntTerrain(0, Tile.Terrain.numTerrains - 1);
-        Tile.Resource[][] resources = makeNewResources(width, width);
+        //Item[][] resources = makeNewResources(width, width);
         int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(916).getIntTerrain(1, 10);
-        world.init(biomes, terrains, resources, elevations);
+        world.init(biomes, terrains, elevations);
         //makeRandomBuildings();
+        makeNewResources(world);
         world.initClans(makeClans());
         setClanLands(world);
     }
@@ -62,8 +65,12 @@ public class WorldGenerator {
             }
         }
         return temp;*/
-        for (Tile t: world.getAllValidTiles()) {
-
+        for (Tile tile: world.getAllValidTiles()) {
+            HashMap<String, Condition> conditions = Item.conditionsForTile(tile);
+            List<Item.ItemType> resources = Item.evaluateResourceConditions(tile, conditions);
+            for (Item.ItemType itemType: resources) {
+                tile.resources.add(new Item(itemType, 1));
+            }
         }
     }
 
