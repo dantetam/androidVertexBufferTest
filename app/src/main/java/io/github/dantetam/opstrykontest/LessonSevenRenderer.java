@@ -415,7 +415,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 glUnused) 
 	{
         frames++;
-        System.out.println(frames);
 
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		//GLES20.glClearColor(0f/255f, 140f/255f, 255f/255f, 255f/255f);

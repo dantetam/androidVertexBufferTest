@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupMenu;
 
 import java.util.ArrayList;
 
@@ -93,6 +94,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         mousePicker.update(x, y);
                         /*Vector3f v = mousePicker.rayCastHit;
                         mousePicker.getTileClickedOn();*/
+                        executeSelectedAction(mousePicker);
                     }
 				}
 			}	
@@ -107,6 +109,27 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 			return super.onTouchEvent(event);
 		}		
 	}
+
+    public void executeSelectedAction(MousePicker mousePicker) {
+        String action = mousePicker.getSelectedAction();
+        if (action == null || action.equals("")) {
+            return; //Default, select the unit and only display its stats.
+        }
+        if (action.equals("Move")) {
+            Entity selected = mousePicker.getSelectedEntity();
+            if (selected == null) {
+                System.err.println("Invalid 'Move' action, no selected entity");
+                mousePicker.changeSelectedAction("");
+                return;
+            }
+            selected.move(mousePicker.getSelectedTile());
+            mousePicker.changeSelectedTile(null);
+            mousePicker.changeSelectedAction("");
+        } else {
+            System.err.println("Invalid action identifier: " + action);
+            mousePicker.changeSelectedAction("");
+        }
+    }
 
     public void update() {
         mActivity.runOnUiThread(new Runnable() {

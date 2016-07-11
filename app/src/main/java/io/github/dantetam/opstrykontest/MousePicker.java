@@ -29,6 +29,7 @@ public class MousePicker {
 
     private Tile selectedTile = null;
     private Entity selectedEntity = null;
+    private String selectedAction = "";
 
     public HashMap<Tile, Vector3f> storedTileVertices = null;
 
@@ -83,6 +84,14 @@ public class MousePicker {
         /*if (storedTileVertices != null) {
             getTileClickedOn(rayCastHit);
         }*/
+    }
+
+    public void changeSelectedAction(String stringy) {
+        selectedAction = stringy;
+    }
+
+    public String getSelectedAction() {
+        return selectedAction;
     }
 
     public void changeSelectedTile(Tile t) {

@@ -37,6 +37,7 @@ public class LessonSevenActivity extends Activity implements
     private PopupMenu mainMenu;
     private PopupMenu worldGenMenu;
     private PopupMenu unitSelectionMenu;
+    private PopupMenu actionSelectionMenu;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -183,7 +184,11 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public void onClickBuildMenu(View v) {
-
+        actionSelectionMenu = new PopupMenu(this, v);
+        MenuInflater inflater = actionSelectionMenu.getMenuInflater();
+        inflater.inflate(R.menu.action_selection_menu, actionSelectionMenu.getMenu());
+        onCreateActionSelectionMenu(v, actionSelectionMenu.getMenu());
+        actionSelectionMenu.show();
     }
 
     public void onClickUnitMenu(View v) {
@@ -223,6 +228,22 @@ public class LessonSevenActivity extends Activity implements
 
     public void onClickUnitSelectedButton(View v) {
 
+    }
+
+    public boolean onCreateActionSelectionMenu(final View chainView, Menu menu) {
+        Entity entity = mRenderer.mousePicker.getSelectedEntity();
+        if (entity != null) {
+            MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "Move");
+            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    mRenderer.mousePicker.changeSelectedAction("Move");
+                    Button button = (Button) chainView;
+                    button.setText("Move Unit");
+                    return false;
+                }
+            });
+        }
+        return true;
     }
 
     /*@Override

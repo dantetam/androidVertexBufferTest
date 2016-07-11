@@ -381,6 +381,9 @@ public class WorldHandler {
 
             storedSelectedTileSolid = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
         }
+        if (storedSelectedTileSolid != null) {
+            storedSelectedTileSolid.rotate(mRenderer.frames % 360, 0, 0, 0);
+        }
         return storedSelectedTileSolid;
     }
 

@@ -14,9 +14,11 @@ public abstract class Entity extends Representable {
     public List<Item> items;
     public static int globalIdCounter = 0;
     public int id;
+    public World world;
 
-    public Entity(Clan c) {
+    public Entity(World w, Clan c) {
         //locations = new ArrayList<Tile>();
+        world = w;
         clan = c;
         items = new ArrayList<Item>();
         id = globalIdCounter;
