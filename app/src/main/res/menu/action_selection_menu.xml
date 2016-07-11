@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
+    <!--<item
         android:id="@+id/action_select_move_unit"
         android:title="@string/action_select_move_unit"
         android:text="@string/action_select_move_unit"
         android:orderInCategory="100" />
-    <!--<item
+    <item
         android:id="@+id/option22"
         android:title="@string/new_world_option2"
         android:text="@string/new_world_option2"
