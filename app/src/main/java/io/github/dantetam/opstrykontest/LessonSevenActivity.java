@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ConfigurationInfo;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
@@ -15,6 +16,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -38,6 +42,12 @@ public class LessonSevenActivity extends Activity implements
     private PopupMenu worldGenMenu;
     private PopupMenu unitSelectionMenu;
     private PopupMenu actionSelectionMenu;
+
+    /*public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Window window = getWindow();
+        window.setFormat(PixelFormat.RGBA_8888);
+    }*/
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -109,6 +119,15 @@ public class LessonSevenActivity extends Activity implements
 
         registerForContextMenu(mGLSurfaceView);
         //mainMenu = new PopupMenu(this, mGLSurfaceView);
+
+        /*setContentView(R.layout.splash_screen);
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.splash_alpha);
+        anim.reset();
+        LinearLayout splashLayout = (LinearLayout) findViewById(R.id.splash_layout);
+        splashLayout.clearAnimation();
+        splashLayout.startAnimation(anim);*/
+
+        //setContentView(R.layout.screen_view_menu);
     }
 
 	@Override

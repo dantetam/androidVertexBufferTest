@@ -2,17 +2,24 @@ package io.github.dantetam.opstrykontest;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
+import android.support.annotation.NonNull;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -251,15 +258,50 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             bt.setVisibility(View.VISIBLE);
             bt.setEnabled(true);
             System.out.println(en.getKey());
-            if (en.getKey().equals("text4")) {
+            if (en.getKey().equals("text1")) {
                 bt.setOnClickListener(new Button.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        System.out.println("yes");
                         PopupMenu unitSelectionMenu = new PopupMenu(mActivity, v);
                         MenuInflater inflater = unitSelectionMenu.getMenuInflater();
                         inflater.inflate(R.menu.resources_tooltip, unitSelectionMenu.getMenu());
-                        unitSelectionMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, "Resources are used to build buildings, and items to equip units.");
+                        MenuItem menuItem = unitSelectionMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, "The biome (climate) and terrain type (shape).");
+                        unitSelectionMenu.show();
+                    }
+                });
+            }
+            else if (en.getKey().equals("text2")) {
+                bt.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PopupMenu unitSelectionMenu = new PopupMenu(mActivity, v);
+                        MenuInflater inflater = unitSelectionMenu.getMenuInflater();
+                        inflater.inflate(R.menu.resources_tooltip, unitSelectionMenu.getMenu());
+                        MenuItem menuItem = unitSelectionMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, "The biome (climate) and terrain type (shape).");
+                        unitSelectionMenu.show();
+                    }
+                });
+            }
+            else if (en.getKey().equals("text3")) {
+                bt.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PopupMenu unitSelectionMenu = new PopupMenu(mActivity, v);
+                        MenuInflater inflater = unitSelectionMenu.getMenuInflater();
+                        inflater.inflate(R.menu.resources_tooltip, unitSelectionMenu.getMenu());
+                        MenuItem menuItem = unitSelectionMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, "Buildings to increase yields, craft, etc.");
+                        unitSelectionMenu.show();
+                    }
+                });
+            }
+            else if (en.getKey().equals("text4")) {
+                bt.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PopupMenu unitSelectionMenu = new PopupMenu(mActivity, v);
+                        MenuInflater inflater = unitSelectionMenu.getMenuInflater();
+                        inflater.inflate(R.menu.resources_tooltip, unitSelectionMenu.getMenu());
+                        MenuItem menuItem = unitSelectionMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, "Used for buildings and items to equip units.");
                         unitSelectionMenu.show();
                     }
                 });
