@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
@@ -53,7 +54,45 @@ public class LessonSevenActivity extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+        /*final LessonSevenActivity mActivity = this;
+        System.out.println("Start");
+        runOnUiThread(new Thread() {
+            public void run() {
+                try {
+                    sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    System.out.println("Set splash");
+                    setContentView(R.layout.splash_screen);
+                    Animation anim = AnimationUtils.loadAnimation(mActivity, R.anim.splash_alpha);
+                    anim.reset();
+                    LinearLayout splashLayout = (LinearLayout) findViewById(R.id.splash_layout);
+                    splashLayout.clearAnimation();
+                    splashLayout.startAnimation(anim);
+                }
+            }
+        });
+        System.out.println("Start2");
+        runOnUiThread(new Thread() {
+            public void run() {
+                try {
+                    sleep(6000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    System.out.println("Set invisible");
+                    ImageView imageView = (ImageView) findViewById(R.id.logo);
+                    imageView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        System.out.println("Start3");*/
+
 		setContentView(R.layout.screen_view_menu);
+
+        findViewById(R.id.splash_screen_main).bringToFront();
 
 		mGLSurfaceView = (LessonSevenGLSurfaceView) findViewById(R.id.gl_surface_view);
 
@@ -78,56 +117,12 @@ public class LessonSevenActivity extends Activity implements
 			return;
 		}
 
-		/*findViewById(R.id.button_decrease_num_cubes).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				decreaseCubeCount();
-			}
-		});
-
-		findViewById(R.id.button_increase_num_cubes).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				increaseCubeCount();
-			}
-		});*/
-
-		//findViewById(R.id.button_switch_VBOs).setOnClickListener
-
-        //Stack overflow credit; force orientation
-        /*orientationChanger = new LinearLayout(this);
-        // Using TYPE_SYSTEM_OVERLAY is crucial to make your window appear on top
-        // You'll need the permission android.permission.SYSTEM_ALERT_WINDOW
-        WindowManager.LayoutParams orientationLayout = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, 0, PixelFormat.RGBA_8888);
-        // Use whatever constant you need for your desired rotation
-        orientationLayout.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-        WindowManager wm = (WindowManager) this.getSystemService(Service.WINDOW_SERVICE);
-        wm.addView(orientationChanger, orientationLayout);
-        orientationChanger.setVisibility(View.VISIBLE);
-		*/
-
-        /*findViewById(R.id.main_menu).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onClickNewWorld(findViewById(R.id.main_menu));}
-        });*/
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-		//findViewById(R.id.button_switch_stride).setOnClickListener
         mDetector = new GestureDetectorCompat(this,this);
         mDetector.setOnDoubleTapListener(this);
 
         registerForContextMenu(mGLSurfaceView);
-        //mainMenu = new PopupMenu(this, mGLSurfaceView);
-
-        /*setContentView(R.layout.splash_screen);
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.splash_alpha);
-        anim.reset();
-        LinearLayout splashLayout = (LinearLayout) findViewById(R.id.splash_layout);
-        splashLayout.clearAnimation();
-        splashLayout.startAnimation(anim);*/
-
-        //setContentView(R.layout.screen_view_menu);
     }
 
 	@Override

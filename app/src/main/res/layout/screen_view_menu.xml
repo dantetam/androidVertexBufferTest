@@ -124,6 +124,16 @@
             android:visibility="invisible"
             android:contentDescription="@string/unit_menu"
             android:onClick="onClickUnitMenu" />
+        <ImageView
+            android:id="@+id/splash_screen_main"
+            android:background="@drawable/usb_android"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="100%"
+            app:layout_marginTopPercent="0%"
+            app:layout_marginLeftPercent="0%"
+            />
     </android.support.percent.PercentRelativeLayout>
         <!--
         <ImageButton

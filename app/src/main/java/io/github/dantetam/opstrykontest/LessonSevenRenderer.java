@@ -11,6 +11,10 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import io.github.dantetam.world.Tile;
 
@@ -132,6 +136,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	 * Initialize the model data. Initialize other necessary classes.
 	 */
 	public LessonSevenRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
+        System.out.println("Renderer: initialization");
 		mLessonSevenActivity = lessonSevenActivity;
         assetManager = mLessonSevenActivity.getAssets();
         assetHelper = new AssetHelper(lessonSevenActivity, assetManager);
@@ -446,6 +451,23 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         if (!buildingWorldFinished) {
             buildingWorldFinished = true;
+            mLessonSevenActivity.runOnUiThread(new Thread() {
+                public void run() {
+                    Animation anim = AnimationUtils.loadAnimation(mLessonSevenActivity, R.anim.splash_alpha);
+                    anim.reset();
+                    ImageView splashScreen = (ImageView) mLessonSevenActivity.findViewById(R.id.splash_screen_main);
+                    splashScreen.clearAnimation();
+                    splashScreen.startAnimation(anim);
+                    //mLessonSevenActivity.findViewById(R.id.splash_screen_main).setVisibility(View.INVISIBLE);
+                    try {
+                        sleep(2500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        splashScreen.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
             System.out.println("Done loading.");
         }
 
