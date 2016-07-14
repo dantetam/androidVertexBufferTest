@@ -20,6 +20,7 @@ public class WorldSystem {
     public WorldSystem(WorldHandler worldHandler) {
         world = worldHandler.world;
         initClan(world.getClans().get(0));
+        artificialIntelligence = new ArtificialIntelligence(world);
     }
 
     public void initClan(Clan c) {

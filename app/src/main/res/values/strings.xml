@@ -8,6 +8,9 @@
     <string name="new_world_option2">Option 2</string>
     <string name="new_world_option3">Option 3</string>
 
+    <string name="turn_menu">End Turn</string>
+    <string name="next_turn_confirmation">Confirm Next Turn</string>
+
     <string name="build_menu">Build</string>
     <string name="unit_menu">Units</string>
     <string name="selected_unit_menu">Unit</string>

@@ -141,24 +141,6 @@ public class LessonSevenActivity extends Activity implements
 		mGLSurfaceView.onPause();
 	}
 
-	private void decreaseCubeCount() {
-		mGLSurfaceView.queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                mRenderer.decreaseCubeCount();
-            }
-        });
-    }
-
-    private void increaseCubeCount() {
-        mGLSurfaceView.queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                mRenderer.increaseCubeCount();
-            }
-        });
-	}
-
     public final String DEBUG_TAG = "Debug (Gesture): ";
 
     private View newWorldMenu;
@@ -194,6 +176,18 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public boolean onClickNewWorldOption3(MenuItem item) {
+        return true;
+    }
+
+    public void onClickNextTurnMenu(View v) {
+        PopupMenu tempMenu = new PopupMenu(this, v);
+        MenuInflater inflater = tempMenu.getMenuInflater();
+        inflater.inflate(R.menu.next_turn_menu, tempMenu.getMenu());
+        tempMenu.show();
+    }
+
+    public boolean onClickNextTurnButton(MenuItem item) {
+        mRenderer.worldSystem.turn();
         return true;
     }
 
