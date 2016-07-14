@@ -196,13 +196,14 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             R.id.selected_stat_4
     };
     public void generateSelectionStatMenu(PercentRelativeLayout selectedStatMenu) {
-        boolean selectedTileExists = mousePicker.getSelectedTile() != null;
+        final boolean selectedTileExists = mousePicker.getSelectedTile() != null;
         boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
 
         LinkedHashMap<String, String> strings = new LinkedHashMap<>();
+
+        String affiliation = "";
         if (selectedTileExists) {
             Tile selected = mousePicker.getSelectedTile();
-            String affiliation = "";
             Clan owner = selected.world.getTileOwner(selected), influence = selected.world.getTileInfluence(selected);
             if (owner != null) {
                 affiliation = owner.name;
@@ -249,6 +250,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             bt.setText("");
             bt.setVisibility(View.INVISIBLE);
             bt.setEnabled(false);
+            bt.setOnClickListener(null);
         }
         int off = UNIT_SELECTED_MENU_IDS.length - strings.size();
         int i = 0;
@@ -257,7 +259,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             bt.setText(en.getValue());
             bt.setVisibility(View.VISIBLE);
             bt.setEnabled(true);
-            System.out.println(en.getKey());
+            final String finalAffiliation = affiliation;
             if (en.getKey().equals("text1")) {
                 bt.setOnClickListener(new Button.OnClickListener() {
                     @Override
@@ -265,7 +267,19 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         PopupMenu unitSelectionMenu = new PopupMenu(mActivity, v);
                         MenuInflater inflater = unitSelectionMenu.getMenuInflater();
                         inflater.inflate(R.menu.resources_tooltip, unitSelectionMenu.getMenu());
-                        MenuItem menuItem = unitSelectionMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, "The biome (climate) and terrain type (shape).");
+                        String clanStringy = "";
+                        if (selectedTileExists) {
+                            if (finalAffiliation.equals("Free")) {
+                                clanStringy = "This land has no influence.";
+                            }
+                            else if (finalAffiliation.contains("(")) {
+                                clanStringy = "The most influential clan.";
+                            }
+                            else {
+                                clanStringy = "The current owner.";
+                            }
+                        }
+                        MenuItem menuItem = unitSelectionMenu.getMenu().add(Menu.NONE, Menu.NONE, Menu.NONE, clanStringy);
                         unitSelectionMenu.show();
                     }
                 });

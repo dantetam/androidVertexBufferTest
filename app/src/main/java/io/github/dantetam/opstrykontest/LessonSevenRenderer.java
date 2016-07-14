@@ -136,7 +136,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	 * Initialize the model data. Initialize other necessary classes.
 	 */
 	public LessonSevenRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
-        System.out.println("Renderer: initialization");
 		mLessonSevenActivity = lessonSevenActivity;
         assetManager = mLessonSevenActivity.getAssets();
         assetHelper = new AssetHelper(lessonSevenActivity, assetManager);
@@ -160,139 +159,13 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //worldGenerator.init();
 	}
 
-	private void generateCubes(int cubeFactor) {
-		mSingleThreadedExecutor.submit(new GenDataRunnable(cubeFactor));
-	}
-
-	class GenDataRunnable implements Runnable {
-		final int mRequestedCubeFactor;
-		
-		GenDataRunnable(int requestedCubeFactor) {
-			mRequestedCubeFactor = requestedCubeFactor;
-		}
-		
-		@Override
-		public void run() {			
-			try {
-				final float[] cubePositionData = new float[108 * mRequestedCubeFactor * mRequestedCubeFactor];
-				int cubePositionDataOffset = 0;
-
-				final int segments = mRequestedCubeFactor + (mRequestedCubeFactor - 1);
-                //final int segments = mRequestedCubeFactor - 1;
-
-                final float minPosition = -mRequestedCubeFactor;
-                final float maxPosition = mRequestedCubeFactor;
-                final float positionRange = maxPosition - minPosition;
-
-				for (int x = 0; x < mRequestedCubeFactor; x++) {
-					//for (int y = 0; y < mRequestedCubeFactor; y++) {
-						for (int z = 0; z < mRequestedCubeFactor; z++) {
-                            Tile tile = worldHandler.world.getTile(x,z);
-
-							final float x1 = minPosition + ((positionRange / segments) * (x * 2));
-							final float x2 = minPosition + ((positionRange / segments) * ((x * 2) + 2));
-
-							final float y1 = minPosition + ((positionRange / segments) * (1 * 2));
-							final float y2 = minPosition + ((positionRange / segments) * ((1 * 2) + 1)) + tile.elevation;
-
-							final float z1 = minPosition + ((positionRange / segments) * (z * 2));
-							final float z2 = minPosition + ((positionRange / segments) * ((z * 2) + 2));
-
-							// Define points for a cube.
-							// X, Y, Z
-							final float[] p1p = { x1, y2, z2 };
-							final float[] p2p = { x2, y2, z2 };
-							final float[] p3p = { x1, y1, z2 };
-							final float[] p4p = { x2, y1, z2 };
-							final float[] p5p = { x1, y2, z1 };
-							final float[] p6p = { x2, y2, z1 };
-							final float[] p7p = { x1, y1, z1 };
-							final float[] p8p = { x2, y1, z1 };
-
-							final float[] thisCubePositionData = ShapeBuilder.generateCubeData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p,
-									p1p.length);
-
-							System.arraycopy(thisCubePositionData, 0, cubePositionData, cubePositionDataOffset, thisCubePositionData.length);
-							cubePositionDataOffset += thisCubePositionData.length;
-						}
-					//}
-				}
-				
-				// Run on the GL thread -- the same thread the other members of the renderer run in.
-				mGlSurfaceView.queueEvent(new Runnable() {
-					@Override
-					public void run() {												
-						if (mCubes != null) {
-							mCubes.release();
-							mCubes = null;
-						}
-						
-						// Not supposed to manually call this, but Dalvik sometimes needs some additional prodding to clean up the heap.
-						System.gc();
-						
-						try {
-							mCubes = new ListModel();
-							//for (int i = 0; i < mRequestedCubeFactor * mRequestedCubeFactor * mRequestedCubeFactor; i++) {
-								//mCubes.add(new Solid(cubePositionData, cubeNormalData, cubeTextureCoordinateData, 1));
-							//}
-                            //mCubes.add(new Solid(cubePositionData, cubeNormalData, cubeTextureCoordinateData, mRequestedCubeFactor));
-                            //mCubes.add(ObjLoader.loadSolid(mLessonSevenActivity, R.raw.teapot));
-
-                            mActualCubeFactor = mRequestedCubeFactor;
-						} catch (OutOfMemoryError err) {
-							if (mCubes != null) {
-								mCubes.release();
-								mCubes = null;
-							}
-							
-							// Not supposed to manually call this, but Dalvik sometimes needs some additional prodding to clean up the heap.
-							System.gc();
-							
-							mLessonSevenActivity.runOnUiThread(new Runnable() {							
-								@Override
-								public void run() {
-//									Toast.makeText(mLessonSevenActivity, "Out of memory; Dalvik takes a while to clean up the memory. Please try again.\nExternal bytes allocated=" + dalvik.system.VMRuntime.getRuntime().getExternalBytesAllocated(), Toast.LENGTH_LONG).show();								
-								}
-							});										
-						}																	
-					}				
-				});
-			} catch (OutOfMemoryError e) {
-				// Not supposed to manually call this, but Dalvik sometimes needs some additional prodding to clean up the heap.
-				System.gc();
-				
-				mLessonSevenActivity.runOnUiThread(new Runnable() {							
-					@Override
-					public void run() {
-//						Toast.makeText(mLessonSevenActivity, "Out of memory; Dalvik takes a while to clean up the memory. Please try again.\nExternal bytes allocated=" + dalvik.system.VMRuntime.getRuntime().getExternalBytesAllocated(), Toast.LENGTH_LONG).show();								
-					}
-				});
-			}			
-		}
-	}
-
-	public void decreaseCubeCount() {
-		if (mLastRequestedCubeFactor > 1) {
-			generateCubes(--mLastRequestedCubeFactor);
-		}
-	}
-
-	public void increaseCubeCount() {
-		if (mLastRequestedCubeFactor < 16) {
-			generateCubes(++mLastRequestedCubeFactor);
-		}
-	}	
-
     /*
     Initialize more data. Clean up the screen, move the camera, link shaders, load a few test textures.
      */
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) 
 	{
-		//mCubes = new Model();
-
 		mLastRequestedCubeFactor = mActualCubeFactor = WORLD_LENGTH;
-		generateCubes(mActualCubeFactor);
 		
 		// Set the background clear color to black.
 		//GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -305,21 +178,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         //GLES20.glEnable(GLES20.GL_STENCIL_TEST);
-
-        // Position the eye in front of the origin.
-		/*final float eyeX = 4.0f;
-		final float eyeY = 4.0f;
-		final float eyeZ = 4.0f;
-
-		// We are looking toward the distance
-		final float lookX = 2.0f;
-		final float lookY = 2.0f;
-		final float lookZ = 2.0f;
-
-		// Set our up vector. This is where our head would be pointing were we holding the camera.
-		final float upX = 0.0f;
-		final float upY = 1.0f;
-		final float upZ = 0.0f;*/
 
 		// Set the view matrix. This matrix can be said to represent the camera position.
 		// NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
@@ -488,63 +346,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //System.out.println(mousePicker.getSelectedTile() + " " + mousePicker.getSelectedEntity());
 	}
 
-    /*private void renderSolidClones(RenderEntity solid) {
-        for (int r = 0; r < 10; r++) {
-            for (int c = 0; c < 10; c++) {
-                GLES20.glUseProgram(mProgramHandle);
-
-                mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
-                mMVMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVMatrix");
-                mLightPosHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_LightPos");
-                mCameraPosHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_CameraPos");
-                mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_Texture");
-                solid.mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
-                solid.mNormalHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Normal");
-                solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
-
-                Matrix.setIdentityM(mLightModelMatrix, 0);
-                Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, -1.0f);
-                Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-                Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
-
-                Matrix.setIdentityM(mModelMatrix, 0);
-                Matrix.translateM(mModelMatrix, 0, r*3, 0, c*3);
-
-                Matrix.setIdentityM(mCurrentRotation, 0);
-                Matrix.rotateM(mCurrentRotation, 0, mDeltaX, 0.0f, 1.0f, 0.0f);
-                Matrix.rotateM(mCurrentRotation, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
-                mDeltaX = 0.0f;
-                mDeltaY = 0.0f;
-
-                Matrix.multiplyMM(mTemporaryMatrix, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
-                System.arraycopy(mTemporaryMatrix, 0, mAccumulatedRotation, 0, 16);
-                Matrix.multiplyMM(mTemporaryMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
-                System.arraycopy(mTemporaryMatrix, 0, mModelMatrix, 0, 16);
-                Matrix.scaleM(mModelMatrix, 0, r/10f, 1f, c/10f);
-                Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-                GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
-                Matrix.multiplyMM(mTemporaryMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-                System.arraycopy(mTemporaryMatrix, 0, mMVPMatrix, 0, 16);
-
-                GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-                GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
-                GLES20.glUniform3f(mCameraPosHandle, camera.eyeX, camera.eyeY, camera.eyeZ);
-
-                GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, solid.textureHandle);
-                GLES20.glUniform1i(mTextureUniformHandle, 0);
-
-                //---
-                solid.renderAll(solid.renderMode);
-            }
-        }
-    }*/
-
     private void renderModel(BaseModel model) {
-        /*for (int i = 0; i < model.parts.size(); i++) {
-            RenderEntity solid = model.parts.get(i);
-            renderSolid(solid);
-        }*/
         for (RenderEntity renderEntity: model.parts()) {
             renderSolid(renderEntity);
         }
@@ -630,12 +432,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mAndroidDataHandle);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, solid.textureHandle);
         //System.out.println(mAndroidDataHandle + " " + solid.textureHandle);
-
-            /*GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, solid.textureHandle);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, solid.textureHandle);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);*/
 
         // Tell the texture uniform sampler to use this texture in the
         // shader by binding to texture unit 0.
