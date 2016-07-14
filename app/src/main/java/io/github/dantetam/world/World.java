@@ -219,6 +219,12 @@ public class World {
         return temp;
     }
 
+    public Tile randomNeighbor(Tile t) {
+        List<Tile> neighbors = neighbors(t);
+        if (neighbors.size() == 0) return null;
+        return neighbors.get((int)(Math.random()*neighbors.size()));
+    }
+
     /*public List<Tile> getRotationsInOrder(Tile t, int radius) {
 
     }*/

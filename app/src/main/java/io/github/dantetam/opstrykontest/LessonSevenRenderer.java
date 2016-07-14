@@ -126,6 +126,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     public MousePicker mousePicker;
 
     public WorldHandler worldHandler;
+    public WorldSystem worldSystem;
     public static final int WORLD_LENGTH = 8;
 
     private int WIDTH = 0, HEIGHT = 0;
@@ -153,6 +154,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         worldHandler = new WorldHandler(mLessonSevenActivity, this, mousePicker, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
         ColorTextureHelper.init(mLessonSevenActivity);
 
+        worldSystem = new WorldSystem(worldHandler);
+        //worldSystem.initClan(worldHandler.world.cl);
         //testMarker = worldHandler.testMarker(mAndroidDataHandle, mousePicker);
         //world = new World(WORLD_LENGTH, WORLD_LENGTH);
         //worldGenerator = new WorldGenerator(world);
