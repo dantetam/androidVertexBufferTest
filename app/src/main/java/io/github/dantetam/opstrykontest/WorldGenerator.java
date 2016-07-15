@@ -11,6 +11,7 @@ import io.github.dantetam.world.DiamondSquare;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Person;
+import io.github.dantetam.world.PersonFactory;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
 
@@ -137,7 +138,7 @@ public class WorldGenerator {
             }
             Building first = new Building(world, clan, Building.BuildingType.ENCAMPMENT);
             first.move(clanHome);
-            Person unit = new Person(world, clan, "Warrior");
+            Person unit = PersonFactory.newPerson(Person.PersonType.WARRIOR, world, clan);
             unit.move(clanHome);
         }
 

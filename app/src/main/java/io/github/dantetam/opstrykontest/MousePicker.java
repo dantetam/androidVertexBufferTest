@@ -3,6 +3,7 @@ package io.github.dantetam.opstrykontest;
 import android.opengl.Matrix;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.github.dantetam.world.Entity;
@@ -38,6 +39,9 @@ public class MousePicker {
 
     public boolean nextFrameSelectedNeedsUpdating = false;
 
+    public boolean pathNeedsUpdating = false;
+    public List<Tile> path;
+
     public MousePicker(float[] p, Camera c, int w, int h) {
         projMatrix = p;
         camera = c;
@@ -45,6 +49,11 @@ public class MousePicker {
         width = w;
         height = h;
         //viewMatrix = Maths.createViewMatrix(camera);
+    }
+
+    public void updatePath(Tile a, Tile b) {
+        path = WorldSystem.worldPathfinder.findPath(a,b);
+        pathNeedsUpdating = true;
     }
 
     public void update(float mouseX, float mouseY)

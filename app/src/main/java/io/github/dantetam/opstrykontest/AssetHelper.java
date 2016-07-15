@@ -70,10 +70,10 @@ public class AssetHelper {
             try {
                 inputStream = assetManager.open(backup);
             } catch (IOException e1) {
-                e1.printStackTrace();
+                //e1.printStackTrace();
             }
-            e.printStackTrace();
-            return null;
+            //e.printStackTrace();
+            //return null;
         }
 
         //Get the compressed data

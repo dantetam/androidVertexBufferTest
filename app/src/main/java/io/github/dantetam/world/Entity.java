@@ -26,8 +26,8 @@ public abstract class Entity extends Representable {
     }
 
     public void move(Tile t) {
-        if (t != null) {
-            t.occupants.remove(this);
+        if (location != null) {
+            location.occupants.remove(this);
         }
         location = t;
         t.occupants.add(this);

@@ -9,6 +9,6 @@ public interface Traversable<T> {
 
     float dist(T t);
     List<T> neighbors();
-    boolean equals(T t);
+    boolean equals(Object t);
 
 }

@@ -332,6 +332,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
                     }
                 }
             });
+            
             System.out.println("Done loading.");
         }
 

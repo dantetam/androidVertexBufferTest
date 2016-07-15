@@ -12,6 +12,8 @@ import io.github.dantetam.opstrykontest.WorldSystem;
  */
 public class Person extends Entity {
 
+    public PersonType personType;
+
     public int age;
     public List<Tech> skills;
     public int actionPoints, maxActionPoints;
@@ -42,7 +44,7 @@ public class Person extends Entity {
     Move a person within the game by one tile and if the unit has action points.
     Return true if the game move was successful.
      */
-    private boolean gameMove(Tile t) {
+    public boolean gameMove(Tile t) {
         Tile location = location();
         if (location != null) {
             if (location.dist(t) == 1) {
@@ -108,6 +110,10 @@ public class Person extends Entity {
                     return false;
             }
         }
+    }
+
+    public enum PersonType {
+        WARRIOR;
     }
 
 }
