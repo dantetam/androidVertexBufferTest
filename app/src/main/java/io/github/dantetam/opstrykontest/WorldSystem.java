@@ -2,6 +2,7 @@ package io.github.dantetam.opstrykontest;
 
 import io.github.dantetam.world.ArtificialIntelligence;
 import io.github.dantetam.world.Clan;
+import io.github.dantetam.world.Pathfinder;
 import io.github.dantetam.world.Person;
 import io.github.dantetam.world.World;
 
@@ -12,6 +13,7 @@ public class WorldSystem {
 
     public World world;
     public ArtificialIntelligence artificialIntelligence;
+    public static WorldPathfinder worldPathfinder;
 
     public int turnNumber = 0;
 
@@ -21,6 +23,7 @@ public class WorldSystem {
         world = worldHandler.world;
         initClan(world.getClans().get(0));
         artificialIntelligence = new ArtificialIntelligence(world);
+        worldPathfinder = new WorldPathfinder(world);
     }
 
     public void initClan(Clan c) {

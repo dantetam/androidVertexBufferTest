@@ -327,6 +327,63 @@ public class WorldHandler {
         return generateHexes(textureHandle, world, cond);
     }
 
+    public Solid pathfinderRep(int textureHandle) {
+        if (mousePicker.selectedNeedsUpdating()) {
+            mousePicker.nextFrameSelectedNeedsUpdating = false;
+
+            if (mousePicker == null) {
+                storedSelectedTileSolid = null;
+                return null;
+            }
+            Tile selected = mousePicker.getSelectedTile();
+            if (selected == null)
+            {
+                storedSelectedTileSolid = null;
+                return null;
+            }
+            if (storedTileVertexPositions.get(selected) == null) {
+                storedSelectedTileSolid = null;
+                return null;
+            }
+
+            //mousePicker.selectedNeedsUpdating = false;
+
+            float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+
+            //Create some appropriately sized tables which will store preliminary buffer data
+            //Combine them all within these pieces of data.
+            final float[] totalCubePositionData = new float[hexData[0].length];
+            int cubePositionDataOffset = 0;
+            final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
+            int cubeNormalDataOffset = 0;
+            final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
+            int cubeTextureDataOffset = 0;
+
+            final float[] scaledData = scaleData(hexData[0], 1, 0, 1);
+
+            Vector3f selectedPos = storedTileVertexPositions.get(selected);
+
+            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.1f, selectedPos.z);
+
+            //Interleave all the new vtn data, per hex.
+            System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+            cubePositionDataOffset += thisCubePositionData.length;
+
+            System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+            cubeNormalDataOffset += hexData[1].length;
+            System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+            cubeTextureDataOffset += hexData[2].length;
+
+            float[][] tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+
+            storedSelectedTileSolid = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
+        }
+        if (storedSelectedTileSolid != null) {
+            storedSelectedTileSolid.rotate(mRenderer.frames % 360, 0, 1, 0);
+        }
+        return storedSelectedTileSolid;
+    }
+
     //TODO: Create a method which generalizes this process of getting preliminary centered OBJ data from a file,
     //modifying it by coordinates, and then turning it into a solid.
     //Perhaps in OBJLoader?

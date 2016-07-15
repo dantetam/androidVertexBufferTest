@@ -1,7 +1,5 @@
 package io.github.dantetam.world;
 
-import android.transition.TransitionValues;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,6 +15,10 @@ public class Pathfinder<GraphNode extends Traversable<GraphNode>> {
 
     public List<GraphNode> findPath(GraphNode start, final GraphNode end) {
         List<GraphNode> results = new ArrayList<>();
+        if (start.equals(end)) {
+            results.add(end);
+            return results;
+        }
         HashSet<GraphNode> visited = new HashSet<>();
         final HashMap<GraphNode, Double> dist = new HashMap<>();
         HashMap<GraphNode, GraphNode> prev = new HashMap<>();
@@ -28,6 +30,7 @@ public class Pathfinder<GraphNode extends Traversable<GraphNode>> {
                 GraphNode n1 = (GraphNode) o1;
                 GraphNode n2 = (GraphNode) o2;
                 if (n1.equals(n2)) return 0;
+                //return (int)((dist.get(n1) - dist.get(n2) + end.dist(n1) - end.dist(n2)*16.0d));
                 return dist.get(n1) - dist.get(n2) + end.dist(n1) - end.dist(n2) > 0 ? 1 : -1;
             }
         });
@@ -57,7 +60,7 @@ public class Pathfinder<GraphNode extends Traversable<GraphNode>> {
                 }
             }
         }
-        return results;
+        return null;
     }
 
 }

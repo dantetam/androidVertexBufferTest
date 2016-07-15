@@ -7,7 +7,8 @@ import java.util.List;
  */
 public interface Traversable<T> {
 
-    public float dist(T t);
-    public List<T> neighbors();
+    float dist(T t);
+    List<T> neighbors();
+    boolean equals(T t);
 
 }

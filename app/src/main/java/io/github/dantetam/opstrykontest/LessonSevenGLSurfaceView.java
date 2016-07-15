@@ -33,6 +33,7 @@ import java.util.Map;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Item;
+import io.github.dantetam.world.Person;
 import io.github.dantetam.world.Tile;
 
 public class LessonSevenGLSurfaceView extends GLSurfaceView
@@ -197,7 +198,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
     };
     public void generateSelectionStatMenu(PercentRelativeLayout selectedStatMenu) {
         final boolean selectedTileExists = mousePicker.getSelectedTile() != null;
-        boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
+        final boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
 
         LinkedHashMap<String, String> strings = new LinkedHashMap<>();
 
@@ -242,6 +243,10 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             else {
                 stringy += "Free)";
             }
+            if (entity instanceof Person) {
+                Person person = (Person) entity;
+                stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP";
+            }
             strings.put("text1", stringy);
         }
 
@@ -268,7 +273,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         MenuInflater inflater = unitSelectionMenu.getMenuInflater();
                         inflater.inflate(R.menu.resources_tooltip, unitSelectionMenu.getMenu());
                         String clanStringy = "";
-                        if (selectedTileExists) {
+                        if (selectedEntityExists) {
                             if (finalAffiliation.equals("Free")) {
                                 clanStringy = "This land has no influence.";
                             }
