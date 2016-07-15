@@ -16,7 +16,7 @@ public class Person extends Entity {
     public List<Tech> skills;
     public int actionPoints, maxActionPoints;
     public int health, maxHealth;
-    public List<String> actionsQueue; //Do actions at position 0 first
+    public List<Action> actionsQueue; //Do actions at position 0 first
 
     public Person(World world, Clan clan, String name) {
         super(world, clan);
@@ -24,6 +24,18 @@ public class Person extends Entity {
         this.name = name;
         skills = new ArrayList<>();
         actionsQueue = new ArrayList<>();
+    }
+
+    public void executeQueue() {
+        while (true) {
+            if (actionsQueue.size() == 0) return;
+            Action action = actionsQueue.get(0);
+            if (action.execute()) {
+                actionsQueue.remove(0);
+            } else {
+                break;
+            }
+        }
     }
 
     /*
@@ -46,6 +58,16 @@ public class Person extends Entity {
         return false;
     }
 
+    private void gameHealHealth() {
+        if (health < maxHealth) {
+            health += (int) (0.1d * maxHealth);
+            if (health > maxHealth) {
+                health = maxHealth;
+            }
+            actionPoints--;
+        }
+    }
+
     public void gameMovePath(Tile destination) {
         List<Tile> path = WorldSystem.worldPathfinder.findPath(location, destination);
         if (path == null) {
@@ -56,11 +78,34 @@ public class Person extends Entity {
             if (path.size() == 0) {
                 break;
             }
-            if (!gameMove(path.get(0))) { //Out of AP, invalid path?
-                Queue up the rest of the path here
+            if (!gameMove(path.get(0))) { //Out of AP
+                for (Tile t: path) {
+                    actionsQueue.add(new Action(ActionType.MOVE, t));
+                }
                 break;
             } else {
                 path.remove(0);
+            }
+        }
+    }
+
+    public enum ActionType {
+        MOVE;
+    }
+    public class Action {
+        public ActionType type;
+        public Object data;
+        Action(ActionType t, Object obj) {
+            type = t;
+            data = obj;
+        }
+        public boolean execute() {
+            switch (type) {
+                case MOVE:
+                    return gameMove((Tile) data);
+                default:
+                    System.out.println("Invalid action type: " + type);
+                    return false;
             }
         }
     }

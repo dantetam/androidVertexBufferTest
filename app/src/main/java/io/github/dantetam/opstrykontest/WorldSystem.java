@@ -31,9 +31,15 @@ public class WorldSystem {
     }
 
     public void turn() {
+        for (Person person: playerClan.people) {
+            person.executeQueue();
+        }
         for (Clan clan: world.getClans()) {
             if (!clan.equals(playerClan)) {
                 artificialIntelligence.computerClanActions(clan);
+            }
+            for (Person person: clan.people) {
+                person.executeQueue();
             }
         }
 
