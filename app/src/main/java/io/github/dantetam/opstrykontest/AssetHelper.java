@@ -61,11 +61,17 @@ public class AssetHelper {
      * @param assetInputPath The input file in the assets folder (read-only)
      */
     public float[][] compressIntoFloatData(String assetInputPath) {
-        InputStream inputStream;
+        InputStream inputStream = null;
         try {
             inputStream = assetManager.open(assetInputPath);
         } catch (IOException e) {
-            System.err.println("Could not find model in path (assets): " + assetInputPath);
+            String backup = "cube.obj";
+            System.err.println("Could not find model in path (assets): " + assetInputPath + "; using backup model: " + backup);
+            try {
+                inputStream = assetManager.open(backup);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
             return null;
         }

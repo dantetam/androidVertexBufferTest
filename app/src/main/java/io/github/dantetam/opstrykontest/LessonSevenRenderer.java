@@ -118,7 +118,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private Lines mLines;
     private Solid testMarker;
     private Solid selectedUnitMarker;
-    private MapModel highlights;
+    private MapModel tilesUnits;
 
     private Solid testDuplicate;
 
@@ -289,6 +289,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		//for (int i = 0; i < mCubes.parts.size(); i++) {
         if (mCubes == null || improvements == null || mCubes.parts.size() == 0) {
             mCubes = worldHandler.worldRep();
+            tilesUnits = worldHandler.updateTileUnits();
             improvements = worldHandler.tileImprovementRep();
             mLines = new Lines(mWhiteTextureHandle, worldHandler.tesselatedHexes[0], worldHandler.tesselatedHexes[1], worldHandler.tesselatedHexes[2]);
             mCubes.add(mLines);
@@ -301,10 +302,12 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             return;
         }
         mCubes = worldHandler.worldRep();
+        tilesUnits = worldHandler.updateTileUnits();
         testMarker = worldHandler.selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         ///highlights = worldHandler.tileHighlightRep();
         worldHandler.tileHighlightRep();
+
         //TODO: Turn highlights into a combined VBO, like biome representation
         //TODO: Convert to IBOs next?
 
@@ -333,6 +336,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         }
 
         renderModel(mCubes);
+        renderModel(tilesUnits);
         renderModel(improvements);
 
         renderSolid(testMarker);
