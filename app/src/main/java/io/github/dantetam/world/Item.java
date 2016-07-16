@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.dantetam.opstrykontest.Condition;
+import io.github.dantetam.opstrykontest.WorldGenerator;
 
 /**
  * Created by Dante on 6/16/2016.
@@ -113,8 +114,36 @@ public class Item {
     /*public static void generateResourcesForTile(Tile tile) {
 
     }*/
-    public static HashMap<String, Condition> conditionsForTile(Tile tile) {
-        HashMap<String, Condition> conditions = new HashMap<>();
+
+    /**
+     * Takes in the raw float data, consisting of percentages linked to each biome/terrain combination.
+     * This turns the data into a set of conditions linked to each ItemType, such that if the
+     * overridden condition is fulfilled, then allow the ItemType. This last bit is actually implemented in
+     * evaluateResourceConditions().
+     * @return all the items listed in the resource file, linked to the biome/terrain percentages
+     */
+    public static HashMap<ItemType, List<Condition>> conditionsForTile() {
+        HashMap<ItemType, List<Condition>> conditions = new HashMap<>();
+        HashMap<ItemType, float[][]> resourceSpawnRates = WorldGenerator.parseResourceSpawnRates();
+        for (Map.Entry<ItemType, float[][]> entry: resourceSpawnRates.entrySet()) {
+            float[][] data = entry.getValue();
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < data[0].length; j++) {
+                    Condition cond = new Condition() {
+                        public int biomeNum, terrainNum;
+                        public float chance;
+                        public boolean allowedTile(Tile tile) {
+                            return tile.biome.equals(Tile.Biome.fromInt(biomeNum)) &&
+                                    tile.terrain.equals(Tile.Terrain.fromInt(terrainNum)) &&
+                                    Math.random() < chance;
+                        }
+                        public void init(int a, int b, float c) {biomeNum = a; terrainNum = b; chance = c;}
+                    };
+                    cond.init(i, j, data[i][j]);
+                    conditions.get(entry.getKey()).add(cond);
+                }
+            }
+        }
         /*if (tile.biome == Tile.Biome.SEA) {
 
         }
@@ -147,11 +176,20 @@ public class Item {
         return conditions;
     }
 
-    public static List<ItemType> evaluateResourceConditions(Tile tile, HashMap<String, Condition> possibleResources) {
+    /**
+     * @param tile The tile for the conditions to be evaluated over
+     * @param possibleResources A set of conditions (biome/terrain) linked to each ItemType
+     * @return the set of resources generated on this tile per the conditions
+     */
+    public static List<ItemType> evaluateResourceConditions(Tile tile, HashMap<ItemType, List<Condition>> possibleResources) {
         List<ItemType> items = new ArrayList<>();
-        for (Map.Entry<String, Condition> en: possibleResources.entrySet()) {
-            if (en.getValue().allowedTile(tile)) {
-                items.add(ItemType.fromString(en.getKey()));
+        for (Map.Entry<ItemType, List<Condition>> en: possibleResources.entrySet()) {
+            ItemType itemToAdd = en.getKey();
+            List<Condition> conditions = en.getValue();
+            for (Condition condition: conditions) {
+                if (condition.allowedTile(tile)) {
+                    items.add(itemToAdd);
+                }
             }
         }
         return items;

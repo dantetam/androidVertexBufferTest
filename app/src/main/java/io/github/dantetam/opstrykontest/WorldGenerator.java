@@ -67,7 +67,7 @@ public class WorldGenerator {
         }
         return temp;*/
         for (Tile tile: world.getAllValidTiles()) {
-            HashMap<String, Condition> conditions = Item.conditionsForTile(tile);
+            HashMap<Item.ItemType, List<Condition>> conditions = Item.conditionsForTile(tile);
             List<Item.ItemType> resources = Item.evaluateResourceConditions(tile, conditions);
             for (Item.ItemType itemType: resources) {
                 tile.resources.add(new Item(itemType, 1));
@@ -175,20 +175,40 @@ public class WorldGenerator {
         return maxTile;
     }
 
-    public HashMap<Item, float[][]> resourceSpawnRates;
+    private static HashMap<Item.ItemType, float[][]> resourceSpawnRates;
 
-    public void parseResourceSpawnRates() {
-        List<String> data = FileParser.loadText(R.raw.resource_spawn_rates);
-        int numBiomes = Tile.Biome.numBiomes, numTerrains = Tile.Terrain.numTerrains;
-        int biomeCounter = 0;
-        String resource = ""; float[][] resourceData;
-        for (int i = 0; i < data.size(); i++) {
-            String stringy = data.get(i);
-            if (stringy.isEmpty() || stringy.equals("") || stringy.startsWith("//")) continue;
-            if (stringy.startsWith("Resource/")) {
-
+    public static HashMap<Item.ItemType, float[][]> parseResourceSpawnRates() {
+        if (resourceSpawnRates == null) {
+            resourceSpawnRates = new HashMap<>();
+            List<String> data = FileParser.loadText(R.raw.resource_spawn_rates);
+            int numBiomes = Tile.Biome.numBiomes, numTerrains = Tile.Terrain.numTerrains;
+            int biomeCounter = 0;
+            String resource = "";
+            float[][] resourceData = null;
+            for (int i = 0; i < data.size(); i++) {
+                String stringy = data.get(i);
+                if (stringy.isEmpty() || stringy.equals("") || stringy.startsWith("//")) continue;
+                if (stringy.startsWith("Resource/")) {
+                    if (resourceData != null) {
+                        resourceSpawnRates.put(Item.ItemType.fromString(resource), resourceData);
+                    }
+                    resource = stringy.substring(9);
+                    resourceData = new float[numBiomes][numTerrains];
+                } else {
+                    String[] values = stringy.split(" ");
+                    float[] parsed = new float[values.length];
+                    for (int j = 0; j < values.length; j++) {
+                        parsed[j] = Float.parseFloat(values[i]);
+                    }
+                    resourceData[biomeCounter] = parsed;
+                    biomeCounter++;
+                    if (biomeCounter == numBiomes) {
+                        biomeCounter = 0;
+                    }
+                }
             }
         }
+        return resourceSpawnRates;
     }
 
 }
