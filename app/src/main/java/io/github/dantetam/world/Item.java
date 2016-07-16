@@ -113,15 +113,20 @@ public class Item {
     /*public static void generateResourcesForTile(Tile tile) {
 
     }*/
-
     public static HashMap<String, Condition> conditionsForTile(Tile tile) {
         HashMap<String, Condition> conditions = new HashMap<>();
-        if (tile.biome == Tile.Biome.ICE) {
+        /*if (tile.biome == Tile.Biome.SEA) {
+
+        }
+        else if (tile.biome == Tile.Biome.ICE) {
             conditions.put("Ice", new Condition() {
                 public boolean allowedTile(Tile tile) {
                     return true;
                 }
             });
+        }
+        else if (tile.biome == Tile.Biome.TUNDRA) {
+
         }
         else if (tile.biome == Tile.Biome.DESERT) {
             conditions.put("Sand", new Condition() {
@@ -130,6 +135,15 @@ public class Item {
                 }
             });
         }
+        else if (tile.biome == Tile.Biome.STEPPE) {
+
+        }
+        else if (tile.biome == Tile.Biome.FOREST) {
+
+        }
+        else if (tile.biome == Tile.Biome.RAINFOREST) {
+
+        }*/
         return conditions;
     }
 

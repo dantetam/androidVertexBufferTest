@@ -42,7 +42,10 @@ public class MousePicker {
     public boolean pathNeedsUpdating = false;
     public List<Tile> path;
 
+    //public LessonSevenRenderer renderer;
+
     public MousePicker(float[] p, Camera c, int w, int h) {
+        //this.renderer = renderer;
         projMatrix = p;
         camera = c;
         viewMatrix = createViewMatrix(camera);
@@ -67,6 +70,11 @@ public class MousePicker {
                 camera.eyeZ - camera.eyeY/currentRay.y*currentRay.z
         );
         rayCastHit.scale(constant);
+
+        if (LessonSevenRenderer.debounceFrames > 0) {
+            changeSelectedTile(null);
+            return;
+        }
 
         //boolean tilesNeedUpdating = false;
         Tile previousSelected = selectedTile;

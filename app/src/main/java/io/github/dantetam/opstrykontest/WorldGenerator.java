@@ -175,4 +175,20 @@ public class WorldGenerator {
         return maxTile;
     }
 
+    public HashMap<Item, float[][]> resourceSpawnRates;
+
+    public void parseResourceSpawnRates() {
+        List<String> data = FileParser.loadText(R.raw.resource_spawn_rates);
+        int numBiomes = Tile.Biome.numBiomes, numTerrains = Tile.Terrain.numTerrains;
+        int biomeCounter = 0;
+        String resource = ""; float[][] resourceData;
+        for (int i = 0; i < data.size(); i++) {
+            String stringy = data.get(i);
+            if (stringy.isEmpty() || stringy.equals("") || stringy.startsWith("//")) continue;
+            if (stringy.startsWith("Resource/")) {
+
+            }
+        }
+    }
+
 }

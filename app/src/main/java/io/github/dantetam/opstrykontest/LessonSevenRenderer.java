@@ -132,6 +132,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private int WIDTH = 0, HEIGHT = 0;
 
     public static int frames = 0;
+    public static int debounceFrames = 0;
     public boolean buildingWorldFinished = false;
 	/**
 	 * Initialize the model data. Initialize other necessary classes.
@@ -144,7 +145,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
 
         camera = new Camera();
-        camera.moveTo(5f, 10f, 10f);
+        camera.moveTo(5f, 10f, 7.5f);
         camera.pointTo(5f, 5f, 5f);
 
         mousePicker = new MousePicker(mProjectionMatrix, camera, getWidth(), getHeight());
@@ -281,6 +282,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 glUnused) 
 	{
         frames++;
+        if (debounceFrames > 0) {
+            debounceFrames--;
+        }
 
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		//GLES20.glClearColor(0f/255f, 140f/255f, 255f/255f, 255f/255f);
@@ -332,7 +336,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
                     }
                 }
             });
-            
+            getUserInterfaceReady();
             System.out.println("Done loading.");
         }
 
@@ -449,6 +453,15 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //---
         solid.renderAll(solid.renderMode);
         //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+    }
+
+    private void getUserInterfaceReady() {
+        mLessonSevenActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                mLessonSevenActivity.findViewById(R.id.main_menu).setVisibility(View.VISIBLE);
+                mLessonSevenActivity.findViewById(R.id.turn_menu).setVisibility(View.VISIBLE);
+            }
+        });
     }
 
 }

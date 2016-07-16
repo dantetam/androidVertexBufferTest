@@ -137,7 +137,13 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 mousePicker.changeSelectedAction("");
                 return;
             }
-            previousSelectedEntity.move(mousePicker.getSelectedTile());
+            if (mousePicker.getSelectedTile() == null) {
+
+            }
+            else {
+                previousSelectedEntity.move(mousePicker.getSelectedTile());
+                LessonSevenRenderer.debounceFrames = 10;
+            }
             mousePicker.changeSelectedTile(null);
             mousePicker.changeSelectedAction("");
         } else {

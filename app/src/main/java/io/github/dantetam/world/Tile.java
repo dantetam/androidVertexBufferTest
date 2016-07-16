@@ -58,14 +58,15 @@ public class Tile extends Representable implements Traversable<Tile> {
     public enum Terrain {
         SHALLOW_SEA (0),
         DEEP_SEA (1),
-        PLAINS (2),
-        HILLS (3),
-        CLIFFS (4),
-        MOUNTAINS (5);
+        ISLANDS (2),
+        PLAINS (3),
+        HILLS (4),
+        CLIFFS (5),
+        MOUNTAINS (6);
         public int type;
         Terrain(int t) {type = t;}
-        private static Terrain[] types = {SHALLOW_SEA, DEEP_SEA, PLAINS, HILLS, CLIFFS, MOUNTAINS};
-        private static String[] names = {"Shallow Waters", "Deep Waters", "Plains", "Hills", "Cliffs", "Mountains"};
+        private static Terrain[] types = {SHALLOW_SEA, DEEP_SEA, ISLANDS, PLAINS, HILLS, CLIFFS, MOUNTAINS};
+        private static String[] names = {"Shallow Water", "Deep Water", "Islands", "Plains", "Hills", "Cliffs", "Mountains"};
         public static Terrain fromInt(int n) {
             if (n >= 0 && n < types.length) {
                 return types[n];
@@ -80,6 +81,66 @@ public class Tile extends Representable implements Traversable<Tile> {
         }
         public static final int numTerrains = types.length;
         public static final int numSeaTerrains = 2;
+    }
+
+    public enum Feature {
+        NO_FEATURE (-1),
+        OASIS (0);
+        public int id;
+        public String renderName;
+        Feature(int n) {
+            id = n;
+        }
+        Feature(Feature type) {
+            id = type.id;
+            renderName = type.renderName;
+        }
+        private static HashMap<Integer, Feature> types;
+        private static String[] names = {
+                "No feature",
+                "Oasis"
+        };
+        public static int numItems;
+
+        public static void init() {
+            types = new HashMap<>();
+            Feature[] allEnum = Feature.values();
+            for (int i = 0; i < allEnum.length; i++) {
+                Feature item = allEnum[i];
+                item.renderName = names[i];
+                types.put(item.id, item);
+            }
+            numItems = types.size();
+        }
+
+        public static Feature fromString(String name) {
+            if (types == null) {
+                init();
+            }
+            for (Feature item: values()) {
+                if (item.renderName.equalsIgnoreCase(name)) {
+                    return item;
+                }
+            }
+            System.out.println("Could not find resource name: " + name);
+            return null;
+        }
+
+        public static Feature fromInt(int n) {
+            if (types == null) {
+                init();
+            }
+            if (n >= 0 && n < numItems) {
+                return types.get(n);
+            }
+            throw new IllegalArgumentException("Invalid item type: " + n);
+        }
+        public static String nameFromInt(int n) {
+            if (n >= 0 && n < names.length) {
+                return names[n];
+            }
+            throw new IllegalArgumentException("Invalid item type: " + n);
+        }
     }
 
     public Tile(World world, int a, int b) {
