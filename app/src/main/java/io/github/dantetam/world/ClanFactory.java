@@ -89,19 +89,14 @@ public class ClanFactory {
         /*Clan.ClanType clanType;
         Clan.ClanFaction clanFaction;*/
         List<Vector4f> colors = clanTypeColorSchemes.get(clanType);
+        List<Vector4f> secondaryColors = clanFactionColorSchemes.get(clanFaction);
         Vector4f primaryColor, secondaryColor;
-        if (colors.size() == 0) {
+        if (colors.size() == 0 || secondaryColors.size() == 0) {
             return null;
         }
         else {
             primaryColor = colors.remove((int)(Math.random()*colors.size())).scaled(255f);
-        }
-        colors = clanFactionColorSchemes.get(clanFaction);
-        if (colors.size() == 0) {
-            return null;
-        }
-        else {
-            secondaryColor = colors.remove((int)(Math.random()*colors.size())).scaled(255f);
+            secondaryColor = secondaryColors.remove((int)(Math.random()*colors.size())).scaled(255f);
         }
         /*switch (type) {
             case 0:
@@ -115,7 +110,7 @@ public class ClanFactory {
         clan.color = primaryColor;
         clan.reducedColor = primaryColor.scaled(0.7f);
         clan.secondaryColor = secondaryColor;
-        clan.reducedSecondaryColor = primaryColor.scaled(0.7f);
+        clan.reducedSecondaryColor = secondaryColor.scaled(0.7f);
         clan.clanType = clanType;
         clan.clanFaction = clanFaction;
         return clan;

@@ -116,6 +116,7 @@ public class WorldGenerator {
         List<Tile> clanStartingLocations = new ArrayList<>();
         List<Tile> validTiles = world.getAllValidTiles();
         Tile start = validTiles.get((int)(Math.random()*validTiles.size()));
+
         clanStartingLocations.add(start);
         for (int i = 0; i < clans.size() - 1; i++) {
             //Find the averaged arithmetic center of the existing conditions

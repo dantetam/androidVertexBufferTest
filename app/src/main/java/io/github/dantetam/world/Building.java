@@ -49,11 +49,14 @@ public class Building extends Entity {
 
     public BuildingType buildingType;
 
+    public double completionPercentage;
+
     public Building(World world, Clan clan, BuildingType type) {
         super(world, clan);
         clan.buildings.add(this);
         buildingType = type;
         name = type.name;
+        completionPercentage = 1;
     }
 
     /*public Building(Tile t, BuildingType type) {
