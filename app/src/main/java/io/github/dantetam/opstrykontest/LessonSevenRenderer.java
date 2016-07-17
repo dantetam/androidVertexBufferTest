@@ -1,5 +1,6 @@
 package io.github.dantetam.opstrykontest;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -143,6 +144,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         assetHelper = new AssetHelper(lessonSevenActivity, assetManager);
 		mGlSurfaceView = (LessonSevenGLSurfaceView)glSurfaceView;
         mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
+
+        FileParser.mActivity = mLessonSevenActivity;
 
         camera = new Camera();
         camera.moveTo(5f, 10f, 7.5f);

@@ -140,7 +140,15 @@ public class Item {
                         public void init(int a, int b, float c) {biomeNum = a; terrainNum = b; chance = c;}
                     };
                     cond.init(i, j, data[i][j]);
-                    conditions.get(entry.getKey()).add(cond);
+                    List<Condition> resourceConditions = conditions.get(entry.getKey());
+                    if (resourceConditions != null) {
+                        resourceConditions.add(cond);
+                    }
+                    else {
+                        resourceConditions = new ArrayList<>();
+                        resourceConditions.add(cond);
+                        conditions.put(entry.getKey(), resourceConditions);
+                    }
                 }
             }
         }

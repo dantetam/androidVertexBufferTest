@@ -67,7 +67,7 @@ public class WorldGenerator {
         }
         return temp;*/
         for (Tile tile: world.getAllValidTiles()) {
-            HashMap<Item.ItemType, List<Condition>> conditions = Item.conditionsForTile(tile);
+            HashMap<Item.ItemType, List<Condition>> conditions = Item.conditionsForTile();
             List<Item.ItemType> resources = Item.evaluateResourceConditions(tile, conditions);
             for (Item.ItemType itemType: resources) {
                 tile.resources.add(new Item(itemType, 1));
@@ -195,10 +195,11 @@ public class WorldGenerator {
                     resource = stringy.substring(9);
                     resourceData = new float[numBiomes][numTerrains];
                 } else {
+                    //System.out.println(stringy + "<end");
                     String[] values = stringy.split(" ");
                     float[] parsed = new float[values.length];
                     for (int j = 0; j < values.length; j++) {
-                        parsed[j] = Float.parseFloat(values[i]);
+                        parsed[j] = Float.parseFloat(values[j]);
                     }
                     resourceData[biomeCounter] = parsed;
                     biomeCounter++;
