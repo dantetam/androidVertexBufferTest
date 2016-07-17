@@ -173,6 +173,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 if (previousSelectedEntity instanceof Person) {
                     String buildingToBuild = action.substring(6);
                     Building newBuilding = new Building(previousSelectedEntity.world, previousSelectedEntity.clan, Building.BuildingType.fromString(buildingToBuild));
+
                     newBuilding.completionPercentage = 0;
 
                     Person personSelected = (Person) previousSelectedEntity;

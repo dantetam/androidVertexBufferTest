@@ -1,6 +1,7 @@
 package io.github.dantetam.opstrykontest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -96,7 +97,7 @@ public class WorldGenerator {
 
     private List<Clan> makeClans() {
         List<Clan> clans = new ArrayList<>();
-        int num = world.getAllValidTiles().size() / 10;
+        int num = world.getAllValidTiles().size() / 20;
         for (int i = 0; i < num; i++) {
             Clan clan;
             if (i == 0) {
@@ -129,8 +130,19 @@ public class WorldGenerator {
             centerR /= clanStartingLocations.size();
 
             Tile furthest = findFurthestTileAway(world, Math.round(centerQ), Math.round(centerR));
-            while (clanStartingLocations.contains(furthest)) {
-                furthest = validTiles.get((int)(Math.random()*validTiles.size()));
+            while (true) {
+                boolean contains = false;
+                for (Tile clanCenter: clanStartingLocations) {
+                    List<Tile> neighbors = clanCenter.neighbors();
+                    neighbors.add(clanCenter);
+                    contains = contains || neighbors.contains(furthest);
+                }
+                if (contains) {
+                    furthest = validTiles.get((int) (Math.random() * validTiles.size()));
+                }
+                else {
+                    break;
+                }
             }
             clanStartingLocations.add(furthest);
         }
@@ -138,9 +150,11 @@ public class WorldGenerator {
         for (int i = 0; i < clans.size(); i++) {
             Clan clan = clans.get(i);
             Tile clanHome = clanStartingLocations.get(i);
-            Set<Tile> territory = world.getRing(clanHome, 2);
+            Collection<Tile> territory = world.getRing(clanHome, 1);
             for (Tile territoryTile: territory) {
-                world.setTileOwner(territoryTile, clan);
+                if (world.getTileOwner(territoryTile) == null) {
+                    world.setTileOwner(territoryTile, clan);
+                }
             }
             Building first = new Building(world, clan, Building.BuildingType.ENCAMPMENT);
             first.move(clanHome);

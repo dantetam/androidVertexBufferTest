@@ -209,8 +209,35 @@ public class WorldHandler {
     }
 
     public MapModel tileImprovementRep() {
-        if (improvementsStored == null)
+        if (improvementsStored == null) {
             updateTileImprovement(world.getAllValidTiles());
+        }
+        else {
+            List<Tile> tilesToUpdate = new ArrayList<>();
+            if (previousImprovements == null) {
+                previousImprovements = new HashMap<>();
+                for (Tile tile : world.getAllValidTiles()) {
+                    if (tile.improvement != null)
+                        previousImprovements.put(tile, tile.improvement);
+                }
+            } else {
+                for (Tile tile : world.getAllValidTiles()) {
+                    if (tile.occupants.size() > 0) {
+                        if (previousImprovements.get(tile) == null || !previousImprovements.get(tile).equals(tile.improvement)) {
+                            tilesToUpdate.add(tile);
+                            previousImprovements.put(tile, tile.improvement);
+                        }
+                    } else {
+                        if (previousImprovements.get(tile) != null) {
+                            tilesToUpdate.add(tile);
+                            previousImprovements.put(tile, null);
+                            //previousUnits.put(tile, tile.occupants.get(0));
+                        }
+                    }
+                }
+            }
+            updateTileImprovement(tilesToUpdate);
+        }
         return improvementsStored;
     }
 
@@ -288,6 +315,7 @@ public class WorldHandler {
     }
 
     public HashMap<Tile, Entity> previousUnits = null;
+    public HashMap<Tile, Building> previousImprovements = null;
 
     private MapModel updateTileUnits(List<Tile> tiles) {
         /*if (improvementsStored == null) {
@@ -654,10 +682,12 @@ public class WorldHandler {
         final float TRANSLATE_FACTORX = 3.3f;
         final float TRANSLATE_FACTORZ = 4f;
 
+        int xx = 0, zz = 0;
         for (int x = 0; x < world.arrayLengthX; x++) {
             for (int z = 0; z < world.arrayLengthZ; z++) {
                 Tile tile = world.getTile(x,z);
                 if (tile == null) continue;
+                zz++;
                 if (condition.allowed(tile)) {
                     tile.elevation = 0;
 
@@ -666,7 +696,7 @@ public class WorldHandler {
                     final float[] scaledData = scaleData(hexData[0], 1, tile.elevation / 5f, 1);
 
                     //Store these positions for later use when we place tile improvements and such
-                    Vector3f vertices = new Vector3f(x * TRANSLATE_FACTORX, tile.elevation / 5f, z * TRANSLATE_FACTORZ + extra);
+                    Vector3f vertices = new Vector3f(xx * TRANSLATE_FACTORX, tile.elevation / 5f, - zz * TRANSLATE_FACTORZ + extra);
                     storedTileVertexPositions.put(tile, vertices);
 
                     final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y/2f, vertices.z);
@@ -681,6 +711,8 @@ public class WorldHandler {
                     cubeTextureDataOffset += hexData[2].length;
                 }
             }
+            xx++;
+            zz = 0;
             //}
         }
 

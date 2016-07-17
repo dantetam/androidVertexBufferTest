@@ -1,6 +1,7 @@
 package io.github.dantetam.world;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -232,12 +233,15 @@ public class World {
     /**
      * Generalize with a recursive traversal.
      */
-    public Set<Tile> getRing(Tile t, int radius) {
+    public Collection<Tile> getRing(Tile t, int radius) {
         Set<Tile> rings = new HashSet<>();
         rings.add(t);
+        if (radius == 1) {
+            return neighbors(t);
+        }
         if (radius > 0) {
             for (Tile neighbor: neighbors(t)) {
-                Set<Tile> neighborRing = getRing(neighbor, radius - 1);
+                Collection<Tile> neighborRing = getRing(neighbor, radius - 1);
                 for (Tile neighborRingTile: neighborRing) {
                     rings.add(neighborRingTile);
                 }

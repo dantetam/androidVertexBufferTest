@@ -66,6 +66,9 @@ public class Person extends Entity {
     }
 
     public ActionStatus gameBuild(Building b) {
+        if (b.location() == null) {
+            b.move(location);
+        }
         if (b.completionPercentage < 1) {
             if (actionPoints <= 0) {
                 return ActionStatus.OUT_OF_ENERGY;
