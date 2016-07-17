@@ -44,6 +44,7 @@ public class LessonSevenActivity extends Activity implements
     private PopupMenu worldGenMenu;
     private PopupMenu unitSelectionMenu;
     private PopupMenu actionSelectionMenu;
+    private PopupMenu buildSelectionMenu;
 
     private Clan playerClan;
 
@@ -243,12 +244,25 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
+    public boolean onCreateBuildSelectionMenu(Menu menu) {
+        MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "Build Option 1");
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                mRenderer.mousePicker.changeSelectedAction("Build/Encampment");
+                //System.out.println(mRenderer.mousePicker.getSelectedEntity());
+                return false;
+            }
+        });
+        return true;
+    }
+
     public void onClickUnitSelectedButton(View v) {
 
     }
 
     public boolean onCreateActionSelectionMenu(final View chainView, Menu menu) {
         Entity entity = mRenderer.mousePicker.getSelectedEntity();
+        final LessonSevenActivity mActivity = this;
         if (entity != null) {
             MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "Move");
             menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -256,6 +270,23 @@ public class LessonSevenActivity extends Activity implements
                     mRenderer.mousePicker.changeSelectedAction("Move");
                     Button button = (Button) chainView;
                     button.setText("Move Unit");
+                    return false;
+                }
+            });
+
+            MenuItem menuItem2 = menu.add(Menu.NONE, 2, Menu.NONE, "Build");
+            menuItem2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    mRenderer.mousePicker.changeSelectedAction("Build");
+                    Button button = (Button) chainView;
+                    button.setText("Build");
+
+                    buildSelectionMenu = new PopupMenu(mActivity, chainView);
+                    MenuInflater inflater = buildSelectionMenu.getMenuInflater();
+                    inflater.inflate(R.menu.build_selection_menu, buildSelectionMenu.getMenu());
+                    onCreateBuildSelectionMenu(buildSelectionMenu.getMenu());
+                    buildSelectionMenu.show();
+
                     return false;
                 }
             });

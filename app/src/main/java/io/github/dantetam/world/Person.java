@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dantetam.opstrykontest.WorldSystem;
+import static io.github.dantetam.world.Action.ActionType;
+import static io.github.dantetam.world.Action.ActionStatus;
 
 /**
  * Created by Dante on 6/13/2016.
@@ -29,7 +31,7 @@ public class Person extends Entity {
         while (true) {
             if (actionsQueue.size() == 0) return;
             Action action = actionsQueue.get(0);
-            ActionStatus status = action.execute();
+            ActionStatus status = action.execute(this);
             /*if (action.execute() == ActionStatus.ALREADY_COMPLETED || action.execute() == ActionStatus.EXECUTED) {
                 actionsQueue.remove(0);
             } else {
@@ -56,24 +58,11 @@ public class Person extends Entity {
     Return true if the game move was successful.
      */
     public ActionStatus gameMove(Tile t) {
-        Tile location = location();
-        if (location != null) {
-            float dist = location.dist(t);
-            if (actionPoints <= 0) {
-                return ActionStatus.OUT_OF_ENERGY;
-            }
-            if (dist == 1) {
-                actionPoints--;
-                super.move(t);
-                return ActionStatus.EXECUTED;
-            }
-            else if (dist == 0) {
-                return ActionStatus.ALREADY_COMPLETED;
-            }
+        ActionStatus moved = super.gameMove(t);
+        if (moved == ActionStatus.EXECUTED) {
+            actionPoints--;
         }
-        System.err.println("Invalid game move: ");
-        System.err.println(location + "; " + location.dist(t) + "; " + actionPoints);
-        return ActionStatus.IMPOSSIBLE;
+        return moved;
     }
 
     public ActionStatus gameBuild(Building b) {
@@ -129,22 +118,8 @@ public class Person extends Entity {
         }
     }
 
-    public class PersonAction extends Person.Action {
-        PersonAction(ActionType t, Object obj) {
-            super(t, obj);
-        }
-        public ActionStatus execute() {
-            switch (type) {
-                case BUILD:
-                    return gameBuild((Building) data);
-                case MOVE:
-                    return gameMove((Tile) data);
-                default:
-                    System.out.println("Invalid action type: " + type);
-                    return ActionStatus.IMPOSSIBLE;
-            }
-        }
+    public enum PersonType {
+        WARRIOR;
     }
-
 
 }

@@ -19,12 +19,22 @@ public class Building extends Entity {
         BuildingType(int t, String n) {id = t; name = n;}
         private static BuildingType[] rawTypes = BuildingType.class.getEnumConstants();
         public static HashMap<Integer, BuildingType> types = null;
+        public static HashMap<String, BuildingType> typesByName = null;
         public static BuildingType fromInt(int n) {
             if (types == null) {
                 init();
             }
             if (types.containsKey(n)) {
                 return types.get(n);
+            }
+            throw new IllegalArgumentException("Invalid terrain type: " + n);
+        }
+        public static BuildingType fromString(String n) {
+            if (typesByName == null) {
+                init();
+            }
+            if (typesByName.containsKey(n)) {
+                return typesByName.get(n);
             }
             throw new IllegalArgumentException("Invalid terrain type: " + n);
         }
@@ -35,6 +45,10 @@ public class Building extends Entity {
             types = new HashMap<>();
             for (int i = 0; i < rawTypes.length; i++) {
                 types.put(rawTypes[i].id, rawTypes[i]);
+            }
+            typesByName = new HashMap<>();
+            for (int i = 0; i < rawTypes.length; i++) {
+                typesByName.put(rawTypes[i].name, rawTypes[i]);
             }
         }
         private static final int numBuildingTypes = 0;

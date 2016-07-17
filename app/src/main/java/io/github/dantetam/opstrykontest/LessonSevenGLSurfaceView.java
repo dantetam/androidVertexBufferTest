@@ -30,10 +30,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import io.github.dantetam.world.Action;
+import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Person;
+import io.github.dantetam.world.PersonAction;
 import io.github.dantetam.world.Tile;
 
 public class LessonSevenGLSurfaceView extends GLSurfaceView
@@ -145,12 +148,45 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
             }
             else {
-                previousSelectedEntity.move(mousePicker.getSelectedTile());
-                LessonSevenRenderer.debounceFrames = 10;
+                if (previousSelectedEntity instanceof Person) {
+                    Person personSelected = (Person) previousSelectedEntity;
+                    if (!personSelected.location().equals(mousePicker.getSelectedTile())) {
+                        personSelected.gameMovePath(mousePicker.getSelectedTile());
+                    }
+                }
+                //previousSelectedEntity.move(mousePicker.getSelectedTile());
             }
+            LessonSevenRenderer.debounceFrames = 10;
             mousePicker.changeSelectedTile(null);
             mousePicker.changeSelectedAction("");
-        } else {
+        }
+        else if (action.startsWith("Build/")) {
+            if (previousSelectedEntity == null) {
+                System.err.println("Invalid 'Build' action, no selected entity before click");
+                mousePicker.changeSelectedAction("");
+                return;
+            }
+            if (mousePicker.getSelectedTile() == null) {
+
+            }
+            else {
+                if (previousSelectedEntity instanceof Person) {
+                    String buildingToBuild = action.substring(6);
+                    Building newBuilding = new Building(previousSelectedEntity.world, previousSelectedEntity.clan, Building.BuildingType.fromString(buildingToBuild));
+                    newBuilding.completionPercentage = 0;
+
+                    Person personSelected = (Person) previousSelectedEntity;
+                    if (!personSelected.location().equals(mousePicker.getSelectedTile())) {
+                        personSelected.gameMovePath(mousePicker.getSelectedTile());
+                    }
+                    personSelected.actionsQueue.add(new PersonAction(Action.ActionType.BUILD, newBuilding));
+                }
+            }
+            LessonSevenRenderer.debounceFrames = 10;
+            mousePicker.changeSelectedTile(null);
+            mousePicker.changeSelectedAction("");
+        }
+        else {
             System.err.println("Invalid action identifier: " + action);
             mousePicker.changeSelectedAction("");
         }
