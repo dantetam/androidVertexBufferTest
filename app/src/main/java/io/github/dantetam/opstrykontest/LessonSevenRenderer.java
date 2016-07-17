@@ -17,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import io.github.dantetam.world.ClanFactory;
 import io.github.dantetam.world.Tile;
 
 /**
@@ -139,6 +140,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	 * Initialize the model data. Initialize other necessary classes.
 	 */
 	public LessonSevenRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
+        ClanFactory.init();
+
 		mLessonSevenActivity = lessonSevenActivity;
         assetManager = mLessonSevenActivity.getAssets();
         assetHelper = new AssetHelper(lessonSevenActivity, assetManager);
@@ -153,12 +156,13 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         mousePicker = new MousePicker(mProjectionMatrix, camera, getWidth(), getHeight());
         updatePerspectiveMatrix(getWidth(), getHeight());
-        mGlSurfaceView.init(mLessonSevenActivity, mousePicker);
 
         worldHandler = new WorldHandler(mLessonSevenActivity, this, mousePicker, assetHelper, WORLD_LENGTH, WORLD_LENGTH);
         ColorTextureHelper.init(mLessonSevenActivity);
 
         worldSystem = new WorldSystem(worldHandler);
+
+        mGlSurfaceView.init(mLessonSevenActivity, mousePicker, worldSystem.playerClan);
         //worldSystem.initClan(worldHandler.world.cl);
         //testMarker = worldHandler.testMarker(mAndroidDataHandle, mousePicker);
         //world = new World(WORLD_LENGTH, WORLD_LENGTH);

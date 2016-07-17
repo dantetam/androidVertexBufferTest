@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
+import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Tile;
 
@@ -43,6 +44,8 @@ public class LessonSevenActivity extends Activity implements
     private PopupMenu worldGenMenu;
     private PopupMenu unitSelectionMenu;
     private PopupMenu actionSelectionMenu;
+
+    private Clan playerClan;
 
     /*public void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -123,6 +126,8 @@ public class LessonSevenActivity extends Activity implements
         mDetector.setOnDoubleTapListener(this);
 
         registerForContextMenu(mGLSurfaceView);
+
+        playerClan = mRenderer.worldSystem.playerClan;
     }
 
 	@Override

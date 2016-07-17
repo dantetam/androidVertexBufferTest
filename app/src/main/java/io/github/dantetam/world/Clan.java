@@ -13,16 +13,15 @@ public class Clan {
 
     public String name;
     public Vector4f color, reducedColor;
+    public Vector4f secondaryColor, reducedSecondaryColor;
     public List<Person> people;
     public ClanType clanType;
     public ClanFaction clanFaction;
 
     public List<Building> buildings;
 
-    public Clan(String n, Vector4f c) {
+    public Clan(String n) {
         name = n;
-        color = c;
-        reducedColor = color.scaled(0.7f);
         people = new ArrayList<>();
         buildings = new ArrayList<>();
     }
@@ -33,13 +32,22 @@ public class Clan {
         CLAN_TRADITIONAL,
         CLAN_SETTLER;
         public static ClanType[] types = null;
-        public static int numClanTypes = -1;
+        private static int numClanTypes = -1;
+        /*public static int getNumClanTypes() {
+            if (types == null) {
+                init();
+            }
+            return numClanTypes;
+        }*/
         public static ClanType random() {
             if (types == null) {
-                types = ClanType.values();
-                numClanTypes = types.length;
+                init();
             }
             return types[(int)(Math.random()*numClanTypes)];
+        }
+        private static void init() {
+            types = ClanType.values();
+            numClanTypes = types.length;
         }
     }
 

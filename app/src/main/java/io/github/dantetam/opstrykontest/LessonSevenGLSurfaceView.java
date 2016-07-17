@@ -49,6 +49,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
     private MousePicker mousePicker;
 
+    private Clan playerClan;
+
     //private Tile selectedTile = null;
         	
 	public LessonSevenGLSurfaceView(Context context)
@@ -61,9 +63,11 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 		super(context, attrs);
 	}
 
-    public void init(LessonSevenActivity activity, MousePicker mousePicker) {
+    public void init(LessonSevenActivity activity, MousePicker mousePicker, Clan playerClan) {
         mActivity = activity;
         this.mousePicker = mousePicker;
+        this.playerClan = playerClan;
+        //playerClan = mRenderer.worldSystem.playerClan;
     }
 
     public static String actionToString(int action) {
@@ -165,13 +169,15 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         if (mousePicker.selectedNeedsUpdating()) {
             mousePicker.nextFrameSelectedNeedsUpdating = false;
 
-            boolean selectedTileExists = mousePicker.getSelectedTile() != null;
-            boolean selectedEntityExists = mousePicker.getSelectedEntity() != null;
+            Tile selectedTile = mousePicker.getSelectedTile();
+            Entity selectedEntity = mousePicker.getSelectedEntity();
+            boolean selectedTileExists = selectedTile != null;
+            boolean selectedEntityExists = selectedEntity != null;
 
             mActivity.findViewById(R.id.build_menu).setVisibility(selectedTileExists ? View.VISIBLE : View.INVISIBLE);
 
             Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
-            selectedEntityMenu.setVisibility(selectedEntityExists ? View.VISIBLE : View.INVISIBLE);
+            selectedEntityMenu.setVisibility(selectedEntityExists && playerClan.equals(selectedEntity.clan) ? View.VISIBLE : View.INVISIBLE);
             if (selectedEntityExists) {
                 //selectedEntityMenu.setText(mousePicker.getSelectedEntity().name);
                 selectedEntityMenu.setText("Actions");

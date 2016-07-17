@@ -7,6 +7,7 @@ import java.util.Set;
 
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Clan;
+import io.github.dantetam.world.ClanFactory;
 import io.github.dantetam.world.DiamondSquare;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Item;
@@ -97,10 +98,14 @@ public class WorldGenerator {
         List<Clan> clans = new ArrayList<>();
         int num = world.getAllValidTiles().size() / 10;
         for (int i = 0; i < num; i++) {
-            Vector4f color = new Vector4f((int)(Math.random()*255f), 0f, (int)(Math.random()*255f), 1f);
-            Clan clan = new Clan("Clan" + i, color);
-            clan.clanType = Clan.ClanType.random();
-            clan.clanFaction = Clan.ClanFaction.random();
+            Clan clan;
+            if (i == 0) {
+                clan = ClanFactory.randomClan();
+                clan.name = "PlayerClan";
+            }
+            else {
+                clan = ClanFactory.randomClan();
+            }
             clans.add(clan);
         }
         return clans;
