@@ -231,10 +231,12 @@ public class World {
      */
     public Collection<Tile> getRing(Tile t, int radius) {
         Set<Tile> rings = new HashSet<>();
-        rings.add(t);
         if (radius == 1) {
-            return neighbors(t);
+            Collection<Tile> tiles = neighbors(t);
+            tiles.add(t);
+            return tiles;
         }
+        rings.add(t);
         if (radius > 0) {
             for (Tile neighbor: neighbors(t)) {
                 Collection<Tile> neighborRing = getRing(neighbor, radius - 1);

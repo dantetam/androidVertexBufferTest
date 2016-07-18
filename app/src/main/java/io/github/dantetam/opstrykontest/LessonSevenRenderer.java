@@ -129,7 +129,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
     public WorldHandler worldHandler;
     public WorldSystem worldSystem;
-    public static final int WORLD_LENGTH = 26;
+    public static final int WORLD_LENGTH = 8;
 
     private int WIDTH = 0, HEIGHT = 0;
 
@@ -303,7 +303,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             tilesUnits = worldHandler.updateTileUnits();
             improvements = worldHandler.tileImprovementRep();
             mLines = new Lines(mWhiteTextureHandle, worldHandler.tesselatedHexes[0], worldHandler.tesselatedHexes[1], worldHandler.tesselatedHexes[2]);
-            mCubes.add(mLines);
+            //mCubes.add(mLines);
 
             mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
 
@@ -314,6 +314,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         }
         mCubes = worldHandler.worldRep();
         tilesUnits = worldHandler.updateTileUnits();
+        improvements = worldHandler.tileImprovementRep();
         testMarker = worldHandler.selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         ///highlights = worldHandler.tileHighlightRep();

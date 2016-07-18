@@ -279,6 +279,75 @@ public class WorldHandler {
         return improvementsStored;
     }
 
+    public MapModel<Tile> previousYieldRep;
+    public HashMap<Tile, Integer> previousTileFood, previousTileProduction, previousTileScience, previousTileGold;
+    public MapModel updateTileYieldRep() {
+        List<Tile> validTiles = world.getAllValidTiles();
+        if (previousTileFood == null) {
+            previousTileFood = new HashMap<>();
+            previousTileProduction = new HashMap<>();
+            previousTileScience = new HashMap<>();
+            previousTileGold = new HashMap<>();
+            for (Tile tile: validTiles) {
+                previousTileFood.put(tile, tile.food);
+                previousTileProduction.put(tile, tile.production);
+                previousTileScience.put(tile, tile.science);
+                previousTileGold.put(tile, tile.gold);
+            }
+            updateTileYieldRep(validTiles);
+        }
+        else {
+            List<Tile> tilesToUpdate = new ArrayList<>();
+            for (Tile tile: validTiles) {
+                if (previousTileFood.get(tile) != tile.food ||
+                        previousTileProduction.get(tile) != tile.production ||
+                        previousTileScience.get(tile) != tile.science ||
+                        previousTileGold.get(tile) != tile.gold) {
+                    tilesToUpdate.add(tile);
+                }
+            }
+            updateTileYieldRep(tilesToUpdate);
+        }
+    }
+
+    public MapModel updateTileYieldRep(List<Tile> tiles) {
+        if (previousYieldRep == null) {
+            previousYieldRep = new MapModel<Tile>();
+        }
+        for (Tile tile: tiles) {
+            float[][] quadData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.quad);
+
+
+
+            //Create some appropriately sized tables which will store preliminary buffer data
+            //Combine them all within these pieces of data.
+            final float[] totalCubePositionData = new float[hexData[0].length * numHexesToRender];
+            int cubePositionDataOffset = 0;
+            final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * numHexesToRender];
+            int cubeNormalDataOffset = 0;
+            final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * numHexesToRender];
+            int cubeTextureDataOffset = 0;
+
+            Vector3f vertices = storedTileVertexPositions.get(tile);
+
+            float[] scaledData = scaleData(hexData[0], 0.4f, 1f, 0.4f);
+            final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y + 0.3f, vertices.z);
+
+            //Interleave all the new vtn data, per hex.
+            System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+            cubePositionDataOffset += thisCubePositionData.length;
+
+            System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+            cubeNormalDataOffset += hexData[1].length;
+            System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+            cubeTextureDataOffset += hexData[2].length;
+
+            float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+            Solid hexes = ObjLoader.loadSolid(textureHandle, null, generatedData);
+            storedPathSolid = hexes;
+        }
+    }
+
     public MapModel updateTileUnits() {
         List<Tile> tilesToUpdate = new ArrayList<>();
         if (previousUnits == null) {

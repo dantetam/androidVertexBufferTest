@@ -181,6 +181,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         personSelected.gameMovePath(mousePicker.getSelectedTile());
                     }
                     personSelected.actionsQueue.add(new PersonAction(Action.ActionType.BUILD, newBuilding));
+                    personSelected.executeQueue();
                 }
             }
             LessonSevenRenderer.debounceFrames = 10;
@@ -270,7 +271,9 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 strings.put("text3", "Can build improvement");
             }
             else {
-                strings.put("text3", selected.improvement.name);
+                int p = (int)(selected.improvement.completionPercentage * 100d);
+                String extra = p < 1 ? "(" + p + "% Completed)" : "";
+                strings.put("text3", selected.improvement.name + extra);
             }
             if (selected.resources.size() > 0) {
                 String stringy = "";

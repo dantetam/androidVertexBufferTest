@@ -150,6 +150,7 @@ public class WorldGenerator {
         for (int i = 0; i < clans.size(); i++) {
             Clan clan = clans.get(i);
             Tile clanHome = clanStartingLocations.get(i);
+            //world.setTileOwner(clanHome);
             Collection<Tile> territory = world.getRing(clanHome, 1);
             for (Tile territoryTile: territory) {
                 if (world.getTileOwner(territoryTile) == null) {
