@@ -229,7 +229,8 @@ public class LessonSevenActivity extends Activity implements
             else {
                 for (int i = 0; i < selected.occupants.size(); i++) {
                     final Entity en = selected.occupants.get(i);
-                    MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, en.name + " (" + en.clan.name + ") " + en.actionPoints + "/" + en.maxActionPoints + " AP");
+                    String extra = playerClan.equals(en.clan) ? " " + en.actionPoints + "/" + en.maxActionPoints + " AP" : "";
+                    MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, en.name + " (" + en.clan.name + ")" + extra);
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             mRenderer.mousePicker.changeSelectedTile(null);

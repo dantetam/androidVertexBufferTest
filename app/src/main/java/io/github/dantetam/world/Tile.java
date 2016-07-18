@@ -18,6 +18,15 @@ public class Tile extends Representable implements Traversable<Tile> {
     public List<Item> resources;
     public List<Entity> occupants;
 
+    public int food, production, science, gold;
+    public void initBaseResources(int a, int b, int c, int d) {
+        food = a; production = b; science = c; gold = d;
+    }
+    public void addBaseResources(int a, int b, int c, int d) {
+        food += a; production += b; science += c; gold += d;
+    }
+    public int numSpaces;
+
     public enum Biome {
         SEA (0),
         ICE (1),
@@ -143,12 +152,15 @@ public class Tile extends Representable implements Traversable<Tile> {
         }
     }
 
-    public Tile(World world, int a, int b) {
+    public Tile() {
+        //throw new IllegalArgumentException("Must use TileFactory constructor");
+    }
+    /*public Tile(World world, int a, int b) {
         this.world = world;
         q = a; r = b;
         resources = new ArrayList<Item>();
         occupants = new ArrayList<Entity>();
-    }
+    }*/
 
     //public float dist(Tile t) {return (float) Math.sqrt(Math.pow(row - t.row, 2) + Math.pow(col - t.col, 2));}
     public float dist(Tile t) {

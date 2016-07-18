@@ -95,8 +95,8 @@ public class ClanFactory {
             return null;
         }
         else {
-            primaryColor = colors.remove((int)(Math.random()*colors.size())).scaled(255f);
-            secondaryColor = secondaryColors.remove((int)(Math.random()*secondaryColors.size())).scaled(255f);
+            primaryColor = colors.get((int)(Math.random()*colors.size())).scaled(255f);
+            secondaryColor = secondaryColors.get((int)(Math.random()*secondaryColors.size())).scaled(255f);
         }
         /*switch (type) {
             case 0:

@@ -37,9 +37,16 @@ public class Item {
         CLAY (101),
         SAND (102),
 
-        COPPER (150),
-        IRON (151),
+        COPPER_ORE (150),
+        IRON_ORE (151),
         COAL (152),
+
+        FOOD (200),
+        LUMBER (210),
+        BRICK (220),
+        COPPER (230),
+        IRON (231),
+
         ;
         public int id;
         public String renderName;
@@ -63,7 +70,12 @@ public class Item {
                 "Sand",
                 "Copper",
                 "Iron",
-                "Coal"
+                "Coal",
+                "Food",
+                "Lumber",
+                "Brick",
+                "Copper",
+                "Iron",
         };
         public static int numItems;
 

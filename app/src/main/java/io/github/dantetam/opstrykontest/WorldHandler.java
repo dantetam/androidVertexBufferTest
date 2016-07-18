@@ -456,6 +456,7 @@ public class WorldHandler {
     //TODO: Create a method which generalizes this process of getting preliminary centered OBJ data from a file,
     //modifying it by coordinates, and then turning it into a solid.
     //Perhaps in OBJLoader?
+    public Tile lastSelected = null;
     public Solid selectedMarkerRep(int textureHandle) {
         if (mousePicker.selectedNeedsUpdating()) {
             mousePicker.nextFrameSelectedNeedsUpdating = false;
@@ -475,6 +476,10 @@ public class WorldHandler {
                 return null;
             }
 
+            if (selected.equals(lastSelected)) {
+                return storedSelectedTileSolid;
+            }
+            lastSelected = selected;
             //mousePicker.selectedNeedsUpdating = false;
 
             float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);

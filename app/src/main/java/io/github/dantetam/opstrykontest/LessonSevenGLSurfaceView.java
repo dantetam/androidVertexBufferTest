@@ -211,7 +211,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             boolean selectedTileExists = selectedTile != null;
             boolean selectedEntityExists = selectedEntity != null;
 
-            mActivity.findViewById(R.id.build_menu).setVisibility(selectedTileExists ? View.VISIBLE : View.INVISIBLE);
+            mActivity.findViewById(R.id.build_menu).setVisibility(selectedTileExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
 
             Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
             selectedEntityMenu.setVisibility(selectedEntityExists && playerClan.equals(selectedEntity.clan) ? View.VISIBLE : View.INVISIBLE);
