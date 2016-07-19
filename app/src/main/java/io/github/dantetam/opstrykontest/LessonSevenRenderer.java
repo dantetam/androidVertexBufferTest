@@ -122,6 +122,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private Solid selectedUnitMarker;
     private MapModel tilesUnits;
 
+    private ListModel tileYieldRep;
+
     private Solid testDuplicate;
 
 	public Camera camera;
@@ -304,6 +306,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             improvements = worldHandler.tileImprovementRep();
             mLines = new Lines(mWhiteTextureHandle, worldHandler.tesselatedHexes[0], worldHandler.tesselatedHexes[1], worldHandler.tesselatedHexes[2]);
             //mCubes.add(mLines);
+            tileYieldRep = worldHandler.updateTileYieldRep();
 
             mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
 
@@ -319,6 +322,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         ///highlights = worldHandler.tileHighlightRep();
         worldHandler.tileHighlightRep();
+
+        tileYieldRep = worldHandler.updateTileYieldRep();
 
         //TODO: Turn highlights into a combined VBO, like biome representation
         //TODO: Convert to IBOs next?
@@ -354,6 +359,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         renderSolid(testMarker);
         renderSolid(selectedUnitMarker);
+
+        renderModel(tileYieldRep);
 
         //renderSolidClones(testDuplicate);
         //renderModel(highlights);

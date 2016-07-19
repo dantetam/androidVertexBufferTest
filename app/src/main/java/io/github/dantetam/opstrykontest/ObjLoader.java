@@ -60,10 +60,10 @@ public class ObjLoader {
 
     private static Solid loadSolid(int textureHandle, String textureName) {
         if (textureName != null && solidData.containsKey(textureName)) {
-            System.out.println("Loading from memory: " + textureName);
+            //System.out.println("Loading from memory: " + textureName);
             return loadSolid(textureHandle, textureName, solidData.get(textureName));
         }
-        System.out.println("Not loading from memory: " + textureName);
+        //System.out.println("Not loading from memory: " + textureName);
         return null;
     }
 
@@ -89,10 +89,10 @@ public class ObjLoader {
                                   final int resourceId)
     {
         if (textureName != null && solidData.containsKey(textureName)) {
-            System.out.println("Loading from memory too: " + textureName);
+            //System.out.println("Loading from memory too: " + textureName);
             return loadSolid(textureHandle, textureName, solidData.get(textureName));
         }
-        System.out.println("Not loading from memory too: " + textureName);
+        //System.out.println("Not loading from memory too: " + textureName);
         float[][] data = loadObjModelByVertex(textureName, context, resourceId);
         //solidData.put(textureName, data);
         //Solid solid = new Solid(data[0], data[1], data[2], 1);
