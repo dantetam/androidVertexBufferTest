@@ -67,7 +67,8 @@ public class ColorTextureHelper {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;	// No pre-scaling
         options.inMutable = true;
-        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.usb_android, options);
+        //final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.usb_android, options);
+        Bitmap bitmap = BitmapHelper.findBitmapOrBuild(R.drawable.solid_color);
 
         for (int y = 0; y < bitmap.getHeight(); y++){
             for (int x = 0; x < bitmap.getWidth(); x++){

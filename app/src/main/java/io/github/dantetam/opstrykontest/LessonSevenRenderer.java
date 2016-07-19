@@ -146,6 +146,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         ClanFactory.init();
 
 		mLessonSevenActivity = lessonSevenActivity;
+        BitmapHelper.init(mLessonSevenActivity);
+
         assetManager = mLessonSevenActivity.getAssets();
         assetHelper = new AssetHelper(lessonSevenActivity, assetManager);
 		mGlSurfaceView = (LessonSevenGLSurfaceView)glSurfaceView;
@@ -166,6 +168,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         worldSystem = new WorldSystem(worldHandler);
 
         mGlSurfaceView.init(mLessonSevenActivity, mousePicker, worldSystem.playerClan);
+
         //worldSystem.initClan(worldHandler.world.cl);
         //testMarker = worldHandler.testMarker(mAndroidDataHandle, mousePicker);
         //world = new World(WORLD_LENGTH, WORLD_LENGTH);

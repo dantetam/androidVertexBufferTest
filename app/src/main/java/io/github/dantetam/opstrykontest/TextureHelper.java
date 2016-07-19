@@ -43,10 +43,7 @@ public class TextureHelper
 		GLES20.glGenTextures(1, textureHandle, 0);
 
 		if (textureHandle[0] != 0) {
-			final BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inScaled = false;	// No pre-scaling
-			final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
-			bindBitmap(bitmap, textureHandle[0]);
+			bindBitmap(BitmapHelper.findBitmapOrBuild(resourceId), textureHandle[0]);
 		}
 		else {
 			throw new RuntimeException("Error loading texture.");
@@ -58,8 +55,8 @@ public class TextureHelper
 
     /**
      * Load textures from memory if available, otherwise, create a new texture handle from a Bitmap
-     * @param name A string "handle" that can be referenced if this is drawn again
-     * @param bitmap A bitmap, either generated or from another external source
+     * name A string "handle" that can be referenced if this is drawn again
+     * bitmap A bitmap, either generated or from another external source
      * @return the previously generated texture handle, or a new one
      */
     public static int loadTexture(final String name, final Bitmap bitmap) {
@@ -77,6 +74,8 @@ public class TextureHelper
         else {
             throw new RuntimeException("Error loading texture: " + name);
         }
+
+        bitmap.recycle();
 
         texturesByName.put(name, textureHandle[0]);
         return textureHandle[0];
