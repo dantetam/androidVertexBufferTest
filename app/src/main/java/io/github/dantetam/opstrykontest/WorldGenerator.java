@@ -39,9 +39,9 @@ public class WorldGenerator {
     public void init() {
         int width = Math.max(world.arrayLengthX, world.arrayLengthZ);
         int[][] biomes = new DiamondSquare(width, 10, 0.4).seed(870).getIntTerrain(0, Tile.Biome.numBiomes - 1);
-        int[][] terrains = new DiamondSquare(width, 10, 0.4).seed(0417).getIntTerrain(0, Tile.Terrain.numTerrains - 1);
+        int[][] terrains = new DiamondSquare(width, 10, 0.4).seed(System.currentTimeMillis()).getIntTerrain(0, Tile.Terrain.numTerrains - 1);
         //Item[][] resources = makeNewResources(width, width);
-        int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(916).getIntTerrain(1, 10);
+        int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(System.currentTimeMillis()/2).getIntTerrain(1, 10);
         world.init(biomes, terrains, elevations);
         //makeRandomBuildings();
         makeNewResources(world);

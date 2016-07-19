@@ -366,6 +366,18 @@ public class WorldHandler {
             textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
         }
 
+        float[][] offsets = {
+                new float[]{-3, -1},
+                new float[]{-2, -1},
+                new float[]{-3, 0},
+                new float[]{-2, 0},
+                new float[]{0, -3},
+                new float[]{2, 0}
+        };
+
+        final float TRANSLATE_FACTORX = 0.66f;
+        final float TRANSLATE_FACTORZ = 0.66f;
+
         for (int i = 0; i < conditions.length; i++) {
             float[][] hexData = ObjLoader.loadObjModelByVertex("quad", mActivity, R.raw.quad);
 
@@ -386,11 +398,14 @@ public class WorldHandler {
             final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
             int cubeTextureDataOffset = 0;
 
+            float[] offset = offsets[i];
+            float[] trueOffset = {offset[0]*TRANSLATE_FACTORX, offset[1]*TRANSLATE_FACTORZ};
+
             for (Tile tile : tilesToRender) {
                 Vector3f vertices = storedTileVertexPositions.get(tile);
 
-                float[] scaledData = scaleData(hexData[0], 1f, 1f, 1f);
-                final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y + 0.5f, vertices.z);
+                float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTORX, 1f, TRANSLATE_FACTORZ);
+                final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
 
                 //Interleave all the new vtn data, per hex.
                 System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);

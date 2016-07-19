@@ -1,5 +1,6 @@
 package io.github.dantetam.opstrykontest;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -58,6 +59,14 @@ public class LessonSevenActivity extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+        View decorView = getWindow().getDecorView();
+        // Hide the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        decorView.setSystemUiVisibility(uiOptions);
+
+        //ActionBar actionBar = getActionBar();
+        //actionBar.hide();
+
         /*final LessonSevenActivity mActivity = this;
         System.out.println("Start");
         runOnUiThread(new Thread() {
@@ -94,7 +103,7 @@ public class LessonSevenActivity extends Activity implements
 
         System.out.println("Start3");*/
 
-		setContentView(R.layout.screen_view_menu);
+        setContentView(R.layout.screen_view_menu);
 
         findViewById(R.id.splash_screen_main).bringToFront();
 

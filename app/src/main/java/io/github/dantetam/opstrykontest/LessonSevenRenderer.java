@@ -17,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import io.github.dantetam.world.Building;
 import io.github.dantetam.world.ClanFactory;
 import io.github.dantetam.world.Tile;
 
@@ -131,7 +132,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
     public WorldHandler worldHandler;
     public WorldSystem worldSystem;
-    public static final int WORLD_LENGTH = 8;
+    public static final int WORLD_LENGTH = 10;
 
     private int WIDTH = 0, HEIGHT = 0;
 
@@ -153,8 +154,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         FileParser.mActivity = mLessonSevenActivity;
 
         camera = new Camera();
-        camera.moveTo(5f, 10f, 7.5f);
-        camera.pointTo(5f, 5f, 5f);
+        camera.moveTo(5f, 6f, 7.5f);
+        camera.pointTo(5f, 1f, 6f);
 
         mousePicker = new MousePicker(mProjectionMatrix, camera, getWidth(), getHeight());
         updatePerspectiveMatrix(getWidth(), getHeight());
@@ -323,8 +324,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         ///highlights = worldHandler.tileHighlightRep();
         worldHandler.tileHighlightRep();
 
-        tileYieldRep = worldHandler.updateTileYieldRep();
-
         //TODO: Turn highlights into a combined VBO, like biome representation
         //TODO: Convert to IBOs next?
 
@@ -360,7 +359,12 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         renderSolid(testMarker);
         renderSolid(selectedUnitMarker);
 
-        renderModel(tileYieldRep);
+        if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
+            if (mousePicker.getSelectedTile().improvement.buildingType == Building.BuildingType.ENCAMPMENT) {
+                tileYieldRep = worldHandler.updateTileYieldRep();
+                renderModel(tileYieldRep);
+            }
+        }
 
         //renderSolidClones(testDuplicate);
         //renderModel(highlights);
