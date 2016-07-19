@@ -139,7 +139,8 @@
             android:onClick="onClickUnitMenu" />
         <ImageView
             android:id="@+id/splash_screen_main"
-            android:background="@drawable/usb_android"
+            android:background="@drawable/splash_screen"
+            android:scaleType="centerInside"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_widthPercent="100%"

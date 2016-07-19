@@ -274,4 +274,8 @@ public class World {
         return numHexes;
     }
 
+    public Tile[][] returnTilesForChunking() {
+        return hexes;
+    }
+
 }
