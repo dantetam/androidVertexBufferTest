@@ -1,9 +1,14 @@
 package io.github.dantetam.opstrykontest;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import io.github.dantetam.world.Person;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
 
@@ -18,18 +23,96 @@ public class ChunkHelper {
     private Tile[][] alignedTiles;
     public static final int CHUNK_TILE_SIZE = 8;
 
-    public Node[][] nodesArray; //For quickly finding immediate neighbors (indiced)
+    public HashMap<Float, List<Node>> nodesList; //For quickly finding immediate neighbors (indiced)
     private List<Node> allLeafNodes = new ArrayList<>();
+    public Node[][] nodesArray;
 
     public ChunkHelper() {
         //nodesArray = new ArrayList<>();
+        nodesList = new HashMap<>();
     }
 
     public void init(World w) {
         world = w;
         makeAlignedTiles(world);
         root = splitAllAlignedTiles();
+        int i = 0;
+        for (Map.Entry<Float, List<Node>> en: nodesList.entrySet()) {
+            List<Node> nodes = en.getValue();
+            if (nodesArray == null) {
+                nodesArray = new Node[nodesList.size()][nodes.size()];
+            }
+            for (int j = 0; j < nodes.size(); j++) {
+                nodesArray[i][j] = nodes.get(j);
+                nodesArray[i][j].arrayPosX = i;
+                nodesArray[i][j].arrayPosZ = j;
+            }
+            i++;
+            /*System.out.println(en.getKey());
+            String stringy = "";
+            for (Node node: nodes) {
+                stringy += node.centerZ;
+                stringy += " ";
+            }
+            System.out.println(stringy);*/
+        }
     }
+
+    public List<Tile> getChunkTiles(Tile t, int radius) {
+        Node home = findNodeContainingTile(t);
+        Collection<Node> radiusChunks = getChunksWithinRadius(home, radius);
+        List<Tile> tiles = new ArrayList<>();
+        for (Node node: radiusChunks) {
+            for (Tile tile: node.tiles) {
+                tiles.add(tile);
+            }
+        }
+        return tiles;
+    }
+
+    private Collection<Node> getChunksWithinRadius(Node t, int radius) {
+        Set<Node> rings = new HashSet<>();
+        if (radius == 1) {
+            Collection<Node> tiles = neighbors(nodesArray, t.arrayPosX, t.arrayPosZ);
+            tiles.add(t);
+            return tiles;
+        }
+        rings.add(t);
+        if (radius > 0) {
+            for (Node neighbor: neighbors(nodesArray, t.arrayPosX, t.arrayPosZ)) {
+                Collection<Node> neighborRing = getChunksWithinRadius(neighbor, radius - 1);
+                for (Node neighborRingTile: neighborRing) {
+                    rings.add(neighborRingTile);
+                }
+            }
+        }
+        return rings;
+    }
+
+    private static final int[][] neighborOffsets = {
+            {1,0},
+            {-1,0},
+            {0,1},
+            {0,-1},
+            {1,1},
+            {-1,-1},
+            {1,-1},
+            {-1,1},
+    };
+    public Set<Node> neighbors(Node[][] nodes, int r, int c) {
+        Set<Node> neighborNodes = new HashSet<>();
+        for (int[] offset: neighborOffsets) {
+            if (inBounds(nodes, r + offset[0], c + offset[1])) {
+                neighborNodes.add(nodes[r + offset[0]][c + offset[1]]);
+            }
+        }
+        return neighborNodes;
+    }
+
+    private boolean inBounds(Node[][] nodes, int r, int c) {
+        return r >= 0 && c >= 0 && r < nodes.length && c < nodes[0].length;
+    }
+
 
     private void makeAlignedTiles(World w) {
         Tile[][] unaligned = w.returnTilesForChunking();
@@ -76,6 +159,14 @@ public class ChunkHelper {
                 }
             }
             allLeafNodes.add(node);
+            if (nodesList.get(node.centerX) == null) {
+                List<Node> nodes = new ArrayList<>();
+                nodes.add(node);
+                nodesList.put(node.centerX, nodes);
+            }
+            else {
+                nodesList.get(node.centerX).add(node);
+            }
         }
         return node;
     }
@@ -140,6 +231,7 @@ public class ChunkHelper {
         public Node[] children;
         public int topLeftX, topLeftZ, bottomRightX, bottomRightZ;
         public float centerX, centerZ;
+        public int arrayPosX, arrayPosZ;
         public List<Tile> tiles = null;
 
         public Node(int a, int b, int c, int d, float e, float f) {
