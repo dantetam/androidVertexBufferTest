@@ -132,7 +132,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
     public WorldHandler worldHandler;
     public WorldSystem worldSystem;
-    public static final int WORLD_LENGTH = 26;
+    public static final int WORLD_LENGTH = 10;
 
     public ChunkHelper chunkHelper;
 
@@ -333,6 +333,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         ///highlights = worldHandler.tileHighlightRep();
         worldHandler.tileHighlightRep();
+        worldHandler.totalWorldRepresentation();
 
         //TODO: Turn highlights into a combined VBO, like biome representation
         //TODO: Convert to IBOs next?

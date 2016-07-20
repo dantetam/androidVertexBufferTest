@@ -21,7 +21,7 @@ public class ChunkHelper {
     private World world;
     private Node root;
 
-    private Tile[][] alignedTiles;
+    public Tile[][] alignedTiles;
     public static final int CHUNK_TILE_SIZE = 8;
 
     public LinkedHashMap<Float, List<Node>> nodesList; //For quickly finding immediate neighbors (indiced)
@@ -64,6 +64,10 @@ public class ChunkHelper {
     }
 
     public List<Tile> getChunkTiles(Tile t, int radius) {
+        if (t == null) {
+            System.out.println("No home tile, returning no tiles to render");
+            return new ArrayList<>();
+        }
         if (lastHomeTile == null || lastHomeTile.equals(t) || lastRadius == 0 || lastRadius != radius) {
             lastHomeTile = t;
             lastRadius = radius;
@@ -72,8 +76,10 @@ public class ChunkHelper {
             Collection<Node> radiusChunks = getChunksWithinRadius(home, radius);
             List<Tile> tiles = new ArrayList<>();
             for (Node node : radiusChunks) {
-                for (Tile tile : node.tiles) {
-                    tiles.add(tile);
+                if (node != null) {
+                    for (Tile tile : node.tiles) {
+                        tiles.add(tile);
+                    }
                 }
             }
 

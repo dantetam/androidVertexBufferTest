@@ -248,6 +248,16 @@ public class World {
         return rings;
     }
 
+    public boolean[] neighborsAreDifferent(Tile t) {
+        boolean[] neighbors = new boolean[neighborDirections.length];
+        for (int i = 0; i < neighborDirections.length; i++) {
+            int[] offset = neighborDirections[i];
+            Tile neighborTile = getTile(t.q + offset[0], t.r + offset[1]);
+            neighbors[i] = neighborTile == null || !getTileOwner(t).equals(getTileOwner(neighborTile));
+        }
+        return neighbors;
+    }
+
     /*public Set<Tile> getRingTwo(Tile t, int radius) {
         if (radius < 0) radius = -radius;
         if (radius == 0) {

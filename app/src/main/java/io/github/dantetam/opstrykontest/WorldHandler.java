@@ -43,6 +43,8 @@ public class WorldHandler {
     public MapModel<Clan> tileHighlightOwnerStored;
     public MapModel<Clan> tileHighlightInfluenceStored;
 
+    public MapModel<Clan> tileTerritoryStored;
+
     //public HashMap<Tile, Polygon> hexesShape; //Originally intended to be used for mouse picking. More efficient to use center vertices.
 
     private LessonSevenActivity mActivity;
@@ -73,8 +75,29 @@ public class WorldHandler {
         List<BaseModel> modelsToRender = new ArrayList<>();
         List<RenderEntity> solidsToRender = new ArrayList<>();
 
-        TODO: Implement this, refer only to this method in LessonSevenRenderer
+        List<Tile> chunkTiles = chunkHelper.getChunkTiles(mousePicker.centerTile, 0);
+        /*System.out.println("------");
+        System.out.println(mousePicker.centerTile);
+        for (Tile tile: chunkTiles) {
+            System.out.println(tile.toString());
+        }
+        System.out.println("------");*/
+        //System.out.println(chunkTiles.size() + " " + world.getAllValidTiles().size());
+        //TODO: Implement this, refer only to this method in LessonSevenRenderer
 
+        /*if (LessonSevenRenderer.frames % 100 == 0) {
+            for (int x = 0; x < chunkHelper.alignedTiles.length; x++) {
+                for (int z = 0; z < chunkHelper.alignedTiles[0].length; z++) {
+                    if (chunkTiles.contains(chunkHelper.alignedTiles[x][z])) {
+                        System.out.print("X ");
+                    }
+                    else
+                        System.out.print("- ");
+                }
+                System.out.println();
+            }
+        }
+*/
         return new Object[]{modelsToRender, solidsToRender};
     }
 
@@ -132,6 +155,83 @@ public class WorldHandler {
             tilesStored.add(storedSelectedTileSolid);*/
         }
         return tilesStored;
+    }
+
+    public void tileTerritoryRep() {
+        List<Tile> validTiles = world.getAllValidTiles();
+        if (tileTerritoryStored == null) {
+            tileTerritoryStored = new MapModel<>();
+            createTerritoryRep(tileTerritoryStored, validTiles);
+            //System.out.println("Update main");
+        }
+        /*else if (world.clanTerritoriesUpdate.size() > 0) {
+            //TODO: Fix -> createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, world.clanTerritoriesUpdate);
+            //System.out.println("Update tiles " + world.clanTerritoriesUpdate.size());
+            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, validTiles);
+        }*/
+        world.clanTerritoriesUpdate.clear();
+    }
+
+    public int[] borderMarkers = {
+            R.raw.hexagonhollow1,
+            R.raw.hexagonhollow2,
+            R.raw.hexagonhollow3,
+            R.raw.hexagonhollow4,
+            R.raw.hexagonhollow5,
+            R.raw.hexagonhollow6
+    };
+    private float[][][] borderObjData = new float[borderMarkers.length][][];
+    public void createTerritoryRep(MapModel model, List<Tile> tiles) {
+        Object[] data = world.aggregateOwners(tiles);
+        HashMap<Clan, List<Tile>> owners = (HashMap<Clan, List<Tile>>) data[0];
+        HashMap<Clan, List<Tile>> influencers = (HashMap<Clan, List<Tile>>) data[1];
+        List<Tile> neutral = (List<Tile>) data[2];
+
+        for (int i = 0; i < borderMarkers.length; i++) {
+            borderObjData[i] = ObjLoader.loadObjModelByVertex(mActivity, borderMarkers[i]);
+        }
+
+        for (Map.Entry<Clan, List<Tile>> en: owners.entrySet()) {
+            List<Tile> clanTiles = en.getValue();
+
+            int numVertices = 0;
+            int posOffset = 0, norOffset = 0, texOffset = 0;
+            for (Tile tile: clanTiles) {
+                boolean[] neighbors = world.neighborsAreDifferent(tile);
+                for (int i = 0; i < neighbors.length; i++) {
+                    if (neighbors[i]) {
+                        numVertices += borderObjData[i][0].length;
+                    }
+                }
+            }
+
+            final float[] totalCubePositionData = new float[numVertices];
+            final float[] totalNormalPositionData = new float[numVertices / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
+            final float[] totalTexturePositionData = new float[numVertices / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
+
+            for (Tile tile: clanTiles) {
+                boolean[] neighbors = world.neighborsAreDifferent(tile);
+
+                for (int i = 0; i < neighbors.length; i++) {
+                    Vector3f vertices = storedTileVertexPositions.get(tile);
+
+                    final float[] scaled = scaleData(borderObjData[i][0], 1f, 1f, 1f);
+                    final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.7f, vertices.z);
+
+                    System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
+                    System.arraycopy(borderObjData[i][1], 0, totalNormalPositionData, norOffset, borderObjData[i][1].length);
+                    System.arraycopy(borderObjData[i][2], 0, totalTexturePositionData, texOffset, borderObjData[i][2].length);
+
+                    posOffset += thisCubePositionData.length;
+                    norOffset += borderObjData[i][1].length;
+                    texOffset += borderObjData[i][2].length;
+                }
+            }
+
+            float[][] markerData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+            Solid solid = ObjLoader.loadSolid(ColorTextureHelper.loadColor(en.getKey().color), null, markerData);
+            model.put(en.getKey(), solid); TODO: Implement the use of this method
+        }
     }
 
     public void tileHighlightRep() {

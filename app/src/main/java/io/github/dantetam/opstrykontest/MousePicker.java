@@ -32,6 +32,8 @@ public class MousePicker {
     private Entity selectedEntity = null;
     private String selectedAction = "";
 
+    public Tile centerTile = null;
+
     public HashMap<Tile, Vector3f> storedTileVertices = null;
 
     private boolean selectedNeedsUpdating = false;
@@ -79,7 +81,11 @@ public class MousePicker {
         //boolean tilesNeedUpdating = false;
         Tile previousSelected = selectedTile;
         Entity previousEntity = selectedEntity;
-        getTileClickedOn();
+        Tile newSelected = getTileClickedOn(rayCastHit);
+
+        changeSelectedTile(newSelected);
+        //selectedEntity = null;
+
         if (!nextFrameSelectedNeedsUpdating) {
             if (previousSelected != null) {
                 nextFrameSelectedNeedsUpdating = !previousSelected.equals(selectedTile);
@@ -94,10 +100,20 @@ public class MousePicker {
                 nextFrameSelectedNeedsUpdating = selectedEntity != null;
             }
         }
-
         if (selectedTile != null) {
             selectedEntity = null;
         }
+
+        Vector3f centerRay = calculateMouseRay(width/2, height/2);
+        Vector3f centerRayCastHit = new Vector3f(
+                camera.eyeX - camera.eyeY/centerRay.y*centerRay.x,
+                0,
+                camera.eyeZ - camera.eyeY/centerRay.y*centerRay.z
+        );
+        Tile newCenterTile = getTileClickedOn(centerRayCastHit);
+        if (newCenterTile != null)
+            centerTile = getTileClickedOn(centerRayCastHit);
+
         /*if (storedTileVertices != null) {
             getTileClickedOn(rayCastHit);
         }*/
@@ -145,10 +161,7 @@ public class MousePicker {
                 min = dist;
             }
         }
-        //selectedTile = min <= 5 ? key : null;
-        changeSelectedTile(min <= 5 ? key : null);
-        selectedEntity = null;
-        return key;
+        return min <= 5 ? key : null;
     }
 
     public void updateAfterFrame() {
