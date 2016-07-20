@@ -69,6 +69,15 @@ public class WorldHandler {
         storedTileUnits = new HashMap<>();
     }
 
+    public Object[] totalWorldRepresentation() {
+        List<BaseModel> modelsToRender = new ArrayList<>();
+        List<RenderEntity> solidsToRender = new ArrayList<>();
+
+        TODO: Implement this, refer only to this method in LessonSevenRenderer
+
+        return new Object[]{modelsToRender, solidsToRender};
+    }
+
     /**
      * This generates a new VBO for the world as its concrete representation if necessary,
      * and returns it. The idea is that a new VBO should not be generated every time.

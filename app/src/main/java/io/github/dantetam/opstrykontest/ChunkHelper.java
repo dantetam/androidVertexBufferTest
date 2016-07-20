@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,13 +24,17 @@ public class ChunkHelper {
     private Tile[][] alignedTiles;
     public static final int CHUNK_TILE_SIZE = 8;
 
-    public HashMap<Float, List<Node>> nodesList; //For quickly finding immediate neighbors (indiced)
+    public LinkedHashMap<Float, List<Node>> nodesList; //For quickly finding immediate neighbors (indiced)
     private List<Node> allLeafNodes = new ArrayList<>();
     public Node[][] nodesArray;
 
+    public List<Tile> previousChunkTiles;
+    public Tile lastHomeTile;
+    public int lastRadius = 0;
+
     public ChunkHelper() {
         //nodesArray = new ArrayList<>();
-        nodesList = new HashMap<>();
+        nodesList = new LinkedHashMap<>();
     }
 
     public void init(World w) {
@@ -59,15 +64,22 @@ public class ChunkHelper {
     }
 
     public List<Tile> getChunkTiles(Tile t, int radius) {
-        Node home = findNodeContainingTile(t);
-        Collection<Node> radiusChunks = getChunksWithinRadius(home, radius);
-        List<Tile> tiles = new ArrayList<>();
-        for (Node node: radiusChunks) {
-            for (Tile tile: node.tiles) {
-                tiles.add(tile);
+        if (lastHomeTile == null || lastHomeTile.equals(t) || lastRadius == 0 || lastRadius != radius) {
+            lastHomeTile = t;
+            lastRadius = radius;
+
+            Node home = findNodeContainingTile(t);
+            Collection<Node> radiusChunks = getChunksWithinRadius(home, radius);
+            List<Tile> tiles = new ArrayList<>();
+            for (Node node : radiusChunks) {
+                for (Tile tile : node.tiles) {
+                    tiles.add(tile);
+                }
             }
+
+            previousChunkTiles = tiles;
         }
-        return tiles;
+        return previousChunkTiles;
     }
 
     private Collection<Node> getChunksWithinRadius(Node t, int radius) {
@@ -108,12 +120,18 @@ public class ChunkHelper {
         }
         return neighborNodes;
     }
-
     private boolean inBounds(Node[][] nodes, int r, int c) {
         return r >= 0 && c >= 0 && r < nodes.length && c < nodes[0].length;
     }
 
-
+    /*
+    Align the tiles into a rectangle, in the array representation.
+    This relies on the construction of the world as follows
+    - X X X
+    - X X X
+    X X X -
+    X X X -
+     */
     private void makeAlignedTiles(World w) {
         Tile[][] unaligned = w.returnTilesForChunking();
         //Count tiles in first row
@@ -135,6 +153,15 @@ public class ChunkHelper {
         }
     }
 
+    /*
+    A standard quadtree traversal. Save bounds data within nodes. Save all leaves, and get all unique entries.
+    The entries are used to align them, later on.
+    The order of nodes is
+    0 1
+    2 3
+    specifically chosen so that nodes will align correctly and already be sorted,
+    as per the guarantee of stability provided by LinkedHashMap.
+     */
     public Node splitAllAlignedTiles() {
         return split(0, 0, alignedTiles.length, alignedTiles[0].length);
     }
@@ -171,6 +198,11 @@ public class ChunkHelper {
         return node;
     }
 
+    /*
+    Traverse the quadtree looking for the node containing the piece of data, tile.
+    This is a O(log n) operation, whereas storing the tiles in a HashMap linked to their nodes
+    would be O(1) but O(n) in memory.
+     */
     public Node findNodeContainingTile(Tile tile) {
         return findNodeContainingTile(root, tile);
     }
@@ -227,6 +259,11 @@ public class ChunkHelper {
         }
     }*/
 
+    /*
+    This is a wrapper class for quadtree data, and it must either be a leaf or non-leaf.
+    Leaves must contain some type of tile data (should exist under normal conditions),
+    otherwise, the nodes contain other node subchildren.
+     */
     public class Node {
         public Node[] children;
         public int topLeftX, topLeftZ, bottomRightX, bottomRightZ;
