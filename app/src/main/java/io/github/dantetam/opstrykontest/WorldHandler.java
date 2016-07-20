@@ -22,6 +22,7 @@ public class WorldHandler {
 
     private MousePicker mousePicker;
     private AssetHelper assetHelper;
+    private ChunkHelper chunkHelper;
 
     private ListModel tilesStored = null;
 
@@ -52,7 +53,7 @@ public class WorldHandler {
     static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
     static final int BYTES_PER_FLOAT = 4;
 
-    public WorldHandler(LessonSevenActivity mActivity, LessonSevenRenderer mRenderer, MousePicker mousePicker, AssetHelper assetHelper, int len1, int len2) {
+    public WorldHandler(LessonSevenActivity mActivity, LessonSevenRenderer mRenderer, MousePicker mousePicker, AssetHelper assetHelper, ChunkHelper chunkHelper, int len1, int len2) {
         world = new World(len1, len2);
         worldGenerator = new WorldGenerator(world);
         worldGenerator.init();
@@ -60,6 +61,7 @@ public class WorldHandler {
         this.mRenderer = mRenderer;
         this.mousePicker = mousePicker;
         this.assetHelper = assetHelper;
+        this.chunkHelper = chunkHelper;
 
         storedBiomeTiles = new HashMap<>();
         storedTileVertexPositions = new HashMap<>();
@@ -146,12 +148,14 @@ public class WorldHandler {
         HashMap<Clan, List<Tile>> owners = (HashMap<Clan, List<Tile>>) data[0];
         HashMap<Clan, List<Tile>> influencers = (HashMap<Clan, List<Tile>>) data[1];
         List<Tile> neutral = (List<Tile>) data[2];
+
+        float[][] objData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagonflat);
+
         for (Map.Entry<Clan, List<Tile>> en: owners.entrySet()) {
             List<Tile> ownerTiles = en.getValue();
             Clan clan = en.getKey();
             Vector4f drawColor = clan.color;
             int textureHandle = ColorTextureHelper.loadColor(drawColor);
-            float[][] objData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagonflat);
             final float[] totalCubePositionData = new float[objData[0].length * tiles.size()];
             final float[] totalNormalPositionData = new float[objData[0].length * tiles.size() / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
             final float[] totalTexturePositionData = new float[objData[0].length * tiles.size() / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
@@ -180,7 +184,6 @@ public class WorldHandler {
             Clan clan = en.getKey();
             Vector4f drawColor = clan.reducedColor;
             int textureHandle = ColorTextureHelper.loadColor(drawColor);
-            float[][] objData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagonflat);
             final float[] totalCubePositionData = new float[objData[0].length * tiles.size()];
             final float[] totalNormalPositionData = new float[objData[0].length * tiles.size() / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
             final float[] totalTexturePositionData = new float[objData[0].length * tiles.size() / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
