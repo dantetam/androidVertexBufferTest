@@ -35,7 +35,7 @@ public class LessonSevenActivity extends Activity implements
 {
 	/** Hold a reference to our GLSurfaceView */
 	private LessonSevenGLSurfaceView mGLSurfaceView;
-	private LessonSevenRenderer mRenderer;
+	public LessonSevenRenderer mRenderer;
 
     private GestureDetectorCompat mDetector;
 

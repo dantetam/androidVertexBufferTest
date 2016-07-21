@@ -122,7 +122,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private Solid testMarker;
     private Solid selectedUnitMarker;
     private MapModel tilesUnits;
-
+    private MapModel borderMarker;
     private ListModel tileYieldRep;
 
     private Solid testDuplicate;
@@ -331,6 +331,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         improvements = worldHandler.tileImprovementRep();
         testMarker = worldHandler.selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
+        borderMarker = worldHandler.tileTerritoryRep();
         ///highlights = worldHandler.tileHighlightRep();
         worldHandler.tileHighlightRep();
         worldHandler.totalWorldRepresentation();
@@ -369,6 +370,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         renderSolid(testMarker);
         renderSolid(selectedUnitMarker);
+        renderModel(borderMarker);
 
         if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
             if (mousePicker.getSelectedTile().improvement.buildingType == Building.BuildingType.ENCAMPMENT) {

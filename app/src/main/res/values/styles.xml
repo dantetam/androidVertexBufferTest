@@ -6,10 +6,18 @@
         <!--<item name="android:fontFamily">@color/custom_theme_color</item>-->
 
         <item name="android:textViewStyle">@style/TextViewStyle</item>
+        <item name="android:buttonStyle">@style/ButtonViewStyle</item>
+        <item name="android:popupMenuStyle">@style/MenuViewStyle</item>
         <!--<item name="android:buttonStyle">@style/RobotoButtonStyle</item>-->
     </style>
 
     <style name="TextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+    <style name="ButtonViewStyle" parent="android:Widget.Button">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+    <style name="MenuViewStyle" parent="android:Widget.PopupMenu">
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 

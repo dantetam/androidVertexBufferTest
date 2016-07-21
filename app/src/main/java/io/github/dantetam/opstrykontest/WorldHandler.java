@@ -157,7 +157,7 @@ public class WorldHandler {
         return tilesStored;
     }
 
-    public void tileTerritoryRep() {
+    public MapModel tileTerritoryRep() {
         List<Tile> validTiles = world.getAllValidTiles();
         if (tileTerritoryStored == null) {
             tileTerritoryStored = new MapModel<>();
@@ -170,15 +170,16 @@ public class WorldHandler {
             createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, validTiles);
         }*/
         world.clanTerritoriesUpdate.clear();
+        return tileTerritoryStored;
     }
 
     public int[] borderMarkers = {
             R.raw.hexagonhollow1,
-            R.raw.hexagonhollow2,
-            R.raw.hexagonhollow3,
-            R.raw.hexagonhollow4,
+            R.raw.hexagonhollow6,
             R.raw.hexagonhollow5,
-            R.raw.hexagonhollow6
+            R.raw.hexagonhollow4,
+            R.raw.hexagonhollow3,
+            R.raw.hexagonhollow2
     };
     private float[][][] borderObjData = new float[borderMarkers.length][][];
     public void createTerritoryRep(MapModel model, List<Tile> tiles) {
@@ -213,24 +214,26 @@ public class WorldHandler {
                 boolean[] neighbors = world.neighborsAreDifferent(tile);
 
                 for (int i = 0; i < neighbors.length; i++) {
-                    Vector3f vertices = storedTileVertexPositions.get(tile);
+                    if (neighbors[i]) {
+                        Vector3f vertices = storedTileVertexPositions.get(tile);
 
-                    final float[] scaled = scaleData(borderObjData[i][0], 1f, 1f, 1f);
-                    final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.7f, vertices.z);
+                        final float[] scaled = scaleData(borderObjData[i][0], 1f, 1f, 1f);
+                        final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.7f, vertices.z);
 
-                    System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
-                    System.arraycopy(borderObjData[i][1], 0, totalNormalPositionData, norOffset, borderObjData[i][1].length);
-                    System.arraycopy(borderObjData[i][2], 0, totalTexturePositionData, texOffset, borderObjData[i][2].length);
+                        System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
+                        System.arraycopy(borderObjData[i][1], 0, totalNormalPositionData, norOffset, borderObjData[i][1].length);
+                        System.arraycopy(borderObjData[i][2], 0, totalTexturePositionData, texOffset, borderObjData[i][2].length);
 
-                    posOffset += thisCubePositionData.length;
-                    norOffset += borderObjData[i][1].length;
-                    texOffset += borderObjData[i][2].length;
+                        posOffset += thisCubePositionData.length;
+                        norOffset += borderObjData[i][1].length;
+                        texOffset += borderObjData[i][2].length;
+                    }
                 }
             }
 
             float[][] markerData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
             Solid solid = ObjLoader.loadSolid(ColorTextureHelper.loadColor(en.getKey().color), null, markerData);
-            model.put(en.getKey(), solid); TODO: Implement the use of this method
+            model.put(en.getKey(), solid); //TODO: Implement the use of this method
         }
     }
 

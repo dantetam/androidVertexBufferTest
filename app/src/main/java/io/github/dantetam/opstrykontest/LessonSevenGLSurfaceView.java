@@ -70,6 +70,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         mActivity = activity;
         this.mousePicker = mousePicker;
         this.playerClan = playerClan;
+        mRenderer = mActivity.mRenderer;
         //playerClan = mRenderer.worldSystem.playerClan;
     }
 
@@ -266,7 +267,11 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 affiliation = "Free";
             }
             strings.put("text1", affiliation);
-            strings.put("text2", Tile.Biome.nameFromInt(selected.biome.type) + ", " + Tile.Terrain.nameFromInt(selected.terrain.type));
+            String locationInfo = "";
+            if (Debug.enabled) {
+                locationInfo = " " + selected.toString();
+            }
+            strings.put("text2", Tile.Biome.nameFromInt(selected.biome.type) + ", " + Tile.Terrain.nameFromInt(selected.terrain.type) + locationInfo);
             if (selected.improvement == null) {
                 strings.put("text3", "Can build improvement");
             }

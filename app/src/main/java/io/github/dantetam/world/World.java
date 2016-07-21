@@ -203,9 +203,10 @@ public class World {
         return validTiles;
     }
 
+    //Note that the order doesn't matter here, but other classes will rely on this.
     public static final int[][] neighborDirections = {
-            {1, 0}, {1, -1}, {0, -1},
-            {-1, 0}, {-1, 1}, {0, 1}
+            {0, -1}, {-1, 0}, {-1, 1},
+            {0, 1}, {1, 0}, {1, -1}
     };
     public List<Tile> neighbors(Tile t) {
         List<Tile> temp = new ArrayList<Tile>();
