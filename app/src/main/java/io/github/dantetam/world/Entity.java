@@ -15,6 +15,7 @@ public abstract class Entity extends Representable {
     public String name;
     public Clan clan;
     public List<Item> items;
+    public
     public static int globalIdCounter = 0;
     public int id;
     public World world;

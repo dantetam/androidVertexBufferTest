@@ -62,6 +62,7 @@ public class Building extends Entity {
     }
 
     public BuildingType buildingType;
+    public Building[] modules;
 
     public double completionPercentage;
 

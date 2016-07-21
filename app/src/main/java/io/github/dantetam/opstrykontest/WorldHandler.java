@@ -193,7 +193,20 @@ public class WorldHandler {
         }
 
         for (Map.Entry<Clan, List<Tile>> en: owners.entrySet()) {
-            List<Tile> clanTiles = en.getValue();
+            Clan clan = en.getKey();
+            List<Tile> ownerTiles = en.getValue();
+            List<Tile> clanTiles = new ArrayList<>();
+            for (Tile t: ownerTiles) {
+                if (t != null) {
+                    clanTiles.add(t);
+                }
+            }
+            for (Tile t: influencers.get(clan)) {
+                if (t != null) {
+                    clanTiles.add(t);
+                }
+            }
+            //List<Tile> clanTiles = en.getValue();
 
             int numVertices = 0;
             int posOffset = 0, norOffset = 0, texOffset = 0;
@@ -218,7 +231,7 @@ public class WorldHandler {
                         Vector3f vertices = storedTileVertexPositions.get(tile);
 
                         final float[] scaled = scaleData(borderObjData[i][0], 1f, 1f, 1f);
-                        final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.7f, vertices.z);
+                        final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.2f, vertices.z);
 
                         System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
                         System.arraycopy(borderObjData[i][1], 0, totalNormalPositionData, norOffset, borderObjData[i][1].length);
@@ -233,7 +246,7 @@ public class WorldHandler {
 
             float[][] markerData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
             Solid solid = ObjLoader.loadSolid(ColorTextureHelper.loadColor(en.getKey().color), null, markerData);
-            model.put(en.getKey(), solid); //TODO: Implement the use of this method
+            model.put(en.getKey(), solid);
         }
     }
 
@@ -254,7 +267,6 @@ public class WorldHandler {
         //return tileHighlightStored;
     }
 
-    //TODO: Update only at every end of turn?
     private void createHighlightRep(MapModel mapOwner, MapModel mapInfluence, List<Tile> tiles) {
         Object[] data = world.aggregateOwners(tiles);
         HashMap<Clan, List<Tile>> owners = (HashMap<Clan, List<Tile>>) data[0];

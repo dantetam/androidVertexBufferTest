@@ -254,7 +254,33 @@ public class World {
         for (int i = 0; i < neighborDirections.length; i++) {
             int[] offset = neighborDirections[i];
             Tile neighborTile = getTile(t.q + offset[0], t.r + offset[1]);
-            neighbors[i] = neighborTile == null || !getTileOwner(t).equals(getTileOwner(neighborTile));
+            neighbors[i] = false;
+            if (neighborTile != null) {
+                //neighbors[i] = neighborTile == null || !getTileOwner(t).equals(getTileOwner(neighborTile));
+                if (getTileOwner(t) != null) {
+                    neighbors[i] = !getTileOwner(t).equals(getTileOwner(neighborTile));
+                    neighbors[i] = neighbors[i] || !getTileOwner(t).equals(getTileInfluence(neighborTile));
+                }
+                else {
+                    if (getTileInfluence(t) != null) {
+                        if (getTileOwner(neighborTile) == null && getTileInfluence(neighborTile) == null) {
+                            neighbors[i] = true;
+                        }
+                        else if (getTileOwner(neighborTile) != null) {
+                            neighbors[i] = !getTileInfluence(t).equals(getTileOwner(neighborTile));
+                        }
+                        else {
+                            neighbors[i] = !getTileInfluence(t).equals(getTileInfluence(neighborTile));
+                        }
+                    }
+                    else {
+                        //Do nothing
+                    }
+                }
+            }
+            else {
+                neighbors[i] = true;
+            }
         }
         return neighbors;
     }

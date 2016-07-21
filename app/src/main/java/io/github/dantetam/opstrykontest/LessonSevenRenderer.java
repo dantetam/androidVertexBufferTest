@@ -383,7 +383,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //renderModel(highlights);
 
         renderModel(worldHandler.tileHighlightOwnerStored);
-        renderModel(worldHandler.tileHighlightInfluenceStored);
+        //renderModel(worldHandler.tileHighlightInfluenceStored);
 
         mousePicker.updateAfterFrame();
 
