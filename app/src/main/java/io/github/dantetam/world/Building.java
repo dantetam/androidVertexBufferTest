@@ -64,6 +64,9 @@ public class Building extends Entity {
     public BuildingType buildingType;
     public Building[] modules;
 
+    public List<Item> inputResources;
+    public List<Item> outputResources;
+
     public double completionPercentage;
 
     public Building(World world, Clan clan, BuildingType type) {
@@ -88,6 +91,14 @@ public class Building extends Entity {
         t.improvement = this;
         super.location = t;
         //super.move(t);
+    }
+
+    public void gameProcess() {
+
+    }
+
+    public void gameBuildModule(Building building) {
+
     }
 
 }
