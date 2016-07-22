@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import io.github.dantetam.world.Building;
+import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.ClanFactory;
 import io.github.dantetam.world.Tile;
 
@@ -201,6 +202,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		// Enable depth testing
 		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glEnable(GLES20.GL_BLEND);
+
         //GLES20.glEnable(GLES20.GL_STENCIL_TEST);
 
 		// Set the view matrix. This matrix can be said to represent the camera position.
@@ -373,7 +377,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         renderModel(borderMarker);
 
         if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
-            if (mousePicker.getSelectedTile().improvement.buildingType == Building.BuildingType.ENCAMPMENT) {
+            if (mousePicker.getSelectedTile().improvement.buildingType == BuildingType.ENCAMPMENT) {
                 tileYieldRep = worldHandler.updateTileYieldRep();
                 renderModel(tileYieldRep);
             }

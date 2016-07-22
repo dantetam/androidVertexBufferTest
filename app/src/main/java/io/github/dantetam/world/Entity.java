@@ -64,6 +64,8 @@ public abstract class Entity extends Representable {
         return id == en.id;
     }
 
+    public abstract void executeQueue();
+
     public ActionStatus gameMove(Tile t) {
         Tile location = location();
         if (location != null) {

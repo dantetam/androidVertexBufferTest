@@ -17,6 +17,7 @@ public class Building extends Entity {
     public List<Item> outputResources;
 
     public double workCompleted, workNeeded;
+    public double completionPercentage() {return workCompleted / workNeeded;}
 
     public Building(World world, Clan clan, BuildingType type) {
         super(world, clan);
@@ -34,6 +35,30 @@ public class Building extends Entity {
         move(t);
         name = type.name;
     }*/
+
+    public void executeQueue() {
+        while (true) {
+            if (actionsQueue.size() == 0) {
+                actionsQueue.add(new BuildingAction(Action.ActionType.PROCESS, this));
+            }
+            Action action = actionsQueue.get(0);
+            Action.ActionStatus status = action.execute(this);
+
+            if (status == Action.ActionStatus.ALREADY_COMPLETED || status == Action.ActionStatus.EXECUTED) {
+                actionsQueue.remove(0);
+            }
+            else if (status == Action.ActionStatus.IMPOSSIBLE) {
+                actionsQueue.remove(0);
+                //TODO: Error code? Print info about errant action?
+            }
+            else if (status == Action.ActionStatus.OUT_OF_ENERGY) {
+                break;
+            }
+            else if (status == Action.ActionStatus.CONTINUING) {
+                //do nothing, keep the action in the first slot, it'll be repeated.
+            }
+        }
+    }
 
     public void move(Tile t) {
         if (location != null) {

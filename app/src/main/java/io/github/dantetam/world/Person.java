@@ -69,13 +69,13 @@ public class Person extends Entity {
         if (b.location() == null) {
             b.move(location);
         }
-        if (b.completionPercentage < 1) {
+        if (b.completionPercentage() < 1) {
             if (actionPoints <= 0) {
                 return ActionStatus.OUT_OF_ENERGY;
             }
-            b.completionPercentage += 0.2f;
+            b.workNeeded += calculateWorkAdded();
             actionPoints--;
-            if (b.completionPercentage < 1) {
+            if (b.completionPercentage() < 1) {
                 return ActionStatus.CONTINUING;
             }
             return ActionStatus.EXECUTED;
@@ -83,6 +83,10 @@ public class Person extends Entity {
         else {
             return ActionStatus.ALREADY_COMPLETED;
         }
+    }
+
+    private double calculateWorkAdded() {
+        return 3;
     }
 
     private ActionStatus gameHealHealth() {

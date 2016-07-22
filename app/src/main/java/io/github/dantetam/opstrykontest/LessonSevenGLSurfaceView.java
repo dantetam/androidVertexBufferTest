@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.opengl.GLSurfaceView;
 import android.support.annotation.NonNull;
 import android.support.percent.PercentRelativeLayout;
@@ -32,6 +33,8 @@ import java.util.Map;
 
 import io.github.dantetam.world.Action;
 import io.github.dantetam.world.Building;
+import io.github.dantetam.world.BuildingFactory;
+import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Item;
@@ -172,14 +175,13 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             }
             else {
                 if (previousSelectedEntity instanceof Person) {
-                    String buildingToBuild = action.substring(6);
-                    Building newBuilding = new Building(previousSelectedEntity.world, previousSelectedEntity.clan, Building.BuildingType.fromString(buildingToBuild));
-
-                    newBuilding.completionPercentage = 0;
-
                     Person personSelected = (Person) previousSelectedEntity;
-                    if (!personSelected.location().equals(mousePicker.getSelectedTile())) {
-                        personSelected.gameMovePath(mousePicker.getSelectedTile());
+                    String buildingToBuild = action.substring(6);
+                    Tile buildAt = personSelected.location();
+                    Building newBuilding = BuildingFactory.newBuilding(previousSelectedEntity.world, previousSelectedEntity.clan, BuildingType.fromString(buildingToBuild), buildAt, 0);
+
+                    if (!buildAt.equals(mousePicker.getSelectedTile())) {
+                        personSelected.gameMovePath(buildAt);
                     }
                     personSelected.actionsQueue.add(new PersonAction(Action.ActionType.BUILD, newBuilding));
                     personSelected.executeQueue();
@@ -276,7 +278,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 strings.put("text3", "Can build improvement");
             }
             else {
-                int p = (int)(selected.improvement.completionPercentage * 100d);
+                int p = (int)(selected.improvement.completionPercentage() * 100d);
                 String extra = p < 1 ? "(" + p + "% Completed)" : "";
                 strings.put("text3", selected.improvement.name + extra);
             }

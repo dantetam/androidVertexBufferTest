@@ -419,7 +419,7 @@ public class WorldHandler {
                 previousTileFood.put(tile, tile.food);
                 previousTileProduction.put(tile, tile.production);
                 previousTileScience.put(tile, tile.science);
-                previousTileGold.put(tile, tile.gold);
+                previousTileGold.put(tile, tile.capital);
             }
             updateTileYieldRep(validTiles);
         }
@@ -429,12 +429,12 @@ public class WorldHandler {
                 if (previousTileFood.get(tile) != tile.food ||
                         previousTileProduction.get(tile) != tile.production ||
                         previousTileScience.get(tile) != tile.science ||
-                        previousTileGold.get(tile) != tile.gold) {
+                        previousTileGold.get(tile) != tile.capital) {
                     tilesToUpdate.add(tile);
                     previousTileFood.put(tile, tile.food);
                     previousTileProduction.put(tile, tile.production);
                     previousTileScience.put(tile, tile.science);
-                    previousTileGold.put(tile, tile.gold);
+                    previousTileGold.put(tile, tile.capital);
                 }
             }
             updateTileYieldRep(tilesToUpdate);
@@ -470,7 +470,7 @@ public class WorldHandler {
 
         Condition condition4 = new Condition() {
             public boolean allowedTile(Tile t) {
-                return t.gold > 0;
+                return t.capital > 0;
             }
         };
 
@@ -482,7 +482,7 @@ public class WorldHandler {
 
         Condition condition6 = new Condition() {
             public boolean allowedTile(Tile t) {
-                return t.resources.size() > 0 && !t.resources.get(0).equals(Item.ItemType.NO_RESOURCE);
+                return t.resources.size() > 0 && !t.resources.get(0).equals(ItemType.NO_RESOURCE);
             }
         };
 

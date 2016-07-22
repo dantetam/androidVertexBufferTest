@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class BuildingFactory {
 
-    public static Building newTile(World world, Clan clan, BuildingType type, Tile tile, double completionPercentage) {
+    public static Building newBuilding(World world, Clan clan, BuildingType type, Tile tile, double completionPercentage) {
         Building build = new Building(world, clan, type);
         build.modules = new Building[tile.numSpaces];
 

@@ -1,6 +1,7 @@
 package io.github.dantetam.opstrykontest;
 
 import io.github.dantetam.world.ArtificialIntelligence;
+import io.github.dantetam.world.Building;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Pathfinder;
 import io.github.dantetam.world.Person;
@@ -31,6 +32,9 @@ public class WorldSystem {
     }
 
     public void turn() {
+        for (Building building: playerClan.buildings) {
+            building.executeQueue();
+        }
         for (Person person: playerClan.people) {
             person.executeQueue();
         }

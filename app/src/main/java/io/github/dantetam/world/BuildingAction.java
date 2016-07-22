@@ -12,9 +12,9 @@ public class BuildingAction extends Action {
         Building building = (Building) object;
         switch (type) {
             case PROCESS:
-                building.gameProcess();
+                return building.gameProcess();
             case QUEUE_BUILD_MODULE:
-                building.gameBuildModule((Building) data);
+                return building.gameBuildModule((Building) data);
             default:
                 System.out.println("Invalid action type: " + type);
                 return ActionStatus.IMPOSSIBLE;

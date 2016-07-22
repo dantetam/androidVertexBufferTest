@@ -80,6 +80,7 @@ public enum ItemType {
             "Production",
             "Science",
             "Capital",
+            "Labor",
             "Wheat",
             "Fish",
             "Branches",
