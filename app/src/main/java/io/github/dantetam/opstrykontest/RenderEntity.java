@@ -34,6 +34,9 @@ public abstract class RenderEntity {
 
     public int textureHandle;
 
+    public boolean hasName = false;
+    public boolean alphaEnabled = false;
+
     public final int renderMode = GLES20.GL_TRIANGLES;
 
     abstract void renderAll();

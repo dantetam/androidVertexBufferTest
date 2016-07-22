@@ -132,6 +132,12 @@ public class ObjLoader {
                 solidData.put(solidName, data);
             }
         }
+        if (solidName != null) {
+            System.out.println(solidName + "<<<");
+            if (solidName.equals("quad") || solidName.contains("alpha")) {
+                solid.setResourceName(solidName);
+            }
+        }
         solid.numVerticesToRender = data[0].length;
         return solid;
     }

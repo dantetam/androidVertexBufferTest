@@ -125,6 +125,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private MapModel tilesUnits;
     private MapModel borderMarker;
     private ListModel tileYieldRep;
+    private MapModel tileYieldInterface;
 
     private Solid testDuplicate;
 
@@ -191,10 +192,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) 
 	{
 		mLastRequestedCubeFactor = mActualCubeFactor = WORLD_LENGTH;
-		
-		// Set the background clear color to black.
-		//GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		GLES20.glClearColor(0.0f, 140f/255f, 1.0f, 1.0f);
+
+		GLES20.glClearColor(0.0f, 140f / 255f, 1.0f, 1.0f);
+        //GLES20.glClearColor(1.0f, 0, 0, 1.0f);
 
 		// Use culling to remove back faces.
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
@@ -202,8 +202,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		// Enable depth testing
 		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glEnable(GLES20.GL_BLEND);
+        //GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
 
         //GLES20.glEnable(GLES20.GL_STENCIL_TEST);
 
@@ -311,6 +310,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         }
 
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
 		//GLES20.glClearColor(0f/255f, 140f/255f, 255f/255f, 255f/255f);
 		mViewMatrix = camera.getViewMatrix();
 
@@ -336,6 +336,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         testMarker = worldHandler.selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         borderMarker = worldHandler.tileTerritoryRep();
+        tileYieldInterface = worldHandler.tileYieldInterface();
         ///highlights = worldHandler.tileHighlightRep();
         worldHandler.tileHighlightRep();
         worldHandler.totalWorldRepresentation();
@@ -376,6 +377,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         renderSolid(selectedUnitMarker);
         renderModel(borderMarker);
 
+        renderModel(tileYieldInterface);
+
         if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
             if (mousePicker.getSelectedTile().improvement.buildingType == BuildingType.ENCAMPMENT) {
                 tileYieldRep = worldHandler.updateTileYieldRep();
@@ -402,6 +405,12 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
     private void renderSolid(RenderEntity solid) {
         if (solid == null) return;
+        if (solid.alphaEnabled) {
+            //if (((Solid)solid).resourceName.equals("quad") || ((Solid)solid).resourceName.contains("alpha")) {
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+            //}
+        }
         //RenderEntity solid = model.parts.get(i);
         //int x = (i / (mActualCubeFactor * mActualCubeFactor)) % mActualCubeFactor;
         //int y = (i / mActualCubeFactor) % mActualCubeFactor;
@@ -488,6 +497,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         //---
         solid.renderAll(solid.renderMode);
+
+        if (solid.alphaEnabled) {
+            GLES20.glDisable(GLES20.GL_BLEND);
+        }
         //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
     }
 

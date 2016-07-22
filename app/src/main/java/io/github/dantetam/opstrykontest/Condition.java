@@ -23,6 +23,7 @@ public abstract class Condition {
      */
     public void init(String stringy) {}
     public void init(int i) {}
+    public void init(int i, int j) {}
     public void init(int a, int b, float c) {}
     public void init() {}
 }

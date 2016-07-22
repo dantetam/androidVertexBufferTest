@@ -12,6 +12,12 @@ import java.nio.FloatBuffer;
 public class Solid extends RenderEntity {
     public int mCubeBufferIdx = -1;
 
+    public String resourceName;
+    public void setResourceName(String name) {
+        resourceName = name;
+        hasName = true;
+    }
+
     public int strokeTextureHandle;
 
     public int generatedCubeFactor;

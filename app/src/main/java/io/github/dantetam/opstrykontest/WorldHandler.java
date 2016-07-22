@@ -45,6 +45,8 @@ public class WorldHandler {
 
     public MapModel<Clan> tileTerritoryStored;
 
+    public MapModel<int[]> tileYieldUiStored;
+
     //public HashMap<Tile, Polygon> hexesShape; //Originally intended to be used for mouse picking. More efficient to use center vertices.
 
     private LessonSevenActivity mActivity;
@@ -442,6 +444,16 @@ public class WorldHandler {
         return previousYieldRep;
     }
 
+    final float TRANSLATE_FACTOR_UI_X = 0.66f;
+    final float TRANSLATE_FACTOR_UI_Z = 0.66f;
+    final float[][] offsets = {
+            new float[]{-2, -1},
+            new float[]{-1, -1},
+            new float[]{-2, 0},
+            new float[]{-1, 0},
+            new float[]{0, -3},
+            new float[]{2, 0}
+    };
     public ListModel updateTileYieldRep(List<Tile> tiles) {
         if (previousYieldRep == null) {
             previousYieldRep = new ListModel();
@@ -493,18 +505,6 @@ public class WorldHandler {
             textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
         }
 
-        float[][] offsets = {
-                new float[]{-3, -1},
-                new float[]{-2, -1},
-                new float[]{-3, 0},
-                new float[]{-2, 0},
-                new float[]{0, -3},
-                new float[]{2, 0}
-        };
-
-        final float TRANSLATE_FACTORX = 0.66f;
-        final float TRANSLATE_FACTORZ = 0.66f;
-
         for (int i = 0; i < conditions.length; i++) {
             float[][] hexData = ObjLoader.loadObjModelByVertex("quad", mActivity, R.raw.quad);
 
@@ -526,12 +526,12 @@ public class WorldHandler {
             int cubeTextureDataOffset = 0;
 
             float[] offset = offsets[i];
-            float[] trueOffset = {offset[0]*TRANSLATE_FACTORX, offset[1]*TRANSLATE_FACTORZ};
+            float[] trueOffset = {offset[0]*TRANSLATE_FACTOR_UI_X, offset[1]*TRANSLATE_FACTOR_UI_Z};
 
             for (Tile tile : tilesToRender) {
                 Vector3f vertices = storedTileVertexPositions.get(tile);
 
-                float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTORX, 1f, TRANSLATE_FACTORZ);
+                float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTOR_UI_X, 1f, TRANSLATE_FACTOR_UI_Z);
                 final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
 
                 //Interleave all the new vtn data, per hex.
@@ -546,6 +546,7 @@ public class WorldHandler {
 
             float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
             Solid hexes = ObjLoader.loadSolid(textureHandles[i], null, generatedData);
+            hexes.alphaEnabled = true;
 
             previousYieldRep.add(hexes);
         }
@@ -585,6 +586,94 @@ public class WorldHandler {
             updateTileUnits(tilesToUpdate);
         }
         return unitsStored;
+    }
+
+    private int[] yieldUiStatMarkers = {
+            R.drawable.ui_0,
+            R.drawable.ui_1,
+            R.drawable.ui_2,
+            R.drawable.ui_3,
+            R.drawable.ui_4,
+            R.drawable.ui_5,
+            R.drawable.ui_6,
+            R.drawable.ui_7,
+            R.drawable.ui_8,
+            R.drawable.ui_9
+    };
+    public MapModel<int[]> tileYieldInterface() {
+        if (tileYieldUiStored == null) {
+            tileYieldUiStored = new MapModel<>();
+
+            Condition variableCond = new Condition() {
+                int type = 0, num = 0;
+
+                public void init(int i, int j) {
+                    type = i;
+                    num = j;
+                }
+                public boolean allowedTile(Tile tile) {
+                    if (type == 0) {
+                        return tile.food == num;
+                    } else if (type == 1) {
+                        return tile.production == num;
+                    } else if (type == 2) {
+                        return tile.science == num;
+                    } else if (type == 3) {
+                        return tile.capital == num;
+                    } else {
+                        throw new IllegalArgumentException("Invalid type in variable condition");
+                    }
+                }
+            };
+
+            for (int i = 0; i <= 3; i++) {
+                float[] offset = offsets[i];
+                float[] trueOffset = {offset[0]*TRANSLATE_FACTOR_UI_X, offset[1]*TRANSLATE_FACTOR_UI_Z};
+                for (int j = 1; j <= 9; j++) {
+                    variableCond.init(i, j);
+                    List<Tile> tilesToRender = new ArrayList<>();
+                    for (Tile tile: world.getAllValidTiles()) {
+                        if (variableCond.allowedTile(tile)) {
+                            tilesToRender.add(tile);
+                        }
+                    }
+
+                    float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.quad);
+                    //Count the number of hexes needed so that the correct space is allocated
+                    int numHexesToRender = tilesToRender.size();
+                    //Create some appropriately sized tables which will store preliminary buffer data
+                    //Combine them all within these pieces of data.
+                    final float[] totalCubePositionData = new float[hexData[0].length * numHexesToRender];
+                    int cubePositionDataOffset = 0;
+                    final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * numHexesToRender];
+                    int cubeNormalDataOffset = 0;
+                    final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * numHexesToRender];
+                    int cubeTextureDataOffset = 0;
+                    for (Tile tile : tilesToRender) {
+                        Vector3f vertices = storedTileVertexPositions.get(tile);
+
+                        float[] scaledData = scaleData(hexData[0], 0.66f, 1f, 0.66f);
+                        final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.6f, vertices.z + trueOffset[1]);
+
+                        //Interleave all the new vtn data, per hex.
+                        System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+                        cubePositionDataOffset += thisCubePositionData.length;
+
+                        System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+                        cubeNormalDataOffset += hexData[1].length;
+                        System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+                        cubeTextureDataOffset += hexData[2].length;
+                    }
+                    int textureHandle = TextureHelper.loadTexture("ui_" + j, mActivity, yieldUiStatMarkers[j]);
+                    float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+                    Solid hexes = ObjLoader.loadSolid(textureHandle, null, generatedData);
+                    hexes.alphaEnabled = true;
+                    tileYieldUiStored.put(new int[]{i,j}, hexes);
+
+                }
+            }
+        }
+        return tileYieldUiStored;
     }
 
     public HashMap<Tile, Entity> previousUnits = null;

@@ -279,7 +279,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             }
             else {
                 int p = (int)(selected.improvement.completionPercentage() * 100d);
-                String extra = p < 1 ? "(" + p + "% Completed)" : "";
+                String extra = p < 1 ? " (" + p + "% Completed)" : "";
                 strings.put("text3", selected.improvement.name + extra);
             }
             if (selected.resources.size() > 0) {
