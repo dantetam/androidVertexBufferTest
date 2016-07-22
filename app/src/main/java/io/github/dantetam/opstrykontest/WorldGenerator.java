@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Set;
 
 import io.github.dantetam.world.Building;
+import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.ClanFactory;
 import io.github.dantetam.world.DiamondSquare;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Item;
+import io.github.dantetam.world.ItemType;
 import io.github.dantetam.world.Person;
 import io.github.dantetam.world.PersonFactory;
 import io.github.dantetam.world.Tile;
@@ -69,9 +71,9 @@ public class WorldGenerator {
         }
         return temp;*/
         for (Tile tile: world.getAllValidTiles()) {
-            HashMap<Item.ItemType, List<Condition>> conditions = Item.conditionsForTile();
-            List<Item.ItemType> resources = Item.evaluateResourceConditions(tile, conditions);
-            for (Item.ItemType itemType: resources) {
+            HashMap<ItemType, List<Condition>> conditions = Item.conditionsForTile();
+            List<ItemType> resources = Item.evaluateResourceConditions(tile, conditions);
+            for (ItemType itemType: resources) {
                 tile.resources.add(new Item(itemType, 1));
             }
         }
@@ -157,7 +159,7 @@ public class WorldGenerator {
                     world.setTileOwner(territoryTile, clan);
                 }
             }
-            Building first = new Building(world, clan, Building.BuildingType.ENCAMPMENT);
+            Building first = new Building(world, clan, BuildingType.ENCAMPMENT);
             first.move(clanHome);
             Person unit = PersonFactory.newPerson(Person.PersonType.WARRIOR, world, clan);
             unit.move(clanHome);
@@ -196,9 +198,9 @@ public class WorldGenerator {
         return maxTile;
     }
 
-    private static HashMap<Item.ItemType, float[][]> resourceSpawnRates;
+    private static HashMap<ItemType, float[][]> resourceSpawnRates;
 
-    public static HashMap<Item.ItemType, float[][]> parseResourceSpawnRates() {
+    public static HashMap<ItemType, float[][]> parseResourceSpawnRates() {
         if (resourceSpawnRates == null) {
             resourceSpawnRates = new HashMap<>();
             List<String> data = FileParser.loadText(R.raw.resource_spawn_rates);
@@ -211,7 +213,7 @@ public class WorldGenerator {
                 if (stringy.isEmpty() || stringy.equals("") || stringy.startsWith("//")) continue;
                 if (stringy.startsWith("Resource/")) {
                     if (resourceData != null) {
-                        resourceSpawnRates.put(Item.ItemType.fromString(resource), resourceData);
+                        resourceSpawnRates.put(ItemType.fromString(resource), resourceData);
                     }
                     resource = stringy.substring(9);
                     resourceData = new float[numBiomes][numTerrains];

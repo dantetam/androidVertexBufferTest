@@ -1,6 +1,7 @@
 package io.github.dantetam.world;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static io.github.dantetam.world.Action.ActionType;
@@ -14,8 +15,8 @@ public abstract class Entity extends Representable {
     protected Tile location;
     public String name;
     public Clan clan;
-    public List<Item> items;
-    public
+    private List<Item> inventory;
+    //public
     public static int globalIdCounter = 0;
     public int id;
     public World world;
@@ -27,7 +28,7 @@ public abstract class Entity extends Representable {
         //locations = new ArrayList<Tile>();
         world = w;
         clan = c;
-        items = new ArrayList<Item>();
+        inventory = new ArrayList<Item>();
         id = globalIdCounter;
         Entity.globalIdCounter++;
         actionsQueue = new ArrayList<>();
@@ -82,6 +83,65 @@ public abstract class Entity extends Representable {
         System.err.println("Invalid game move: ");
         System.err.println(location + "; " + location.dist(t) + "; " + actionPoints);
         return ActionStatus.IMPOSSIBLE;
+    }
+
+    public void addAllToInventory(Collection<Item> items) {
+        for (Item item: items) {
+            addToInventory(item);
+        }
+    }
+    public void addToInventory(Item addItem) {
+        changeInventory(addItem, true);
+    }
+    public void subtractFromInventory(Item addItem) {
+        changeInventory(addItem, false);
+    }
+    private void changeInventory(Item addItem, boolean positive) {
+        for (int i = 0; i < inventory.size(); i++) {
+            Item item = inventory.get(i);
+            if (addItem.type == item.type) {
+                if (positive) {
+                    item.quantity += addItem.quantity;
+                }
+                else {
+                    item.quantity -= addItem.quantity;
+                }
+                if (item.quantity == 0) {
+                    inventory.remove(i);
+                }
+                return;
+            }
+        }
+        inventory.add(addItem);
+    }
+    public List<Item> getInventory() {
+        return inventory;
+    }
+
+    public boolean hasItemsInInventory(List<Item> items, boolean remove) {
+        List<Item> inventoryItems = new ArrayList<>();
+        for (Item item: items) {
+            boolean reqFound = false;
+            for (Item inventoryItem: inventory) {
+                if (item.equals(inventoryItem) && item.quantity > inventoryItem.quantity) {
+                    if (remove) {
+                        inventoryItems.add(inventoryItem);
+                    }
+                    reqFound = true;
+                    break;
+                }
+            }
+            if (!reqFound) {
+                return false;
+            }
+        }
+        if (remove) {
+            for (int i = 0; i < inventoryItems.size(); i++) {
+                Item requested = items.get(i);
+                inventoryItems.get(i).quantity -= requested.quantity;
+            }
+        }
+        return true;
     }
 
 }

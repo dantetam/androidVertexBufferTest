@@ -1,65 +1,14 @@
 package io.github.dantetam.world;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Dante on 6/16/2016.
  */
 public class Building extends Entity {
-
-    public enum BuildingType {
-        //WHEAT_PLOT (0, "Wheat Plot"),
-        //SHALLOW_MINE (1, "Shallow Mine");
-        ENCAMPMENT (0, "Encampment"),
-        FARM1 (10, "Farm1"),
-        FARM2 (11, "Farm2"),
-        FARM3 (12, "Farm3"),
-        FARM4 (13, "Farm4");
-        public int id; public String name;
-        BuildingType(int t, String n) {id = t; name = n;}
-        private static BuildingType[] rawTypes = BuildingType.class.getEnumConstants();
-        public static HashMap<Integer, BuildingType> types = null;
-        public static HashMap<String, BuildingType> typesByName = null;
-        public static BuildingType fromInt(int n) {
-            if (types == null) {
-                init();
-            }
-            if (types.containsKey(n)) {
-                return types.get(n);
-            }
-            throw new IllegalArgumentException("Invalid terrain type: " + n);
-        }
-        public static BuildingType fromString(String n) {
-            if (typesByName == null) {
-                init();
-            }
-            if (typesByName.containsKey(n)) {
-                return typesByName.get(n);
-            }
-            throw new IllegalArgumentException("Invalid terrain type: " + n);
-        }
-        public String objResourceName() {
-            return name.toLowerCase().replaceAll(" ", "_");
-        }
-        private static void init() {
-            types = new HashMap<>();
-            for (int i = 0; i < rawTypes.length; i++) {
-                types.put(rawTypes[i].id, rawTypes[i]);
-            }
-            typesByName = new HashMap<>();
-            for (int i = 0; i < rawTypes.length; i++) {
-                typesByName.put(rawTypes[i].name, rawTypes[i]);
-            }
-        }
-        private static final int numBuildingTypes = 0;
-        public static final int getNumBuildingTypes() {
-            if (numBuildingTypes == 0) init();
-            return types.size();
-        }
-        public static BuildingType randomBuilding() {
-            return BuildingType.fromInt((int) (Math.random() * numBuildingTypes));
-        }
-    }
 
     public BuildingType buildingType;
     public Building[] modules;
@@ -67,14 +16,16 @@ public class Building extends Entity {
     public List<Item> inputResources;
     public List<Item> outputResources;
 
-    public double completionPercentage;
+    public double workCompleted, workNeeded;
 
     public Building(World world, Clan clan, BuildingType type) {
         super(world, clan);
         clan.buildings.add(this);
         buildingType = type;
         name = type.name;
-        completionPercentage = 1;
+        //this.completionPercentage = completionPercentage;
+        inputResources = new ArrayList<>();
+        outputResources = new ArrayList<>();
     }
 
     /*public Building(Tile t, BuildingType type) {
@@ -93,12 +44,54 @@ public class Building extends Entity {
         //super.move(t);
     }
 
-    public void gameProcess() {
-
+    public Action.ActionStatus gameProcess() {
+        if (location() != null) {
+            if (actionPoints <= 0) {
+                return Action.ActionStatus.OUT_OF_ENERGY;
+            }
+            actionPoints--;
+            Item[] items = {
+                    new Item(ItemType.FOOD, location.food),
+                    new Item(ItemType.PRODUCTION, location.production),
+                    new Item(ItemType.SCIENCE, location.science),
+                    new Item(ItemType.CAPITAL, location.capital)
+            };
+            addAllToInventory(Arrays.asList(items));
+            while (true) {
+                if (!hasItemsInInventory(inputResources, true)) {
+                    break;
+                }
+                else {
+                    addAllToInventory(outputResources);
+                }
+            }
+            return Action.ActionStatus.CONTINUING;
+        }
+        else {
+            return Action.ActionStatus.IMPOSSIBLE;
+        }
     }
 
-    public void gameBuildModule(Building building) {
+    public Action.ActionStatus gameBuildModule(Building building) {
+        if (building.workCompleted >= building.workNeeded) {
+            return Action.ActionStatus.ALREADY_COMPLETED;
+        }
+        if (actionPoints <= 0) {
+            return Action.ActionStatus.OUT_OF_ENERGY;
+        }
+        actionPoints--;
+        building.workCompleted += location.production;
+        if (building.workCompleted >= building.workNeeded) {
+            return Action.ActionStatus.EXECUTED;
+        }
+        return Action.ActionStatus.CONTINUING;
+    }
 
+    public void addInput(ItemType type, int quantity) {
+        inputResources.add(new Item(type, quantity));
+    }
+    public void addOutput(ItemType type, int quantity) {
+        outputResources.add(new Item(type, quantity));
     }
 
 }

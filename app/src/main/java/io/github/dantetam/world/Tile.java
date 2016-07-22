@@ -18,12 +18,12 @@ public class Tile extends Representable implements Traversable<Tile> {
     public List<Item> resources;
     public List<Entity> occupants;
 
-    public int food, production, science, gold;
+    public int food, production, science, capital;
     public void initBaseResources(int a, int b, int c, int d) {
-        food = a; production = b; science = c; gold = d;
+        food = a; production = b; science = c; capital = d;
     }
     public void addBaseResources(int a, int b, int c, int d) {
-        food += a; production += b; science += c; gold += d;
+        food += a; production += b; science += c; capital += d;
     }
     public int numSpaces;
 
