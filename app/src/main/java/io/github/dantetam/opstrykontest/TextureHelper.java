@@ -53,6 +53,58 @@ public class TextureHelper
 		return textureHandle[0];
 	}
 
+    public static int loadTintedTexture(final String name, final Context context, final int resourceId, int[] tintColor)
+    {
+        int intFromColor;
+        if (tintColor.length == 3) {
+            intFromColor = ColorTextureHelper.intFromColor(tintColor[0], tintColor[1], tintColor[2], 255);
+        }
+        else {
+            intFromColor = ColorTextureHelper.intFromColor(tintColor[0], tintColor[1], tintColor[2], tintColor[3]);
+        }
+        String tintedBitmapName = name + "/rgb" + intFromColor;
+        if (texturesByName.containsKey(name)) {
+            return texturesByName.get(name);
+        }
+        final int[] textureHandle = new int[1];
+        GLES20.glGenTextures(1, textureHandle, 0);
+
+        if (textureHandle[0] != 0) {
+            Bitmap bitmap = BitmapHelper.getBitmap(tintedBitmapName);
+            if (bitmap != null) {
+                //Found the tinted version of the bitmap, don't generate a new one
+            }
+            else {
+                bitmap = BitmapHelper.findBitmapOrBuild(resourceId).copy(Bitmap.Config.ARGB_8888, true);
+                for (int x = 0; x < bitmap.getWidth(); x++) {
+                    for (int y = 0; y < bitmap.getHeight(); y++) {
+                        int originalColor = bitmap.getPixel(x, y);
+                        int b = originalColor & 0x000000FF;
+                        int g = (originalColor >>> 8) & 0x000000FF;
+                        int r = (originalColor >>> 16) & 0x000000FF;
+                        int a = (originalColor >>> 24) & 0x000000FF;
+
+                        int tintR = r + (int) ((tintColor[0] - r) * 0.5f);
+                        int tintG = g + (int) ((tintColor[1] - g) * 0.5f);
+                        int tintB = b + (int) ((tintColor[2] - b) * 0.5f);
+
+                        int newColor = ColorTextureHelper.intFromColor(tintR, tintG, tintB, a);
+
+                        bitmap.setPixel(x, y, newColor);
+                    }
+                }
+                BitmapHelper.addBitmap(tintedBitmapName, bitmap);
+            }
+            bindBitmap(bitmap, textureHandle[0]);
+        }
+        else {
+            throw new RuntimeException("Error loading tinted texture.");
+        }
+
+        texturesByName.put(name, textureHandle[0]);
+        return textureHandle[0];
+    }
+
     /**
      * Load textures from memory if available, otherwise, create a new texture handle from a Bitmap
      * name A string "handle" that can be referenced if this is drawn again

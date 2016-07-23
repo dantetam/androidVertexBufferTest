@@ -82,7 +82,7 @@ public class ColorTextureHelper {
     /*
     Convert an int color, 0-255, to ARGB form
      */
-    private static int intFromColor(int r, int g, int b, int a) {
+    public static int intFromColor(int r, int g, int b, int a) {
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 

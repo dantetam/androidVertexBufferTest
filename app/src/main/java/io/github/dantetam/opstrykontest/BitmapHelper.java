@@ -33,13 +33,13 @@ public class BitmapHelper {
         };
     }
 
-    private static void addBitmap(String key, Bitmap bitmap) {
+    public static void addBitmap(String key, Bitmap bitmap) {
         if (getBitmap(key) == null) {
             mMemoryCache.put(key, bitmap);
         }
     }
 
-    private static Bitmap getBitmap(String key) {
+    public static Bitmap getBitmap(String key) {
         return mMemoryCache.get(key);
     }
 

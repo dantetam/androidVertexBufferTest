@@ -336,7 +336,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         testMarker = worldHandler.selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
         borderMarker = worldHandler.tileTerritoryRep();
-        tileYieldInterface = worldHandler.tileYieldInterface();
+        //tileYieldInterface = worldHandler.tileYieldInterface();
         ///highlights = worldHandler.tileHighlightRep();
         worldHandler.tileHighlightRep();
         worldHandler.totalWorldRepresentation();
@@ -377,12 +377,12 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         renderSolid(selectedUnitMarker);
         renderModel(borderMarker);
 
-        renderModel(tileYieldInterface);
-
         if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
             if (mousePicker.getSelectedTile().improvement.buildingType == BuildingType.ENCAMPMENT) {
                 tileYieldRep = worldHandler.updateTileYieldRep();
+                tileYieldInterface = worldHandler.tileYieldInterface();
                 renderModel(tileYieldRep);
+                renderModel(tileYieldInterface);
             }
         }
 

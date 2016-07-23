@@ -454,6 +454,14 @@ public class WorldHandler {
             new float[]{0, -3},
             new float[]{2, 0}
     };
+    final float[][] numOffsets = {
+            new float[]{-2.5f, -1.5f},
+            new float[]{-1.5f, -1.5f},
+            new float[]{-2.5f, -0.5f},
+            new float[]{-1.5f, -0.5f},
+            new float[]{0, -3},
+            new float[]{2, 0}
+    };
     public ListModel updateTileYieldRep(List<Tile> tiles) {
         if (previousYieldRep == null) {
             previousYieldRep = new ListModel();
@@ -500,9 +508,15 @@ public class WorldHandler {
 
         Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6};
         int[] textures = {R.drawable.food, R.drawable.production, R.drawable.science, R.drawable.gold, R.drawable.usb_android, R.drawable.usb_android};
+        int[][] textureTints = {{0, 255, 0}, {255, 0, 0}, {0, 0, 255}, {255, 255, 0}};
         int[] textureHandles = new int[textures.length];
         for (int i = 0; i < textureHandles.length; i++) {
-            textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
+            if (i <= 3) {
+                int[] tint = textureTints[i];
+                textureHandles[i] = TextureHelper.loadTintedTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i], tint);
+            }
+            else
+                textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
         }
 
         for (int i = 0; i < conditions.length; i++) {
@@ -600,6 +614,7 @@ public class WorldHandler {
             R.drawable.ui_8,
             R.drawable.ui_9
     };
+    private static float TRANSLATE_FACTOR_UI_NUM_X = 0.5f, TRANSLATE_FACTOR_UI_NUM_Z = 0.5f;
     public MapModel<int[]> tileYieldInterface() {
         if (tileYieldUiStored == null) {
             tileYieldUiStored = new MapModel<>();
@@ -627,7 +642,7 @@ public class WorldHandler {
             };
 
             for (int i = 0; i <= 3; i++) {
-                float[] offset = offsets[i];
+                float[] offset = numOffsets[i];
                 float[] trueOffset = {offset[0]*TRANSLATE_FACTOR_UI_X, offset[1]*TRANSLATE_FACTOR_UI_Z};
                 for (int j = 1; j <= 9; j++) {
                     variableCond.init(i, j);

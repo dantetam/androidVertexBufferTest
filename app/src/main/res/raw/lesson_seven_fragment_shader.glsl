@@ -11,7 +11,10 @@ varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
   
 // The entry point for our fragment shader.
 void main()                    		
-{                              
+{
+    vec4 texel = texture2D(u_Texture, v_TexCoordinate);
+    if (texel.a < 0.5)
+        discard;
 	// Will be used for attenuation.
     float distance = length(u_LightPos - v_Position);                  
 	
@@ -37,7 +40,7 @@ void main()
     //gl_FragColor = vec4(diffuse, diffuse, diffuse, 1.0);
     //gl_FragColor = mix(diffuse, gray, 0.5);
 
-    gl_FragColor = (diffuse * texture2D(u_Texture, v_TexCoordinate));
+    gl_FragColor = (diffuse * texel);
 
     //vec4 colored = (diffuse * texture2D(u_Texture, v_TexCoordinate));
     //float newOpacity = min(1.0, colored.w / abs(dot(viewDirection, normalDirection)));
