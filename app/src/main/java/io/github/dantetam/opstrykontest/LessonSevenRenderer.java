@@ -309,29 +309,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         mGlSurfaceView.update();
 
-        if (!buildingWorldFinished) {
-            buildingWorldFinished = true;
-            mLessonSevenActivity.runOnUiThread(new Thread() {
-                public void run() {
-                    Animation anim = AnimationUtils.loadAnimation(mLessonSevenActivity, R.anim.splash_alpha);
-                    anim.reset();
-                    ImageView splashScreen = (ImageView) mLessonSevenActivity.findViewById(R.id.splash_screen_main);
-                    splashScreen.clearAnimation();
-                    splashScreen.startAnimation(anim);
-                    //mLessonSevenActivity.findViewById(R.id.splash_screen_main).setVisibility(View.INVISIBLE);
-                    try {
-                        sleep(2500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } finally {
-                        splashScreen.setVisibility(View.INVISIBLE);
-                    }
-                }
-            });
-            getUserInterfaceReady();
-            System.out.println("Done loading.");
-        }
-
         Object[] renderObjects = worldHandler.totalWorldRepresentation();
         List<BaseModel> modelsToRender = (List<BaseModel>) renderObjects[0];
         List<RenderEntity> solidsToRender = (List<RenderEntity>) renderObjects[1];
@@ -454,7 +431,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
     }
 
-    private void getUserInterfaceReady() {
+    public void getUserInterfaceReady() {
         mLessonSevenActivity.runOnUiThread(new Runnable() {
             public void run() {
                 mLessonSevenActivity.findViewById(R.id.main_menu).setVisibility(View.VISIBLE);

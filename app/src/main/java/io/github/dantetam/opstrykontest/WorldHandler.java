@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,10 @@ public class WorldHandler {
     static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
     static final int BYTES_PER_FLOAT = 4;
 
+    public Collection<ChunkHelper.Node> chunkNodes;
+    public int oldIdSum = 0;
     public List<Tile> chunkTiles;
+    public boolean chunksUpdated = false;
 
     public WorldHandler(LessonSevenActivity mActivity, LessonSevenRenderer mRenderer, MousePicker mousePicker, AssetHelper assetHelper, ChunkHelper chunkHelper, int len1, int len2) {
         world = new World(len1, len2);
@@ -84,15 +88,48 @@ public class WorldHandler {
         List<BaseModel> modelsToRender = new ArrayList<>();
         List<RenderEntity> solidsToRender = new ArrayList<>();
 
-        chunkTiles = chunkHelper.getChunkTiles(mousePicker.centerTile, 1);
+        Collection<ChunkHelper.Node> nodes = chunkHelper.getChunkNodesContainingTile(mousePicker.centerTile, 1);
+        chunksUpdated = false;
+        if (chunkNodes == null) {
+            chunkNodes = nodes;
+        }
+        else {
+            if (nodes.size() != chunkNodes.size()) {
+                chunksUpdated = true;
+            }
+            else {
+                int idSum = 0;
+                for (ChunkHelper.Node node: nodes) {
+                    idSum += node.id;
+                }
+                idSum -= oldIdSum;
+                oldIdSum = idSum;
+                if (idSum != 0) {
+                    chunksUpdated = true;
+                }
+            }
+        }
+
         if (chunkTiles == null) {
             chunkTiles = new ArrayList<>();
         }
+        if (chunksUpdated) {
+            chunkTiles.clear();
+            for (ChunkHelper.Node node: nodes) {
+                for (Tile tile: node.tiles) {
+                    chunkTiles.add(tile);
+                }
+            }
+        }
+        /*chunkTiles = chunkHelper.getChunkTiles(mousePicker.centerTile, 1);
+        if (chunkTiles == null) {
+            chunkTiles = new ArrayList<>();
+        }*/
 
-        if (LessonSevenRenderer.frames % 100 == 0) {
+        /*if (LessonSevenRenderer.frames % 100 == 0) {
             for (int x = 0; x < chunkHelper.alignedTiles.length; x++) {
                 for (int z = 0; z < chunkHelper.alignedTiles[0].length; z++) {
-                    if (chunkHelper.alignedTiles[x][z].equals(mousePicker.centerTile)) {
+                    if (chunkHelper.alignedTiles[x][z].equals(mousePicker.getSelectedTile())) {
                         System.out.print("! ");
                     }
                     else if (chunkTiles.contains(chunkHelper.alignedTiles[x][z])) {
@@ -103,23 +140,24 @@ public class WorldHandler {
                 }
                 System.out.println();
             }
-        }
+        }*/
 
         //mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
+
+        mousePicker.passInTileVertices(storedTileVertexPositions);
 
         modelsToRender.add(worldRep());
         modelsToRender.add(updateTileUnits());
         modelsToRender.add(tileImprovementRep());
         solidsToRender.add(selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
         solidsToRender.add(selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
+
         modelsToRender.add(tileTerritoryRep());
         tileHighlightRep();
 
-        mousePicker.passInTileVertices(storedTileVertexPositions);
-
-        /*if (previousYieldRep == null) {
+        if (previousYieldRep == null) {
             updateTileYieldRep();
-        }*/
+        }
 
         //TODO: Convert to IBOs next?
 
@@ -131,6 +169,29 @@ public class WorldHandler {
         }
 
         modelsToRender.add(tileHighlightOwnerStored);
+
+        if (!mRenderer.buildingWorldFinished) {
+            mRenderer.buildingWorldFinished = true;
+            mActivity.runOnUiThread(new Thread() {
+                public void run() {
+                    Animation anim = AnimationUtils.loadAnimation(mActivity, R.anim.splash_alpha);
+                    anim.reset();
+                    ImageView splashScreen = (ImageView) mActivity.findViewById(R.id.splash_screen_main);
+                    splashScreen.clearAnimation();
+                    splashScreen.startAnimation(anim);
+                    //mLessonSevenActivity.findViewById(R.id.splash_screen_main).setVisibility(View.INVISIBLE);
+                    try {
+                        sleep(2500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        splashScreen.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+            mRenderer.getUserInterfaceReady();
+            System.out.println("Done loading.");
+        }
 
         return new Object[]{modelsToRender, solidsToRender};
     }
@@ -194,14 +255,16 @@ public class WorldHandler {
     public MapModel tileTerritoryRep() {
         if (tileTerritoryStored == null) {
             tileTerritoryStored = new MapModel<>();
-            createTerritoryRep(tileTerritoryStored, chunkTiles);
+            tileHighlightOwnerStored = new MapModel<>();
+            tileHighlightInfluenceStored = new MapModel<>();
+            createTerritoryRep(tileTerritoryStored, world.getAllValidTiles());
             //System.out.println("Update main");
         }
-        /*else if (world.clanTerritoriesUpdate.size() > 0) {
+        else if (world.clanTerritoriesUpdate.size() > 0 || chunksUpdated) {
             //TODO: Fix -> createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, world.clanTerritoriesUpdate);
             //System.out.println("Update tiles " + world.clanTerritoriesUpdate.size());
-            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, validTiles);
-        }*/
+            //createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, world.getAllValidTiles());
+        }
         world.clanTerritoriesUpdate.clear();
         return tileTerritoryStored;
     }
@@ -287,13 +350,13 @@ public class WorldHandler {
         if (tileHighlightOwnerStored == null) {
             tileHighlightOwnerStored = new MapModel<>();
             tileHighlightInfluenceStored = new MapModel<>();
-            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, chunkTiles);
+            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, world.getAllValidTiles());
             //System.out.println("Update main");
         }
-        else if (world.clanTerritoriesUpdate.size() > 0) {
+        else if (world.clanTerritoriesUpdate.size() > 0 || chunksUpdated) {
             //TODO: Fix -> createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, world.clanTerritoriesUpdate);
             //System.out.println("Update tiles " + world.clanTerritoriesUpdate.size());
-            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, chunkTiles);
+            //createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, world.getAllValidTiles());
         }
         world.clanTerritoriesUpdate.clear();
         //return tileHighlightStored;
@@ -452,11 +515,11 @@ public class WorldHandler {
                 previousTileScience.put(tile, tile.science);
                 previousTileGold.put(tile, tile.capital);
             }
-            updateTileYieldRep(chunkTiles);
+            updateTileYieldRep(world.getAllValidTiles());
         }
         else {
             List<Tile> tilesToUpdate = new ArrayList<>();
-            for (Tile tile: chunkTiles) {
+            for (Tile tile: world.getAllValidTiles()) {
                 if (previousTileFood.get(tile) != tile.food ||
                         previousTileProduction.get(tile) != tile.production ||
                         previousTileScience.get(tile) != tile.science ||
@@ -488,107 +551,107 @@ public class WorldHandler {
             new float[]{-1.5f, -1.5f},
             new float[]{-2.5f, -0.5f},
             new float[]{-1.5f, -0.5f},
-            new float[]{0, -3},
+            new float[]{0, -2.5f},
             new float[]{2, 0}
     };
     public ListModel updateTileYieldRep(List<Tile> tiles) {
         if (previousYieldRep == null) {
             previousYieldRep = new ListModel();
+        }
 
-            if (tiles.size() == 0) {
-                return previousYieldRep;
+        if (tiles.size() == 0) {
+            return previousYieldRep;
+        }
+
+        Condition condition1 = new Condition() {
+            public boolean allowedTile(Tile t) {
+                return t.food > 0;
+            }
+        };
+
+        Condition condition2 = new Condition() {
+            public boolean allowedTile(Tile t) {
+                return t.production > 0;
+            }
+        };
+
+        Condition condition3 = new Condition() {
+            public boolean allowedTile(Tile t) {
+                return t.science > 0;
+            }
+        };
+
+        Condition condition4 = new Condition() {
+            public boolean allowedTile(Tile t) {
+                return t.capital > 0;
+            }
+        };
+
+        Condition condition5 = new Condition() {
+            public boolean allowedTile(Tile t) {
+                return t.improvement != null;
+            }
+        };
+
+        Condition condition6 = new Condition() {
+            public boolean allowedTile(Tile t) {
+                return t.resources.size() > 0 && !t.resources.get(0).equals(ItemType.NO_RESOURCE);
+            }
+        };
+
+        Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6};
+        int[] textures = {R.drawable.food, R.drawable.production, R.drawable.science, R.drawable.gold, R.drawable.usb_android, R.drawable.usb_android};
+        //int[][] textureTints = {{0, 255, 0}, {255, 0, 0}, {0, 0, 255}, {255, 255, 0}};
+        int[] textureHandles = new int[textures.length];
+        for (int i = 0; i < textureHandles.length; i++) {
+            textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
+        }
+
+        for (int i = 0; i < conditions.length; i++) {
+            float[][] hexData = ObjLoader.loadObjModelByVertex("quad", mActivity, R.raw.quad);
+
+            Condition cond = conditions[i];
+            List<Tile> tilesToRender = new ArrayList<>();
+            for (Tile tile : tiles) {
+                if (cond.allowedTile(tile)) {
+                    tilesToRender.add(tile);
+                }
             }
 
-            Condition condition1 = new Condition() {
-                public boolean allowedTile(Tile t) {
-                    return t.food > 0;
-                }
-            };
+            //Create some appropriately sized tables which will store preliminary buffer data
+            //Combine them all within these pieces of data.
+            final float[] totalCubePositionData = new float[hexData[0].length * tilesToRender.size()];
+            int cubePositionDataOffset = 0;
+            final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * tilesToRender.size()];
+            int cubeNormalDataOffset = 0;
+            final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
+            int cubeTextureDataOffset = 0;
 
-            Condition condition2 = new Condition() {
-                public boolean allowedTile(Tile t) {
-                    return t.production > 0;
-                }
-            };
+            float[] offset = offsets[i];
+            float[] trueOffset = {offset[0] * TRANSLATE_FACTOR_UI_X, offset[1] * TRANSLATE_FACTOR_UI_Z};
 
-            Condition condition3 = new Condition() {
-                public boolean allowedTile(Tile t) {
-                    return t.science > 0;
-                }
-            };
+            for (Tile tile : tilesToRender) {
+                Vector3f vertices = storedTileVertexPositions.get(tile);
 
-            Condition condition4 = new Condition() {
-                public boolean allowedTile(Tile t) {
-                    return t.capital > 0;
-                }
-            };
+                float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTOR_UI_X, 1f, TRANSLATE_FACTOR_UI_Z);
+                final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
 
-            Condition condition5 = new Condition() {
-                public boolean allowedTile(Tile t) {
-                    return t.improvement != null;
-                }
-            };
+                //Interleave all the new vtn data, per hex.
+                System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+                cubePositionDataOffset += thisCubePositionData.length;
 
-            Condition condition6 = new Condition() {
-                public boolean allowedTile(Tile t) {
-                    return t.resources.size() > 0 && !t.resources.get(0).equals(ItemType.NO_RESOURCE);
-                }
-            };
-
-            Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6};
-            int[] textures = {R.drawable.food, R.drawable.production, R.drawable.science, R.drawable.gold, R.drawable.usb_android, R.drawable.usb_android};
-            //int[][] textureTints = {{0, 255, 0}, {255, 0, 0}, {0, 0, 255}, {255, 255, 0}};
-            int[] textureHandles = new int[textures.length];
-            for (int i = 0; i < textureHandles.length; i++) {
-                textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
+                System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+                cubeNormalDataOffset += hexData[1].length;
+                System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+                cubeTextureDataOffset += hexData[2].length;
             }
 
-            for (int i = 0; i < conditions.length; i++) {
-                float[][] hexData = ObjLoader.loadObjModelByVertex("quad", mActivity, R.raw.quad);
+            float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+            Solid hexes = ObjLoader.loadSolid(textureHandles[i], null, generatedData);
+            if (i >= 0 && i <= 3)
+                hexes.alphaEnabled = true;
 
-                Condition cond = conditions[i];
-                List<Tile> tilesToRender = new ArrayList<>();
-                for (Tile tile : tiles) {
-                    if (cond.allowedTile(tile)) {
-                        tilesToRender.add(tile);
-                    }
-                }
-
-                //Create some appropriately sized tables which will store preliminary buffer data
-                //Combine them all within these pieces of data.
-                final float[] totalCubePositionData = new float[hexData[0].length * tilesToRender.size()];
-                int cubePositionDataOffset = 0;
-                final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * tilesToRender.size()];
-                int cubeNormalDataOffset = 0;
-                final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
-                int cubeTextureDataOffset = 0;
-
-                float[] offset = offsets[i];
-                float[] trueOffset = {offset[0] * TRANSLATE_FACTOR_UI_X, offset[1] * TRANSLATE_FACTOR_UI_Z};
-
-                for (Tile tile : tilesToRender) {
-                    Vector3f vertices = storedTileVertexPositions.get(tile);
-
-                    float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTOR_UI_X, 1f, TRANSLATE_FACTOR_UI_Z);
-                    final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
-
-                    //Interleave all the new vtn data, per hex.
-                    System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
-                    cubePositionDataOffset += thisCubePositionData.length;
-
-                    System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
-                    cubeNormalDataOffset += hexData[1].length;
-                    System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
-                    cubeTextureDataOffset += hexData[2].length;
-                }
-
-                float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-                Solid hexes = ObjLoader.loadSolid(textureHandles[i], null, generatedData);
-                if (i >= 0 && i <= 3)
-                    hexes.alphaEnabled = true;
-
-                previousYieldRep.add(hexes);
-            }
+            previousYieldRep.add(hexes);
         }
         return previousYieldRep;
     }
@@ -673,7 +736,7 @@ public class WorldHandler {
                 for (int j = 1; j <= 9; j++) {
                     variableCond.init(i, j);
                     List<Tile> tilesToRender = new ArrayList<>();
-                    for (Tile tile: chunkTiles) {
+                    for (Tile tile: world.getAllValidTiles()) {
                         if (variableCond.allowedTile(tile)) {
                             tilesToRender.add(tile);
                         }

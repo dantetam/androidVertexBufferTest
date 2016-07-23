@@ -29,6 +29,7 @@ public class ChunkHelper {
     public Node[][] nodesArray;
 
     public List<Tile> previousChunkTiles;
+    public Collection<Node> previousChunkNodes;
     public Tile lastHomeTile;
     public int lastRadius = 0;
 
@@ -97,7 +98,30 @@ public class ChunkHelper {
         return previousChunkTiles;
     }
 
-    private Collection<Node> getChunksWithinRadius(Node t, int radius) {
+    public Collection<Node> getChunkNodesContainingTile(Tile t, int radius) {
+        if (t == null) {
+            System.out.println("No home tile, returning no tiles to render");
+            return new ArrayList<>();
+        }
+        if (lastHomeTile == null || !lastHomeTile.equals(t) || lastRadius == 0 || lastRadius != radius) {
+            lastHomeTile = t;
+            lastRadius = radius;
+
+            Node home = findNodeContainingTile(t);
+
+            if (home == null) {
+                System.out.println("No point tile, returning no tiles to render");
+                return new ArrayList<>();
+            }
+            Collection<Node> radiusChunks = getChunksWithinRadius(home, radius);
+            previousChunkNodes = radiusChunks;
+        }
+        if (previousChunkNodes == null) {
+            return null;
+        }
+        return previousChunkNodes;
+    }
+    public Collection<Node> getChunksWithinRadius(Node t, int radius) {
         Set<Node> rings = new HashSet<>();
         if (radius == 1) {
             Collection<Node> tiles = neighbors(nodesArray, t.arrayPosX, t.arrayPosZ);
@@ -286,12 +310,14 @@ public class ChunkHelper {
     Leaves must contain some type of tile data (should exist under normal conditions),
     otherwise, the nodes contain other node subchildren.
      */
+    public static int idCounter = 0;
     public class Node {
         public Node[] children;
         public int topLeftX, topLeftZ, bottomRightX, bottomRightZ;
         public float centerX, centerZ;
         public int arrayPosX, arrayPosZ;
         public List<Tile> tiles = null;
+        public int id;
 
         public Node(int a, int b, int c, int d, float e, float f) {
             topLeftX = a;
@@ -300,6 +326,18 @@ public class ChunkHelper {
             bottomRightZ = d;
             centerX = e;
             centerZ = f;
+            id = idCounter;
+            idCounter++;
+        }
+
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Node)) return false;
+            Node node = (Node) obj;
+            //return centerX == node.centerX && centerZ == node.centerZ;
+            return id == node.id;
+        }
+        public int hashCode() {
+            return id;
         }
     }
 
