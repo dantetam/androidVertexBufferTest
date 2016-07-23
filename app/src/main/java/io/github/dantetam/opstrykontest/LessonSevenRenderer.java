@@ -1,6 +1,7 @@
 package io.github.dantetam.opstrykontest;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -116,18 +117,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	
 	/** Thread executor for generating cube data in the background. */
 	private final ExecutorService mSingleThreadedExecutor = Executors.newSingleThreadExecutor();
-
-	private ListModel mCubes;
-    private MapModel improvements;
-    private Lines mLines;
-    private Solid testMarker;
-    private Solid selectedUnitMarker;
-    private MapModel tilesUnits;
-    private MapModel borderMarker;
-    private ListModel tileYieldRep;
-    private MapModel tileYieldInterface;
-
-    private Solid testDuplicate;
 
 	public Camera camera;
     public MousePicker mousePicker;
@@ -314,34 +303,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		//GLES20.glClearColor(0f/255f, 140f/255f, 255f/255f, 255f/255f);
 		mViewMatrix = camera.getViewMatrix();
 
-		//for (int i = 0; i < mCubes.parts.size(); i++) {
-        if (mCubes == null || improvements == null || mCubes.parts.size() == 0) {
-            mCubes = worldHandler.worldRep();
-            tilesUnits = worldHandler.updateTileUnits();
-            improvements = worldHandler.tileImprovementRep();
-            mLines = new Lines(mWhiteTextureHandle, worldHandler.tesselatedHexes[0], worldHandler.tesselatedHexes[1], worldHandler.tesselatedHexes[2]);
-            //mCubes.add(mLines);
-            tileYieldRep = worldHandler.updateTileYieldRep();
+        mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
 
-            mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
-
-            float[][] objData = ObjLoader.loadObjModelByVertex(mLessonSevenActivity, R.raw.hexagonflat);
-            testDuplicate = ObjLoader.loadSolid(TextureHelper.loadTexture("usb_android", mLessonSevenActivity, R.drawable.usb_android), null, objData);
-
-            return;
-        }
-        mCubes = worldHandler.worldRep();
-        tilesUnits = worldHandler.updateTileUnits();
-        improvements = worldHandler.tileImprovementRep();
-        testMarker = worldHandler.selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
-        selectedUnitMarker = worldHandler.selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255));
-        borderMarker = worldHandler.tileTerritoryRep();
-        //tileYieldInterface = worldHandler.tileYieldInterface();
-        ///highlights = worldHandler.tileHighlightRep();
-        worldHandler.tileHighlightRep();
-        worldHandler.totalWorldRepresentation();
-
-        //TODO: Turn highlights into a combined VBO, like biome representation
         //TODO: Convert to IBOs next?
 
         mGlSurfaceView.update();
@@ -369,28 +332,15 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             System.out.println("Done loading.");
         }
 
-        renderModel(mCubes);
-        renderModel(tilesUnits);
-        renderModel(improvements);
-
-        renderSolid(testMarker);
-        renderSolid(selectedUnitMarker);
-        renderModel(borderMarker);
-
-        if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
-            if (mousePicker.getSelectedTile().improvement.buildingType == BuildingType.ENCAMPMENT) {
-                tileYieldRep = worldHandler.updateTileYieldRep();
-                tileYieldInterface = worldHandler.tileYieldInterface();
-                renderModel(tileYieldRep);
-                renderModel(tileYieldInterface);
-            }
+        Object[] renderObjects = worldHandler.totalWorldRepresentation();
+        List<BaseModel> modelsToRender = (List<BaseModel>) renderObjects[0];
+        List<RenderEntity> solidsToRender = (List<RenderEntity>) renderObjects[1];
+        for (BaseModel model: modelsToRender) {
+            renderModel(model);
         }
-
-        //renderSolidClones(testDuplicate);
-        //renderModel(highlights);
-
-        renderModel(worldHandler.tileHighlightOwnerStored);
-        //renderModel(worldHandler.tileHighlightInfluenceStored);
+        for (RenderEntity renderEntity: solidsToRender) {
+            renderSolid(renderEntity);
+        }
 
         mousePicker.updateAfterFrame();
 

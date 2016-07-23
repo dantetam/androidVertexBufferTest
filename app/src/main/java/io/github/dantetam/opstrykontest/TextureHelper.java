@@ -53,7 +53,7 @@ public class TextureHelper
 		return textureHandle[0];
 	}
 
-    public static int loadTintedTexture(final String name, final Context context, final int resourceId, int[] tintColor)
+    /*public static int loadTintedTexture(final String name, final Context context, final int resourceId, int[] tintColor)
     {
         int intFromColor;
         if (tintColor.length == 3) {
@@ -63,9 +63,11 @@ public class TextureHelper
             intFromColor = ColorTextureHelper.intFromColor(tintColor[0], tintColor[1], tintColor[2], tintColor[3]);
         }
         String tintedBitmapName = name + "/rgb" + intFromColor;
+        System.out.println("Load tinted texture: " + tintedBitmapName);
         if (texturesByName.containsKey(name)) {
             return texturesByName.get(name);
         }
+        System.out.println("Creating tinted texture: " + tintedBitmapName);
         final int[] textureHandle = new int[1];
         GLES20.glGenTextures(1, textureHandle, 0);
 
@@ -103,7 +105,7 @@ public class TextureHelper
 
         texturesByName.put(name, textureHandle[0]);
         return textureHandle[0];
-    }
+    }*/
 
     /**
      * Load textures from memory if available, otherwise, create a new texture handle from a Bitmap

@@ -133,7 +133,6 @@ public class ObjLoader {
             }
         }
         if (solidName != null) {
-            System.out.println(solidName + "<<<");
             if (solidName.equals("quad") || solidName.contains("alpha")) {
                 solid.setResourceName(solidName);
             }

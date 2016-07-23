@@ -2,6 +2,10 @@ package io.github.dantetam.opstrykontest;
 
 import android.opengl.GLES20;
 import android.support.percent.PercentRelativeLayout;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,28 +82,32 @@ public class WorldHandler {
         List<RenderEntity> solidsToRender = new ArrayList<>();
 
         List<Tile> chunkTiles = chunkHelper.getChunkTiles(mousePicker.centerTile, 0);
-        /*System.out.println("------");
-        System.out.println(mousePicker.centerTile);
-        for (Tile tile: chunkTiles) {
-            System.out.println(tile.toString());
-        }
-        System.out.println("------");*/
-        //System.out.println(chunkTiles.size() + " " + world.getAllValidTiles().size());
-        //TODO: Implement this, refer only to this method in LessonSevenRenderer
 
-        /*if (LessonSevenRenderer.frames % 100 == 0) {
-            for (int x = 0; x < chunkHelper.alignedTiles.length; x++) {
-                for (int z = 0; z < chunkHelper.alignedTiles[0].length; z++) {
-                    if (chunkTiles.contains(chunkHelper.alignedTiles[x][z])) {
-                        System.out.print("X ");
-                    }
-                    else
-                        System.out.print("- ");
-                }
-                System.out.println();
+        //mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
+
+        modelsToRender.add(worldRep());
+        modelsToRender.add(updateTileUnits());
+        modelsToRender.add(tileImprovementRep());
+        solidsToRender.add(selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
+        solidsToRender.add(selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
+        modelsToRender.add(tileTerritoryRep());
+        tileHighlightRep();
+
+        /*if (previousYieldRep == null) {
+            updateTileYieldRep();
+        }*/
+
+        //TODO: Convert to IBOs next?
+
+        if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
+            if (mousePicker.getSelectedTile().improvement.buildingType == BuildingType.ENCAMPMENT) {
+                modelsToRender.add(updateTileYieldRep());
+                modelsToRender.add(tileYieldInterface());
             }
         }
-*/
+
+        modelsToRender.add(tileHighlightOwnerStored);
+
         return new Object[]{modelsToRender, solidsToRender};
     }
 
@@ -465,104 +473,101 @@ public class WorldHandler {
     public ListModel updateTileYieldRep(List<Tile> tiles) {
         if (previousYieldRep == null) {
             previousYieldRep = new ListModel();
-        }
-        if (tiles.size() == 0) {
-            return previousYieldRep;
-        }
 
-        Condition condition1 = new Condition() {
-            public boolean allowedTile(Tile t) {
-                return t.food > 0;
+            if (tiles.size() == 0) {
+                return previousYieldRep;
             }
-        };
 
-        Condition condition2 = new Condition() {
-            public boolean allowedTile(Tile t) {
-                return t.production > 0;
-            }
-        };
-
-        Condition condition3 = new Condition() {
-            public boolean allowedTile(Tile t) {
-                return t.science > 0;
-            }
-        };
-
-        Condition condition4 = new Condition() {
-            public boolean allowedTile(Tile t) {
-                return t.capital > 0;
-            }
-        };
-
-        Condition condition5 = new Condition() {
-            public boolean allowedTile(Tile t) {
-                return t.improvement != null;
-            }
-        };
-
-        Condition condition6 = new Condition() {
-            public boolean allowedTile(Tile t) {
-                return t.resources.size() > 0 && !t.resources.get(0).equals(ItemType.NO_RESOURCE);
-            }
-        };
-
-        Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6};
-        int[] textures = {R.drawable.food, R.drawable.production, R.drawable.science, R.drawable.gold, R.drawable.usb_android, R.drawable.usb_android};
-        int[][] textureTints = {{0, 255, 0}, {255, 0, 0}, {0, 0, 255}, {255, 255, 0}};
-        int[] textureHandles = new int[textures.length];
-        for (int i = 0; i < textureHandles.length; i++) {
-            if (i <= 3) {
-                int[] tint = textureTints[i];
-                textureHandles[i] = TextureHelper.loadTintedTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i], tint);
-            }
-            else
-                textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
-        }
-
-        for (int i = 0; i < conditions.length; i++) {
-            float[][] hexData = ObjLoader.loadObjModelByVertex("quad", mActivity, R.raw.quad);
-
-            Condition cond = conditions[i];
-            List<Tile> tilesToRender = new ArrayList<>();
-            for (Tile tile : tiles) {
-                if (cond.allowedTile(tile)) {
-                    tilesToRender.add(tile);
+            Condition condition1 = new Condition() {
+                public boolean allowedTile(Tile t) {
+                    return t.food > 0;
                 }
+            };
+
+            Condition condition2 = new Condition() {
+                public boolean allowedTile(Tile t) {
+                    return t.production > 0;
+                }
+            };
+
+            Condition condition3 = new Condition() {
+                public boolean allowedTile(Tile t) {
+                    return t.science > 0;
+                }
+            };
+
+            Condition condition4 = new Condition() {
+                public boolean allowedTile(Tile t) {
+                    return t.capital > 0;
+                }
+            };
+
+            Condition condition5 = new Condition() {
+                public boolean allowedTile(Tile t) {
+                    return t.improvement != null;
+                }
+            };
+
+            Condition condition6 = new Condition() {
+                public boolean allowedTile(Tile t) {
+                    return t.resources.size() > 0 && !t.resources.get(0).equals(ItemType.NO_RESOURCE);
+                }
+            };
+
+            Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6};
+            int[] textures = {R.drawable.food, R.drawable.production, R.drawable.science, R.drawable.gold, R.drawable.usb_android, R.drawable.usb_android};
+            //int[][] textureTints = {{0, 255, 0}, {255, 0, 0}, {0, 0, 255}, {255, 255, 0}};
+            int[] textureHandles = new int[textures.length];
+            for (int i = 0; i < textureHandles.length; i++) {
+                textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
             }
 
-            //Create some appropriately sized tables which will store preliminary buffer data
-            //Combine them all within these pieces of data.
-            final float[] totalCubePositionData = new float[hexData[0].length * tilesToRender.size()];
-            int cubePositionDataOffset = 0;
-            final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * tilesToRender.size()];
-            int cubeNormalDataOffset = 0;
-            final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
-            int cubeTextureDataOffset = 0;
+            for (int i = 0; i < conditions.length; i++) {
+                float[][] hexData = ObjLoader.loadObjModelByVertex("quad", mActivity, R.raw.quad);
 
-            float[] offset = offsets[i];
-            float[] trueOffset = {offset[0]*TRANSLATE_FACTOR_UI_X, offset[1]*TRANSLATE_FACTOR_UI_Z};
+                Condition cond = conditions[i];
+                List<Tile> tilesToRender = new ArrayList<>();
+                for (Tile tile : tiles) {
+                    if (cond.allowedTile(tile)) {
+                        tilesToRender.add(tile);
+                    }
+                }
 
-            for (Tile tile : tilesToRender) {
-                Vector3f vertices = storedTileVertexPositions.get(tile);
+                //Create some appropriately sized tables which will store preliminary buffer data
+                //Combine them all within these pieces of data.
+                final float[] totalCubePositionData = new float[hexData[0].length * tilesToRender.size()];
+                int cubePositionDataOffset = 0;
+                final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * tilesToRender.size()];
+                int cubeNormalDataOffset = 0;
+                final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
+                int cubeTextureDataOffset = 0;
 
-                float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTOR_UI_X, 1f, TRANSLATE_FACTOR_UI_Z);
-                final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
+                float[] offset = offsets[i];
+                float[] trueOffset = {offset[0] * TRANSLATE_FACTOR_UI_X, offset[1] * TRANSLATE_FACTOR_UI_Z};
 
-                //Interleave all the new vtn data, per hex.
-                System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
-                cubePositionDataOffset += thisCubePositionData.length;
+                for (Tile tile : tilesToRender) {
+                    Vector3f vertices = storedTileVertexPositions.get(tile);
 
-                System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
-                cubeNormalDataOffset += hexData[1].length;
-                System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
-                cubeTextureDataOffset += hexData[2].length;
+                    float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTOR_UI_X, 1f, TRANSLATE_FACTOR_UI_Z);
+                    final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
+
+                    //Interleave all the new vtn data, per hex.
+                    System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+                    cubePositionDataOffset += thisCubePositionData.length;
+
+                    System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+                    cubeNormalDataOffset += hexData[1].length;
+                    System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+                    cubeTextureDataOffset += hexData[2].length;
+                }
+
+                float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+                Solid hexes = ObjLoader.loadSolid(textureHandles[i], null, generatedData);
+                if (i >= 0 && i <= 3)
+                    hexes.alphaEnabled = true;
+
+                previousYieldRep.add(hexes);
             }
-
-            float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-            Solid hexes = ObjLoader.loadSolid(textureHandles[i], null, generatedData);
-            hexes.alphaEnabled = true;
-
-            previousYieldRep.add(hexes);
         }
         return previousYieldRep;
     }
