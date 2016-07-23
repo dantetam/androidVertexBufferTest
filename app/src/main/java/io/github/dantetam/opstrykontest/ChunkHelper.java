@@ -39,6 +39,7 @@ public class ChunkHelper {
 
     public void init(World w) {
         world = w;
+        tileLinkedToNodes = new Node[world.arrayLengthX][world.arrayLengthZ];
         makeAlignedTiles(world);
         root = splitAllAlignedTiles();
         int i = 0;
@@ -65,14 +66,19 @@ public class ChunkHelper {
 
     public List<Tile> getChunkTiles(Tile t, int radius) {
         if (t == null) {
-            //System.out.println("No home tile, returning no tiles to render");
+            System.out.println("No home tile, returning no tiles to render");
             return new ArrayList<>();
         }
-        if (lastHomeTile == null || lastHomeTile.equals(t) || lastRadius == 0 || lastRadius != radius) {
+        if (lastHomeTile == null || !lastHomeTile.equals(t) || lastRadius == 0 || lastRadius != radius) {
             lastHomeTile = t;
             lastRadius = radius;
 
             Node home = findNodeContainingTile(t);
+
+            if (home == null) {
+                System.out.println("No point tile, returning no tiles to render");
+                return new ArrayList<>();
+            }
             Collection<Node> radiusChunks = getChunksWithinRadius(home, radius);
             List<Tile> tiles = new ArrayList<>();
             for (Node node : radiusChunks) {
@@ -84,6 +90,9 @@ public class ChunkHelper {
             }
 
             previousChunkTiles = tiles;
+        }
+        if (previousChunkTiles == null) {
+            return null;
         }
         return previousChunkTiles;
     }
@@ -172,7 +181,7 @@ public class ChunkHelper {
         return split(0, 0, alignedTiles.length, alignedTiles[0].length);
     }
     private Node split(int startX, int startZ, int endX, int endZ) {
-        allLeafNodes.clear();
+        //allLeafNodes.clear();
         float floatX = (startX + endX) / 2f, floatZ = (startZ + endZ) / 2f;
         int midX = (int) floatX, midZ = (int) floatZ;
         Node node = new Node(startX, startZ, endX, endZ, floatX, floatZ);
@@ -189,6 +198,7 @@ public class ChunkHelper {
             for (int x = startX; x < endX; x++) {
                 for (int z = startZ; z < endZ; z++) {
                     node.tiles.add(alignedTiles[x][z]);
+                    tileLinkedToNodes[alignedTiles[x][z].q][alignedTiles[x][z].r] = node;
                 }
             }
             allLeafNodes.add(node);
@@ -212,8 +222,14 @@ public class ChunkHelper {
     public Node findNodeContainingTile(Tile tile) {
         return findNodeContainingTile(root, tile);
     }
+    private Node[][] tileLinkedToNodes;
     private Node findNodeContainingTile(Node inspect, Tile tile) {
-        if (inspect.children == null) {
+        return tileLinkedToNodes[tile.q][tile.r];
+        /*if (inspect.children == null) {
+            System.out.println(tile.toString());
+            for (Tile t: inspect.tiles) {
+                System.out.println(t.toString() + "<");
+            }
             if (inspect.tiles.contains(tile)) {
                 return inspect;
             }
@@ -234,7 +250,7 @@ public class ChunkHelper {
             else {
                 return findNodeContainingTile(inspect.children[3], tile);
             }
-        }
+        }*/
     }
 
     /*private List<Node> getAllLeafNodes() {

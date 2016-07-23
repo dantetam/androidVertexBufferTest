@@ -2,6 +2,7 @@ package io.github.dantetam.opstrykontest;
 
 import android.opengl.GLES20;
 import android.support.percent.PercentRelativeLayout;
+import android.support.v4.content.res.TypedArrayUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -61,6 +62,8 @@ public class WorldHandler {
     static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
     static final int BYTES_PER_FLOAT = 4;
 
+    public List<Tile> chunkTiles;
+
     public WorldHandler(LessonSevenActivity mActivity, LessonSevenRenderer mRenderer, MousePicker mousePicker, AssetHelper assetHelper, ChunkHelper chunkHelper, int len1, int len2) {
         world = new World(len1, len2);
         worldGenerator = new WorldGenerator(world);
@@ -81,7 +84,26 @@ public class WorldHandler {
         List<BaseModel> modelsToRender = new ArrayList<>();
         List<RenderEntity> solidsToRender = new ArrayList<>();
 
-        List<Tile> chunkTiles = chunkHelper.getChunkTiles(mousePicker.centerTile, 0);
+        chunkTiles = chunkHelper.getChunkTiles(mousePicker.centerTile, 1);
+        if (chunkTiles == null) {
+            chunkTiles = new ArrayList<>();
+        }
+
+        if (LessonSevenRenderer.frames % 100 == 0) {
+            for (int x = 0; x < chunkHelper.alignedTiles.length; x++) {
+                for (int z = 0; z < chunkHelper.alignedTiles[0].length; z++) {
+                    if (chunkHelper.alignedTiles[x][z].equals(mousePicker.centerTile)) {
+                        System.out.print("! ");
+                    }
+                    else if (chunkTiles.contains(chunkHelper.alignedTiles[x][z])) {
+                        System.out.print("X ");
+                    }
+                    else
+                        System.out.print("- ");
+                }
+                System.out.println();
+            }
+        }
 
         //mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
 
@@ -92,6 +114,8 @@ public class WorldHandler {
         solidsToRender.add(selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
         modelsToRender.add(tileTerritoryRep());
         tileHighlightRep();
+
+        mousePicker.passInTileVertices(storedTileVertexPositions);
 
         /*if (previousYieldRep == null) {
             updateTileYieldRep();
@@ -168,10 +192,9 @@ public class WorldHandler {
     }
 
     public MapModel tileTerritoryRep() {
-        List<Tile> validTiles = world.getAllValidTiles();
         if (tileTerritoryStored == null) {
             tileTerritoryStored = new MapModel<>();
-            createTerritoryRep(tileTerritoryStored, validTiles);
+            createTerritoryRep(tileTerritoryStored, chunkTiles);
             //System.out.println("Update main");
         }
         /*else if (world.clanTerritoriesUpdate.size() > 0) {
@@ -261,17 +284,16 @@ public class WorldHandler {
     }
 
     public void tileHighlightRep() {
-        List<Tile> validTiles = world.getAllValidTiles();
         if (tileHighlightOwnerStored == null) {
             tileHighlightOwnerStored = new MapModel<>();
             tileHighlightInfluenceStored = new MapModel<>();
-            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, validTiles);
+            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, chunkTiles);
             //System.out.println("Update main");
         }
         else if (world.clanTerritoriesUpdate.size() > 0) {
             //TODO: Fix -> createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, world.clanTerritoriesUpdate);
             //System.out.println("Update tiles " + world.clanTerritoriesUpdate.size());
-            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, validTiles);
+            createHighlightRep(tileHighlightOwnerStored, tileHighlightInfluenceStored, chunkTiles);
         }
         world.clanTerritoriesUpdate.clear();
         //return tileHighlightStored;
@@ -347,18 +369,18 @@ public class WorldHandler {
 
     public MapModel tileImprovementRep() {
         if (improvementsStored == null) {
-            updateTileImprovement(world.getAllValidTiles());
+            updateTileImprovement(chunkTiles);
         }
         else {
             List<Tile> tilesToUpdate = new ArrayList<>();
             if (previousImprovements == null) {
                 previousImprovements = new HashMap<>();
-                for (Tile tile : world.getAllValidTiles()) {
+                for (Tile tile : chunkTiles) {
                     if (tile.improvement != null)
                         previousImprovements.put(tile, tile.improvement);
                 }
             } else {
-                for (Tile tile : world.getAllValidTiles()) {
+                for (Tile tile : chunkTiles) {
                     if (tile.occupants.size() > 0) {
                         if (previousImprovements.get(tile) == null || !previousImprovements.get(tile).equals(tile.improvement)) {
                             tilesToUpdate.add(tile);
@@ -419,23 +441,22 @@ public class WorldHandler {
     public ListModel previousYieldRep;
     public HashMap<Tile, Integer> previousTileFood, previousTileProduction, previousTileScience, previousTileGold;
     public ListModel updateTileYieldRep() {
-        List<Tile> validTiles = world.getAllValidTiles();
         if (previousTileFood == null) {
             previousTileFood = new HashMap<>();
             previousTileProduction = new HashMap<>();
             previousTileScience = new HashMap<>();
             previousTileGold = new HashMap<>();
-            for (Tile tile: validTiles) {
+            for (Tile tile: world.getAllValidTiles()) {
                 previousTileFood.put(tile, tile.food);
                 previousTileProduction.put(tile, tile.production);
                 previousTileScience.put(tile, tile.science);
                 previousTileGold.put(tile, tile.capital);
             }
-            updateTileYieldRep(validTiles);
+            updateTileYieldRep(chunkTiles);
         }
         else {
             List<Tile> tilesToUpdate = new ArrayList<>();
-            for (Tile tile: validTiles) {
+            for (Tile tile: chunkTiles) {
                 if (previousTileFood.get(tile) != tile.food ||
                         previousTileProduction.get(tile) != tile.production ||
                         previousTileScience.get(tile) != tile.science ||
@@ -576,13 +597,13 @@ public class WorldHandler {
         List<Tile> tilesToUpdate = new ArrayList<>();
         if (previousUnits == null) {
             previousUnits = new HashMap<>();
-            for (Tile tile: world.getAllValidTiles()) {
+            for (Tile tile: chunkTiles) {
                 if (tile.occupants.size() > 0)
                     previousUnits.put(tile, tile.occupants.get(0));
             }
         }
         else {
-            for (Tile tile : world.getAllValidTiles()) {
+            for (Tile tile : chunkTiles) {
                 if (tile.occupants.size() > 0) {
                     if (previousUnits.get(tile) == null || !previousUnits.get(tile).equals(tile.occupants.get(0))) {
                         tilesToUpdate.add(tile);
@@ -599,7 +620,7 @@ public class WorldHandler {
             }
         }
         if (unitsStored == null) {
-            updateTileUnits(world.getAllValidTiles());
+            updateTileUnits(chunkTiles);
         }
         else {
             updateTileUnits(tilesToUpdate);
@@ -652,7 +673,7 @@ public class WorldHandler {
                 for (int j = 1; j <= 9; j++) {
                     variableCond.init(i, j);
                     List<Tile> tilesToRender = new ArrayList<>();
-                    for (Tile tile: world.getAllValidTiles()) {
+                    for (Tile tile: chunkTiles) {
                         if (variableCond.allowedTile(tile)) {
                             tilesToRender.add(tile);
                         }
