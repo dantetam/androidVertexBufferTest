@@ -12,6 +12,7 @@ public class Building extends Entity {
 
     public BuildingType buildingType;
     public Building[] modules;
+    public boolean isModule = false;
 
     public List<Item> inputResources;
     public List<Item> outputResources;
@@ -35,6 +36,22 @@ public class Building extends Entity {
         move(t);
         name = type.name;
     }*/
+
+
+    public void addThisAsModuleToBuilding(Building building) {
+        for (int i = 0; i < building.modules.length; i++) {
+            if (building.modules[i] == null) {
+                replaceModuleToBuilding(building, i);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Building inserted into is full of modules");
+    }
+    public void replaceModuleToBuilding(Building building, int index) {
+        building.modules[index] = this;
+        location = building.location;
+        isModule = true;
+    }
 
     public void executeQueue() {
         while (true) {

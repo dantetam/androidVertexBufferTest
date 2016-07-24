@@ -174,7 +174,8 @@ public class Tile extends Representable implements Traversable<Tile> {
     }
 
     public String toString() {
-        return "Tile: (" + q + ", " + r + ")";
+        //return "Tile: (" + q + ", " + r + ")";
+        return "(" + q + ", " + r + ")";
     }
 
     public int compare(Tile a, Tile b) { //Default behavior

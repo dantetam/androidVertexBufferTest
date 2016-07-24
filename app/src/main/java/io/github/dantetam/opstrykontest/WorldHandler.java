@@ -255,8 +255,8 @@ public class WorldHandler {
     public MapModel tileTerritoryRep() {
         if (tileTerritoryStored == null) {
             tileTerritoryStored = new MapModel<>();
-            tileHighlightOwnerStored = new MapModel<>();
-            tileHighlightInfluenceStored = new MapModel<>();
+            //tileHighlightOwnerStored = new MapModel<>();
+            //tileHighlightInfluenceStored = new MapModel<>();
             createTerritoryRep(tileTerritoryStored, world.getAllValidTiles());
             //System.out.println("Update main");
         }
@@ -327,7 +327,7 @@ public class WorldHandler {
                         Vector3f vertices = storedTileVertexPositions.get(tile);
 
                         final float[] scaled = scaleData(borderObjData[i][0], 1f, 1f, 1f);
-                        final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.2f, vertices.z);
+                        final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.05f, vertices.z);
 
                         System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
                         System.arraycopy(borderObjData[i][1], 0, totalNormalPositionData, norOffset, borderObjData[i][1].length);

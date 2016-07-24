@@ -123,7 +123,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
     public WorldHandler worldHandler;
     public WorldSystem worldSystem;
-    public static final int WORLD_LENGTH = 36;
+    public static final int WORLD_LENGTH = 10;
 
     public ChunkHelper chunkHelper;
 

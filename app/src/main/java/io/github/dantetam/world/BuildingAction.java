@@ -4,9 +4,11 @@ package io.github.dantetam.world;
  * Created by Dante on 7/17/2016.
  */
 public class BuildingAction extends Action {
+
     public BuildingAction(ActionType t, Object obj) {
         super(t, obj);
     }
+
     public ActionStatus execute(Object object) {
         if (!(object instanceof Building)) return ActionStatus.IMPOSSIBLE;
         Building building = (Building) object;
@@ -20,4 +22,17 @@ public class BuildingAction extends Action {
                 return ActionStatus.IMPOSSIBLE;
         }
     }
+
+    public String toString() {
+        switch (type) {
+            case PROCESS:
+                return "";
+            case QUEUE_BUILD_MODULE:
+                return "Add: " + ((Building) super.data).name;
+            default:
+                System.out.println("Invalid action type: " + type);
+                return null;
+        }
+    }
+
 }

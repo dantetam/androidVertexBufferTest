@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,8 +26,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
+import java.util.List;
+
+import io.github.dantetam.world.Action;
+import io.github.dantetam.world.Building;
+import io.github.dantetam.world.BuildingAction;
+import io.github.dantetam.world.BuildingFactory;
+import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
+import io.github.dantetam.world.Person;
+import io.github.dantetam.world.PersonAction;
 import io.github.dantetam.world.Tile;
 
 public class LessonSevenActivity extends Activity implements
@@ -46,6 +56,8 @@ public class LessonSevenActivity extends Activity implements
     private PopupMenu unitSelectionMenu;
     private PopupMenu actionSelectionMenu;
     private PopupMenu buildSelectionMenu;
+    private PopupMenu queueSelectionMenu;
+    private PopupMenu moduleSelectionMenu;
 
     private Clan playerClan;
 
@@ -206,10 +218,6 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
-    public void onClickBuildMenu(View v) {
-
-    }
-
     public void onClickActionsMenu(View v) {
         actionSelectionMenu = new PopupMenu(this, v);
         MenuInflater inflater = actionSelectionMenu.getMenuInflater();
@@ -224,6 +232,14 @@ public class LessonSevenActivity extends Activity implements
         inflater.inflate(R.menu.unit_selection_menu, unitSelectionMenu.getMenu());
         onCreateUnitSelectionMenu(unitSelectionMenu.getMenu());
         unitSelectionMenu.show();
+    }
+
+    public void onClickQueueMenu(View v) {
+        queueSelectionMenu = new PopupMenu(this, v);
+        MenuInflater inflater = queueSelectionMenu.getMenuInflater();
+        inflater.inflate(R.menu.queue_selection_menu, queueSelectionMenu.getMenu());
+        onCreateQueueSelectionMenu(queueSelectionMenu.getMenu());
+        queueSelectionMenu.show();
     }
 
     public boolean onCreateUnitSelectionMenu(Menu menu) {
@@ -254,6 +270,54 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
+    public void onClickModuleMenu(View v) {
+        moduleSelectionMenu = new PopupMenu(this, v);
+        MenuInflater inflater = moduleSelectionMenu.getMenuInflater();
+        inflater.inflate(R.menu.build_module_menu, moduleSelectionMenu.getMenu());
+        onCreateBuildModuleMenu(moduleSelectionMenu.getMenu());
+        moduleSelectionMenu.show();
+    }
+
+    public boolean onCreateBuildModuleMenu(Menu menu) {
+        final Tile selected = mRenderer.mousePicker.getSelectedTile();
+        final Building selectedImprovement = selected != null ? selected.improvement : null;
+
+        if (selectedImprovement != null) {
+            if (selectedImprovement.modules.length == 0) {
+                menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Cannot add modules.");
+            }
+            else {
+                for (int i = 0; i < selectedImprovement.modules.length; i++) {
+                    Building module = selectedImprovement.modules[i];
+                    String stringy;
+                    if (module == null) {
+                        stringy = "Free space";
+                    }
+                    else {
+                        stringy = module.name;
+                    }
+                    SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+
+                    if (module == null) {
+                        List<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedModules.get(selectedImprovement.buildingType); //Well, that's all she wrote
+                        for (final BuildingType buildingType: allowedBuildings) {
+                            MenuItem menuItem = moduleSubMenu.add(Menu.NONE, 1, Menu.NONE, buildingType.name);
+                            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
+                                    newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
+                                    return false;
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
     public boolean onCreateBuildSelectionMenu(Menu menu) {
         MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "Build Option 1");
         menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -266,8 +330,44 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
-    public void onClickUnitSelectedButton(View v) {
+    public boolean onCreateQueueSelectionMenu(Menu menu) {
+        final Entity selectedEntity = mRenderer.mousePicker.getSelectedEntity();
+        if (selectedEntity != null) {
+            if (selectedEntity.actionsQueue.size() == 0) {
+                menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Nothing in queue");
+            }
+            else {
+                for (int i = 0; i < selectedEntity.actionsQueue.size(); i++) {
+                    Action action = selectedEntity.actionsQueue.get(i);
+                    MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, action.toString());
+                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        public int indexCondition = 0;
+                        public boolean onMenuItemClick(MenuItem item) {
+                            selectedEntity.actionsQueue.remove(indexCondition);
+                            //System.out.println(mRenderer.mousePicker.getSelectedEntity());
+                            return false;
+                        }
 
+                        public boolean equals(Object o) {
+                            if (o instanceof Integer) {
+                                indexCondition = (Integer) o;
+                            }
+                            return super.equals(o);
+                        }
+                    });
+                    menuItem.equals(new Integer(i));
+                }
+            }
+        }
+        return true;
+    }
+
+    public void onClickUnitSelectedButton(View v) {
+        unitSelectionMenu = new PopupMenu(this, v);
+        MenuInflater inflater = unitSelectionMenu.getMenuInflater();
+        inflater.inflate(R.menu.unit_selection_menu, unitSelectionMenu.getMenu());
+        onCreateUnitSelectionMenu(unitSelectionMenu.getMenu());
+        unitSelectionMenu.show();
     }
 
     public boolean onCreateActionSelectionMenu(final View chainView, Menu menu) {

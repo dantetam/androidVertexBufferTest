@@ -212,10 +212,16 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
             Tile selectedTile = mousePicker.getSelectedTile();
             Entity selectedEntity = mousePicker.getSelectedEntity();
+            Building selectedImprovement = null;
             boolean selectedTileExists = selectedTile != null;
             boolean selectedEntityExists = selectedEntity != null;
 
-            mActivity.findViewById(R.id.build_menu).setVisibility(selectedTileExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
+            if (selectedTileExists) {
+                selectedImprovement = selectedTile.improvement;
+            }
+            boolean selectedImprovementExists = selectedImprovement != null;
+
+            mActivity.findViewById(R.id.build_menu).setVisibility(selectedImprovementExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
 
             Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
             selectedEntityMenu.setVisibility(selectedEntityExists && playerClan.equals(selectedEntity.clan) ? View.VISIBLE : View.INVISIBLE);
@@ -232,6 +238,16 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 unitMenu.setText("Units (" + mousePicker.getSelectedTile().occupants.size() + ")");
             } else if (selectedEntityExists) {
                 unitMenu.setText("Units (" + mousePicker.getSelectedEntity().location().occupants.size() + ")");
+            }
+
+            Button queueMenu = (Button) mActivity.findViewById(R.id.queue_menu);
+            queueMenu.setVisibility(
+                    selectedImprovementExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
+            );
+            if (selectedImprovementExists) {
+                queueMenu.setText("Queue (" + mousePicker.getSelectedTile().improvement.actionsQueue.size() + ")");
+            } else if (selectedEntityExists) {
+                queueMenu.setText("Queue (" + mousePicker.getSelectedEntity().actionsQueue.size() + ")");
             }
 
             PercentRelativeLayout selectedStatMenu = (PercentRelativeLayout) mActivity.findViewById(R.id.selected_stat_menu);

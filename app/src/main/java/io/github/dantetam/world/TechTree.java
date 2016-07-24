@@ -1,6 +1,7 @@
 package io.github.dantetam.world;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.github.dantetam.opstrykontest.Condition;
@@ -13,7 +14,17 @@ public class TechTree {
     public Clan clan;
     public Tech root;
 
+    public HashMap<BuildingType, List<BuildingType>> allowedModules;
+
     public TechTree(Clan clan) {
+        this.clan = clan;
+        clan.techTree = this;
+        allowedModules = new HashMap<>();
+        for (BuildingType buildingType: BuildingType.values()) {
+            List<BuildingType> list = new ArrayList<>();
+            list.add(BuildingType.FARM);
+            allowedModules.put(buildingType, list);
+        }
         //TODO: Define a method for parsing a tech tree from XML using Android utilities
     }
 

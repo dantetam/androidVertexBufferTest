@@ -18,12 +18,15 @@ public class Clan {
     public ClanType clanType;
     public ClanFaction clanFaction;
 
+    public TechTree techTree;
+
     public List<Building> buildings;
 
     public Clan(String n) {
         name = n;
         people = new ArrayList<>();
         buildings = new ArrayList<>();
+        techTree = new TechTree(this);
     }
 
     public enum ClanType {
@@ -70,7 +73,7 @@ public class Clan {
     public boolean equals(Object obj) {
         if (!(obj instanceof Clan)) return false;
         Clan clan = (Clan) obj;
-        return name.equals(clan.name);
+        return name.equals(clan.name) && color.equals(clan.color) ;
     }
 
 }

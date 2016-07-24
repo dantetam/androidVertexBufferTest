@@ -8,6 +8,14 @@ import java.util.ArrayList;
 public class BuildingFactory {
 
     public static Building newBuilding(World world, Clan clan, BuildingType type, Tile tile, double completionPercentage) {
+        return newBuilding(world, clan, type, tile, completionPercentage, null);
+    }
+
+    public static Building newModule(World world, Clan clan, BuildingType type, Tile tile, double completionPercentage, Building parent) {
+        return newBuilding(world, clan, type, tile, completionPercentage, parent);
+    }
+
+    private static Building newBuilding(World world, Clan clan, BuildingType type, Tile tile, double completionPercentage, Building parent) {
         Building build = new Building(world, clan, type);
         build.modules = new Building[tile.numSpaces];
 
@@ -33,7 +41,12 @@ public class BuildingFactory {
         build.workNeeded = workNeeded;
         build.workCompleted = workNeeded*completionPercentage;
 
-        build.move(tile);
+        if (parent != null) {
+            build.addThisAsModuleToBuilding(parent);
+        }
+        else {
+            build.move(tile);
+        }
         return build;
     }
 
