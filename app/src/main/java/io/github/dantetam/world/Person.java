@@ -32,6 +32,7 @@ public class Person extends Entity {
             if (actionsQueue.size() == 0) return;
             Action action = actionsQueue.get(0);
             ActionStatus status = action.execute(this);
+            System.out.println(status);
             /*if (action.execute() == ActionStatus.ALREADY_COMPLETED || action.execute() == ActionStatus.EXECUTED) {
                 actionsQueue.remove(0);
             } else {
@@ -114,7 +115,8 @@ public class Person extends Entity {
             if (path.size() == 0) {
                 break;
             }
-            if (gameMove(path.get(0)) == ActionStatus.OUT_OF_ENERGY) { //Out of AP
+            ActionStatus status = gameMove(path.get(0));
+            if (status == ActionStatus.OUT_OF_ENERGY) { //Out of AP
                 for (Tile t: path) {
                     actionsQueue.add(new PersonAction(ActionType.MOVE, t));
                 }

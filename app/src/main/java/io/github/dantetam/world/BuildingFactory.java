@@ -30,8 +30,10 @@ public class BuildingFactory {
                     build.addOutput(item.type, 1);
                 }
                 break;
+            case ENCAMPMENT:
+                break;
             default:
-                System.err.println("Invalid biome");
+                System.err.println("Invalid building type for BuildingFactory");
                 break;
         }
 

@@ -177,11 +177,13 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 if (previousSelectedEntity instanceof Person) {
                     Person personSelected = (Person) previousSelectedEntity;
                     String buildingToBuild = action.substring(6);
-                    Tile buildAt = personSelected.location();
+                    Tile buildAt = mousePicker.getSelectedTile();
                     Building newBuilding = BuildingFactory.newBuilding(previousSelectedEntity.world, previousSelectedEntity.clan, BuildingType.fromString(buildingToBuild), buildAt, 0);
 
-                    if (!buildAt.equals(mousePicker.getSelectedTile())) {
+                    if (!buildAt.equals(personSelected.location())) {
+                        System.out.println(personSelected.location());
                         personSelected.gameMovePath(buildAt);
+                        System.out.println(personSelected.location());
                     }
                     personSelected.actionsQueue.add(new PersonAction(Action.ActionType.BUILD, newBuilding));
                     personSelected.executeQueue();
