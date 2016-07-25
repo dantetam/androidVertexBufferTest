@@ -181,9 +181,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     Building newBuilding = BuildingFactory.newBuilding(previousSelectedEntity.world, previousSelectedEntity.clan, BuildingType.fromString(buildingToBuild), buildAt, 0);
 
                     if (!buildAt.equals(personSelected.location())) {
-                        System.out.println(personSelected.location());
                         personSelected.gameMovePath(buildAt);
-                        System.out.println(personSelected.location());
                     }
                     personSelected.actionsQueue.add(new PersonAction(Action.ActionType.BUILD, newBuilding));
                     personSelected.executeQueue();

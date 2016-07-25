@@ -32,7 +32,6 @@ public class Person extends Entity {
             if (actionsQueue.size() == 0) return;
             Action action = actionsQueue.get(0);
             ActionStatus status = action.execute(this);
-            System.out.println(status);
             /*if (action.execute() == ActionStatus.ALREADY_COMPLETED || action.execute() == ActionStatus.EXECUTED) {
                 actionsQueue.remove(0);
             } else {
