@@ -56,7 +56,8 @@ public class Building extends Entity {
     public void executeQueue() {
         while (true) {
             if (actionsQueue.size() == 0) {
-                actionsQueue.add(new BuildingAction(Action.ActionType.PROCESS, this));
+                new BuildingAction(Action.ActionType.PROCESS, this).execute(this);
+                return;
             }
             Action action = actionsQueue.get(0);
             Action.ActionStatus status = action.execute(this);

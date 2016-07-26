@@ -9,6 +9,7 @@ import java.util.Set;
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.BuildingFactory;
 import io.github.dantetam.world.BuildingType;
+import io.github.dantetam.world.City;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.ClanFactory;
 import io.github.dantetam.world.DiamondSquare;
@@ -160,7 +161,9 @@ public class WorldGenerator {
                     world.setTileOwner(territoryTile, clan);
                 }
             }
-            Building first = BuildingFactory.newBuilding(world, clan, BuildingType.ENCAMPMENT, clanHome, 1);
+            //Building first = BuildingFactory.newBuilding(world, clan, BuildingType.ENCAMPMENT, clanHome, 1);
+            City firstCity = BuildingFactory.newCity(world, clan, clanHome, territory);
+            firstCity.pickBestTiles();
             //first.move(clanHome);
             Person unit = PersonFactory.newPerson(Person.PersonType.WARRIOR, world, clan);
             unit.move(clanHome);

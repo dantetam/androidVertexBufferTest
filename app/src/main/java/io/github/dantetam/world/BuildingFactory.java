@@ -1,11 +1,26 @@
 package io.github.dantetam.world;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by Dante on 7/17/2016.
  */
 public class BuildingFactory {
+
+    public static City newCity(World world, Clan clan, Tile tile, Collection<Tile> cityTiles) {
+        City city = new City(world, clan, BuildingType.CITY, cityTiles);
+        city.modules = new Building[tile.numSpaces];
+
+        city.actionPoints = 1;
+        city.maxActionPoints = 1;
+        city.workNeeded = 1;
+        city.workCompleted = 1;
+
+        city.move(tile);
+        return city;
+    }
 
     public static Building newBuilding(World world, Clan clan, BuildingType type, Tile tile, double completionPercentage) {
         return newBuilding(world, clan, type, tile, completionPercentage, null);
@@ -29,8 +44,6 @@ public class BuildingFactory {
                 for (Item item: ItemType.itemsWithinCategory(tile, "RawFood")) {
                     build.addOutput(item.type, 1);
                 }
-                break;
-            case ENCAMPMENT:
                 break;
             default:
                 System.err.println("Invalid building type for BuildingFactory");

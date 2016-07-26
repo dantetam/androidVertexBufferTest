@@ -8,7 +8,7 @@ import java.util.HashMap;
 public enum BuildingType {
     //WHEAT_PLOT (0, "Wheat Plot"),
     //SHALLOW_MINE (1, "Shallow Mine");
-    ENCAMPMENT (0, "Encampment"),
+    CITY (0, "City"),
     FARM (10, "Farm");
     public int id; public String name;
     BuildingType(int t, String n) {id = t; name = n;}

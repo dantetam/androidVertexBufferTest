@@ -53,6 +53,8 @@ public class WorldHandler {
 
     public MapModel<int[]> tileYieldUiStored;
 
+    public RenderEntity highlightedCityTerritory;
+
     //public HashMap<Tile, Polygon> hexesShape; //Originally intended to be used for mouse picking. More efficient to use center vertices.
 
     private LessonSevenActivity mActivity;
@@ -162,11 +164,22 @@ public class WorldHandler {
         //TODO: Convert to IBOs next?
 
         if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
-            if (mousePicker.getSelectedTile().improvement.buildingType == BuildingType.ENCAMPMENT) {
+            if (mousePicker.getSelectedTile().improvement.buildingType == BuildingType.CITY) {
                 modelsToRender.add(updateTileYieldRep());
                 modelsToRender.add(tileYieldInterface());
+                if (highlightedCityTerritory == null) {
+                    highlightedCityTerritory = createCityTerritoryRep((City) mousePicker.getSelectedTile().improvement);
+                    //System.out.println("yes");
+                }
+                if (highlightedCityTerritory != null) {
+                    solidsToRender.add(highlightedCityTerritory);
+                }
             }
         }
+
+        /*if (highlightedCityTerritory != null) {
+            solidsToRender.add(highlightedCityTerritory);
+        }*/
 
         modelsToRender.add(tileHighlightOwnerStored);
 
@@ -344,6 +357,62 @@ public class WorldHandler {
             Solid solid = ObjLoader.loadSolid(ColorTextureHelper.loadColor(en.getKey().color), null, markerData);
             model.put(en.getKey(), solid);
         }
+    }
+
+    public RenderEntity createCityTerritoryRep(City city) {
+        if (borderObjData.length == 0 || borderObjData[0] == null) {
+            for (int i = 0; i < borderMarkers.length; i++) {
+                borderObjData[i] = ObjLoader.loadObjModelByVertex(mActivity, borderMarkers[i]);
+            }
+        }
+
+        int numVertices = 0;
+        int posOffset = 0, norOffset = 0, texOffset = 0;
+        boolean[] neighbors = new boolean[6 * city.cityTiles.size()];
+        int j = 0;
+        for (Tile cityTile: city.cityTiles) {
+            for (int i = 0; i < world.neighborDirections.length; i++) {
+                Tile neighbor = world.getTile(cityTile.q + world.neighborDirections[i][0], cityTile.r + world.neighborDirections[i][1]);
+                if (city.workedTiles.keySet().contains(cityTile) && !city.workedTiles.keySet().contains(neighbor)) {
+                    numVertices += borderObjData[i][0].length;
+                    neighbors[j*6 + i] = true;
+                }
+                else {
+                    neighbors[j*6 + i] = false;
+                }
+            }
+            j++;
+        }
+
+        final float[] totalCubePositionData = new float[numVertices];
+        final float[] totalNormalPositionData = new float[numVertices / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
+        final float[] totalTexturePositionData = new float[numVertices / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
+
+        j = 0;
+        for (Tile cityTile: city.cityTiles) {
+            for (int i = 0; i < 6; i++) {
+                if (neighbors[j*6 + i]) {
+                    Vector3f vertices = storedTileVertexPositions.get(cityTile);
+
+                    final float[] scaled = scaleData(borderObjData[i][0], 1f, 1f, 1f);
+                    final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.15f, vertices.z);
+
+                    System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
+                    System.arraycopy(borderObjData[i][1], 0, totalNormalPositionData, norOffset, borderObjData[i][1].length);
+                    System.arraycopy(borderObjData[i][2], 0, totalTexturePositionData, texOffset, borderObjData[i][2].length);
+
+                    posOffset += thisCubePositionData.length;
+                    norOffset += borderObjData[i][1].length;
+                    texOffset += borderObjData[i][2].length;
+                }
+            }
+            j++;
+        }
+
+        float[][] markerData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+        //ColorTextureHelper.loadColor(city.clan.color)
+        Solid solid = ObjLoader.loadSolid(ColorTextureHelper.loadColor(255,255,255,255), null, markerData);
+        return solid;
     }
 
     public void tileHighlightRep() {

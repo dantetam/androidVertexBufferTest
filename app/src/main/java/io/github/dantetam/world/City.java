@@ -1,6 +1,7 @@
 package io.github.dantetam.world;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -20,9 +21,9 @@ public class City extends Building {
 
     public int population, freeWorkingPopulation;
     public HashMap<Tile, Boolean> workedTiles;
-    public Set<Tile> cityTiles;
+    public Collection<Tile> cityTiles;
 
-    public City(World world, Clan clan, BuildingType type, Set<Tile> tiles) {
+    public City(World world, Clan clan, BuildingType type, Collection<Tile> tiles) {
         super(world, clan, type);
         population = 1;
         freeWorkingPopulation = 1;
@@ -33,7 +34,8 @@ public class City extends Building {
     public void executeQueue() {
         while (true) {
             if (actionsQueue.size() == 0) {
-                actionsQueue.add(new BuildingAction(Action.ActionType.PROCESS, this));
+                new BuildingAction(Action.ActionType.PROCESS, this).execute(this);
+                return;
             }
             Action action = actionsQueue.get(0);
             Action.ActionStatus status = action.execute(this);
@@ -55,6 +57,9 @@ public class City extends Building {
     }
 
     public Action.ActionStatus gameProcess() {
+        if (actionPoints <= 0) {
+            return Action.ActionStatus.OUT_OF_ENERGY;
+        }
         if (freeWorkingPopulation > 0) {
             pickBestTiles();
         }
@@ -65,6 +70,7 @@ public class City extends Building {
             science += tile.science;
             capital += tile.capital;
         }
+        return Action.ActionStatus.CONTINUING;
     }
 
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map)
@@ -72,7 +78,7 @@ public class City extends Building {
         List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>( map.entrySet() );
         Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
             public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-                return (o1.getValue()).compareTo(o2.getValue());
+                return (o2.getValue()).compareTo(o1.getValue());
             }
         } );
 
@@ -86,7 +92,11 @@ public class City extends Building {
     public void pickBestTiles() {
         //workedTiles.clear();
         freeWorkingPopulation = population - workedTiles.size();
-        TreeMap<Tile, Double> scoreTiles = new TreeMap<>();
+        TreeMap<Tile, Double> scoreTiles = new TreeMap<>(new Comparator<Tile>() {
+            public int compare(Tile lhs, Tile rhs) {
+                return lhs.hashCode() - rhs.hashCode();
+            }
+        });
         for (Tile tile: cityTiles) {
             double score = 0;
             score += tile.food*2 + tile.production*2 + tile.science + tile.capital;
@@ -107,10 +117,14 @@ public class City extends Building {
                 break;
             }
         }
+
+        for (Map.Entry<Tile, Double> en: sorted.entrySet()) {
+            System.out.println(en.getKey().toString() + " " + en.getValue());
+        }
     }
 
     public boolean pickTile(Tile t) {
-        if (workedTiles.get(t) != null && cityTiles.contains(t) && freeWorkingPopulation > 0) {
+        if (workedTiles.get(t) == null && cityTiles.contains(t) && freeWorkingPopulation > 0) {
             workedTiles.put(t, true);
             freeWorkingPopulation--;
             return true;
