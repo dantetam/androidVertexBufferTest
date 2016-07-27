@@ -92,6 +92,11 @@ public abstract class Entity extends Representable {
             addToInventory(item);
         }
     }
+    public void addAllToInventory(Item[] items) {
+        for (Item item: items) {
+            addToInventory(item);
+        }
+    }
     public void addToInventory(Item addItem) {
         changeInventory(addItem, true);
     }
@@ -120,7 +125,7 @@ public abstract class Entity extends Representable {
         return inventory;
     }
 
-    public boolean hasItemsInInventory(List<Item> items, boolean remove) {
+    public boolean hasItemsInInventory(Item[] items, boolean remove) {
         List<Item> inventoryItems = new ArrayList<>();
         for (Item item: items) {
             boolean reqFound = false;
@@ -138,9 +143,9 @@ public abstract class Entity extends Representable {
             }
         }
         if (remove) {
-            for (int i = 0; i < inventoryItems.size(); i++) {
-                Item requested = items.get(i);
-                inventoryItems.get(i).quantity -= requested.quantity;
+            for (Item requested: items) {
+                //inventoryItems.get(i).quantity -= requested.quantity;
+                subtractFromInventory(requested);
             }
         }
         return true;

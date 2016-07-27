@@ -15,12 +15,15 @@ public enum ItemType {
     SCIENCE (2),
     CAPITAL (3),
     LABOR (4),
+    NECESSITY (5),
+    LUXURY (6),
 
     WHEAT (10),
     FISH (11),
 
     BRANCHES (50),
     LOGS (51),
+    ROCKS (60),
 
     ICE (99),
     STONE (100),
@@ -34,10 +37,16 @@ public enum ItemType {
     BREAD (200),
     LUMBER (210),
     BRICK (220),
-    COPPER (230),
-    IRON (231);
+    GLASS (225),
+    METAL (230),
+    STEEL (231),
+
+    TOOLS (240),
+    STRONG_TOOLS (241),
+    WEAPONS (245),
+    STRONG_WEAPONS (246);
     public static int[] ranges = {-1,0,10,50,99,150,200,999999};
-    public static String[] nameRanges = {"NoResource", "Base", "RawFood", "OrganicMaterial", "NaturalMaterial", "Metal", "Processed"};
+    public static String[] nameRanges = {"NoResource", "Base", "RawFood", "OrganicMaterial", "NaturalMaterial", "RawMetal", "Processed"};
     public static boolean withinCategory(String target, int id) {
         int targetIndex = -1;
         for (int i = 0; i < nameRanges.length; i++) {
@@ -95,8 +104,12 @@ public enum ItemType {
             "Bread",
             "Lumber",
             "Brick",
-            "Copper",
-            "Iron",
+            "Metal",
+            "Steel",
+            "Tools",
+            "Strong Tools",
+            "Weapons",
+            "Strong Weapons"
     };
     public static int numItems;
 
