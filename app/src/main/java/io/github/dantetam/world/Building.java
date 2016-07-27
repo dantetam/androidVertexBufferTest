@@ -90,7 +90,18 @@ public class Building extends Entity {
         //super.move(t);
     }
 
-    TODO: //The sum of all modules' yields and storage space is added to the main building in which it is located
+    public int[] getYieldWithModules() {
+        int[] yields = {food, production, science, capital};
+        for (Building module: modules) {
+            int[] moduleYield = module.getYieldWithModules();
+            for (int i = 0; i <= 3; i++) {
+                yields[i] += moduleYield[i];
+            }
+        }
+        return yields;
+    }
+
+    //TODO: //The sum of all modules' yields and storage space is added to the main building in which it is located
     //Each building may choose one recipe per turn
     public Action.ActionStatus gameProcess() {
         if (location() != null) {

@@ -69,7 +69,15 @@ public class City extends Building {
             production += tile.production;
             science += tile.science;
             capital += tile.capital;
+            if (tile.improvement != null) {
+                int[] imprYield = tile.improvement.getYieldWithModules();
+                food += imprYield[0];
+                production += imprYield[1];
+                science += imprYield[2];
+                capital += imprYield[3];
+            }
         }
+        System.out.println(food + " " + production + " " + science + " " + capital);
         return Action.ActionStatus.CONTINUING;
     }
 
