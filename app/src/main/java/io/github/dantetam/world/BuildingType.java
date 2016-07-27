@@ -31,7 +31,7 @@ public enum BuildingType {
         if (typesByName.containsKey(n)) {
             return typesByName.get(n);
         }
-        throw new IllegalArgumentException("Invalid terrain type: " + n);
+        throw new IllegalArgumentException("Invalid building type: " + n);
     }
     public String objResourceName() {
         return name.toLowerCase().replaceAll(" ", "_");

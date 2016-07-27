@@ -22,6 +22,7 @@ public abstract class Condition {
     must be known at compile time. These methods pass them in slightly after compile time (i.e. runtime?).
      */
     public void init(String stringy) {}
+    public void init(Object object) {}
     public void init(int i) {}
     public void init(int i, int j) {}
     public void init(int a, int b, float c) {}

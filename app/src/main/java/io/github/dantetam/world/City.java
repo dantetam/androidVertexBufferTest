@@ -76,6 +76,7 @@ public class City extends Building {
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map)
     {
         List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>( map.entrySet() );
+        //Note that below we reverse the compareTo operation so that this is a descending sort.
         Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
             public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
                 return (o2.getValue()).compareTo(o1.getValue());
@@ -99,7 +100,7 @@ public class City extends Building {
         });
         for (Tile tile: cityTiles) {
             double score = 0;
-            score += tile.food*2 + tile.production*2 + tile.science + tile.capital;
+            score += tile.food*2.5 + tile.production*2 + tile.science + tile.capital;
             if (tile.resources.size() > 0) {
                 if (tile.resources.get(0).type != ItemType.NO_RESOURCE) {
                     score += tile.resources.size()*3;

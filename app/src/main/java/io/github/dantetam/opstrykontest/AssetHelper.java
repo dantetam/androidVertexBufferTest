@@ -40,6 +40,10 @@ public class AssetHelper {
         this.assetManager = assetManager;
     }
 
+    public void loadImage(String path) {
+
+    }
+
     public float[][] loadVertexFromAssets(String path) {
         String truePath = path.toLowerCase().replace(' ', '_');
         float[][] data = compressIntoFloatData(truePath);

@@ -12,11 +12,11 @@ public class ArtificialIntelligence {
     }
 
     public void computerClanActions(Clan c) {
-        for (Person person: c.people) {
+        /*for (Person person: c.people) {
             while (person.actionPoints > 0) {
                 person.gameMove(world.randomNeighbor(person.location));
             }
-        }
+        }*/
     }
 
 }

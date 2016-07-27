@@ -136,5 +136,21 @@ public class Building extends Entity {
     public void addOutput(ItemType type, int quantity) {
         outputResources.add(new Item(type, quantity));
     }
+    public boolean containsInput(ItemType type) {
+        for (Item item: inputResources) {
+            if (item.type == type) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean containsOutput(ItemType type) {
+        for (Item item: outputResources) {
+            if (item.type == type) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
