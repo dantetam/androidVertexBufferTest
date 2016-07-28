@@ -315,7 +315,7 @@ public class LessonSevenActivity extends Activity implements
                         stringy = module.name;
 
                         if (module.completionPercentage() < 1) {
-                            stringy += " (" + (int) (module.completionPercentage() * 100) + " % Completed)";
+                            stringy += " (" + (int) (module.completionPercentage() * 100) + "% Completed)";
                             SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
                         }
                         else {

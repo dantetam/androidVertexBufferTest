@@ -183,11 +183,11 @@ public class WorldHandler {
             else {
                 highlightedCityTerritory = null;
 
-                //if (improvementResourceProductionUi == null) {
+                if (improvementResourceProductionUi == null) {
                     createImprovementResourceRep();
                     modelsToRender.add(improvementResourceProductionUi);
                     modelsToRender.add(improvementResourceStatUi);
-                //}
+                }
             }
         }
         else {
@@ -737,6 +737,7 @@ public class WorldHandler {
 
     public ListModel previousYieldRep;
     public HashMap<Tile, Integer> previousTileFood, previousTileProduction, previousTileScience, previousTileGold;
+    int[] tileYieldTextures = {R.drawable.food, R.drawable.production, R.drawable.science, R.drawable.gold, R.drawable.population, R.drawable.usb_android, R.drawable.usb_android};
     public ListModel updateTileYieldRep() {
         if (previousTileFood == null) {
             previousTileFood = new HashMap<>();
@@ -773,20 +774,22 @@ public class WorldHandler {
     final float TRANSLATE_FACTOR_UI_X = 0.66f;
     final float TRANSLATE_FACTOR_UI_Z = 0.66f;
     final float[][] offsets = {
-            new float[]{-2, -1},
-            new float[]{-1, -1},
-            new float[]{-2, 0},
-            new float[]{-1, 0},
-            new float[]{0, -3},
-            new float[]{2, 0}
+            new float[]{-2.5f, -1},
+            new float[]{-1.5f, -1},
+            new float[]{-2.5f, 0},
+            new float[]{-1.5f, 0},
+            new float[]{0, 2},
+            new float[]{0, -2},
+            new float[]{2, 0},
     };
     final float[][] numOffsets = {
-            new float[]{-2.5f, -1.5f},
-            new float[]{-1.5f, -1.5f},
-            new float[]{-2.5f, -0.5f},
-            new float[]{-1.5f, -0.5f},
-            new float[]{0, -2.5f},
-            new float[]{1.5f, 0}
+            new float[]{-3f, -1.5f},
+            new float[]{-2f, -1.5f},
+            new float[]{-3f, -0.5f},
+            new float[]{-2f, -0.5f},
+            new float[]{-0.5f, 1.5f},
+            new float[]{0, -1.5f},
+            new float[]{1.5f, 0.0f},
     };
     public ListModel updateTileYieldRep(List<Tile> tiles) {
         if (previousYieldRep == null) {
@@ -823,22 +826,28 @@ public class WorldHandler {
 
         Condition condition5 = new Condition() {
             public boolean allowedTile(Tile t) {
-                return t.improvement != null;
+                return t.improvement != null && t.improvement.buildingType == BuildingType.CITY && ((City) t.improvement).population > 0;
             }
         };
 
         Condition condition6 = new Condition() {
             public boolean allowedTile(Tile t) {
+                return t.improvement != null;
+            }
+        };
+
+        Condition condition7 = new Condition() {
+            public boolean allowedTile(Tile t) {
                 return t.resources.size() > 0 && !t.resources.get(0).equals(ItemType.NO_RESOURCE);
             }
         };
 
-        Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6};
-        int[] textures = {R.drawable.food, R.drawable.production, R.drawable.science, R.drawable.gold, R.drawable.usb_android, R.drawable.usb_android};
+        Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6, condition7};
+
         //int[][] textureTints = {{0, 255, 0}, {255, 0, 0}, {0, 0, 255}, {255, 255, 0}};
-        int[] textureHandles = new int[textures.length];
+        int[] textureHandles = new int[tileYieldTextures.length];
         for (int i = 0; i < textureHandles.length; i++) {
-            textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
+            textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(tileYieldTextures[i]), mActivity, tileYieldTextures[i]);
         }
 
         for (int i = 0; i < conditions.length; i++) {
@@ -882,7 +891,7 @@ public class WorldHandler {
 
             float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
             Solid hexes = ObjLoader.loadSolid(textureHandles[i], null, generatedData);
-            if (i >= 0 && i <= 3)
+            if (i >= 0 && i <= 4)
                 hexes.alphaEnabled = true;
 
             previousYieldRep.add(hexes);
@@ -958,13 +967,15 @@ public class WorldHandler {
                         return tile.science == num;
                     } else if (type == 3) {
                         return tile.capital == num;
+                    } else if (type == 4) {
+                        return tile.improvement != null && tile.improvement.buildingType == BuildingType.CITY && ((City) tile.improvement).population == num;
                     } else {
                         throw new IllegalArgumentException("Invalid type in variable condition");
                     }
                 }
             };
 
-            for (int i = 0; i <= 3; i++) {
+            for (int i = 0; i <= 4; i++) {
                 float[] offset = numOffsets[i];
                 float[] trueOffset = {offset[0]*TRANSLATE_FACTOR_UI_X, offset[1]*TRANSLATE_FACTOR_UI_Z};
                 for (int j = 1; j <= 9; j++) {
@@ -1010,6 +1021,7 @@ public class WorldHandler {
 
                 }
             }
+
         }
         return tileYieldUiStored;
     }
