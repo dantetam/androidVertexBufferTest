@@ -140,6 +140,9 @@ public enum ItemType {
         System.out.println("Could not find resource name: " + name);
         return null;
     }
+    public String toString() {
+        return types.get(id).renderName;
+    }
 
     public static ItemType fromInt(int n) {
         if (types == null) {

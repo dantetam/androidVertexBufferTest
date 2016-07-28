@@ -78,7 +78,8 @@ public class Person extends Entity {
             if (b.completionPercentage() < 1) {
                 return ActionStatus.CONTINUING;
             }
-            return ActionStatus.EXECUTED;
+            else
+                return ActionStatus.EXECUTED;
         }
         else {
             return ActionStatus.ALREADY_COMPLETED;

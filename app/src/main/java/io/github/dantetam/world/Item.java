@@ -123,4 +123,11 @@ public class Item {
         return type == item.type && quantity == item.quantity;
     }
 
+    public String toString() {
+        if (quantity == 1) {
+            return type.toString();
+        }
+        return quantity + " " + type.toString();
+    }
+
 }

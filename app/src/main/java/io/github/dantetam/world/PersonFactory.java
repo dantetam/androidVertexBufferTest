@@ -8,11 +8,15 @@ import java.util.List;
  */
 public class PersonFactory {
 
-    public static Person newPerson(Person.PersonType type, World world, Clan clan) {
+    public static Person newPerson(Person.PersonType type, World world, Clan clan, double completionPercentage) {
         int health, maxHealth;
         int actionPoints, maxActionPoints;
         List<Tech> skills = new ArrayList<>();
         String name;
+
+        int workCompleted = 15; //, workNeeded = 0;
+        int storageSpace = 3;
+
         switch (type) {
             case WARRIOR:
                 health = 5;
@@ -32,6 +36,13 @@ public class PersonFactory {
         person.actionPoints = actionPoints;
         person.maxActionPoints = maxActionPoints;
         person.skills = skills;
+
+        person.workCompleted = workCompleted;
+        //person.workNeeded = workNeeded;
+        person.workNeeded = completionPercentage*workCompleted;
+
+        person.storageSpace = storageSpace;
+
         return person;
     }
 

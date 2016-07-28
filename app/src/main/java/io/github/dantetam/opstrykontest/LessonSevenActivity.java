@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Person;
 import io.github.dantetam.world.PersonAction;
 import io.github.dantetam.world.PersonFactory;
+import io.github.dantetam.world.Recipe;
 import io.github.dantetam.world.Tile;
 
 public class LessonSevenActivity extends Activity implements
@@ -294,16 +296,11 @@ public class LessonSevenActivity extends Activity implements
                     String stringy;
                     if (module == null) {
                         stringy = "Build improvement";
-                    }
-                    else {
-                        stringy = module.name;
-                    }
-                    SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+                        SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
 
-                    if (module == null) {
                         List<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildingsAndModules.get(selectedImprovement.buildingType); //Well, that's all she wrote
                         for (final BuildingType buildingType: allowedBuildings) {
-                            MenuItem menuItem = moduleSubMenu.add(Menu.NONE, 1, Menu.NONE, buildingType.name);
+                            MenuItem menuItem = moduleSubMenu.add(Menu.NONE, i+1, Menu.NONE, buildingType.name);
                             menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                                 public boolean onMenuItemClick(MenuItem item) {
                                     Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
@@ -314,17 +311,51 @@ public class LessonSevenActivity extends Activity implements
                             });
                         }
                     }
+                    else {
+                        stringy = module.name;
+
+                        if (module.completionPercentage() < 1) {
+                            stringy += " (" + (int) (module.completionPercentage() * 100) + " % Completed)";
+                            SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+                        }
+                        else {
+                            SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+                            List<String> strings = new ArrayList<>();
+                            int[] yield = module.getYieldWithModules();
+                            String yieldString = "";
+                            if (yield[0] > 0) {
+                                yieldString += "+" + yield[0] + "Food";
+                            }
+                            if (yield[1] > 0) {
+                                yieldString += ", +" + yield[1] + "Prod.";
+                            }
+                            if (yield[2] > 0) {
+                                yieldString += ", +" + yield[2] + "Sci.";
+                            }
+                            if (yield[3] > 0) {
+                                yieldString += ", +" + yield[0] + "Cap.";
+                            }
+                            if (!yieldString.equals(""))
+                                strings.add(yieldString);
+                            for (Recipe recipe: module.recipes) {
+                                strings.add(recipe.toString());
+                            }
+                            for (String texty: strings) {
+                                MenuItem menuItem = moduleSubMenu.add(Menu.NONE, 0, Menu.NONE, texty);
+                            }
+                        }
+                    }
                 }
                 SubMenu unitSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build unit");
                 Set<Person> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
                 for (final Person person: allowedPeople) {
-                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 1, Menu.NONE, person.name);
+                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, person.name);
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             //Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
                             //newBuilding.actionsQueue.clear();
                             //newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
-                            Person newPerson = PersonFactory.newPerson(person.personType, selectedImprovement.world, selectedImprovement.clan);
+                            Person newPerson = PersonFactory.newPerson(person.personType, selectedImprovement.world, selectedImprovement.clan, 0.0);
                             selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_PERSON, newPerson));
                             return false;
                         }

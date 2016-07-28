@@ -20,6 +20,8 @@ public class BuildingFactory {
         city.workNeeded = 1;
         city.workCompleted = 1;
 
+        city.storageSpace = 10;
+
         city.move(tile);
         return city;
     }
@@ -141,10 +143,11 @@ public class BuildingFactory {
                 break;
         }
 
-        build.food = yield[0];
+        /*build.food = yield[0];
         build.production = yield[1];
         build.science = yield[2];
-        build.capital = yield[3];
+        build.capital = yield[3];*/
+        build.setYield(yield);
 
         build.actionPoints = actionPoints;
         build.maxActionPoints = maxActionPoints;

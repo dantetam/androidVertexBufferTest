@@ -14,8 +14,10 @@ public class Building extends Entity {
     public Building[] modules;
     public boolean isModule = false;
 
-    public int food, production, science, capital;
-    public int storageSpace;
+    private int food, production, science, capital;
+    public void setYield(int[] yield) {
+        food = yield[0];
+    }
 
     public List<Recipe> recipes;
     public List<String> effects;
@@ -56,8 +58,8 @@ public class Building extends Entity {
     public void executeQueue() {
         while (true) {
             if (actionsQueue.size() == 0) {
-                new BuildingAction(Action.ActionType.PROCESS, this).execute(this);
-                return;
+                actionsQueue.add(new BuildingAction(Action.ActionType.PROCESS, this));
+                //continue;
             }
             Action action = actionsQueue.get(0);
             Action.ActionStatus status = action.execute(this);
@@ -87,6 +89,10 @@ public class Building extends Entity {
         //super.move(t);
     }
 
+    public int[] getYieldNoModules() {
+        int[] yields = {food, production, science, capital};
+        return yields;
+    }
     public int[] getYieldWithModules() {
         int[] yields = {food, production, science, capital};
         for (Building module: modules) {
@@ -133,7 +139,7 @@ public class Building extends Entity {
                     addAllToInventory(outputResources);
                 }*/
             }
-            return Action.ActionStatus.CONTINUING;
+            return Action.ActionStatus.EXECUTED;
         }
         else {
             return Action.ActionStatus.IMPOSSIBLE;

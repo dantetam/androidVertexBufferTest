@@ -165,7 +165,7 @@ public class WorldGenerator {
             City firstCity = BuildingFactory.newCity(world, clan, clanHome, territory);
             firstCity.pickBestTiles();
             //first.move(clanHome);
-            Person unit = PersonFactory.newPerson(Person.PersonType.WARRIOR, world, clan);
+            Person unit = PersonFactory.newPerson(Person.PersonType.WARRIOR, world, clan, 1.0);
             unit.move(clanHome);
         }
 
