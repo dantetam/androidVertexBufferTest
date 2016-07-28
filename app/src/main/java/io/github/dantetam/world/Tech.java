@@ -1,6 +1,7 @@
 package io.github.dantetam.world;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -19,6 +20,7 @@ public class Tech {
         unlocked = false;
         unlockedTechs = new ArrayList<>();
         unlockedAbilities = new ArrayList<>();
+        //allowedBuildingsAndModules = new HashMap<>();
     }
 
     public boolean unlocked() {

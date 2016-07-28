@@ -23,7 +23,8 @@ public abstract class Action {
         BUILD, //The unit (person) moves to a location and builds
         MOVE, //Move to a tile, one tile at a time
         PROCESS, //The unit (building) converts both generic yield and named resources into other resources
-        QUEUE_BUILD_MODULE; //The unit (building) makes an improvement for itself
+        QUEUE_BUILD_MODULE, //The unit (building) makes an improvement for itself
+        QUEUE_BUILD_PERSON; //The unit (building) creates a unit
     }
 
     //The representation of the action itself, which contains the type (which chooses the protocol on which to act),

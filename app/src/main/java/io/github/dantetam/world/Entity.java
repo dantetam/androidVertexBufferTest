@@ -24,6 +24,9 @@ public abstract class Entity extends Representable {
     public List<Action> actionsQueue; //Do actions at position 0 first
     public int actionPoints, maxActionPoints;
 
+    public double workCompleted, workNeeded;
+    public double completionPercentage() {return workCompleted / workNeeded;}
+
     public Entity(World w, Clan c) {
         //locations = new ArrayList<Tile>();
         world = w;

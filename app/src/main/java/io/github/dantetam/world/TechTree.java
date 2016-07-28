@@ -14,18 +14,43 @@ public class TechTree {
     public Clan clan;
     public Tech root;
 
-    public HashMap<BuildingType, List<BuildingType>> allowedModules;
+    //public HashMap<BuildingType, List<BuildingType>> allowedModules;
+    public HashMap<BuildingType, List<BuildingType>> allowedBuildingsAndModules;
+    public HashMap<Person, Boolean> allowedUnits;
 
     public TechTree(Clan clan) {
         this.clan = clan;
         clan.techTree = this;
-        allowedModules = new HashMap<>();
-        for (BuildingType buildingType: BuildingType.values()) {
-            List<BuildingType> list = new ArrayList<>();
-            list.add(BuildingType.FARM);
-            allowedModules.put(buildingType, list);
-        }
+        allowedBuildingsAndModules = new HashMap<>();
+
+        List<BuildingType> list = new ArrayList<>();
+        list.add(BuildingType.FARM);
+        allowedBuildingsAndModules.put(BuildingType.CITY, list);
+
+        allowedUnits = new HashMap<>();
+
         //TODO: Define a method for parsing a tech tree from XML using Android utilities
+    }
+
+    public void unlock(Tech tech) {
+        for (String stringy: tech.unlock()) {
+            if (stringy.startsWith("AddBuilding")) {
+                String[] split = stringy.split("/");
+                String building = split[1];
+                BuildingType parent = BuildingType.fromString(building);
+                allowedBuildingsAndModules.put(parent, new ArrayList<BuildingType>());
+            }
+            else if (stringy.startsWith("AddModule")) {
+                String[] split = stringy.split("/");
+                String building = split[1], moduleToAdd = split[2];
+                BuildingType parent = BuildingType.fromString(building);
+                BuildingType module = BuildingType.fromString(moduleToAdd);
+                if (allowedBuildingsAndModules.get(parent) == null) {
+                    allowedBuildingsAndModules.put(parent, new ArrayList<BuildingType>());
+                }
+                allowedBuildingsAndModules.get(parent).add(module);
+            }
+        }
     }
 
     public List<Tech> traverse(Condition cond) {
@@ -92,6 +117,7 @@ public class TechTree {
             return;
         }
         Tech techToUnlock = candidate.get(0);
+        unlock(techToUnlock);
         //TODO: Unlock the tech
     }
 

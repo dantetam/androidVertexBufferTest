@@ -60,6 +60,7 @@ public class City extends Building {
         if (actionPoints <= 0) {
             return Action.ActionStatus.OUT_OF_ENERGY;
         }
+        actionPoints--;
         if (freeWorkingPopulation > 0) {
             pickBestTiles();
         }
@@ -77,7 +78,7 @@ public class City extends Building {
                 capital += imprYield[3];
             }
         }
-        System.out.println(food + " " + production + " " + science + " " + capital);
+        //System.out.println(food + " " + production + " " + science + " " + capital);
         return Action.ActionStatus.CONTINUING;
     }
 

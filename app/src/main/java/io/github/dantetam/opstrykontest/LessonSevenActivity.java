@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import java.util.List;
+import java.util.Set;
 
 import io.github.dantetam.world.Action;
 import io.github.dantetam.world.Building;
@@ -37,6 +38,7 @@ import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Person;
 import io.github.dantetam.world.PersonAction;
+import io.github.dantetam.world.PersonFactory;
 import io.github.dantetam.world.Tile;
 
 public class LessonSevenActivity extends Activity implements
@@ -291,7 +293,7 @@ public class LessonSevenActivity extends Activity implements
                     Building module = selectedImprovement.modules[i];
                     String stringy;
                     if (module == null) {
-                        stringy = "Free space";
+                        stringy = "Build improvement";
                     }
                     else {
                         stringy = module.name;
@@ -299,18 +301,34 @@ public class LessonSevenActivity extends Activity implements
                     SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
 
                     if (module == null) {
-                        List<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedModules.get(selectedImprovement.buildingType); //Well, that's all she wrote
+                        List<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildingsAndModules.get(selectedImprovement.buildingType); //Well, that's all she wrote
                         for (final BuildingType buildingType: allowedBuildings) {
                             MenuItem menuItem = moduleSubMenu.add(Menu.NONE, 1, Menu.NONE, buildingType.name);
                             menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                                 public boolean onMenuItemClick(MenuItem item) {
                                     Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
+                                    newBuilding.actionsQueue.clear();
                                     newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
                                     return false;
                                 }
                             });
                         }
                     }
+                }
+                SubMenu unitSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build unit");
+                Set<Person> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
+                for (final Person person: allowedPeople) {
+                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 1, Menu.NONE, person.name);
+                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            //Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
+                            //newBuilding.actionsQueue.clear();
+                            //newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
+                            Person newPerson = PersonFactory.newPerson(person.personType, selectedImprovement.world, selectedImprovement.clan);
+                            selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_PERSON, newPerson));
+                            return false;
+                        }
+                    });
                 }
             }
         }

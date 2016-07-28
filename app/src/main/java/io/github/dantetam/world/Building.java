@@ -22,9 +22,6 @@ public class Building extends Entity {
     //public List<Item> inputResources;
     //public List<Item> outputResources;
 
-    public double workCompleted, workNeeded;
-    public double completionPercentage() {return workCompleted / workNeeded;}
-
     public Building(World world, Clan clan, BuildingType type) {
         super(world, clan);
         clan.buildings.add(this);
@@ -93,9 +90,11 @@ public class Building extends Entity {
     public int[] getYieldWithModules() {
         int[] yields = {food, production, science, capital};
         for (Building module: modules) {
-            int[] moduleYield = module.getYieldWithModules();
-            for (int i = 0; i <= 3; i++) {
-                yields[i] += moduleYield[i];
+            if (module != null) {
+                int[] moduleYield = module.getYieldWithModules();
+                for (int i = 0; i < yields.length; i++) {
+                    yields[i] += moduleYield[i];
+                }
             }
         }
         return yields;
@@ -151,6 +150,22 @@ public class Building extends Entity {
         actionPoints--;
         building.workCompleted += location.production;
         if (building.workCompleted >= building.workNeeded) {
+            return Action.ActionStatus.EXECUTED;
+        }
+        return Action.ActionStatus.CONTINUING;
+    }
+
+    public Action.ActionStatus gameBuildUnit(Person person) {
+        if (person.workCompleted >= person.workNeeded) {
+            return Action.ActionStatus.ALREADY_COMPLETED;
+        }
+        if (actionPoints <= 0) {
+            return Action.ActionStatus.OUT_OF_ENERGY;
+        }
+        actionPoints--;
+        person.workCompleted += location.production;
+        if (person.workCompleted >= person.workNeeded) {
+            person.move(location);
             return Action.ActionStatus.EXECUTED;
         }
         return Action.ActionStatus.CONTINUING;

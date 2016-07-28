@@ -17,6 +17,8 @@ public class BuildingAction extends Action {
                 return building.gameProcess();
             case QUEUE_BUILD_MODULE:
                 return building.gameBuildModule((Building) data);
+            case QUEUE_BUILD_PERSON:
+                return building.gameBuildUnit((Person) data);
             default:
                 System.out.println("Invalid action type: " + type);
                 return ActionStatus.IMPOSSIBLE;
@@ -28,7 +30,9 @@ public class BuildingAction extends Action {
             case PROCESS:
                 return "";
             case QUEUE_BUILD_MODULE:
-                return "Add: " + ((Building) super.data).name;
+                return "Add: " + ((Building) data).name;
+            case QUEUE_BUILD_PERSON:
+                return "Build: " +  ((Person) data).name;
             default:
                 System.out.println("Invalid action type: " + type);
                 return null;

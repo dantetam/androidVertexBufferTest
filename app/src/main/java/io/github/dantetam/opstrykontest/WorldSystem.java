@@ -41,12 +41,12 @@ public class WorldSystem {
         for (Clan clan: world.getClans()) {
             if (!clan.equals(playerClan)) {
                 artificialIntelligence.computerClanActions(clan);
-            }
-            for (Building building: clan.buildings) {
-                building.executeQueue();
-            }
-            for (Person person: clan.people) {
-                person.executeQueue();
+                for (Building building: clan.buildings) {
+                    building.executeQueue();
+                }
+                for (Person person: clan.people) {
+                    person.executeQueue();
+                }
             }
         }
 
@@ -55,7 +55,8 @@ public class WorldSystem {
                 person.actionPoints = person.maxActionPoints;
             }
             for (Building building: c.buildings) {
-                building.actionPoints = building.maxActionPoints;building.executeQueue();
+                building.actionPoints = building.maxActionPoints;
+                building.executeQueue();
             }
         }
         turnNumber++;

@@ -183,11 +183,11 @@ public class WorldHandler {
             else {
                 highlightedCityTerritory = null;
 
-                if (improvementResourceProductionUi == null) {
+                //if (improvementResourceProductionUi == null) {
                     createImprovementResourceRep();
                     modelsToRender.add(improvementResourceProductionUi);
                     modelsToRender.add(improvementResourceStatUi);
-                }
+                //}
             }
         }
         else {
@@ -685,7 +685,7 @@ public class WorldHandler {
             }
 
             float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-            Solid hexes = ObjLoader.loadSolid(textureHandles.get(items[i]), null, generatedData);
+            Solid hexes = ObjLoader.loadSolid(R.drawable.iron_ore, null, generatedData);
             hexes.alphaEnabled = true;
 
             improvementResourceStatUi.put(cond, hexes);

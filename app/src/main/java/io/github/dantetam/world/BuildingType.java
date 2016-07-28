@@ -50,6 +50,11 @@ public enum BuildingType {
         if (typesByName.containsKey(n)) {
             return typesByName.get(n);
         }
+        for (BuildingType item: BuildingType.values()) {
+            if (item.name.equalsIgnoreCase(n)) {
+                return item;
+            }
+        }
         throw new IllegalArgumentException("Invalid building type: " + n);
     }
     public String objResourceName() {
