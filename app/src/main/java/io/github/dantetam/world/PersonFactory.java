@@ -41,7 +41,7 @@ public class PersonFactory {
         //person.workNeeded = workNeeded;
         person.workNeeded = completionPercentage*workCompleted;
 
-        person.storageSpace = storageSpace;
+        person.inventorySpace = storageSpace;
 
         return person;
     }

@@ -9,6 +9,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -17,9 +18,12 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.BuildingType;
+import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.ClanFactory;
 import io.github.dantetam.world.Tile;
 
@@ -436,6 +440,16 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             public void run() {
                 mLessonSevenActivity.findViewById(R.id.main_menu).setVisibility(View.VISIBLE);
                 mLessonSevenActivity.findViewById(R.id.turn_menu).setVisibility(View.VISIBLE);
+                LinearLayout linearLayout = (LinearLayout) mLessonSevenActivity.findViewById(R.id.clan_menu);
+                linearLayout.setVisibility(View.VISIBLE);
+                linearLayout.setBackgroundColor(Color.TRANSPARENT);
+                List<Clan> clans = worldHandler.world.getClans();
+                for (Clan clan: clans) {
+                    TextView clanView = new TextView(mLessonSevenActivity);
+                    clanView.setText(clan.name);
+                    TODO: Transparency/Partial Transparency -> clanView.setBackgroundColor(Color.TRANSPARENT);
+                    linearLayout.addView(clanView);
+                }
             }
         });
     }

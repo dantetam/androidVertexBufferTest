@@ -24,6 +24,7 @@
             app:layout_marginTopPercent="45%"
             app:layout_marginLeftPercent="0%">
 
+            <!--
             <Button
                 android:contentDescription="@string/new_world"
                 android:id="@+id/selected_stat_1"
@@ -64,7 +65,7 @@
                 app:layout_heightPercent="25%"
                 app:layout_marginTopPercent="75%"
                 app:layout_marginLeftPercent="0%" />
-            <!--<Button
+            <Button
                 android:contentDescription="@string/new_world"
                 android:id="@+id/selected_stat_5"
                 android:layout_width="0dp"
@@ -77,6 +78,19 @@
 
 
         </android.support.percent.PercentRelativeLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/clan_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="vertical"
+            app:layout_widthPercent="20%"
+            app:layout_heightPercent="40%"
+            app:layout_marginTopPercent="0%"
+            app:layout_marginLeftPercent="80%"
+            android:visibility="invisible">
+        </LinearLayout>
         <Button
             android:id="@+id/main_menu"
             android:text="@string/main_menu"
@@ -149,6 +163,18 @@
             android:visibility="invisible"
             android:contentDescription="@string/queue_menu"
             android:onClick="onClickQueueMenu" />
+        <Button
+            android:id="@+id/info_menu"
+            android:text="@string/info_menu"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_widthPercent="20%"
+            app:layout_heightPercent="15%"
+            app:layout_marginTopPercent="85%"
+            app:layout_marginLeftPercent="60%"
+            android:visibility="invisible"
+            android:contentDescription="@string/info_menu"
+            android:onClick="onClickInfoMenu" />
         <ImageView
             android:id="@+id/splash_screen_main"
             android:background="@drawable/splash_screen"

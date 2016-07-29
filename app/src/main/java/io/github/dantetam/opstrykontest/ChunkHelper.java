@@ -67,7 +67,7 @@ public class ChunkHelper {
 
     public List<Tile> getChunkTiles(Tile t, int radius) {
         if (t == null) {
-            System.out.println("No home tile, returning no tiles to render");
+            //System.out.println("No home tile, returning no tiles to render");
             return new ArrayList<>();
         }
         if (lastHomeTile == null || !lastHomeTile.equals(t) || lastRadius == 0 || lastRadius != radius) {
@@ -100,7 +100,7 @@ public class ChunkHelper {
 
     public Collection<Node> getChunkNodesContainingTile(Tile t, int radius) {
         if (t == null) {
-            System.out.println("No home tile, returning no tiles to render");
+            //System.out.println("No home tile, returning no tiles to render");
             return new ArrayList<>();
         }
         if (lastHomeTile == null || !lastHomeTile.equals(t) || lastRadius == 0 || lastRadius != radius) {

@@ -20,7 +20,13 @@ public class BuildingFactory {
         city.workNeeded = 1;
         city.workCompleted = 1;
 
-        city.storageSpace = 10;
+        city.inventorySpace = 10;
+
+        int[] cityGrowthData = City.generateCityFoodData();
+        city.population = 1;
+        city.freeWorkingPopulation = 1;
+        city.foodNeededForGrowth = cityGrowthData[city.population];
+        city.foodStoredForGrowth = 0;
 
         city.move(tile);
         return city;
@@ -155,7 +161,7 @@ public class BuildingFactory {
         build.workNeeded = workNeeded;
         build.workCompleted = workNeeded*completionPercentage;
 
-        build.storageSpace = storageSpace;
+        build.inventorySpace = storageSpace;
 
         if (parent != null) {
             build.addThisAsModuleToBuilding(parent);

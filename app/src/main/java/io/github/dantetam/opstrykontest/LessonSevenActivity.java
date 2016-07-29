@@ -27,7 +27,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import io.github.dantetam.world.Action;
@@ -37,6 +39,7 @@ import io.github.dantetam.world.BuildingFactory;
 import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
+import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Person;
 import io.github.dantetam.world.PersonAction;
 import io.github.dantetam.world.PersonFactory;
@@ -62,6 +65,7 @@ public class LessonSevenActivity extends Activity implements
     private PopupMenu buildSelectionMenu;
     private PopupMenu queueSelectionMenu;
     private PopupMenu moduleSelectionMenu;
+    private PopupMenu infoSelectionMenu;
 
     private Clan playerClan;
 
@@ -366,6 +370,129 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
+    public void onClickInfoMenu(View v) {
+        infoSelectionMenu = new PopupMenu(this, v);
+        MenuInflater inflater = infoSelectionMenu.getMenuInflater();
+        inflater.inflate(R.menu.queue_selection_menu, infoSelectionMenu.getMenu());
+        onCreateSelectionStatMenu(infoSelectionMenu.getMenu());
+        infoSelectionMenu.show();
+    }
+
+    public boolean onCreateSelectionStatMenu(Menu menu) {
+        final boolean selectedTileExists = mRenderer.mousePicker.getSelectedTile() != null;
+        final boolean selectedEntityExists = mRenderer.mousePicker.getSelectedEntity() != null;
+
+        LinkedHashMap<String, String> tooltips = new LinkedHashMap<>();
+
+        String affiliation = "";
+        if (selectedTileExists) {
+            Tile selected = mRenderer.mousePicker.getSelectedTile();
+            Clan owner = selected.world.getTileOwner(selected), influence = selected.world.getTileInfluence(selected);
+            if (owner != null) {
+                affiliation = owner.name;
+            }
+            else if (influence != null) {
+                affiliation = "(" + influence.name + ")";
+            }
+            else {
+                affiliation = "Free";
+            }
+            tooltips.put("text1", affiliation);
+
+            String locationInfo = "";
+            if (Debug.enabled) {
+                locationInfo = " " + selected.toString();
+            }
+            tooltips.put("text2", Tile.Biome.nameFromInt(selected.biome.type) + ", " + Tile.Terrain.nameFromInt(selected.terrain.type) + locationInfo);
+            if (selected.improvement == null) {
+                tooltips.put("text3", "Can build improvement");
+            }
+            else {
+                int p = (int)(selected.improvement.completionPercentage() * 100d);
+                String extra = p < 1 ? " (" + p + "% Completed)" : "";
+                tooltips.put("text3", selected.improvement.name + extra);
+            }
+            if (selected.resources.size() > 0) {
+                String stringy = "";
+                for (Item resource: selected.resources) {
+                    String s = resource.name;
+                    if (!s.equals("No resource"))
+                        stringy += s + " ";
+                }
+                if (!stringy.equals(""))
+                    tooltips.put("text4", stringy);
+            }
+            if (selected.improvement != null) {
+                String items = selected.improvement.getInventory().size() + "/" + (float) selected.improvement.inventorySpace + " Items";
+                tooltips.put("text5", items);
+            }
+        }
+        else if (selectedEntityExists) {
+            Entity entity = mRenderer.mousePicker.getSelectedEntity();
+            String stringy = entity.name + " (";
+            if (entity.clan != null) {
+                stringy += entity.clan.name + ")";
+            }
+            else {
+                stringy += "Free)";
+            }
+            if (entity instanceof Person) {
+                Person person = (Person) entity;
+                stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP";
+            }
+            tooltips.put("text1", stringy);
+
+            if (entity != null) {
+                String items = entity.getInventory().size() + "/" + (float) entity.inventorySpace + " Items";
+                tooltips.put("text5", items);
+            }
+        }
+
+        int i = 0;
+        for (Map.Entry<String, String> en: tooltips.entrySet()) {
+            SubMenu subMenu = menu.addSubMenu(Menu.NONE, i, Menu.NONE, en.getValue());
+            final String finalAffiliation = affiliation;
+            MenuItem title = subMenu.add(Menu.NONE, i, Menu.NONE, en.getValue());
+            if (en.getKey().equals("text1")) {
+                String clanStringy = "";
+                if (selectedTileExists || selectedEntityExists) {
+                    if (finalAffiliation.equals("Free")) {
+                        clanStringy = "This land has no influence.";
+                    }
+                    else if (finalAffiliation.contains("(")) {
+                        clanStringy = "The most influential clan.";
+                    }
+                    else {
+                        clanStringy = "The current owner.";
+                    }
+                }
+                MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, clanStringy);
+            }
+            else if (en.getKey().equals("text2")) {
+                MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "The biome (climate) and terrain type (shape).");
+            }
+            else if (en.getKey().equals("text3")) {
+                MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "Buildings to increase yields, craft, etc.");
+            }
+            else if (en.getKey().equals("text4")) {
+                MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "Used for buildings and items to equip units.");
+            }
+            else if (en.getKey().equals("text5")) {
+                Entity entity = mRenderer.mousePicker.getSelectedEntity();
+                if (entity == null) {
+                    entity = mRenderer.mousePicker.getSelectedTile().improvement;
+                }
+                List<Item> inventory = entity.getInventory();
+                //MenuItem title = subMenu.add(Menu.NONE, 0, Menu.NONE, en.getValue());
+                for (int j = 0; j < inventory.size(); j++) {
+                    MenuItem menuItem = subMenu.add(Menu.NONE, j+1, Menu.NONE, inventory.get(j).toString());
+                }
+            }
+            //selectedStatMenu.addView(bt);
+            i++;
+        }
+        return true;
+    }
 
     public boolean onCreateBuildSelectionMenu(Menu menu) {
         MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "Build Option 1");

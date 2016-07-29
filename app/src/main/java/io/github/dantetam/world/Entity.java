@@ -27,7 +27,7 @@ public abstract class Entity extends Representable {
     public double workCompleted, workNeeded;
     public double completionPercentage() {return workCompleted / workNeeded;}
 
-    public int storageSpace;
+    public int inventorySpace;
 
     public Entity(World w, Clan c) {
         //locations = new ArrayList<Tile>();

@@ -20,13 +20,26 @@ import java.util.TreeMap;
 public class City extends Building {
 
     public int population, freeWorkingPopulation;
+    public int foodStoredForGrowth, foodNeededForGrowth;
+
+    //where generateCityFoodData[n] represents the needed food to go from n to n+1
+    private static int[] generateCityFoodData = null;
+    public static int[] generateCityFoodData() {
+        if (generateCityFoodData == null) {
+            generateCityFoodData = new int[30];
+            generateCityFoodData[0] = 0;
+            for (int i = 1; i < generateCityFoodData.length; i++) {
+                generateCityFoodData[i] = 10 + i*5;
+            }
+        }
+        return generateCityFoodData;
+    }
+
     public HashMap<Tile, Boolean> workedTiles;
     public Collection<Tile> cityTiles;
 
     public City(World world, Clan clan, BuildingType type, Collection<Tile> tiles) {
         super(world, clan, type);
-        population = 1;
-        freeWorkingPopulation = 1;
         workedTiles = new HashMap<>();
         cityTiles = tiles;
     }
@@ -65,6 +78,7 @@ public class City extends Building {
             pickBestTiles();
         }
         double food = 0, production = 0, science = 0, capital = 0;
+
         for (Tile tile: workedTiles.keySet()) {
             food += tile.food;
             production += tile.production;
@@ -78,6 +92,14 @@ public class City extends Building {
                 capital += imprYield[3];
             }
         }
+
+        int workingPopulation = population - freeWorkingPopulation;
+        foodStoredForGrowth += food - workingPopulation;
+        if (foodStoredForGrowth >= foodNeededForGrowth) {
+            foodStoredForGrowth -= foodNeededForGrowth;
+        }
+        population++; freeWorkingPopulation++;
+        foodNeededForGrowth = generateCityFoodData[population];
         //System.out.println(food + " " + production + " " + science + " " + capital);
         return Action.ActionStatus.CONTINUING;
     }
@@ -137,6 +159,15 @@ public class City extends Building {
         if (workedTiles.get(t) == null && cityTiles.contains(t) && freeWorkingPopulation > 0) {
             workedTiles.put(t, true);
             freeWorkingPopulation--;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean freeTile(Tile t) {
+        if (workedTiles.get(t) != null && cityTiles.contains(t)) {
+            workedTiles.remove(t);
+            freeWorkingPopulation++;
             return true;
         }
         return false;
