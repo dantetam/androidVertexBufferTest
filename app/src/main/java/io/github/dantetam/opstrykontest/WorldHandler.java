@@ -836,13 +836,7 @@ public class WorldHandler {
             }
         };
 
-        Condition condition7 = new Condition() {
-            public boolean allowedTile(Tile t) {
-                return t.resources.size() > 0 && !t.resources.get(0).equals(ItemType.NO_RESOURCE);
-            }
-        };
-
-        Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6, condition7};
+        Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6};
 
         //int[][] textureTints = {{0, 255, 0}, {255, 0, 0}, {0, 0, 255}, {255, 255, 0}};
         int[] textureHandles = new int[tileYieldTextures.length];
@@ -897,6 +891,31 @@ public class WorldHandler {
             previousYieldRep.add(hexes);
         }
         return previousYieldRep;
+    }
+
+    TODO: V
+    public MapModel updateTileResourceRep() {
+        ItemType[] items = ItemType.values();
+        HashMap<ItemType, Integer> resourceTextureHandles = new HashMap<>();
+        List<Condition> resourceConditions = new ArrayList<>();
+        for (int i = 0; i < items.length; i++) {
+            //textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
+            //assetHelper.loadVertexFromAssets(items[i].renderName);
+            int resId = mActivity.getResources().getIdentifier(items[i].renderName, "drawable", mActivity.getPackageName());
+            resourceTextureHandles.put(items[i], TextureHelper.loadTexture(items[i].renderName, mActivity, resId));
+
+            Condition cond = new Condition() {
+                public ItemType type;
+                public boolean allowedTile(Tile t) {
+                    return t.resources.size() > 0 && !t.resources.get(0).equals(ItemType.NO_RESOURCE);
+                }
+                public void init(Object obj) {
+                    type = (ItemType) obj;
+                }
+            };
+            cond.init(items[i]);
+            resourceConditions.add(cond);
+        }
     }
 
     public MapModel updateTileUnits() {

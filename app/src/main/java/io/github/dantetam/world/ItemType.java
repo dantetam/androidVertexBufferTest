@@ -144,6 +144,10 @@ public enum ItemType {
         return types.get(id).renderName;
     }
 
+    public String getAndroidResourceName() {
+        return renderName.replace(" ", "_").toLowerCase();
+    }
+
     public static ItemType fromInt(int n) {
         if (types == null) {
             init();
