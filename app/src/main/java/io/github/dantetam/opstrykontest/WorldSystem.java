@@ -61,10 +61,11 @@ public class WorldSystem {
         for (Person person: clan.people) {
             person.executeQueue();
         }
-        int totalScience = 0;
+        int totalScience = 0, totalGold = 0;
         for (City city: clan.cities) {
             //Determine yield here? Don't separate process.
             totalScience += city.lastYield[2];
+            totalGold += city.lastYield[3];
         }
     }
 

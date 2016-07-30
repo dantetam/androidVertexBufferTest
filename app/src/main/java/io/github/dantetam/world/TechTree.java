@@ -14,6 +14,8 @@ public class TechTree {
     public Clan clan;
     public Tech root;
 
+    public List<Tech> researchingTechQueue;
+
     //public HashMap<BuildingType, List<BuildingType>> allowedModules;
     public HashMap<BuildingType, List<BuildingType>> allowedBuildingsAndModules;
     public HashMap<Person, Boolean> allowedUnits;
@@ -21,6 +23,8 @@ public class TechTree {
     public TechTree(Clan clan) {
         this.clan = clan;
         clan.techTree = this;
+
+        researchingTechQueue = new ArrayList<>();
         allowedBuildingsAndModules = new HashMap<>();
 
         List<BuildingType> list = new ArrayList<>();

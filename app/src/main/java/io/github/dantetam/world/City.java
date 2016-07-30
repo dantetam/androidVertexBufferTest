@@ -157,7 +157,7 @@ public class City extends Building {
         });
         for (Tile tile: cityTiles) {
             double score = 0;
-            score += tile.food*2.5 + tile.production*2 + tile.science + tile.capital;
+            score += tile.food*3 + tile.production*2 + tile.science + tile.capital;
             if (tile.resources.size() > 0) {
                 if (tile.resources.get(0).type != ItemType.NO_RESOURCE) {
                     score += tile.resources.size()*3;
@@ -176,9 +176,9 @@ public class City extends Building {
             }
         }
 
-        for (Map.Entry<Tile, Double> en: sorted.entrySet()) {
+        /*for (Map.Entry<Tile, Double> en: sorted.entrySet()) {
             System.out.println(en.getKey().toString() + " " + en.getValue());
-        }
+        }*/
     }
 
     public boolean pickTile(Tile t) {
