@@ -36,8 +36,25 @@ public class TechTree {
         //TODO: Define a method for parsing a tech tree from XML using Android utilities
     }
 
-    public void unlock(Tech tech) {
-        for (String stringy: tech.unlock()) {
+    public void research(int inputScience) {
+        if (researchingTechQueue.size() == 0) {
+            return;
+        }
+        Tech researching = researchingTechQueue.get(0);
+        List<String> results = researching.research(inputScience);
+        if (researching.unlocked()) {
+            activateTechAbilities(results);
+        }
+        researchingTechQueue.remove(0);
+    }
+
+    public void forceUnlock(Tech tech) {
+        List<String> results = tech.forceUnlock();
+        activateTechAbilities(results);
+    }
+
+    public void activateTechAbilities(List<String> strings) {
+        for (String stringy: strings) {
             if (stringy.startsWith("AddBuilding")) {
                 String[] split = stringy.split("/");
                 String building = split[1];
