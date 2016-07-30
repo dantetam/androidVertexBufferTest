@@ -24,6 +24,8 @@ public class Building extends Entity {
     //public List<Item> inputResources;
     //public List<Item> outputResources;
 
+    public int[] lastYield;
+
     public Building(World world, Clan clan, BuildingType type) {
         super(world, clan);
         clan.buildings.add(this);
@@ -56,11 +58,8 @@ public class Building extends Entity {
     }
 
     public void executeQueue() {
+        actionsQueue.add(new BuildingAction(Action.ActionType.PROCESS, this));
         while (true) {
-            if (actionsQueue.size() == 0) {
-                actionsQueue.add(new BuildingAction(Action.ActionType.PROCESS, this));
-                //continue;
-            }
             Action action = actionsQueue.get(0);
             Action.ActionStatus status = action.execute(this);
 
@@ -95,11 +94,13 @@ public class Building extends Entity {
     }
     public int[] getYieldWithModules() {
         int[] yields = {food, production, science, capital};
-        for (Building module: modules) {
-            if (module != null) {
-                int[] moduleYield = module.getYieldWithModules();
-                for (int i = 0; i < yields.length; i++) {
-                    yields[i] += moduleYield[i];
+        if (modules != null) {
+            for (Building module : modules) {
+                if (module != null) {
+                    int[] moduleYield = module.getYieldWithModules();
+                    for (int i = 0; i < yields.length; i++) {
+                        yields[i] += moduleYield[i];
+                    }
                 }
             }
         }
@@ -113,12 +114,19 @@ public class Building extends Entity {
             if (actionPoints <= 0) {
                 return Action.ActionStatus.OUT_OF_ENERGY;
             }
-            actionPoints--;
+            //actionPoints--;
+            int[] yieldWithModules = getYieldWithModules();
+            lastYield = new int[]{
+                    yieldWithModules[0] + location.food,
+                    yieldWithModules[1] + location.production,
+                    yieldWithModules[2] + location.science,
+                    yieldWithModules[3] + location.capital
+            };
             Item[] items = {
-                    new Item(ItemType.FOOD, location.food),
-                    new Item(ItemType.PRODUCTION, location.production),
-                    new Item(ItemType.SCIENCE, location.science),
-                    new Item(ItemType.CAPITAL, location.capital)
+                    new Item(ItemType.FOOD, lastYield[0]),
+                    new Item(ItemType.PRODUCTION, lastYield[1]),
+                    new Item(ItemType.SCIENCE, lastYield[2]),
+                    new Item(ItemType.CAPITAL, lastYield[3])
             };
             addAllToInventory(Arrays.asList(items));
             while (true) {
@@ -169,7 +177,7 @@ public class Building extends Entity {
             return Action.ActionStatus.OUT_OF_ENERGY;
         }
         actionPoints--;
-        person.workCompleted += location.production;
+        person.workCompleted += lastYield[1];
         if (person.workCompleted >= person.workNeeded) {
             person.move(location);
             return Action.ActionStatus.EXECUTED;

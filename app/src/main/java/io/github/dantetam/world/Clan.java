@@ -21,11 +21,13 @@ public class Clan {
     public TechTree techTree;
 
     public List<Building> buildings;
+    public List<City> cities;
 
     public Clan(String n) {
         name = n;
         people = new ArrayList<>();
         buildings = new ArrayList<>();
+        cities = new ArrayList<>();
         techTree = new TechTree(this);
     }
 

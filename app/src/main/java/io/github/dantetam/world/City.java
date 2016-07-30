@@ -77,6 +77,7 @@ public class City extends Building {
         if (freeWorkingPopulation > 0) {
             pickBestTiles();
         }
+
         double food = 0, production = 0, science = 0, capital = 0;
 
         for (Tile tile: workedTiles.keySet()) {
@@ -101,7 +102,32 @@ public class City extends Building {
         population++; freeWorkingPopulation++;
         foodNeededForGrowth = generateCityFoodData[population];
         //System.out.println(food + " " + production + " " + science + " " + capital);
+
+        lastYield = new int[]{(int)food, (int)production, (int)science, (int)capital};
+
         return Action.ActionStatus.CONTINUING;
+    }
+
+    public static int[] evalTile(Tile tile) {
+        int[] yield = new int[4];
+        yield[0] += tile.food;
+        yield[1] += tile.production;
+        yield[2] += tile.science;
+        yield[3] += tile.capital;
+        if (tile.improvement != null) {
+            int[] imprYield = tile.improvement.getYieldWithModules();
+            yield[0] += imprYield[0];
+            yield[1] += imprYield[1];
+            yield[2] += imprYield[2];
+            yield[3] += imprYield[3];
+        }
+        return yield;
+    }
+
+    public void addTileToTerritory(Tile t) {
+        if (world.getTileOwner(t) == null && !cityTiles.contains(t)) {
+            cityTiles.add(t);
+        }
     }
 
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map)

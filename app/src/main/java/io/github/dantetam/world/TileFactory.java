@@ -57,11 +57,11 @@ public class TileFactory {
                 numSpaces -= 2;
                 break;
             case PLAINS:
-                tile.addBaseResources(1,0,0,0);
+                tile.addBaseResources(2,0,0,0);
                 numSpaces += 2;
                 break;
             case HILLS:
-                tile.addBaseResources(0,1,0,0);
+                tile.addBaseResources(1,1,0,0);
                 break;
             case CLIFFS:
                 tile.addBaseResources(0,2,0,0);

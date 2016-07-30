@@ -37,6 +37,7 @@ import io.github.dantetam.world.Building;
 import io.github.dantetam.world.BuildingAction;
 import io.github.dantetam.world.BuildingFactory;
 import io.github.dantetam.world.BuildingType;
+import io.github.dantetam.world.City;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Item;
@@ -320,33 +321,31 @@ public class LessonSevenActivity extends Activity implements
 
                         if (module.completionPercentage() < 1) {
                             stringy += " (" + (int) (module.completionPercentage() * 100) + "% Completed)";
-                            SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+                            //SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
                         }
-                        else {
-                            SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
-                            List<String> strings = new ArrayList<>();
-                            int[] yield = module.getYieldWithModules();
-                            String yieldString = "";
-                            if (yield[0] > 0) {
-                                yieldString += "+" + yield[0] + "Food";
-                            }
-                            if (yield[1] > 0) {
-                                yieldString += ", +" + yield[1] + "Prod.";
-                            }
-                            if (yield[2] > 0) {
-                                yieldString += ", +" + yield[2] + "Sci.";
-                            }
-                            if (yield[3] > 0) {
-                                yieldString += ", +" + yield[0] + "Cap.";
-                            }
-                            if (!yieldString.equals(""))
-                                strings.add(yieldString);
-                            for (Recipe recipe: module.recipes) {
-                                strings.add(recipe.toString());
-                            }
-                            for (String texty: strings) {
-                                MenuItem menuItem = moduleSubMenu.add(Menu.NONE, 0, Menu.NONE, texty);
-                            }
+                        SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+                        List<String> strings = new ArrayList<>();
+                        int[] yield = module.getYieldWithModules();
+                        String yieldString = "";
+                        if (yield[0] > 0) {
+                            yieldString += "+" + yield[0] + "Food";
+                        }
+                        if (yield[1] > 0) {
+                            yieldString += ", +" + yield[1] + "Prod.";
+                        }
+                        if (yield[2] > 0) {
+                            yieldString += ", +" + yield[2] + "Sci.";
+                        }
+                        if (yield[3] > 0) {
+                            yieldString += ", +" + yield[0] + "Cap.";
+                        }
+                        if (!yieldString.equals(""))
+                            strings.add(yieldString);
+                        for (Recipe recipe: module.recipes) {
+                            strings.add(recipe.toString());
+                        }
+                        for (String texty: strings) {
+                            MenuItem menuItem = moduleSubMenu.add(Menu.NONE, 0, Menu.NONE, texty);
                         }
                     }
                 }
@@ -423,9 +422,12 @@ public class LessonSevenActivity extends Activity implements
                     tooltips.put("text4", stringy);
             }
             if (selected.improvement != null) {
-                String items = selected.improvement.getInventory().size() + "/" + (float) selected.improvement.inventorySpace + " Items";
+                String items = selected.improvement.getInventory().size() + "/" + selected.improvement.inventorySpace + " Items";
                 tooltips.put("text5", items);
             }
+            int[] yieldData = City.evalTile(selected);
+            String yield = "Yield: " + yieldData[0] + "F, " + yieldData[1] + "P, " + yieldData[2] + "S, " + yieldData[3] + "C";
+            tooltips.put("text6", yield);
         }
         else if (selectedEntityExists) {
             Entity entity = mRenderer.mousePicker.getSelectedEntity();
@@ -443,7 +445,7 @@ public class LessonSevenActivity extends Activity implements
             tooltips.put("text1", stringy);
 
             if (entity != null) {
-                String items = entity.getInventory().size() + "/" + (float) entity.inventorySpace + " Items";
+                String items = entity.getInventory().size() + "/" + entity.inventorySpace + " Items";
                 tooltips.put("text5", items);
             }
         }
@@ -486,6 +488,12 @@ public class LessonSevenActivity extends Activity implements
                 //MenuItem title = subMenu.add(Menu.NONE, 0, Menu.NONE, en.getValue());
                 for (int j = 0; j < inventory.size(); j++) {
                     MenuItem menuItem = subMenu.add(Menu.NONE, j+1, Menu.NONE, inventory.get(j).toString());
+                }
+            }
+            else if (en.getKey().equals("text6")) {
+                Building improvement = mRenderer.mousePicker.getSelectedTile().improvement;
+                for (Recipe recipe: improvement.recipes) {
+                    MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, recipe.toString());
                 }
             }
             //selectedStatMenu.addView(bt);

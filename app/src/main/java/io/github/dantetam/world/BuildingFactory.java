@@ -11,6 +11,7 @@ public class BuildingFactory {
 
     public static City newCity(World world, Clan clan, Tile tile, Collection<Tile> cityTiles) {
         City city = new City(world, clan, BuildingType.CITY, cityTiles);
+        clan.cities.add(city);
         city.modules = new Building[tile.numSpaces];
 
         city.recipes.add(new Recipe().addIn(new Item(ItemType.FOOD, 1)).addOut(new Item(ItemType.PRODUCTION, 1)));
@@ -42,6 +43,7 @@ public class BuildingFactory {
 
     private static Building newBuilding(World world, Clan clan, BuildingType type, Tile tile, double completionPercentage, Building parent) {
         Building build = new Building(world, clan, type);
+        clan.buildings.add(build);
         build.modules = new Building[tile.numSpaces];
 
         //int food = 0, production = 0, science = 0, capital = 0;

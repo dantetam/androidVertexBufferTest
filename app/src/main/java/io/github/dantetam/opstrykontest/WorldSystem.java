@@ -2,6 +2,7 @@ package io.github.dantetam.opstrykontest;
 
 import io.github.dantetam.world.ArtificialIntelligence;
 import io.github.dantetam.world.Building;
+import io.github.dantetam.world.City;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.Pathfinder;
 import io.github.dantetam.world.Person;
@@ -32,22 +33,12 @@ public class WorldSystem {
     }
 
     public void turn() {
-        for (Building building: playerClan.buildings) {
-            building.executeQueue();
-        }
-        for (Person person: playerClan.people) {
-            person.executeQueue();
-        }
+        processClan(playerClan);
         for (Clan clan: world.getClans()) {
             if (!clan.equals(playerClan)) {
                 artificialIntelligence.computerClanActions(clan);
-                for (Building building: clan.buildings) {
-                    building.executeQueue();
-                }
-                for (Person person: clan.people) {
-                    person.executeQueue();
-                }
             }
+            processClan(clan);
         }
 
         for (Clan c: world.getClans()) {
@@ -61,6 +52,20 @@ public class WorldSystem {
         }
         turnNumber++;
         System.err.println("#turns passed: " + turnNumber);
+    }
+
+    private void processClan(Clan clan) {
+        for (Building building: clan.buildings) {
+            building.executeQueue();
+        }
+        for (Person person: clan.people) {
+            person.executeQueue();
+        }
+        int totalScience = 0;
+        for (City city: clan.cities) {
+            //Determine yield here? Don't separate process.
+            totalScience += city.lastYield[2];
+        }
     }
 
 }

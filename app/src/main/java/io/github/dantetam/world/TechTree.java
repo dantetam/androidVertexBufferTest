@@ -76,7 +76,7 @@ public class TechTree {
 
     public List<Tech> findBorderTech() {
         Condition borderCondition = new Condition() {
-            public String match = null;
+            //public String match = null;
             public boolean allowed(Object obj) {
                 if (!(obj instanceof Tech)) return false; //Safety check
                 Tech tech = (Tech) obj;

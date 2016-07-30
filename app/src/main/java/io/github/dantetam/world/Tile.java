@@ -41,11 +41,11 @@ public class Tile extends Representable implements Traversable<Tile> {
         private static String[] names = {"Sea", "Ice", "Tundra", "Desert", "Steppe", "Forest", "Rainforest"};
         private static float[][] colors = {
                 {0,0,255,255},
-                {0,150,1,255},
-                {150,150,1,255},
-                {255,150,150,255},
-                {0,255,0,255},
-                {0,150,0,255},
+                {0,125,255,255},
+                {150,150,150,255},
+                {200,150,100,255},
+                {200,200,0,255},
+                {50,250,50,255},
                 {250,155,0,255}
         };
         public static Biome fromInt(int n) {

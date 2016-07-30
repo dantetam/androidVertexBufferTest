@@ -221,6 +221,42 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             }
             boolean selectedImprovementExists = selectedImprovement != null;
 
+            Button quickSummaryMenu = (Button) mActivity.findViewById(R.id.quick_summary_view);
+            quickSummaryMenu.setVisibility(selectedEntityExists || selectedTileExists ? View.VISIBLE : View.INVISIBLE);
+            String stringy = "";
+            if (selectedTileExists) {
+                Clan owner = selectedTile.world.getTileOwner(selectedTile), influence = selectedTile.world.getTileInfluence(selectedTile);
+                String affiliation = "";
+                if (owner != null) {
+                    affiliation = owner.name;
+                } else if (influence != null) {
+                    affiliation = "(" + influence.name + ")";
+                } else {
+                    affiliation = "Free";
+                }
+                stringy += affiliation;
+                stringy += " " + Tile.Biome.nameFromInt(selectedTile.biome.type) + ", " + Tile.Terrain.nameFromInt(selectedTile.terrain.type);
+                if (selectedTile.improvement != null) {
+                    stringy += " " + selectedTile.improvement.name;
+                }
+            }
+            else if (selectedEntityExists) {
+                stringy += selectedEntity.name;
+                Clan owner = selectedEntity.clan;
+                String affiliation = "";
+                if (owner != null) {
+                    affiliation = owner.name;
+                } else {
+                    affiliation = "Free";
+                }
+                stringy += " " + affiliation;
+                if (selectedEntity instanceof Person) {
+                    Person person = (Person) selectedEntity;
+                    stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP";
+                }
+            }
+            quickSummaryMenu.setText(stringy);
+
             mActivity.findViewById(R.id.build_menu).setVisibility(selectedImprovementExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
 
             Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
