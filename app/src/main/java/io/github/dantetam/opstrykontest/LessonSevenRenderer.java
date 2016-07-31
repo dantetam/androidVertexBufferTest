@@ -444,6 +444,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
                 linearLayout.setVisibility(View.VISIBLE);
                 linearLayout.setBackgroundColor(Color.TRANSPARENT);
                 List<Clan> clans = worldHandler.world.getClans();
+
+                //mLessonSevenActivity.setContentView(R.layout.test_custom_gamescreen);
+
                 for (Clan clan: clans) {
                     TextView clanView = new TextView(mLessonSevenActivity);
                     if (clan.name.length() >= 12) {

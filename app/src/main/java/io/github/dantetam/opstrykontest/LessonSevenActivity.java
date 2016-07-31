@@ -492,8 +492,10 @@ public class LessonSevenActivity extends Activity implements
             }
             else if (en.getKey().equals("text6")) {
                 Building improvement = mRenderer.mousePicker.getSelectedTile().improvement;
-                for (Recipe recipe: improvement.recipes) {
-                    MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, recipe.toString());
+                if (improvement != null) {
+                    for (Recipe recipe : improvement.recipes) {
+                        MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, recipe.toString());
+                    }
                 }
             }
             //selectedStatMenu.addView(bt);

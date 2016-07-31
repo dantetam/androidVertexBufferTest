@@ -138,7 +138,7 @@ public class TechTree {
             return;
         }
         Tech techToUnlock = candidate.get(0);
-        unlock(techToUnlock);
+        forceUnlock(techToUnlock);
         //TODO: Unlock the tech
     }
 

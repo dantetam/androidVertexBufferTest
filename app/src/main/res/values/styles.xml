@@ -13,9 +13,11 @@
 
     <style name="TextViewStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:background">#ffffff</item>
     </style>
     <style name="ButtonViewStyle" parent="android:Widget.Button">
         <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:background">#ffffff</item>
     </style>
     <style name="MenuViewStyle" parent="android:Widget.PopupMenu">
         <item name="android:fontFamily">sans-serif-light</item>
