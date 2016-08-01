@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.github.dantetam.opstrykontest.R;
+
 /**
  * Created by Dante on 6/13/2016.
  */
@@ -280,6 +282,36 @@ public class World {
             }
             else {
                 neighbors[i] = true;
+            }
+        }
+        return neighbors;
+    }
+
+    public int[] neighborsElevations(Tile t) {
+        int[] neighbors = new int[neighborDirections.length];
+        for (int i = 0; i < neighborDirections.length; i++) {
+            int[] offset = neighborDirections[i];
+            Tile neighborTile = getTile(t.q + offset[0], t.r + offset[1]);
+            int diff = t.elevation - neighborTile.elevation;
+            if (diff <= 1) {
+                if (neighborTile.biome == Tile.Biome.SEA) {
+                    neighbors[i] = R.raw.terrain_shore;
+                }
+                else {
+                    neighbors[i] = -1;
+                }
+            }
+            else if (diff <= 3) {
+                neighbors[i] = R.raw.terrain_stairs;
+            }
+            else if (neighborTile.biome == Tile.Biome.SEA) {
+                neighbors[i] = R.raw.terrain_sea_cliff;
+            }
+            else if (diff <= 3) {
+                neighbors[i] = R.raw.terrain_hills;
+            }
+            else {
+                neighbors[i] = R.raw.terrain_land_cliff;
             }
         }
         return neighbors;
