@@ -15,7 +15,8 @@ public abstract class Action {
         ALREADY_COMPLETED, //This action is a duplicate, move on to the next action
         IMPOSSIBLE, //This action could not be done. Remove it? This is most likely an error in the programmer or the user.
         CONTINUING, //This action will be completed in a different turn. Do not remove it from the queue.
-        OUT_OF_ENERGY //Out of action points, stop executing actions
+        OUT_OF_ENERGY, //Out of action points, stop executing actions
+        CONSUME_UNIT; //Remove the unit from the game
     }
 
     //These denote various types of actions, which have protocols defined within subclasss of Entity.
@@ -23,8 +24,10 @@ public abstract class Action {
         BUILD, //The unit (person) moves to a location and builds
         MOVE, //Move to a tile, one tile at a time
         PROCESS, //The unit (building) converts both generic yield and named resources into other resources
+        FIGHT, //Fight another unit
         QUEUE_BUILD_MODULE, //The unit (building) makes an improvement for itself
-        QUEUE_BUILD_PERSON; //The unit (building) creates a unit
+        QUEUE_BUILD_PERSON, //The unit (building) creates a unit
+        SPECIAL_ABILITY; //Activate one time of the entity's runnable
     }
 
     //The representation of the action itself, which contains the type (which chooses the protocol on which to act),

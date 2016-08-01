@@ -29,6 +29,10 @@ public abstract class Entity extends Representable {
 
     public int inventorySpace;
 
+    public boolean enabled;
+
+    public Ability specialAbility = null;
+
     public Entity(World w, Clan c) {
         //locations = new ArrayList<Tile>();
         world = w;
@@ -37,6 +41,7 @@ public abstract class Entity extends Representable {
         id = globalIdCounter;
         Entity.globalIdCounter++;
         actionsQueue = new ArrayList<>();
+        enabled = true;
     }
 
     public void move(Tile t) {
@@ -90,6 +95,10 @@ public abstract class Entity extends Representable {
         System.err.println("Invalid game move: ");
         System.err.println(location + "; " + location.dist(t) + "; " + actionPoints);
         return ActionStatus.IMPOSSIBLE;
+    }
+
+    public ActionStatus gameExecuteAbility() {
+        return specialAbility.gameExecuteAbility(this);
     }
 
     public void addAllToInventory(Collection<Item> items) {

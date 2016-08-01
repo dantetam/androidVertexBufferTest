@@ -28,6 +28,9 @@ public class Person extends Entity {
     }
 
     public void executeQueue() {
+        if (!enabled) {
+            return;
+        }
         while (true) {
             if (actionsQueue.size() == 0) return;
             Action action = actionsQueue.get(0);
@@ -37,7 +40,11 @@ public class Person extends Entity {
             } else {
                 break;
             }*/
-            if (status == ActionStatus.ALREADY_COMPLETED || status == ActionStatus.EXECUTED) {
+            if (status == ActionStatus.CONSUME_UNIT) {
+                PersonFactory.removePerson(this);
+                return;
+            }
+            else if (status == ActionStatus.ALREADY_COMPLETED || status == ActionStatus.EXECUTED) {
                 actionsQueue.remove(0);
             }
             else if (status == ActionStatus.IMPOSSIBLE) {
@@ -128,7 +135,8 @@ public class Person extends Entity {
     }
 
     public enum PersonType {
-        WARRIOR;
+        WARRIOR,
+        SETTLER;
     }
 
 }

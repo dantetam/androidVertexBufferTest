@@ -58,6 +58,9 @@ public class Building extends Entity {
     }
 
     public void executeQueue() {
+        if (!enabled) {
+            return;
+        }
         actionsQueue.add(new BuildingAction(Action.ActionType.PROCESS, this));
         while (true) {
             Action action = actionsQueue.get(0);
