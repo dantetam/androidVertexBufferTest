@@ -1169,6 +1169,67 @@ public class WorldHandler {
         return unitsStored;
     }
 
+    private MapModel getSolidAndTileConditionData(List<Tile> tiles, List<Condition> conditions, OffsetFunction function,
+                                                  List<Integer> respectiveObj, List<Integer> respectiveResourceIds,
+                                                  float[] scale) {
+        MapModel<Condition> model = new MapModel<>();
+        List<Tile> tilesToRender;
+        for (int conditionNum = 0; conditionNum < conditions.size(); conditionNum++) {
+            Condition cond = conditions.get(conditionNum);
+            tilesToRender = new ArrayList<>();
+            for (Tile tile: tiles) {
+                if (cond.allowedTile(tile)) {
+                    tilesToRender.add(tile);
+                }
+            }
+
+            float[] trueOffset;
+            if (function == null) {
+                trueOffset = new float[]{0,0,0};
+            }
+            else
+                trueOffset = function.data(conditionNum);
+
+            float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, respectiveObj.get(conditionNum));
+            //Count the number of hexes needed so that the correct space is allocated
+            int numHexesToRender = tilesToRender.size();
+            //Create some appropriately sized tables which will store preliminary buffer data
+            //Combine them all within these pieces of data.
+            final float[] totalCubePositionData = new float[hexData[0].length * numHexesToRender];
+            int cubePositionDataOffset = 0;
+            final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * numHexesToRender];
+            int cubeNormalDataOffset = 0;
+            final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * numHexesToRender];
+            int cubeTextureDataOffset = 0;
+            for (Tile tile: tilesToRender) {
+                Vector3f vertices = storedTileVertexPositions.get(tile);
+
+                float[] scaledData = scaleData(hexData[0], scale[0], scale[1], scale[2]);
+                final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + trueOffset[1], vertices.z + trueOffset[2]);
+
+                //Interleave all the new vtn data, per hex.
+                System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+                cubePositionDataOffset += thisCubePositionData.length;
+
+                System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+                cubeNormalDataOffset += hexData[1].length;
+                System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+                cubeTextureDataOffset += hexData[2].length;
+            }
+            int resourceId = respectiveResourceIds.get(conditionNum);
+            int textureHandle = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(resourceId), mActivity, resourceId);
+            float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+            Solid hexes = ObjLoader.loadSolid(textureHandle, null, generatedData);
+            model.put(cond, hexes);
+        }
+        return model;
+    }
+
+    public class OffsetFunction {
+        public float[] data(int i) {return null;}
+        //public float[] data(int i, int j) {return null;}
+    }
+
     private static float tileWidth = 4;
     /*private Model[][] tileRep() {
         if (tilesStored == null) {
