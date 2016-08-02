@@ -287,7 +287,7 @@ public class World {
         return neighbors;
     }
 
-    public int[] neighborsElevations(Tile t) {
+    /*public int[] neighborsElevations(Tile t) {
         int[] neighbors = new int[neighborDirections.length];
         for (int i = 0; i < neighborDirections.length; i++) {
             int[] offset = neighborDirections[i];
@@ -315,7 +315,7 @@ public class World {
             }
         }
         return neighbors;
-    }
+    }*/
 
     /*public Set<Tile> getRingTwo(Tile t, int radius) {
         if (radius < 0) radius = -radius;

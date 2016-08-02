@@ -11,14 +11,12 @@ public class CombatAction extends Action {
 
     public Action.ActionStatus execute(Object object) {
         if (!(object instanceof Entity)) return Action.ActionStatus.IMPOSSIBLE;
-        Entity building = (Entity) object;
+        Entity entity = (Entity) object;
         switch (type) {
-            case PROCESS:
-                return building.gameProcess();
-            case QUEUE_BUILD_MODULE:
-                return building.gameBuildModule((Building) data);
-            case QUEUE_BUILD_PERSON:
-                return building.gameBuildUnit((Person) data);
+            case COMBAT_ATTACK:
+                return ActionStatus.EXECUTED;
+            case COMBAT_MOVE:
+                return ActionStatus.EXECUTED;
             default:
                 System.out.println("Invalid combat action type: " + type);
                 return Action.ActionStatus.IMPOSSIBLE;

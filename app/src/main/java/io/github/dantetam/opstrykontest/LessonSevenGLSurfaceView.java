@@ -233,10 +233,15 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             Button infoMenu = (Button) mActivity.findViewById(R.id.info_menu);
             infoMenu.setVisibility(View.INVISIBLE);
 
-            mActivity.setContentView(R.layout.combat_view_menu);
+            Button exitOombatMenu = (Button) mActivity.findViewById(R.id.combat_exit_menu);
+            exitOombatMenu.setVisibility(View.VISIBLE);
+
+            //mActivity.setContentView(R.layout.combat_view_menu);
         }
         else {
-            mActivity.setContentView(R.layout.screen_view_menu);
+            Button exitOombatMenu = (Button) mActivity.findViewById(R.id.combat_exit_menu);
+            exitOombatMenu.setVisibility(View.INVISIBLE);
+
             if (mousePicker.selectedNeedsUpdating()) {
                 mousePicker.nextFrameSelectedNeedsUpdating = false;
 

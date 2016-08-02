@@ -204,8 +204,19 @@
             app:layout_widthPercent="100%"
             app:layout_heightPercent="100%"
             app:layout_marginTopPercent="0%"
-            app:layout_marginLeftPercent="0%"
-            />
+            app:layout_marginLeftPercent="0%" />
+        <Button
+            android:id="@+id/combat_exit_menu"
+            android:text="@string/combat_exit_menu"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_widthPercent="20%"
+            app:layout_heightPercent="10%"
+            app:layout_marginTopPercent="90%"
+            app:layout_marginLeftPercent="80%"
+            android:contentDescription="@string/combat_exit_menu"
+            android:visibility="visible"
+            android:onClick="onClickExitCombatMenu" />
     </android.support.percent.PercentRelativeLayout>
         <!--
         <ImageButton
