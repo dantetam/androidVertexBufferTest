@@ -136,6 +136,14 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     public static int frames = 0;
     public static int debounceFrames = 0;
     public boolean buildingWorldFinished = false;
+
+    private boolean combatMode = false;
+    public boolean getCombatMode() {return combatMode;}
+    public void setCombatMode(boolean c) {
+        combatMode = c;
+        mGlSurfaceView.update();
+    }
+
 	/**
 	 * Initialize the model data. Initialize other necessary classes.
 	 */

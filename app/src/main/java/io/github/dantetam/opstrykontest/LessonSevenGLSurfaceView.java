@@ -191,6 +191,11 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             mousePicker.changeSelectedTile(null);
             mousePicker.changeSelectedAction("");
         }
+        else if (action.equals("InitiateCombat")) {
+            mousePicker.changeSelectedTile(null);
+            mousePicker.changeSelectedAction("");
+            mRenderer.setCombatMode(true);
+        }
         else {
             System.err.println("Invalid action identifier: " + action);
             mousePicker.changeSelectedAction("");
@@ -207,96 +212,121 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
     }
 
     private void updateMenu() {
-        if (mousePicker.selectedNeedsUpdating()) {
-            mousePicker.nextFrameSelectedNeedsUpdating = false;
-
-            Tile selectedTile = mousePicker.getSelectedTile();
-            Entity selectedEntity = mousePicker.getSelectedEntity();
-            Building selectedImprovement = null;
-            boolean selectedTileExists = selectedTile != null;
-            boolean selectedEntityExists = selectedEntity != null;
-
-            if (selectedTileExists) {
-                selectedImprovement = selectedTile.improvement;
-            }
-            boolean selectedImprovementExists = selectedImprovement != null;
-
+        if (mRenderer.getCombatMode()) {
             Button quickSummaryMenu = (Button) mActivity.findViewById(R.id.quick_summary_view);
-            quickSummaryMenu.setVisibility(selectedEntityExists || selectedTileExists ? View.VISIBLE : View.INVISIBLE);
-            String stringy = "";
-            if (selectedTileExists) {
-                Clan owner = selectedTile.world.getTileOwner(selectedTile), influence = selectedTile.world.getTileInfluence(selectedTile);
-                String affiliation = "";
-                if (owner != null) {
-                    affiliation = owner.name;
-                } else if (influence != null) {
-                    affiliation = "(" + influence.name + ")";
-                } else {
-                    affiliation = "Free";
-                }
-                stringy += affiliation;
-                stringy += " " + Tile.Biome.nameFromInt(selectedTile.biome.type) + ", " + Tile.Terrain.nameFromInt(selectedTile.terrain.type);
-                if (selectedTile.improvement != null) {
-                    stringy += " " + selectedTile.improvement.name;
-                }
-            }
-            else if (selectedEntityExists) {
-                stringy += selectedEntity.name;
-                Clan owner = selectedEntity.clan;
-                String affiliation = "";
-                if (owner != null) {
-                    affiliation = owner.name;
-                } else {
-                    affiliation = "Free";
-                }
-                stringy += " " + affiliation;
-                if (selectedEntity instanceof Person) {
-                    Person person = (Person) selectedEntity;
-                    stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP";
-                }
-            }
-            quickSummaryMenu.setText(stringy);
+            quickSummaryMenu.setVisibility(View.INVISIBLE);
 
-            mActivity.findViewById(R.id.build_menu).setVisibility(selectedImprovementExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
+            mActivity.findViewById(R.id.build_menu).setVisibility(View.INVISIBLE);
 
             Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
-            selectedEntityMenu.setVisibility(selectedEntityExists && playerClan.equals(selectedEntity.clan) ? View.VISIBLE : View.INVISIBLE);
-            if (selectedEntityExists) {
-                //selectedEntityMenu.setText(mousePicker.getSelectedEntity().name);
-                selectedEntityMenu.setText("Actions");
-            }
+            selectedEntityMenu.setVisibility(View.INVISIBLE);
 
             Button unitMenu = (Button) mActivity.findViewById(R.id.unit_menu);
-            unitMenu.setVisibility(
-                    selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
-            );
-            if (selectedTileExists) {
-                unitMenu.setText("Units (" + mousePicker.getSelectedTile().occupants.size() + ")");
-            } else if (selectedEntityExists) {
-                unitMenu.setText("Units (" + mousePicker.getSelectedEntity().location().occupants.size() + ")");
-            }
+            unitMenu.setVisibility(View.INVISIBLE);
 
             Button queueMenu = (Button) mActivity.findViewById(R.id.queue_menu);
-            queueMenu.setVisibility(
-                    selectedImprovementExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
-            );
-            if (selectedImprovementExists) {
-                queueMenu.setText("Queue (" + mousePicker.getSelectedTile().improvement.actionsQueue.size() + ")");
-            } else if (selectedEntityExists) {
-                queueMenu.setText("Queue (" + mousePicker.getSelectedEntity().actionsQueue.size() + ")");
-            }
+            queueMenu.setVisibility(View.INVISIBLE);
 
             PercentRelativeLayout selectedStatMenu = (PercentRelativeLayout) mActivity.findViewById(R.id.selected_stat_menu);
-            selectedStatMenu.setVisibility(
-                    selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
-            );
-            //if (selectedEntityExists || selectedTileExists) generateSelectionStatMenu(selectedStatMenu);
-            //generateSelectionStatMenu(selectedStatMenu);
+            selectedStatMenu.setVisibility(View.INVISIBLE);
 
             Button infoMenu = (Button) mActivity.findViewById(R.id.info_menu);
-            infoMenu.setVisibility(
-                    selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
-            );
+            infoMenu.setVisibility(View.INVISIBLE);
+
+            mActivity.setContentView(R.layout.combat_view_menu);
+        }
+        else {
+            mActivity.setContentView(R.layout.screen_view_menu);
+            if (mousePicker.selectedNeedsUpdating()) {
+                mousePicker.nextFrameSelectedNeedsUpdating = false;
+
+                Tile selectedTile = mousePicker.getSelectedTile();
+                Entity selectedEntity = mousePicker.getSelectedEntity();
+                Building selectedImprovement = null;
+                boolean selectedTileExists = selectedTile != null;
+                boolean selectedEntityExists = selectedEntity != null;
+
+                if (selectedTileExists) {
+                    selectedImprovement = selectedTile.improvement;
+                }
+                boolean selectedImprovementExists = selectedImprovement != null;
+
+                Button quickSummaryMenu = (Button) mActivity.findViewById(R.id.quick_summary_view);
+                quickSummaryMenu.setVisibility(selectedEntityExists || selectedTileExists ? View.VISIBLE : View.INVISIBLE);
+                String stringy = "";
+                if (selectedTileExists) {
+                    Clan owner = selectedTile.world.getTileOwner(selectedTile), influence = selectedTile.world.getTileInfluence(selectedTile);
+                    String affiliation = "";
+                    if (owner != null) {
+                        affiliation = owner.name;
+                    } else if (influence != null) {
+                        affiliation = "(" + influence.name + ")";
+                    } else {
+                        affiliation = "Free";
+                    }
+                    stringy += affiliation;
+                    stringy += " " + Tile.Biome.nameFromInt(selectedTile.biome.type) + ", " + Tile.Terrain.nameFromInt(selectedTile.terrain.type);
+                    if (selectedTile.improvement != null) {
+                        stringy += " " + selectedTile.improvement.name;
+                    }
+                } else if (selectedEntityExists) {
+                    stringy += selectedEntity.name;
+                    Clan owner = selectedEntity.clan;
+                    String affiliation = "";
+                    if (owner != null) {
+                        affiliation = owner.name;
+                    } else {
+                        affiliation = "Free";
+                    }
+                    stringy += " " + affiliation;
+                    if (selectedEntity instanceof Person) {
+                        Person person = (Person) selectedEntity;
+                        stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP";
+                    }
+                }
+                quickSummaryMenu.setText(stringy);
+
+                mActivity.findViewById(R.id.build_menu).setVisibility(selectedImprovementExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
+
+                Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
+                selectedEntityMenu.setVisibility(selectedEntityExists && playerClan.equals(selectedEntity.clan) ? View.VISIBLE : View.INVISIBLE);
+                if (selectedEntityExists) {
+                    //selectedEntityMenu.setText(mousePicker.getSelectedEntity().name);
+                    selectedEntityMenu.setText("Actions");
+                }
+
+                Button unitMenu = (Button) mActivity.findViewById(R.id.unit_menu);
+                unitMenu.setVisibility(
+                        selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
+                );
+                if (selectedTileExists) {
+                    unitMenu.setText("Units (" + mousePicker.getSelectedTile().occupants.size() + ")");
+                } else if (selectedEntityExists) {
+                    unitMenu.setText("Units (" + mousePicker.getSelectedEntity().location().occupants.size() + ")");
+                }
+
+                Button queueMenu = (Button) mActivity.findViewById(R.id.queue_menu);
+                queueMenu.setVisibility(
+                        selectedImprovementExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
+                );
+                if (selectedImprovementExists) {
+                    queueMenu.setText("Queue (" + mousePicker.getSelectedTile().improvement.actionsQueue.size() + ")");
+                } else if (selectedEntityExists) {
+                    queueMenu.setText("Queue (" + mousePicker.getSelectedEntity().actionsQueue.size() + ")");
+                }
+
+                PercentRelativeLayout selectedStatMenu = (PercentRelativeLayout) mActivity.findViewById(R.id.selected_stat_menu);
+                selectedStatMenu.setVisibility(
+                        selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
+                );
+                //if (selectedEntityExists || selectedTileExists) generateSelectionStatMenu(selectedStatMenu);
+                //generateSelectionStatMenu(selectedStatMenu);
+
+                Button infoMenu = (Button) mActivity.findViewById(R.id.info_menu);
+                infoMenu.setVisibility(
+                        selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
+                );
+            }
         }
     }
 

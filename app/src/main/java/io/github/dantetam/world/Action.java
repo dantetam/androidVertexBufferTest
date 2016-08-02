@@ -24,10 +24,13 @@ public abstract class Action {
         BUILD, //The unit (person) moves to a location and builds
         MOVE, //Move to a tile, one tile at a time
         PROCESS, //The unit (building) converts both generic yield and named resources into other resources
-        FIGHT, //Fight another unit
+        //FIGHT, //Fight another unit
         QUEUE_BUILD_MODULE, //The unit (building) makes an improvement for itself
         QUEUE_BUILD_PERSON, //The unit (building) creates a unit
-        SPECIAL_ABILITY; //Activate one time of the entity's runnable
+        SPECIAL_ABILITY, //Activate one time of the entity's runnable
+
+        COMBAT_MOVE,
+        COMBAT_ATTACK;
     }
 
     //The representation of the action itself, which contains the type (which chooses the protocol on which to act),

@@ -18,5 +18,7 @@
     <string name="info_menu">Info</string>
     <string name="queue_menu">Queue</string>
 
+    <string name="combat_exit_menu">Exit Combat</string>
+
     <string name="resources_tooltip">Resources are used to build buildings, and items to equip units.</string>
 </resources>
