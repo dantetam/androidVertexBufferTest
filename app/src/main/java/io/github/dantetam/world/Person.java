@@ -18,7 +18,6 @@ public class Person extends Entity {
 
     public int age;
     public List<Tech> skills;
-    public int health, maxHealth;
 
     public Person(World world, Clan clan, String name) {
         super(world, clan);

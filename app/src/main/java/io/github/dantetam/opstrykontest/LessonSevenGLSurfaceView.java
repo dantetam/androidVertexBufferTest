@@ -142,64 +142,70 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         if (action == null || action.equals("")) {
             return; //Default, select the unit and only display its stats.
         }
-        if (action.equals("Move")) {
-            if (previousSelectedEntity == null) {
-                System.err.println("Invalid 'Move' action, no selected entity before click");
-                mousePicker.changeSelectedAction("");
-                return;
-            }
-            if (mousePicker.getSelectedTile() == null) {
+        if (mRenderer.getCombatMode()) {
+            if (action.equals("CombatMove")) {
 
             }
-            else {
-                if (previousSelectedEntity instanceof Person) {
-                    Person personSelected = (Person) previousSelectedEntity;
-                    if (!personSelected.location().equals(mousePicker.getSelectedTile())) {
-                        personSelected.gameMovePath(mousePicker.getSelectedTile());
-                    }
-                }
-                //previousSelectedEntity.move(mousePicker.getSelectedTile());
-            }
-            LessonSevenRenderer.debounceFrames = 10;
-            mousePicker.changeSelectedTile(null);
-            mousePicker.changeSelectedAction("");
-        }
-        else if (action.startsWith("Build/")) {
-            if (previousSelectedEntity == null) {
-                System.err.println("Invalid 'Build' action, no selected entity before click");
-                mousePicker.changeSelectedAction("");
-                return;
-            }
-            if (mousePicker.getSelectedTile() == null) {
+            else if (action.equals("CombatAttack")) {
 
             }
-            else {
-                if (previousSelectedEntity instanceof Person) {
-                    Person personSelected = (Person) previousSelectedEntity;
-                    String buildingToBuild = action.substring(6);
-                    Tile buildAt = mousePicker.getSelectedTile();
-                    Building newBuilding = BuildingFactory.newBuilding(previousSelectedEntity.world, previousSelectedEntity.clan, BuildingType.fromString(buildingToBuild), buildAt, 0);
-
-                    if (!buildAt.equals(personSelected.location())) {
-                        personSelected.gameMovePath(buildAt);
-                    }
-                    personSelected.actionsQueue.add(new PersonAction(Action.ActionType.BUILD, newBuilding));
-                    personSelected.executeQueue();
-                }
-            }
-            LessonSevenRenderer.debounceFrames = 10;
-            mousePicker.changeSelectedTile(null);
-            mousePicker.changeSelectedAction("");
-        }
-        else if (action.equals("InitiateCombat")) {
-            mousePicker.changeSelectedTile(null);
-            mousePicker.changeSelectedAction("");
-            mRenderer.setCombatMode(true);
         }
         else {
-            System.err.println("Invalid action identifier: " + action);
-            mousePicker.changeSelectedAction("");
+            if (action.equals("Move")) {
+                if (previousSelectedEntity == null) {
+                    System.err.println("Invalid 'Move' action, no selected entity before click");
+                    mousePicker.changeSelectedAction("");
+                    return;
+                }
+                if (mousePicker.getSelectedTile() == null) {
+
+                } else {
+                    if (previousSelectedEntity instanceof Person) {
+                        Person personSelected = (Person) previousSelectedEntity;
+                        if (!personSelected.location().equals(mousePicker.getSelectedTile())) {
+                            personSelected.gameMovePath(mousePicker.getSelectedTile());
+                        }
+                    }
+                    //previousSelectedEntity.move(mousePicker.getSelectedTile());
+                }
+                LessonSevenRenderer.debounceFrames = 10;
+                mousePicker.changeSelectedTile(null);
+                mousePicker.changeSelectedAction("");
+            } else if (action.startsWith("Build/")) {
+                if (previousSelectedEntity == null) {
+                    System.err.println("Invalid 'Build' action, no selected entity before click");
+                    mousePicker.changeSelectedAction("");
+                    return;
+                }
+                if (mousePicker.getSelectedTile() == null) {
+
+                } else {
+                    if (previousSelectedEntity instanceof Person) {
+                        Person personSelected = (Person) previousSelectedEntity;
+                        String buildingToBuild = action.substring(6);
+                        Tile buildAt = mousePicker.getSelectedTile();
+                        Building newBuilding = BuildingFactory.newBuilding(previousSelectedEntity.world, previousSelectedEntity.clan, BuildingType.fromString(buildingToBuild), buildAt, 0);
+
+                        if (!buildAt.equals(personSelected.location())) {
+                            personSelected.gameMovePath(buildAt);
+                        }
+                        personSelected.actionsQueue.add(new PersonAction(Action.ActionType.BUILD, newBuilding));
+                        personSelected.executeQueue();
+                    }
+                }
+                LessonSevenRenderer.debounceFrames = 10;
+                mousePicker.changeSelectedTile(null);
+                mousePicker.changeSelectedAction("");
+            } else if (action.equals("InitiateCombat")) {
+                mRenderer.setCombatMode(true);
+                mousePicker.changeSelectedTile(null);
+                mousePicker.changeSelectedAction("");
+            }
         }
+
+        System.err.println("Invalid action identifier: " + action);
+        mousePicker.changeSelectedTile(null);
+        mousePicker.changeSelectedAction("");
     }
 
     public void update() {

@@ -21,6 +21,8 @@ public abstract class Entity extends Representable {
     public int id;
     public World world;
 
+    public int health, maxHealth;
+
     public List<Action> actionsQueue; //Do actions at position 0 first
     public int actionPoints, maxActionPoints;
 

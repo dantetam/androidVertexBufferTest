@@ -26,6 +26,8 @@ public class WorldHandler {
     public World world;
     public WorldGenerator worldGenerator;
 
+    public CombatWorld combatWorld;
+
     private MousePicker mousePicker;
     private AssetHelper assetHelper;
     private ChunkHelper chunkHelper;
@@ -87,6 +89,22 @@ public class WorldHandler {
         storedTileVertexPositions = new HashMap<>();
         storedTileImprovements = new HashMap<>();
         storedTileUnits = new HashMap<>();
+    }
+
+    public void updateCombatWorld(boolean combatMode) {
+        if (combatMode) {
+            if (combatWorld != null) {
+                throw new IllegalArgumentException("Attempting to create combat world, but did not pause old one");
+            }
+            combatWorld = new CombatWorld(world, mousePicker.getSelectedTile(), 4);
+        }
+        else {
+            if (combatWorld == null) {
+                throw new IllegalArgumentException("Attempting to pause combat world that has not been created");
+            }
+            combatWorld.pauseCombatWorld();
+            combatWorld = null;
+        }
     }
 
     public Object[] totalWorldRepresentation() {
@@ -151,51 +169,54 @@ public class WorldHandler {
 
         mousePicker.passInTileVertices(storedTileVertexPositions);
 
-        modelsToRender.add(worldRep());
-        modelsToRender.add(updateTileUnits());
-        modelsToRender.add(tileImprovementRep());
-        solidsToRender.add(selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
-        solidsToRender.add(selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
+        if (mRenderer.getCombatMode()) {
 
-        modelsToRender.add(tileTerritoryRep());
-        tileHighlightRep();
-
-        modelsToRender.add(updateTileResourceRep());
-
-        if (previousYieldRep == null) {
-            updateTileYieldRep();
-        }
-
-        //TODO: Convert to IBOs next?
-
-        if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
-            if (mousePicker.getSelectedTile().improvement.buildingType == BuildingType.CITY) {
-                improvementResourceProductionUi = null;
-                improvementResourceStatUi = null;
-
-                modelsToRender.add(updateTileYieldRep());
-                modelsToRender.add(tileYieldInterface());
-                if (highlightedCityTerritory == null) {
-                    highlightedCityTerritory = createCityTerritoryRep((City) mousePicker.getSelectedTile().improvement);
-                    //System.out.println("yes");
-                }
-                if (highlightedCityTerritory != null) {
-                    solidsToRender.add(highlightedCityTerritory);
-                }
-            }
-            else {
-                highlightedCityTerritory = null;
-
-                if (improvementResourceProductionUi == null) {
-                    createImprovementResourceRep();
-                    modelsToRender.add(improvementResourceProductionUi);
-                    modelsToRender.add(improvementResourceStatUi);
-                }
-            }
         }
         else {
-            if (highlightedCityTerritory != null) {
-                highlightedCityTerritory = null;
+            modelsToRender.add(worldRep());
+            modelsToRender.add(updateTileUnits());
+            modelsToRender.add(tileImprovementRep());
+            solidsToRender.add(selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
+            solidsToRender.add(selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
+
+            modelsToRender.add(tileTerritoryRep());
+            tileHighlightRep();
+
+            modelsToRender.add(updateTileResourceRep());
+
+            if (previousYieldRep == null) {
+                updateTileYieldRep();
+            }
+
+            //TODO: Convert to IBOs next?
+
+            if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
+                if (mousePicker.getSelectedTile().improvement.buildingType == BuildingType.CITY) {
+                    improvementResourceProductionUi = null;
+                    improvementResourceStatUi = null;
+
+                    modelsToRender.add(updateTileYieldRep());
+                    modelsToRender.add(tileYieldInterface());
+                    if (highlightedCityTerritory == null) {
+                        highlightedCityTerritory = createCityTerritoryRep((City) mousePicker.getSelectedTile().improvement);
+                        //System.out.println("yes");
+                    }
+                    if (highlightedCityTerritory != null) {
+                        solidsToRender.add(highlightedCityTerritory);
+                    }
+                } else {
+                    highlightedCityTerritory = null;
+
+                    if (improvementResourceProductionUi == null) {
+                        createImprovementResourceRep();
+                        modelsToRender.add(improvementResourceProductionUi);
+                        modelsToRender.add(improvementResourceStatUi);
+                    }
+                }
+            } else {
+                if (highlightedCityTerritory != null) {
+                    highlightedCityTerritory = null;
+                }
             }
         }
 
