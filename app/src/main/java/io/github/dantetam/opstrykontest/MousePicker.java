@@ -61,7 +61,7 @@ public class MousePicker {
         pathNeedsUpdating = true;
     }
 
-    public void update(float mouseX, float mouseY)
+    public void update(float mouseX, float mouseY, boolean combatMode)
     {
         viewMatrix = createViewMatrix(camera);
         currentRay = calculateMouseRay(mouseX, mouseY);
@@ -83,7 +83,17 @@ public class MousePicker {
         Entity previousEntity = selectedEntity;
         Tile newSelected = getTileClickedOn(rayCastHit);
 
-        changeSelectedTile(newSelected);
+        if (combatMode) {
+            if (newSelected.occupants.size() <= 0) {
+                changeSelectedUnit(null);
+            }
+            else {
+                changeSelectedUnit(newSelected.occupants.get(0));
+            }
+        }
+        else {
+            changeSelectedTile(newSelected);
+        }
         //selectedEntity = null;
 
         if (!nextFrameSelectedNeedsUpdating) {

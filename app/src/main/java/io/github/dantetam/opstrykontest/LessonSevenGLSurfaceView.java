@@ -144,10 +144,33 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         }
         if (mRenderer.getCombatMode()) {
             if (action.equals("CombatMove")) {
+                if (previousSelectedEntity == null) {
+                    System.err.println("Invalid 'CombatMove' action, no selected entity before click");
+                    mousePicker.changeSelectedAction("");
+                    return;
+                }
+                if (mousePicker.getSelectedTile() == null) {
 
+                } else {
+                    if (previousSelectedEntity instanceof Person) {
+                        Person personSelected = (Person) previousSelectedEntity;
+                        if (!personSelected.location().equals(mousePicker.getSelectedTile())) {
+                            personSelected.gameMovePath(mousePicker.getSelectedTile());
+                        }
+                    }
+                    //previousSelectedEntity.move(mousePicker.getSelectedTile());
+                }
+                LessonSevenRenderer.debounceFrames = 10;
+                mousePicker.changeSelectedTile(null);
+                mousePicker.changeSelectedAction("");
             }
             else if (action.equals("CombatAttack")) {
 
+            }
+            else {
+                System.err.println("Invalid action identifier: " + action);
+                mousePicker.changeSelectedTile(null);
+                mousePicker.changeSelectedAction("");
             }
         }
         else {
@@ -200,12 +223,12 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 mRenderer.setCombatMode(true);
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
+            } else {
+                System.err.println("Invalid action identifier: " + action);
+                mousePicker.changeSelectedTile(null);
+                mousePicker.changeSelectedAction("");
             }
         }
-
-        System.err.println("Invalid action identifier: " + action);
-        mousePicker.changeSelectedTile(null);
-        mousePicker.changeSelectedAction("");
     }
 
     public void update() {

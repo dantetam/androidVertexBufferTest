@@ -1,7 +1,9 @@
 package io.github.dantetam.world;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,7 +17,7 @@ public class CombatWorld {
     public Tile combatZoneCenter;
     public int inclusiveCombatRadius;
 
-    public Collection<Tile> allTiles;
+    public List<Tile> allTiles;
     public HashMap<Entity, Tile> originalPositions;
 
     public CombatWorld(World world, Tile tile, int radius) {
@@ -24,6 +26,8 @@ public class CombatWorld {
         inclusiveCombatRadius = radius;
 
         originalPositions = new HashMap<>();
+
+        initWorld();
     }
 
     public boolean checkTileWithinZone(Tile t) {
@@ -32,10 +36,15 @@ public class CombatWorld {
 
     public void initWorld() {
         Collection<Tile> tiles = linkedWorld.getRing(combatZoneCenter, inclusiveCombatRadius);
-        allTiles = tiles;
+        allTiles = new ArrayList<>();
+        for (Tile tile: tiles) {
+            allTiles.add(tile);
+        }
         for (Tile tile: allTiles) {
             for (Entity entity: tile.occupants) {
                 originalPositions.put(entity, entity.location);
+                Tile random = allTiles.get((int)(Math.random()*allTiles.size()));
+                entity.move(random);
             }
         }
     }

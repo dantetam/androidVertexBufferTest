@@ -170,10 +170,17 @@ public class WorldHandler {
         mousePicker.passInTileVertices(storedTileVertexPositions);
 
         if (mRenderer.getCombatMode()) {
+            modelsToRender.add(worldRep(combatWorld.allTiles));
+            modelsToRender.add(updateTileUnits());
+            modelsToRender.add(tileImprovementRep());
 
+            solidsToRender.add(selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
+            solidsToRender.add(selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
+
+            modelsToRender.add(tileTerritoryRep());
         }
         else {
-            modelsToRender.add(worldRep());
+            modelsToRender.add(worldRep(world.getAllValidTiles()));
             modelsToRender.add(updateTileUnits());
             modelsToRender.add(tileImprovementRep());
             solidsToRender.add(selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
@@ -258,7 +265,7 @@ public class WorldHandler {
      * TODO: Link tiles to positions? So that it is easy to add and remove model VBOs at certain tiles.
      * @return The new VBO.
      */
-    public ListModel worldRep() {
+    public ListModel worldRep(Collection<Tile> tiles) {
         if (tilesStored == null) {
             tilesStored = new ListModel();
             //hexesShape = new HashMap<>();
@@ -289,7 +296,7 @@ public class WorldHandler {
                 GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
 
                 //int textureHandle = TextureHelper.loadTexture("usb_android");
-                Solid solidsOfBiome = generateHexes(textureHandle, world, cond);
+                Solid solidsOfBiome = generateHexes(textureHandle, world, tiles, cond);
                 storedBiomeTiles.put(Tile.Biome.fromInt(i), solidsOfBiome);
                 tilesStored.add(solidsOfBiome);
                 //tilesStored.add(solidsOfBiome[0]);
@@ -1277,7 +1284,7 @@ public class WorldHandler {
                 return true;
             }
         };
-        return generateHexes(textureHandle, world, cond);
+        return generateHexes(textureHandle, world, world.getAllValidTiles(), cond);
     }
 
     public Solid pathfinderRep(int textureHandle) {
@@ -1537,15 +1544,15 @@ public class WorldHandler {
      *                  under the same texture and VBO.
      * @return A new solid which is a representation of the provided world
      */
-    private Solid generateHexes(int textureHandle, World world, Condition condition) {
+    private Solid generateHexes(int textureHandle, World world, Collection<Tile> tiles, Condition condition) {
         //Load the vtn data of one hex obj
         float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
 
         //int mRequestedCubeFactor = WORLD_LENGTH;
 
         //Count the number of hexes needed so that the correct space is allocated
-        int numHexesToRender = 0;
-        for (int x = 0; x < world.arrayLengthX; x++) {
+        int numHexesToRender = tiles.size();
+        /*for (int x = 0; x < world.arrayLengthX; x++) {
             for (int z = 0; z < world.arrayLengthZ; z++) {
                 Tile tile = world.getTile(x,z);
                 if (tile == null) continue;
@@ -1553,7 +1560,7 @@ public class WorldHandler {
                     numHexesToRender++;
                 }
             }
-        }
+        }*/
 
         //Create some appropriately sized tables which will store preliminary buffer data
         //Combine them all within these pieces of data.
@@ -1573,7 +1580,7 @@ public class WorldHandler {
                 Tile tile = world.getTile(x,z);
                 if (tile == null) continue;
                 zz++;
-                if (condition.allowed(tile)) {
+                if (condition.allowed(tile) && tiles.contains(tile)) {
                     tile.elevation = 0;
 
                     //Scale and translate accordingly so everything fits together
