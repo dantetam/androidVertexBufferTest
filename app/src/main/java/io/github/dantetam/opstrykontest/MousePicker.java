@@ -85,7 +85,7 @@ public class MousePicker {
 
         if (combatMode) {
             if (newSelected.occupants.size() <= 0) {
-                changeSelectedUnit(null);
+                //changeSelectedUnit(null);
             }
             else {
                 changeSelectedUnit(newSelected.occupants.get(0));

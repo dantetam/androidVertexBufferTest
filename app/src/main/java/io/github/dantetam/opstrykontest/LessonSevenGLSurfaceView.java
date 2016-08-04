@@ -158,17 +158,17 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     mousePicker.changeSelectedAction("");
                     return;
                 }
-                if (mousePicker.getSelectedTile() == null) {
-
-                } else {
-                    if (previousSelectedEntity instanceof Person) {
-                        Person personSelected = (Person) previousSelectedEntity;
-                        if (!personSelected.location().equals(mousePicker.getSelectedTile())) {
-                            //personSelected.gameMovePath(mousePicker.getSelectedTile());
-                            combatWorld.addAction(personSelected, new CombatAction(Action.ActionType.COMBAT_MOVE, ));
-                        }
+                Tile locationToMove = mousePicker.getSelectedTile();
+                Entity entityToChase = mousePicker.getSelectedEntity();
+                if (previousSelectedEntity instanceof Person) {
+                    Person personSelected = (Person) previousSelectedEntity;
+                    if (entityToChase != null) {
+                        if (entityToChase.location().dist())
+                        combatWorld.addAction(personSelected, new CombatAction(Action.ActionType.COMBAT_CHASE, entityToChase));
                     }
-                    //previousSelectedEntity.move(mousePicker.getSelectedTile());
+                    else if (locationToMove != null) {
+                        combatWorld.addAction(personSelected, new CombatAction(Action.ActionType.COMBAT_MOVE, locationToMove));
+                    }
                 }
                 LessonSevenRenderer.debounceFrames = 10;
                 mousePicker.changeSelectedTile(null);

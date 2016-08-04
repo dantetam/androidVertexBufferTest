@@ -95,4 +95,12 @@ public class CombatWorld {
 
     }
 
+    public int[] calculateMelee(Entity attacker, Entity defender) {
+        return new int[]{0,0};
+    }
+
+    public int[] calculateRanged(Entity attacker, Entity defender) {
+        return new int[]{0,0};
+    }
+
 }
