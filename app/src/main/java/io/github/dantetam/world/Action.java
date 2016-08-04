@@ -58,6 +58,6 @@ public abstract class Action {
         type = t;
         data = obj;
     }
-    abstract ActionStatus execute(Object object);
+    abstract ActionStatus execute(Object subject);
 
 }

@@ -11,7 +11,8 @@ import java.util.List;
 public class Building extends Entity {
 
     public BuildingType buildingType;
-    public Building[] modules;
+    private Building[] modules;
+    private Building parent;
     public boolean isModule = false;
 
     private int food, production, science, capital;
@@ -51,9 +52,10 @@ public class Building extends Entity {
         }
         throw new IllegalArgumentException("Building inserted into is full of modules");
     }
-    public void replaceModuleToBuilding(Building building, int index) {
-        building.modules[index] = this;
-        location = building.location;
+    public void replaceModuleToBuilding(Building buildingParent, int index) {
+        buildingParent.modules[index] = this;
+        this.parent = buildingParent;
+        location = buildingParent.location;
         isModule = true;
     }
 

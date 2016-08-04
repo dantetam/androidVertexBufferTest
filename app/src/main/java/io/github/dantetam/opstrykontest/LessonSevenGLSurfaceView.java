@@ -163,8 +163,15 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 if (previousSelectedEntity instanceof Person) {
                     Person personSelected = (Person) previousSelectedEntity;
                     if (entityToChase != null) {
-                        if (entityToChase.location().dist())
-                        combatWorld.addAction(personSelected, new CombatAction(Action.ActionType.COMBAT_CHASE, entityToChase));
+                        Action.ActionType actionType = Action.ActionType.COMBAT_MOVE;
+                        if (mRenderer.worldSystem.atWar(entityToChase.clan, personSelected.clan)) {
+                            if (entityToChase.location().dist(personSelected.location()) > 1) {
+                                actionType = Action.ActionType.COMBAT_CHASE;
+                            } else {
+                                actionType = Action.ActionType.COMBAT_ATTACK;
+                            }
+                        }
+                        combatWorld.addAction(personSelected, new CombatAction(actionType, entityToChase));
                     }
                     else if (locationToMove != null) {
                         combatWorld.addAction(personSelected, new CombatAction(Action.ActionType.COMBAT_MOVE, locationToMove));

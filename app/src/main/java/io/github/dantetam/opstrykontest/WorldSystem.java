@@ -1,5 +1,8 @@
 package io.github.dantetam.opstrykontest;
 
+import java.util.HashMap;
+import java.util.List;
+
 import io.github.dantetam.world.ArtificialIntelligence;
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.City;
@@ -21,11 +24,31 @@ public class WorldSystem {
 
     public Clan playerClan;
 
+    public List<RelationModifier>[][] relations;
+    public HashMap<Clan, Integer> clanId;
+
+    public enum RelationModifier {
+        AT_WAR,
+        AT_PEACE
+    }
+
     public WorldSystem(WorldHandler worldHandler) {
         world = worldHandler.world;
         initClan(world.getClans().get(0));
         artificialIntelligence = new ArtificialIntelligence(world);
         worldPathfinder = new WorldPathfinder(world);
+        int len = world.getClans().size();
+        relations = (List<RelationModifier>[][]) new Object[len][len];
+        clanId = new HashMap<>();
+        for (int i = 0; i < len; i++) {
+            clanId.put(world.getClans().get(i), i);
+        }
+    }
+
+    public boolean atWar(Clan atk, Clan def) {
+        int atkId = clanId.get(atk), defId = clanId.get(def);
+        List<RelationModifier> relationModifierList = relations[atkId][defId];
+        return relationModifierList != null && relationModifierList.contains(RelationModifier.AT_WAR);
     }
 
     public void initClan(Clan c) {

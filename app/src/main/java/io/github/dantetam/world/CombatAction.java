@@ -9,14 +9,14 @@ public class CombatAction extends Action {
         super(t, obj);
     }
 
-    public Action.ActionStatus execute(Object object) {
-        if (!(object instanceof Entity)) return Action.ActionStatus.IMPOSSIBLE;
-        Entity entity = (Entity) object;
+    public Action.ActionStatus execute(Object subject) {
+        if (!(subject instanceof Entity)) return Action.ActionStatus.IMPOSSIBLE;
+        Entity entity = (Entity) subject;
         switch (type) {
             case COMBAT_ATTACK:
                 return ActionStatus.EXECUTED;
             case COMBAT_MOVE:
-                return ActionStatus.EXECUTED;
+                return ((Person) entity).gameMovePath((Tile) data);
             case COMBAT_CHASE:
                 return ActionStatus.EXECUTED;
             default:

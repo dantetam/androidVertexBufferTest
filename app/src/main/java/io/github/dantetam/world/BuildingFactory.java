@@ -181,4 +181,36 @@ public class BuildingFactory {
         return build;
     }
 
+    public static void removeBuilding(Building building) {
+        /*public Person(World world, Clan clan, String name) {
+            super(world, clan);
+            clan.people.add(this);
+            this.name = name;
+            skills = new ArrayList<>();
+        }*/
+        /*public Entity(World w, Clan c) {
+            //locations = new ArrayList<Tile>();
+            world = w;
+            clan = c;
+            inventory = new ArrayList<Item>();
+            id = globalIdCounter;
+            Entity.globalIdCounter++;
+            actionsQueue = new ArrayList<>();
+        }*/
+        if (building.isModule) {
+
+        }
+        else {
+            if (building.location() != null)
+                building.location().improvement = null;
+        }
+        building.clan.buildings.remove(building);
+
+        building.world = null;
+        building.clan = null;
+        building.location = null;
+
+        building.enabled = false;
+    }
+
 }
