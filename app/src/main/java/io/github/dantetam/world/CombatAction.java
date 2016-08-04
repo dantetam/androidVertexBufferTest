@@ -17,6 +17,8 @@ public class CombatAction extends Action {
                 return ActionStatus.EXECUTED;
             case COMBAT_MOVE:
                 return ActionStatus.EXECUTED;
+            case COMBAT_CHASE:
+                return ActionStatus.EXECUTED;
             default:
                 System.out.println("Invalid combat action type: " + type);
                 return Action.ActionStatus.IMPOSSIBLE;

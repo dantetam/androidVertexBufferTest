@@ -92,6 +92,7 @@ public class WorldHandler {
     }
 
     public void updateCombatWorld(boolean combatMode) {
+        worldRepNeedsUpdate = true;
         if (combatMode) {
             if (combatWorld != null) {
                 throw new IllegalArgumentException("Attempting to create combat world, but did not pause old one");
@@ -265,9 +266,11 @@ public class WorldHandler {
      * TODO: Link tiles to positions? So that it is easy to add and remove model VBOs at certain tiles.
      * @return The new VBO.
      */
+    private boolean worldRepNeedsUpdate = false;
     public ListModel worldRep(Collection<Tile> tiles) {
-        if (tilesStored == null) {
+        if (tilesStored == null || worldRepNeedsUpdate) {
             tilesStored = new ListModel();
+            worldRepNeedsUpdate = false;
             //hexesShape = new HashMap<>();
             //tilesStored.add(generateHexes(world));
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {

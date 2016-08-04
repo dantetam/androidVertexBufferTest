@@ -21,6 +21,13 @@ public class BuildingFactory {
         city.workNeeded = 1;
         city.workCompleted = 1;
 
+        int atk = 0, def = 0, fire = 0, shock = 0;
+        int exp = 0;
+
+        city.atk = atk; city.def = def;
+        city.fire = fire; city.shock = shock;
+        city.exp = exp;
+
         city.inventorySpace = 10;
 
         int[] cityGrowthData = City.generateCityFoodData();

@@ -26,6 +26,10 @@ public abstract class Entity extends Representable {
     public List<Action> actionsQueue; //Do actions at position 0 first
     public int actionPoints, maxActionPoints;
 
+    public int atk, def, fire, shock;
+    public List<String> combatAbilities;
+    public int exp;
+
     public double workCompleted, workNeeded;
     public double completionPercentage() {return workCompleted / workNeeded;}
 
@@ -44,6 +48,8 @@ public abstract class Entity extends Representable {
         Entity.globalIdCounter++;
         actionsQueue = new ArrayList<>();
         enabled = true;
+
+        combatAbilities = new ArrayList<>();
     }
 
     public void move(Tile t) {

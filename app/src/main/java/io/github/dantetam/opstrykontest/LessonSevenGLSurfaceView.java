@@ -36,6 +36,8 @@ import io.github.dantetam.world.Building;
 import io.github.dantetam.world.BuildingFactory;
 import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.Clan;
+import io.github.dantetam.world.CombatAction;
+import io.github.dantetam.world.CombatWorld;
 import io.github.dantetam.world.Entity;
 import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Person;
@@ -118,9 +120,15 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     if (mousePicker != null) {
                         Tile previousSelectedTile = mousePicker.getSelectedTile();
                         Entity previousSelectedEntity = mousePicker.getSelectedEntity();
-                        mousePicker.update(x, y);
+                        mousePicker.update(x, y, mRenderer.getCombatMode());
                         /*Vector3f v = mousePicker.rayCastHit;
                         mousePicker.getTileClickedOn();*/
+                        if (mRenderer.getCombatMode()) {
+                            if (!mRenderer.worldHandler.combatWorld.checkTileWithinZone(mousePicker.getSelectedTile())) {
+                                mousePicker.changeSelectedTile(null);
+                                mousePicker.changeSelectedUnit(null);
+                            }
+                        }
                         executeSelectedAction(mousePicker, previousSelectedTile, previousSelectedEntity);
                     }
 				}
@@ -143,6 +151,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             return; //Default, select the unit and only display its stats.
         }
         if (mRenderer.getCombatMode()) {
+            CombatWorld combatWorld = mRenderer.worldHandler.combatWorld;
             if (action.equals("CombatMove")) {
                 if (previousSelectedEntity == null) {
                     System.err.println("Invalid 'CombatMove' action, no selected entity before click");
@@ -155,7 +164,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     if (previousSelectedEntity instanceof Person) {
                         Person personSelected = (Person) previousSelectedEntity;
                         if (!personSelected.location().equals(mousePicker.getSelectedTile())) {
-                            personSelected.gameMovePath(mousePicker.getSelectedTile());
+                            //personSelected.gameMovePath(mousePicker.getSelectedTile());
+                            combatWorld.addAction(personSelected, new CombatAction(Action.ActionType.COMBAT_MOVE, ));
                         }
                     }
                     //previousSelectedEntity.move(mousePicker.getSelectedTile());

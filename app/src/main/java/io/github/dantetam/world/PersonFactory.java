@@ -41,6 +41,9 @@ public class PersonFactory {
         List<Tech> skills = new ArrayList<>();
         String name;
 
+        int atk = 0, def = 0, fire = 0, shock = 0;
+        int exp = 0;
+
         int workCompleted = 15; //, workNeeded = 0;
         int storageSpace = 3;
 
@@ -83,6 +86,10 @@ public class PersonFactory {
         person.actionPoints = actionPoints;
         person.maxActionPoints = maxActionPoints;
         person.skills = skills;
+
+        person.atk = atk; person.def = def;
+        person.fire = fire; person.shock = shock;
+        person.exp = exp;
 
         person.workCompleted = workCompleted;
         //person.workNeeded = workNeeded;

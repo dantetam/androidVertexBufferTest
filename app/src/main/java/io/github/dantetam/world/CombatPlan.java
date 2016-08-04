@@ -8,10 +8,14 @@ import java.util.List;
  */
 public class CombatPlan {
 
-    public LinkedHashMap<Entity, List<CombatAction>> plan;
+    public LinkedHashMap<Entity, List<CombatAction>> planMap;
 
     public CombatPlan() {
-        plan = new LinkedHashMap<>();
+        planMap = new LinkedHashMap<>();
+    }
+
+    public void execute() {
+
     }
 
 }

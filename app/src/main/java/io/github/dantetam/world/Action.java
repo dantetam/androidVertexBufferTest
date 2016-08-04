@@ -30,7 +30,8 @@ public abstract class Action {
         SPECIAL_ABILITY, //Activate one time of the entity's runnable
 
         COMBAT_MOVE,
-        COMBAT_ATTACK;
+        COMBAT_ATTACK,
+        COMBAT_CHASE;
     }
 
     //The representation of the action itself, which contains the type (which chooses the protocol on which to act),

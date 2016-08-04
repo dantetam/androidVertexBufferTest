@@ -20,6 +20,8 @@ public class CombatWorld {
     public List<Tile> allTiles;
     public HashMap<Entity, Tile> originalPositions;
 
+    public CombatPlan currentCombatPlan;
+
     public CombatWorld(World world, Tile tile, int radius) {
         linkedWorld = world;
         combatZoneCenter = tile;
@@ -28,6 +30,26 @@ public class CombatWorld {
         originalPositions = new HashMap<>();
 
         initWorld();
+    }
+
+    public void addAction(Entity entity, CombatAction action) {
+        if (currentCombatPlan == null) {
+            currentCombatPlan = new CombatPlan();
+        }
+        List<CombatAction> actions = currentCombatPlan.planMap.get(entity);
+        if (actions == null) {
+            List<CombatAction> list = new ArrayList<>();
+            list.add(action);
+            currentCombatPlan.planMap.put(entity, list);
+        }
+        else {
+            actions.add(action);
+        }
+    }
+
+    public void advanceTurn() {
+        currentCombatPlan.execute();
+        currentCombatPlan = null;
     }
 
     public boolean checkTileWithinZone(Tile t) {
@@ -63,6 +85,14 @@ public class CombatWorld {
             }
             entry.getKey().move(entry.getValue());
         }
+    }
+
+    public void attackMelee(Entity attacker, Entity defender) {
+
+    }
+
+    public void attackRanged(Entity attacker, Entity defender) {
+
     }
 
 }
