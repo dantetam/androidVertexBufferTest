@@ -111,22 +111,22 @@ public class Person extends Entity {
         return ActionStatus.ALREADY_COMPLETED;
     }
 
-    public void gameMovePath(Tile destination) {
+    public ActionStatus gameMovePath(Tile destination) {
         List<Tile> path = WorldSystem.worldPathfinder.findPath(location, destination);
         if (path == null) {
-            return;
+            return ActionStatus.IMPOSSIBLE;
         }
         path.remove(0);
         while (true) {
             if (path.size() == 0) {
-                break;
+                return ActionStatus.ALREADY_COMPLETED;
             }
             ActionStatus status = gameMove(path.get(0));
             if (status == ActionStatus.OUT_OF_ENERGY) { //Out of AP
                 for (Tile t: path) {
                     actionsQueue.add(new PersonAction(ActionType.MOVE, t));
                 }
-                break;
+                return ActionStatus.OUT_OF_ENERGY;
             } else {
                 path.remove(0);
             }

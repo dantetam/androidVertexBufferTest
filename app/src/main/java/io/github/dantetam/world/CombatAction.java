@@ -14,11 +14,11 @@ public class CombatAction extends Action {
         Entity entity = (Entity) subject;
         switch (type) {
             case COMBAT_ATTACK:
-                return ActionStatus.EXECUTED;
+                return ((Person) entity).gameAttack((Entity) data);
             case COMBAT_MOVE:
                 return ((Person) entity).gameMovePath((Tile) data);
             case COMBAT_CHASE:
-                return ActionStatus.EXECUTED;
+                return ((Person) entity).gameChase((Entity) data);
             default:
                 System.out.println("Invalid combat action type: " + type);
                 return Action.ActionStatus.IMPOSSIBLE;

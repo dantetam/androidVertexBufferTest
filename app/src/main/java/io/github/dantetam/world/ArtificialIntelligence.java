@@ -5,18 +5,25 @@ package io.github.dantetam.world;
  */
 public class ArtificialIntelligence {
 
-    public World world;
+    public static World world;
 
-    public ArtificialIntelligence(World w) {
-        world = w;
+    public ArtificialIntelligence(World world) {
+        this.world = world;
     }
 
-    public void computerClanActions(Clan c) {
-        /*for (Person person: c.people) {
+    public static void computerClanActions(Clan c) {
+        for (Person person: c.people) {
             while (person.actionPoints > 0) {
                 person.gameMove(world.randomNeighbor(person.location));
             }
-        }*/
+        }
+    }
+
+    public static void computerClanCombat(CombatPlan plan, Clan c) {
+        plan.clear();
+        for (Entity en: c.people) {
+            plan.addAction(en, new CombatAction(Action.ActionType.COMBAT_MOVE, world.randomNeighbor(en.location)));
+        }
     }
 
 }

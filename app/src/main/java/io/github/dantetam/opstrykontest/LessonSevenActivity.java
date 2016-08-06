@@ -292,12 +292,12 @@ public class LessonSevenActivity extends Activity implements
         final Building selectedImprovement = selected != null ? selected.improvement : null;
 
         if (selectedImprovement != null) {
-            if (selectedImprovement.modules.length == 0) {
+            if (selectedImprovement.getModules().length == 0) {
                 menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Cannot add modules.");
             }
             else {
-                for (int i = 0; i < selectedImprovement.modules.length; i++) {
-                    Building module = selectedImprovement.modules[i];
+                for (int i = 0; i < selectedImprovement.getModules().length; i++) {
+                    Building module = selectedImprovement.getModules()[i];
                     String stringy;
                     if (module == null) {
                         stringy = "Build improvement";
@@ -598,8 +598,54 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
+    public boolean onCreateCombatSelectionMenu(final View chainView, Menu menu) {
+        Entity entity = mRenderer.mousePicker.getSelectedEntity();
+        final LessonSevenActivity mActivity = this;
+        if (entity != null) {
+            MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "Move");
+            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    mRenderer.mousePicker.changeSelectedAction("Move");
+                    Button button = (Button) chainView;
+                    button.setText("Move Unit");
+                    return false;
+                }
+            });
+
+            MenuItem menuItem2 = menu.add(Menu.NONE, 2, Menu.NONE, "Build");
+            menuItem2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    mRenderer.mousePicker.changeSelectedAction("Build");
+                    Button button = (Button) chainView;
+                    button.setText("Build");
+
+                    buildSelectionMenu = new PopupMenu(mActivity, chainView);
+                    MenuInflater inflater = buildSelectionMenu.getMenuInflater();
+                    inflater.inflate(R.menu.build_selection_menu, buildSelectionMenu.getMenu());
+                    onCreateBuildSelectionMenu(buildSelectionMenu.getMenu());
+                    buildSelectionMenu.show();
+
+                    return false;
+                }
+            });
+
+            MenuItem menuItem3 = menu.add(Menu.NONE, 3, Menu.NONE, "Fight");
+            menuItem3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    mRenderer.mousePicker.changeSelectedAction("InitiateCombat");
+                    return false;
+                }
+            });
+        }
+        return true;
+    }
+
     public void onClickExitCombatMenu(View v) {
         mRenderer.setCombatMode(false);
+    }
+
+    public void onClickNextCombatTurn(View v) {
+        mRenderer.worldHandler.combatWorld.advanceTurn();
     }
 
     /*@Override

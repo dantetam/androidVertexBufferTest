@@ -43,6 +43,14 @@ public class Building extends Entity {
         name = type.name;
     }*/
 
+    public Building[] getModules() {
+        return modules;
+    }
+
+    public void initModules(int len) {
+        modules = new Building[len];
+    }
+
     public void addThisAsModuleToBuilding(Building building) {
         for (int i = 0; i < building.modules.length; i++) {
             if (building.modules[i] == null) {

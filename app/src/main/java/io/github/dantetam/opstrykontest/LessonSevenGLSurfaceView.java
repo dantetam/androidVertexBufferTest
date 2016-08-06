@@ -128,6 +128,9 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                                 mousePicker.changeSelectedTile(null);
                                 mousePicker.changeSelectedUnit(null);
                             }
+                            if (previousSelectedEntity != null) {
+                                mousePicker.changeSelectedAction("CombatMove");
+                            }
                         }
                         executeSelectedAction(mousePicker, previousSelectedTile, previousSelectedEntity);
                     }

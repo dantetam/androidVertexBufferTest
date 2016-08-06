@@ -1,5 +1,6 @@
 package io.github.dantetam.world;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +10,29 @@ import java.util.Map;
  */
 public class CombatPlan {
 
-    public LinkedHashMap<Entity, List<CombatAction>> planMap;
+    private LinkedHashMap<Entity, List<CombatAction>> planMap;
+    private Tile center;
+    private int radius;
 
-    public CombatPlan() {
+    public CombatPlan(Tile c, int r) {
         planMap = new LinkedHashMap<>();
+        center = c;
+        radius = r;
+    }
+
+    public void addAction(Entity entity, CombatAction action) {
+        if (!checkTileWithinZone(entity.location())) {
+            return;
+        }
+        List<CombatAction> actions = planMap.get(entity);
+        if (actions == null) {
+            List<CombatAction> list = new ArrayList<>();
+            list.add(action);
+            planMap.put(entity, list);
+        }
+        else {
+            actions.add(action);
+        }
     }
 
     public void execute() {
@@ -55,6 +75,14 @@ public class CombatPlan {
                 //do nothing, keep the action in the first slot, it'll be repeated.
             }
         }
+    }
+
+    public void clear() {
+        planMap.clear();
+    }
+
+    public boolean checkTileWithinZone(Tile t) {
+        return center.dist(t) <= radius;
     }
 
 }

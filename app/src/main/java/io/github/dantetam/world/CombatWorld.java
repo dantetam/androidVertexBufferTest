@@ -34,22 +34,19 @@ public class CombatWorld {
 
     public void addAction(Entity entity, CombatAction action) {
         if (currentCombatPlan == null) {
-            currentCombatPlan = new CombatPlan();
+            currentCombatPlan = new CombatPlan(combatZoneCenter, inclusiveCombatRadius);
         }
-        List<CombatAction> actions = currentCombatPlan.planMap.get(entity);
-        if (actions == null) {
-            List<CombatAction> list = new ArrayList<>();
-            list.add(action);
-            currentCombatPlan.planMap.put(entity, list);
-        }
-        else {
-            actions.add(action);
-        }
+        currentCombatPlan.addAction(entity, action);
     }
 
     public void advanceTurn() {
         currentCombatPlan.execute();
-        currentCombatPlan = null;
+        currentCombatPlan.clear();
+        for (Clan clan: linkedWorld.getClans()) {
+            ArtificialIntelligence.computerClanCombat(currentCombatPlan, clan);
+            currentCombatPlan.execute();
+            currentCombatPlan.clear();
+        }
     }
 
     public boolean checkTileWithinZone(Tile t) {
@@ -87,20 +84,24 @@ public class CombatWorld {
         }
     }
 
-    public void attackMelee(Entity attacker, Entity defender) {
-
+    public static void attackMelee(Entity attacker, Entity defender) {
+        int[] damage = calculateMelee(attacker, defender);
+        attacker.health -= damage[0];
+        defender.health -= damage[1];
     }
 
-    public void attackRanged(Entity attacker, Entity defender) {
-
+    public static void attackRanged(Entity attacker, Entity defender) {
+        int[] damage = calculateRanged(attacker, defender);
+        attacker.health -= damage[0];
+        defender.health -= damage[1];
     }
 
-    public int[] calculateMelee(Entity attacker, Entity defender) {
-        return new int[]{0,0};
+    private static int[] calculateMelee(Entity attacker, Entity defender) {
+        return new int[]{2,2};
     }
 
-    public int[] calculateRanged(Entity attacker, Entity defender) {
-        return new int[]{0,0};
+    private static int[] calculateRanged(Entity attacker, Entity defender) {
+        return new int[]{2,2};
     }
 
 }
