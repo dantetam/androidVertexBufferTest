@@ -16,6 +16,9 @@ public class World {
 
     //private QuadTree<Tile, int[]> tiles;
     //private WorldTree tree;
+
+    public CombatWorld combatWorld;
+
     protected Tile[][] hexes;
     public int arrayLengthX, arrayLengthZ;
     public int totalX, totalZ;

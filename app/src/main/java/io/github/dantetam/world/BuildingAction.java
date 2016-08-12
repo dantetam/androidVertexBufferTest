@@ -1,11 +1,8 @@
-/*
 package io.github.dantetam.world;
 
-*/
 /**
  * Created by Dante on 7/17/2016.
- *//*
-
+ */
 public class BuildingAction extends Action {
 
     public BuildingAction(ActionType t, Object obj) {
@@ -13,7 +10,7 @@ public class BuildingAction extends Action {
     }
 
     public ActionStatus execute(Object object) {
-        if (!(object instanceof Building)) return ActionStatus.IMPOSSIBLE;
+        /*if (!(object instanceof Building)) return ActionStatus.IMPOSSIBLE;
         Building building = (Building) object;
         switch (type) {
             case PROCESS:
@@ -25,7 +22,8 @@ public class BuildingAction extends Action {
             default:
                 System.out.println("Invalid action type: " + type);
                 return ActionStatus.IMPOSSIBLE;
-        }
+        }*/
+        return ActionStatus.IMPOSSIBLE;
     }
 
     public String toString() {
@@ -34,7 +32,7 @@ public class BuildingAction extends Action {
                 return "";
             case QUEUE_BUILD_MODULE:
                 return "Add: " + ((Building) data).name;
-            case QUEUE_BUILD_PERSON:
+            case QUEUE_BUILD_UNIT:
                 return "Build: " +  ((Person) data).name;
             default:
                 System.out.println("Invalid action type: " + type);
@@ -43,4 +41,3 @@ public class BuildingAction extends Action {
     }
 
 }
-*/

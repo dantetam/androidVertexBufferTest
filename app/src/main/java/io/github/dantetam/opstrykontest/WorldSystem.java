@@ -8,6 +8,7 @@ import io.github.dantetam.world.ArtificialIntelligence;
 import io.github.dantetam.world.Building;
 import io.github.dantetam.world.City;
 import io.github.dantetam.world.Clan;
+import io.github.dantetam.world.Inventory;
 import io.github.dantetam.world.Pathfinder;
 import io.github.dantetam.world.Person;
 import io.github.dantetam.world.World;
@@ -90,9 +91,12 @@ public class WorldSystem {
             person.executeQueue();
         }
         int totalScience = 0, totalGold = 0;
+        Inventory totalResources = new Inventory();
         for (City city: clan.cities) {
             //Determine yield here? Don't separate process.
-            int[] yield = city.gameYield();
+            Object[] objects = city.gameYield();
+            int[] yield = (int[]) objects[0];
+            Inventory inventory = (Inventory) objects[1];
 
             if (city.actionsQueue.size() > 0) {
                 Action action = city.actionsQueue.get(0);
@@ -117,6 +121,8 @@ public class WorldSystem {
 
             totalScience += yield[2];
             totalGold += yield[3];
+
+            totalResources.addAnotherInventory(inventory);
         }
     }
 

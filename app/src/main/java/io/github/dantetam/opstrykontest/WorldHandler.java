@@ -26,8 +26,6 @@ public class WorldHandler {
     public World world;
     public WorldGenerator worldGenerator;
 
-    public CombatWorld combatWorld;
-
     private MousePicker mousePicker;
     private AssetHelper assetHelper;
     private ChunkHelper chunkHelper;
@@ -94,17 +92,17 @@ public class WorldHandler {
     public void updateCombatWorld(boolean combatMode) {
         worldRepNeedsUpdate = true;
         if (combatMode) {
-            if (combatWorld != null) {
+            if (world.combatWorld != null) {
                 throw new IllegalArgumentException("Attempting to create combat world, but did not pause old one");
             }
-            combatWorld = new CombatWorld(world, mousePicker.getSelectedTile(), 4);
+            world.combatWorld = new CombatWorld(world, mousePicker.getSelectedTile(), 4);
         }
         else {
-            if (combatWorld == null) {
+            if (world.combatWorld == null) {
                 throw new IllegalArgumentException("Attempting to pause combat world that has not been created");
             }
-            combatWorld.pauseCombatWorld();
-            combatWorld = null;
+            world.combatWorld.pauseCombatWorld();
+            world.combatWorld = null;
         }
     }
 
@@ -171,7 +169,7 @@ public class WorldHandler {
         mousePicker.passInTileVertices(storedTileVertexPositions);
 
         if (mRenderer.getCombatMode()) {
-            modelsToRender.add(worldRep(combatWorld.allTiles));
+            modelsToRender.add(worldRep(world.combatWorld.allTiles));
             modelsToRender.add(updateTileUnits());
             modelsToRender.add(tileImprovementRep());
 

@@ -124,7 +124,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         /*Vector3f v = mousePicker.rayCastHit;
                         mousePicker.getTileClickedOn();*/
                         if (mRenderer.getCombatMode()) {
-                            if (!mRenderer.worldHandler.combatWorld.checkTileWithinZone(mousePicker.getSelectedTile())) {
+                            if (!mRenderer.worldHandler.world.combatWorld.checkTileWithinZone(mousePicker.getSelectedTile())) {
                                 mousePicker.changeSelectedTile(null);
                                 mousePicker.changeSelectedUnit(null);
                             }
@@ -154,7 +154,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             return; //Default, select the unit and only display its stats.
         }
         if (mRenderer.getCombatMode()) {
-            CombatWorld combatWorld = mRenderer.worldHandler.combatWorld;
+            CombatWorld combatWorld = mRenderer.worldHandler.world.combatWorld;
             if (action.equals("CombatMove")) {
                 if (previousSelectedEntity == null) {
                     System.err.println("Invalid 'CombatMove' action, no selected entity before click");
@@ -215,7 +215,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 LessonSevenRenderer.debounceFrames = 10;
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
-            } else if (action.startsWith("Build/")) {
+            }
+            /*else if (action.startsWith("Build/")) {
                 if (previousSelectedEntity == null) {
                     System.err.println("Invalid 'Build' action, no selected entity before click");
                     mousePicker.changeSelectedAction("");
@@ -240,11 +241,13 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 LessonSevenRenderer.debounceFrames = 10;
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
-            } else if (action.equals("InitiateCombat")) {
+            }*/
+            else if (action.equals("InitiateCombat")) {
                 mRenderer.setCombatMode(true);
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
-            } else {
+            }
+            else {
                 System.err.println("Invalid action identifier: " + action);
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");

@@ -12,6 +12,7 @@ public class Building extends Entity {
 
     public BuildingType buildingType;
     public List<Building> modules;
+    public int moduleLimit = 6;
     private Building parent;
     public boolean isModule = false;
 

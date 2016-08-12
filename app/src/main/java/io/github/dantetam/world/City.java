@@ -68,12 +68,13 @@ public class City extends Building {
         }*/
     }
 
-    public int[] gameYield() {
+    public Object[] gameYield() {
         if (freeWorkingPopulation > 0) {
             pickBestTiles();
         }
 
         double food = 0, production = 0, science = 0, capital = 0;
+        Inventory inventory = new Inventory();
 
         for (Tile tile: workedTiles.keySet()) {
             food += tile.food;
@@ -86,6 +87,11 @@ public class City extends Building {
                 production += imprYield[1];
                 science += imprYield[2];
                 capital += imprYield[3];
+                for (Recipe recipe: tile.improvement.recipes) {
+                    for (Item item: recipe.output) {
+                        inventory.addToInventory(item);
+                    }
+                }
             }
         }
 
@@ -100,7 +106,7 @@ public class City extends Building {
 
         //lastYield = new int[]{(int)food, (int)production, (int)science, (int)capital};
 
-        return new int[]{(int)food, (int)production, (int)science, (int)capital};
+        return new Object[]{new int[]{(int)food, (int)production, (int)science, (int)capital}, inventory};
     }
 
     public static int[] evalTile(Tile tile) {

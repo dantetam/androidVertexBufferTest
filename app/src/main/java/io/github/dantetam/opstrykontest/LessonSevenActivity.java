@@ -292,12 +292,12 @@ public class LessonSevenActivity extends Activity implements
         final Building selectedImprovement = selected != null ? selected.improvement : null;
 
         if (selectedImprovement != null) {
-            if (selectedImprovement.getModules().length == 0) {
+            if (selectedImprovement.moduleLimit >= selectedImprovement.modules.size()) {
                 menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Cannot add modules.");
             }
             else {
-                for (int i = 0; i < selectedImprovement.getModules().length; i++) {
-                    Building module = selectedImprovement.getModules()[i];
+                for (int i = 0; i < selectedImprovement.modules.size(); i++) {
+                    Building module = selectedImprovement.modules.get(i);
                     String stringy;
                     if (module == null) {
                         stringy = "Build improvement";
@@ -359,7 +359,7 @@ public class LessonSevenActivity extends Activity implements
                             //newBuilding.actionsQueue.clear();
                             //newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
                             Person newPerson = PersonFactory.newPerson(person.personType, selectedImprovement.world, selectedImprovement.clan, 0.0);
-                            selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_PERSON, newPerson));
+                            selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, newPerson));
                             return false;
                         }
                     });
@@ -421,10 +421,10 @@ public class LessonSevenActivity extends Activity implements
                 if (!stringy.equals(""))
                     tooltips.put("text4", stringy);
             }
-            if (selected.improvement != null) {
+            /*if (selected.improvement != null) {
                 String items = selected.improvement.getInventory().size() + "/" + selected.improvement.inventorySpace + " Items";
                 tooltips.put("text5", items);
-            }
+            }*/
             int[] yieldData = City.evalTile(selected);
             String yield = "Yield: " + yieldData[0] + "F, " + yieldData[1] + "P, " + yieldData[2] + "S, " + yieldData[3] + "C";
             tooltips.put("text6", yield);
@@ -444,10 +444,10 @@ public class LessonSevenActivity extends Activity implements
             }
             tooltips.put("text1", stringy);
 
-            if (entity != null) {
+            /*if (entity != null) {
                 String items = entity.getInventory().size() + "/" + entity.inventorySpace + " Items";
                 tooltips.put("text5", items);
-            }
+            }*/
         }
 
         int i = 0;
@@ -479,7 +479,7 @@ public class LessonSevenActivity extends Activity implements
             else if (en.getKey().equals("text4")) {
                 MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "Used for buildings and items to equip units.");
             }
-            else if (en.getKey().equals("text5")) {
+            /*else if (en.getKey().equals("text5")) {
                 Entity entity = mRenderer.mousePicker.getSelectedEntity();
                 if (entity == null) {
                     entity = mRenderer.mousePicker.getSelectedTile().improvement;
@@ -489,7 +489,7 @@ public class LessonSevenActivity extends Activity implements
                 for (int j = 0; j < inventory.size(); j++) {
                     MenuItem menuItem = subMenu.add(Menu.NONE, j+1, Menu.NONE, inventory.get(j).toString());
                 }
-            }
+            }*/
             else if (en.getKey().equals("text6")) {
                 Building improvement = mRenderer.mousePicker.getSelectedTile().improvement;
                 if (improvement != null) {
@@ -645,7 +645,7 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public void onClickNextCombatTurn(View v) {
-        mRenderer.worldHandler.combatWorld.advanceTurn();
+        mRenderer.worldHandler.world.combatWorld.advanceTurn();
     }
 
     /*@Override

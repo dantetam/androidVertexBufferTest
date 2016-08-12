@@ -13,8 +13,8 @@ public class PersonAction extends Action {
         if (!(object instanceof Person)) return ActionStatus.IMPOSSIBLE;
         Person person = (Person) object;
         switch (type) {
-            case BUILD:
-                return person.gameBuild((Building) data);
+            /*case BUILD:
+                return person.gameBuild((Building) data);*/
             case MOVE:
                 return person.gameMove((Tile) data);
             default:
@@ -25,8 +25,8 @@ public class PersonAction extends Action {
 
     public String toString() {
         switch (type) {
-            case BUILD:
-                return "Build: " + ((Building) super.data).name;
+            /*case BUILD:
+                return "Build: " + ((Building) super.data).name;*/
             case MOVE:
                 return "Move: " + ((Tile) super.data).toString();
             default:

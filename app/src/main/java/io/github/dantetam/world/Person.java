@@ -141,7 +141,7 @@ public class Person extends Entity {
         path.remove(0);
         while (true) {
             if (path.size() == 1) {
-                TODO: Attack the enemy here
+                //TODO: Attack the enemy here
                 actionPoints = 0;
                 if (entity.health <= 0) {
                     return ActionStatus.ALREADY_COMPLETED;
