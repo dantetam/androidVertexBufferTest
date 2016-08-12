@@ -15,7 +15,7 @@ public abstract class Entity extends Representable {
     protected Tile location;
     public String name;
     public Clan clan;
-    private List<Item> inventory;
+    //private List<Item> inventory;
     //public
     public static int globalIdCounter = 0;
     public int id;
@@ -26,14 +26,14 @@ public abstract class Entity extends Representable {
     public List<Action> actionsQueue; //Do actions at position 0 first
     public int actionPoints, maxActionPoints;
 
-    public int atk, def, fire, shock;
+    public int atk, def, fire, shock, maneuver;
     public List<String> combatAbilities;
     public int exp;
 
     public double workCompleted, workNeeded;
     public double completionPercentage() {return workCompleted / workNeeded;}
 
-    public int inventorySpace;
+    //public int inventorySpace;
 
     public boolean enabled;
 
@@ -43,7 +43,7 @@ public abstract class Entity extends Representable {
         //locations = new ArrayList<Tile>();
         world = w;
         clan = c;
-        inventory = new ArrayList<Item>();
+        //inventory = new ArrayList<Item>();
         id = globalIdCounter;
         Entity.globalIdCounter++;
         actionsQueue = new ArrayList<>();
@@ -109,7 +109,7 @@ public abstract class Entity extends Representable {
         return specialAbility.gameExecuteAbility(this);
     }
 
-    public void addAllToInventory(Collection<Item> items) {
+    /*public void addAllToInventory(Collection<Item> items) {
         for (Item item: items) {
             addToInventory(item);
         }
@@ -171,6 +171,6 @@ public abstract class Entity extends Representable {
             }
         }
         return true;
-    }
+    }*/
 
 }

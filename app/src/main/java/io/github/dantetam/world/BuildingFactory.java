@@ -12,7 +12,7 @@ public class BuildingFactory {
     public static City newCity(World world, Clan clan, Tile tile, Collection<Tile> cityTiles) {
         City city = new City(world, clan, BuildingType.CITY, cityTiles);
         clan.cities.add(city);
-        city.initModules(tile.numSpaces);
+        //city.initModules(tile.numSpaces);
 
         city.recipes.add(new Recipe().addIn(new Item(ItemType.FOOD, 1)).addOut(new Item(ItemType.PRODUCTION, 1)));
 
@@ -28,7 +28,7 @@ public class BuildingFactory {
         city.fire = fire; city.shock = shock;
         city.exp = exp;
 
-        city.inventorySpace = 10;
+        //city.inventorySpace = 10;
 
         int[] cityGrowthData = City.generateCityFoodData();
         city.population = 1;
@@ -51,7 +51,7 @@ public class BuildingFactory {
     private static Building newBuilding(World world, Clan clan, BuildingType type, Tile tile, double completionPercentage, Building parent) {
         Building build = new Building(world, clan, type);
         clan.buildings.add(build);
-        build.initModules(tile.numSpaces);
+        //build.initModules(tile.numSpaces);
 
         //int food = 0, production = 0, science = 0, capital = 0;
         int[] yield = {0,0,0,0};
@@ -85,7 +85,7 @@ public class BuildingFactory {
         */
 
         switch (type) {
-            case FARM:
+            /*case FARM:
                 yield = new int[]{3,0,0,0};
                 //build.addInput(ItemType.FOOD, 1);
                 for (Item item: ItemType.itemsWithinCategory(tile, "RawFood")) {
@@ -152,7 +152,7 @@ public class BuildingFactory {
                 break;
             case GRANARY_STORAGE:
                 storageSpace = 10;
-                break;
+                break;*/
             default:
                 System.err.println("Invalid building type for BuildingFactory");
                 break;
@@ -170,13 +170,15 @@ public class BuildingFactory {
         build.workNeeded = workNeeded;
         build.workCompleted = workNeeded*completionPercentage;
 
-        build.inventorySpace = storageSpace;
+        //build.inventorySpace = storageSpace;
 
         if (parent != null) {
-            build.addThisAsModuleToBuilding(parent);
+            parent.modules.add(build);
         }
         else {
-            build.move(tile);
+            if (completionPercentage >= 1) {
+                build.move(tile);
+            }
         }
         return build;
     }

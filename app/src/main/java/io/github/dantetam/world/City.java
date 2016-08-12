@@ -45,9 +45,8 @@ public class City extends Building {
     }
 
     public void executeQueue() {
-        while (true) {
+        /*while (true) {
             if (actionsQueue.size() == 0) {
-                new BuildingAction(Action.ActionType.PROCESS, this).execute(this);
                 return;
             }
             Action action = actionsQueue.get(0);
@@ -66,14 +65,10 @@ public class City extends Building {
             else if (status == Action.ActionStatus.CONTINUING) {
                 //do nothing, keep the action in the first slot, it'll be repeated.
             }
-        }
+        }*/
     }
 
-    public Action.ActionStatus gameProcess() {
-        if (actionPoints <= 0) {
-            return Action.ActionStatus.OUT_OF_ENERGY;
-        }
-        actionPoints--;
+    public int[] gameYield() {
         if (freeWorkingPopulation > 0) {
             pickBestTiles();
         }
@@ -103,9 +98,9 @@ public class City extends Building {
         foodNeededForGrowth = generateCityFoodData[population];
         //System.out.println(food + " " + production + " " + science + " " + capital);
 
-        lastYield = new int[]{(int)food, (int)production, (int)science, (int)capital};
+        //lastYield = new int[]{(int)food, (int)production, (int)science, (int)capital};
 
-        return Action.ActionStatus.CONTINUING;
+        return new int[]{(int)food, (int)production, (int)science, (int)capital};
     }
 
     public static int[] evalTile(Tile tile) {

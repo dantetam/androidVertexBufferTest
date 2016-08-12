@@ -21,12 +21,12 @@ public abstract class Action {
 
     //These denote various types of actions, which have protocols defined within subclasss of Entity.
     public enum ActionType {
-        BUILD, //The unit (person) moves to a location and builds
+        //BUILD, //The unit (person) moves to a location and builds
         MOVE, //Move to a tile, one tile at a time
         PROCESS, //The unit (building) converts both generic yield and named resources into other resources
         //FIGHT, //Fight another unit
         QUEUE_BUILD_MODULE, //The unit (building) makes an improvement for itself
-        QUEUE_BUILD_PERSON, //The unit (building) creates a unit
+        QUEUE_BUILD_UNIT, //The unit (building) creates a unit
         SPECIAL_ABILITY, //Activate one time of the entity's runnable
 
         COMBAT_MOVE,

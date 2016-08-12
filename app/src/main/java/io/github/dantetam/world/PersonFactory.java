@@ -41,7 +41,7 @@ public class PersonFactory {
         List<Tech> skills = new ArrayList<>();
         String name;
 
-        int atk = 0, def = 0, fire = 0, shock = 0;
+        int atk = 0, def = 0, fire = 0, shock = 0, maneuver = 0;
         int exp = 0;
 
         int workCompleted = 15; //, workNeeded = 0;
@@ -89,13 +89,14 @@ public class PersonFactory {
 
         person.atk = atk; person.def = def;
         person.fire = fire; person.shock = shock;
+        person.maneuver = maneuver;
         person.exp = exp;
 
         person.workCompleted = workCompleted;
         //person.workNeeded = workNeeded;
         person.workNeeded = completionPercentage*workCompleted;
 
-        person.inventorySpace = storageSpace;
+        //person.inventorySpace = storageSpace;
 
         person.specialAbility = ability;
 

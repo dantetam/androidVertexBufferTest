@@ -1,8 +1,11 @@
+/*
 package io.github.dantetam.world;
 
+*/
 /**
  * Created by Dante on 7/17/2016.
- */
+ *//*
+
 public class BuildingAction extends Action {
 
     public BuildingAction(ActionType t, Object obj) {
@@ -17,7 +20,7 @@ public class BuildingAction extends Action {
                 return building.gameProcess();
             case QUEUE_BUILD_MODULE:
                 return building.gameBuildModule((Building) data);
-            case QUEUE_BUILD_PERSON:
+            case QUEUE_BUILD_UNIT:
                 return building.gameBuildUnit((Person) data);
             default:
                 System.out.println("Invalid action type: " + type);
@@ -40,3 +43,4 @@ public class BuildingAction extends Action {
     }
 
 }
+*/

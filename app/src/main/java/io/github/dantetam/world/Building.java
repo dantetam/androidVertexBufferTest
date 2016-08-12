@@ -11,7 +11,7 @@ import java.util.List;
 public class Building extends Entity {
 
     public BuildingType buildingType;
-    private Building[] modules;
+    public List<Building> modules;
     private Building parent;
     public boolean isModule = false;
 
@@ -25,13 +25,14 @@ public class Building extends Entity {
     //public List<Item> inputResources;
     //public List<Item> outputResources;
 
-    public int[] lastYield;
+    //public int[] lastYield;
 
     public Building(World world, Clan clan, BuildingType type) {
         super(world, clan);
         clan.buildings.add(this);
         buildingType = type;
         name = type.name;
+        modules = new ArrayList<>();
         recipes = new ArrayList<>();
         effects = new ArrayList<>();
     }
@@ -43,7 +44,7 @@ public class Building extends Entity {
         name = type.name;
     }*/
 
-    public Building[] getModules() {
+    /*public Building[] getModules() {
         return modules;
     }
 
@@ -65,13 +66,13 @@ public class Building extends Entity {
         this.parent = buildingParent;
         location = buildingParent.location;
         isModule = true;
-    }
+    }*/
 
     public void executeQueue() {
         if (!enabled) {
             return;
         }
-        actionsQueue.add(new BuildingAction(Action.ActionType.PROCESS, this));
+        //actionsQueue.add(new BuildingAction(Action.ActionType.PROCESS, this));
         while (true) {
             Action action = actionsQueue.get(0);
             Action.ActionStatus status = action.execute(this);
@@ -122,7 +123,7 @@ public class Building extends Entity {
 
     //TODO: //The sum of all modules' yields and storage space is added to the main building in which it is located
     //Each building may choose one recipe per turn
-    public Action.ActionStatus gameProcess() {
+    /*public Action.ActionStatus gameProcess() {
         if (location() != null) {
             if (actionPoints <= 0) {
                 return Action.ActionStatus.OUT_OF_ENERGY;
@@ -153,21 +154,21 @@ public class Building extends Entity {
                 if (!completedRecipe) {
                     break;
                 }
-                /*if (!hasItemsInInventory(inputResources, true)) {
+                *//*if (!hasItemsInInventory(inputResources, true)) {
                     break;
                 }
                 else {
                     addAllToInventory(outputResources);
-                }*/
+                }*//*
             }
             return Action.ActionStatus.EXECUTED;
         }
         else {
             return Action.ActionStatus.IMPOSSIBLE;
         }
-    }
+    }*/
 
-    public Action.ActionStatus gameBuildModule(Building building) {
+    /*public Action.ActionStatus gameBuildModule(Building building) {
         if (building.workCompleted >= building.workNeeded) {
             return Action.ActionStatus.ALREADY_COMPLETED;
         }
@@ -180,9 +181,9 @@ public class Building extends Entity {
             return Action.ActionStatus.EXECUTED;
         }
         return Action.ActionStatus.CONTINUING;
-    }
+    }*/
 
-    public Action.ActionStatus gameBuildUnit(Person person) {
+    /*public Action.ActionStatus gameBuildUnit(Person person) {
         if (person.workCompleted >= person.workNeeded) {
             return Action.ActionStatus.ALREADY_COMPLETED;
         }
@@ -196,7 +197,7 @@ public class Building extends Entity {
             return Action.ActionStatus.EXECUTED;
         }
         return Action.ActionStatus.CONTINUING;
-    }
+    }*/
 
     /*public void addInput(ItemType type, int quantity) {
         inputResources.add(new Item(type, quantity));
