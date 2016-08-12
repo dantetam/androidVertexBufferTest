@@ -133,6 +133,35 @@ public class Person extends Entity {
         }
     }
 
+    public ActionStatus gameChase(Entity entity) {
+        List<Tile> path = WorldSystem.worldPathfinder.findPath(location, entity.location());
+        if (path == null) {
+            return ActionStatus.IMPOSSIBLE;
+        }
+        path.remove(0);
+        while (true) {
+            if (path.size() == 1) {
+                TODO: Attack the enemy here
+                actionPoints = 0;
+                if (entity.health <= 0) {
+                    return ActionStatus.ALREADY_COMPLETED;
+                }
+                else {
+                    return ActionStatus.CONTINUING;
+                }
+            }
+            ActionStatus status = gameMove(path.get(0));
+            if (status == ActionStatus.OUT_OF_ENERGY) { //Out of AP
+                /*for (Tile t: path) {
+                    actionsQueue.add(new PersonAction(ActionType.MOVE, t));
+                }*/
+                return ActionStatus.OUT_OF_ENERGY;
+            } else {
+                path.remove(0);
+            }
+        }
+    }
+
     public enum PersonType {
         WARRIOR,
         SETTLER;

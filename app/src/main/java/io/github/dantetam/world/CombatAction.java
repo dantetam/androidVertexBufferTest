@@ -13,8 +13,8 @@ public class CombatAction extends Action {
         if (!(subject instanceof Entity)) return Action.ActionStatus.IMPOSSIBLE;
         Entity entity = (Entity) subject;
         switch (type) {
-            case COMBAT_ATTACK:
-                return ((Person) entity).gameAttack((Entity) data);
+            /*case COMBAT_ATTACK:
+                return ((Person) entity).gameAttack((Entity) data);*/
             case COMBAT_MOVE:
                 return ((Person) entity).gameMovePath((Tile) data);
             case COMBAT_CHASE:

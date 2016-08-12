@@ -8,43 +8,33 @@ import java.util.List;
  * Created by Dante on 7/21/2016.
  */
 public enum ItemType {
-    NO_RESOURCE (-1),
+    NO_RESOURCE (-1, "No reource"),
 
-    FOOD (0),
-    PRODUCTION (1),
-    SCIENCE (2),
-    CAPITAL (3),
-    LABOR (4),
-    NECESSITY (5),
-    LUXURY (6),
+    FOOD              (0,   "Food"), //These are not actual items but they're used for item recipes
+    PRODUCTION        (1,   "Production"),
+    SCIENCE           (2,   "Science"),
+    CAPITAL           (3,   "Capital"),
+    LABOR             (4,   "Labor"),
+    NECESSITY         (5,   "Necessity"),
+    LUXURY            (6,   "Luxury"),
 
-    WHEAT (10),
-    FISH (11),
+    GRAIN             (10,  "Grain"),
+    ASCENDIA          (15,  "Ascendia"),
 
-    BRANCHES (50),
-    LOGS (51),
-    ROCKS (60),
+    IRON              (20,  "Iron"),
 
-    ICE (99),
-    STONE (100),
-    CLAY (101),
-    SAND (102),
+    CRYSTAL_CELLS     (50,  "Crystal Cells"),
+    GLASS_FIRE        (51,  "Glass Fire"),
+    EXTROMASS         (52,  "Extromass"),
+    ABYSS_MATTER      (53,  "Abyss Matter"),
+    ASH_STONE         (54,  "Ash Stone"),
+    HELLENIA          (55,  "Hellenia"),
 
-    COPPER_ORE (150),
-    IRON_ORE (151),
-    COAL (152),
+    STEEL             (100, "Steel"),
+    PROGENITOR_MATTER (110, "Progenitor Matter"),
 
-    BREAD (200),
-    LUMBER (210),
-    BRICK (220),
-    GLASS (225),
-    METAL (230),
-    STEEL (231),
-
-    TOOLS (240),
-    STRONG_TOOLS (241),
-    WEAPONS (245),
-    STRONG_WEAPONS (246);
+    XENOVOLTAIC_CELLS (150, "Xenovoltaic Cells"),
+    ;
     public static int[] ranges = {-1,0,10,50,99,150,200,999999};
     public static String[] nameRanges = {"NoResource", "Base", "RawFood", "OrganicMaterial", "NaturalMaterial", "RawMetal", "Processed"};
     public static boolean withinCategory(String target, int id) {
@@ -71,8 +61,9 @@ public enum ItemType {
     public int id;
     //public int quantity; //For data manipulation purposes, not for the game
     public String renderName;
-    ItemType(int n) {
+    ItemType(int n, String name) {
         id = n;
+        renderName = name;
     }
     /*ItemType(int i, int q) {
         id = i;
@@ -83,7 +74,7 @@ public enum ItemType {
         renderName = type.renderName;
     }
     private static HashMap<Integer, ItemType> types;
-    private static String[] names = {
+    /*private static String[] names = {
             "No resource",
             "Food",
             "Production",
@@ -114,7 +105,7 @@ public enum ItemType {
             "Strong Tools",
             "Weapons",
             "Strong Weapons"
-    };
+    };*/
     public static int numItems;
 
     public static void init() {
@@ -122,7 +113,7 @@ public enum ItemType {
         ItemType[] allEnum = ItemType.values();
         for (int i = 0; i < allEnum.length; i++) {
             ItemType item = allEnum[i];
-            item.renderName = names[i];
+            //item.renderName = names[i];
             types.put(item.id, item);
         }
         numItems = types.size();
@@ -158,10 +149,8 @@ public enum ItemType {
         throw new IllegalArgumentException("Invalid item type: " + n);
     }
     public static String nameFromInt(int n) {
-        if (n >= 0 && n < names.length) {
-            return names[n];
-        }
-        throw new IllegalArgumentException("Invalid item type: " + n);
+        return fromInt(n).renderName;
+        //throw new IllegalArgumentException("Invalid item type: " + n);
     }
     public static ItemType randomResource() {
         return ItemType.fromInt((int) (Math.random() * (numItems - 1)) + 1);

@@ -168,11 +168,12 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     if (entityToChase != null) {
                         Action.ActionType actionType = Action.ActionType.COMBAT_MOVE;
                         if (mRenderer.worldSystem.atWar(entityToChase.clan, personSelected.clan)) {
-                            if (entityToChase.location().dist(personSelected.location()) > 1) {
+                            /*if (entityToChase.location().dist(personSelected.location()) > 1) {
                                 actionType = Action.ActionType.COMBAT_CHASE;
                             } else {
                                 actionType = Action.ActionType.COMBAT_ATTACK;
-                            }
+                            }*/
+                            actionType = Action.ActionType.COMBAT_CHASE;
                         }
                         combatWorld.addAction(personSelected, new CombatAction(actionType, entityToChase));
                     }
@@ -184,9 +185,9 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
             }
-            else if (action.equals("CombatAttack")) {
+            /*else if (action.equals("CombatAttack")) {
 
-            }
+            }*/
             else {
                 System.err.println("Invalid action identifier: " + action);
                 mousePicker.changeSelectedTile(null);

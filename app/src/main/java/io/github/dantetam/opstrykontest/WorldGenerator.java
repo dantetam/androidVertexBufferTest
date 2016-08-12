@@ -211,17 +211,26 @@ public class WorldGenerator {
             int numBiomes = Tile.Biome.numBiomes, numTerrains = Tile.Terrain.numTerrains;
             int biomeCounter = 0;
             String resource = "";
+            String currentAction = "";
             float[][] resourceData = null;
             for (int i = 0; i < data.size(); i++) {
                 String stringy = data.get(i);
                 if (stringy.isEmpty() || stringy.equals("") || stringy.startsWith("//")) continue;
                 if (stringy.startsWith("Resource/")) {
+                    currentAction = "Resource";
                     if (resourceData != null) {
                         resourceSpawnRates.put(ItemType.fromString(resource), resourceData);
                     }
                     resource = stringy.substring(9);
                     resourceData = new float[numBiomes][numTerrains];
-                } else {
+                } else if (stringy.startsWith("ResourceQuick/")) {
+                    currentAction = "ResourceQuick";
+                    if (resourceData != null) {
+                        resourceSpawnRates.put(ItemType.fromString(resource), resourceData);
+                    }
+                    resource = stringy.substring(14);
+                    resourceData = new float[numBiomes][numTerrains];
+                } else if (currentAction.equals("Resource")) {
                     //System.out.println(stringy + "<end");
                     String[] values = stringy.split(" ");
                     float[] parsed = new float[values.length];
@@ -233,6 +242,27 @@ public class WorldGenerator {
                     if (biomeCounter == numBiomes) {
                         biomeCounter = 0;
                     }
+                } else if (currentAction.equals("ResourceQuick")) {
+                    //System.out.println(stringy + "<end");
+                    String[] biomeValues = data.get(i).split(" ");
+                    String[] terrainValues = data.get(i+1).split(" ");
+                    float[] biomeValuesParsed = new float[biomeValues.length];
+                    float[] terrainValuesParsed = new float[terrainValues.length];
+                    for (int j = 0; j < biomeValues.length; j++) {
+                        biomeValuesParsed[j] = Float.parseFloat(biomeValues[j]);
+                    }
+                    for (int j = 0; j < terrainValues.length; j++) {
+                        terrainValuesParsed[j] = Float.parseFloat(terrainValues[j]);
+                    }
+
+                    for (int biome = 0; biome < numBiomes; biome++) {
+                        for (int terrain = 0; terrain < numTerrains; terrain++) {
+                            float calculated = biomeValuesParsed[biome]*terrainValuesParsed[terrain];
+                            resourceData[biome][terrain] = calculated;
+                        }
+                    }
+
+                    i++;
                 }
             }
         }
