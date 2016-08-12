@@ -76,6 +76,8 @@ public class City extends Building {
         double food = 0, production = 0, science = 0, capital = 0;
         Inventory inventory = new Inventory();
 
+        HashMap<ItemType, Boolean> allowedHarvestable = clan.techTree.allowedHarvestable;
+
         for (Tile tile: workedTiles.keySet()) {
             food += tile.food;
             production += tile.production;
@@ -89,7 +91,9 @@ public class City extends Building {
                 capital += imprYield[3];
                 for (Recipe recipe: tile.improvement.recipes) {
                     for (Item item: recipe.output) {
-                        inventory.addToInventory(item);
+                        if (allowedHarvestable.containsKey(item)) {
+                            inventory.addToInventory(item);
+                        }
                     }
                 }
             }

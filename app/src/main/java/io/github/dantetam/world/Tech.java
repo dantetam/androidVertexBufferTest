@@ -10,9 +10,13 @@ import java.util.List;
 public class Tech {
 
     public String name;
+    public Tech parent;
+    public List<Tech> extraReqs;
     public List<Tech> unlockedTechs;
 
-    private List<String> unlockedAbilities;
+    public List<BuildingType> unlockedAbilities;
+    public List<Person.PersonType> unlockedUnits;
+    public List<ItemType> harvestableResources;
 
     public int researchCompleted, researchNeeded;
 
@@ -22,8 +26,11 @@ public class Tech {
         this.researchNeeded = researchNeeded;
 
         //unlocked = false;
+        extraReqs = new ArrayList<>();
         unlockedTechs = new ArrayList<>();
         unlockedAbilities = new ArrayList<>();
+        unlockedUnits = new ArrayList<>();
+        harvestableResources = new ArrayList<>();
         //allowedBuildingsAndModules = new HashMap<>();
     }
 
@@ -31,13 +38,12 @@ public class Tech {
         return researchCompleted >= researchNeeded;
     }
 
-    public List<String> research(int researchAmount) {
+    public void research(int researchAmount) {
         researchCompleted += researchAmount;
-        return unlockedAbilities;
     }
 
-    public List<String> forceUnlock() {
-        return research(researchNeeded);
+    public void forceUnlock() {
+        researchCompleted = researchNeeded;
     }
 
     public boolean hasUnresearchedChildren() {

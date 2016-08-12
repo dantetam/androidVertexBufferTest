@@ -17,14 +17,19 @@ public class TechTree {
     public List<Tech> researchingTechQueue;
 
     //public HashMap<BuildingType, List<BuildingType>> allowedModules;
+    public HashMap<BuildingType, Boolean> allowedBuildings;
     public HashMap<BuildingType, List<BuildingType>> allowedBuildingsAndModules;
-    public HashMap<Person, Boolean> allowedUnits;
+    public HashMap<Person.PersonType, Boolean> allowedUnits;
+    public HashMap<ItemType, Boolean> allowedHarvestable;
 
     public TechTree(Clan clan) {
         this.clan = clan;
         clan.techTree = this;
 
         researchingTechQueue = new ArrayList<>();
+
+        allowedBuildings = new HashMap<>();
+
         allowedBuildingsAndModules = new HashMap<>();
 
         List<BuildingType> list = new ArrayList<>();
@@ -32,6 +37,8 @@ public class TechTree {
         allowedBuildingsAndModules.put(BuildingType.CITY, list);
 
         allowedUnits = new HashMap<>();
+
+        allowedHarvestable = new HashMap<>();
 
         //TODO: Define a method for parsing a tech tree from XML using Android utilities
     }
@@ -41,20 +48,28 @@ public class TechTree {
             return;
         }
         Tech researching = researchingTechQueue.get(0);
-        List<String> results = researching.research(inputScience);
         if (researching.unlocked()) {
-            activateTechAbilities(results);
+            activateTechAbilities(researching);
         }
         researchingTechQueue.remove(0);
     }
 
     public void forceUnlock(Tech tech) {
-        List<String> results = tech.forceUnlock();
-        activateTechAbilities(results);
+        tech.forceUnlock();
+        activateTechAbilities(tech);
     }
 
-    public void activateTechAbilities(List<String> strings) {
-        for (String stringy: strings) {
+    public void activateTechAbilities(Tech tech) {
+        for (BuildingType buildingType: tech.unlockedAbilities) {
+            allowedBuildings.put(buildingType, true);
+        }
+        for (Person.PersonType personType: tech.unlockedUnits) {
+            allowedUnits.put(personType, true);
+        }
+        for (ItemType itemType: tech.harvestableResources) {
+            allowedHarvestable.put(itemType, true);
+        }
+        /*for (String stringy: strings) {
             if (stringy.startsWith("AddBuilding")) {
                 String[] split = stringy.split("/");
                 String building = split[1];
@@ -71,7 +86,7 @@ public class TechTree {
                 }
                 allowedBuildingsAndModules.get(parent).add(module);
             }
-        }
+        }*/
     }
 
     public List<Tech> traverse(Condition cond) {

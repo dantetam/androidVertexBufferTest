@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Dante on 7/21/2016.
  */
 public enum ItemType {
-    NO_RESOURCE (-1, "No reource"),
+    NO_RESOURCE       (-1,  "No resource"),
 
     FOOD              (0,   "Food"), //These are not actual items but they're used for item recipes
     PRODUCTION        (1,   "Production"),
@@ -18,25 +18,25 @@ public enum ItemType {
     NECESSITY         (5,   "Necessity"),
     LUXURY            (6,   "Luxury"),
 
-    GRAIN             (10,  "Grain"),
+    GRAIN             (10,  "Grain"), //Farm+
     ASCENDIA          (15,  "Ascendia"),
+    EXTROMASS         (20,  "Extromass"),
 
-    IRON              (20,  "Iron"),
-
-    CRYSTAL_CELLS     (50,  "Crystal Cells"),
-    GLASS_FIRE        (51,  "Glass Fire"),
-    EXTROMASS         (52,  "Extromass"),
-    ABYSS_MATTER      (53,  "Abyss Matter"),
+    IRON              (30,  "Iron"), //Mine+
     ASH_STONE         (54,  "Ash Stone"),
     HELLENIA          (55,  "Hellenia"),
 
-    STEEL             (100, "Steel"),
-    PROGENITOR_MATTER (110, "Progenitor Matter"),
+    ABYSS_MATTER      (60,  "Abyss Matter"), //Boats+
 
-    XENOVOLTAIC_CELLS (150, "Xenovoltaic Cells"),
+    STEEL             (100, "Steel"), //Workshop+
+
+    GLASS_FIRE        (120, "Glass Fire"), //Lab+
+    CRYSTAL_CELLS     (121,  "Crystal Cells"),
+    PROGENITOR_MATTER (130, "Progenitor Matter"),
+    XENOVOLTAIC_CELLS (131, "Xenovoltaic Cells"),
     ;
-    public static int[] ranges = {-1,0,10,50,99,150,200,999999};
-    public static String[] nameRanges = {"NoResource", "Base", "RawFood", "OrganicMaterial", "NaturalMaterial", "RawMetal", "Processed"};
+    public static int[] ranges = {-1,0,10,30,60,100,120,999999};
+    public static String[] nameRanges = {"NoResource", "Base", "Farm", "Mine", "Boats", "Workshop", "Lab"};
     public static boolean withinCategory(String target, int id) {
         int targetIndex = -1;
         for (int i = 0; i < nameRanges.length; i++) {

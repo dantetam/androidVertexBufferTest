@@ -82,9 +82,74 @@ public class BuildingFactory {
         GRANARY (40, "Granary"),
         GRANARY_BAKERY (41, "Bakery"),
         GRANARY_STORAGE (42, "Warehouse");
+
+        NO_RESOURCE       (-1,  "No resource"),
+
+        FOOD              (0,   "Food"), //These are not actual items but they're used for item recipes
+        PRODUCTION        (1,   "Production"),
+        SCIENCE           (2,   "Science"),
+        CAPITAL           (3,   "Capital"),
+        LABOR             (4,   "Labor"),
+        NECESSITY         (5,   "Necessity"),
+        LUXURY            (6,   "Luxury"),
+
+        GRAIN             (10,  "Grain"), //Farm+
+        ASCENDIA          (15,  "Ascendia"),
+        EXTROMASS         (20,  "Extromass"),
+
+        IRON              (30,  "Iron"), //Mine+
+        ASH_STONE         (54,  "Ash Stone"),
+        HELLENIA          (55,  "Hellenia"),
+
+        ABYSS_MATTER      (60,  "Abyss Matter"), //Boats+
+
+        STEEL             (100, "Steel"), //Workshop+
+
+        GLASS_FIRE        (120, "Glass Fire"), //Lab+
+        CRYSTAL_CELLS     (121,  "Crystal Cells"),
+        PROGENITOR_MATTER (130, "Progenitor Matter"),
+        XENOVOLTAIC_CELLS (131, "Xenovoltaic Cells"),
+        ;
+        public static int[] ranges = {-1,0,10,30,60,100,120,999999};
+        public static String[] nameRanges = {"NoResource", "Base", "Farm", "Mine", "Boats", "Workshop", "Lab"};
         */
 
         switch (type) {
+            case FARM:
+                yield = new int[]{2,0,0,0};
+                //build.addInput(ItemType.FOOD, 1);
+                for (Item item: ItemType.itemsWithinCategory(tile, "Farm")) {
+                    build.recipes.add(new Recipe().addOut(new Item(item.type, item.quantity)));
+                }
+                break;
+            case MINE:
+                yield = new int[]{0,2,0,0};
+                //build.addInput(ItemType.FOOD, 1);
+                for (Item item: ItemType.itemsWithinCategory(tile, "Mine")) {
+                    build.recipes.add(new Recipe().addOut(new Item(item.type, item.quantity)));
+                }
+                break;
+            case BOATS:
+                yield = new int[]{1,0,0,1};
+                //build.addInput(ItemType.FOOD, 1);
+                for (Item item: ItemType.itemsWithinCategory(tile, "Boats")) {
+                    build.recipes.add(new Recipe().addOut(new Item(item.type, item.quantity)));
+                }
+                break;
+            case WORKSHOP:
+                yield = new int[]{-1,3,0,0};
+                //build.addInput(ItemType.FOOD, 1);
+                for (Item item: ItemType.itemsWithinCategory(tile, "Workshop")) {
+                    build.recipes.add(new Recipe().addOut(new Item(item.type, item.quantity)));
+                }
+                break;
+            case LAB:
+                yield = new int[]{0,0,2,0};
+                //build.addInput(ItemType.FOOD, 1);
+                for (Item item: ItemType.itemsWithinCategory(tile, "Lab")) {
+                    build.recipes.add(new Recipe().addOut(new Item(item.type, item.quantity)));
+                }
+                break;
             /*case FARM:
                 yield = new int[]{3,0,0,0};
                 //build.addInput(ItemType.FOOD, 1);

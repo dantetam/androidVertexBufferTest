@@ -8,27 +8,14 @@ import java.util.HashMap;
 public enum BuildingType {
     //WHEAT_PLOT (0, "Wheat Plot"),
     //SHALLOW_MINE (1, "Shallow Mine");
-    CITY (0, "City"),
-    CITY_HOUSE (1, "House"),
-    CITY_TENT (2, "Tent"),
-    CITY_TRAINING_GROUND (3, "Training Ground"),
-    FARM (10, "Farm"),
-    MINE (15, "Mine"),
-    MINE_TUNNEL (16, "Tunnel"),
-    MINE_PIT (17, "Pit"),
-    MINE_QUARRY (18, "Quarry"),
-    MINE_STORAGE (19, "Warehouse"),
-    SMITH (20, "Smith"),
-    SMITH_FURNACES (21, "Metal Furnace"),
-    SMITH_ANVILS (22, "Anvils"),
-    SMITH_STORAGE (23, "Warehouse"),
-    WORKSHOP (30, "Workshop"),
-    WORKSHOP_FURNACES (31, "Fuel Furnace"),
-    WORKSHOP_SAW (32, "Saw"),
-    WORKSHOP_STORAGE (33, "Warehouse"),
-    GRANARY (40, "Granary"),
-    GRANARY_BAKERY (41, "Bakery"),
-    GRANARY_STORAGE (42, "Warehouse");
+    CITY              (0,   "City"),
+
+    FARM              (1,   "Farm"),
+    MINE              (2,   "Mine"),
+    BOATS             (3,   "Boats"),
+    WORKSHOP          (4,   "Workshop"),
+    LAB               (5,   "Lab"),
+    ;
     public int id; public String name;
     BuildingType(int t, String n) {id = t; name = n;}
     private static BuildingType[] rawTypes = BuildingType.class.getEnumConstants();
