@@ -350,15 +350,15 @@ public class LessonSevenActivity extends Activity implements
                     }
                 }
                 SubMenu unitSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build unit");
-                Set<Person> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
-                for (final Person person: allowedPeople) {
-                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, person.name);
+                Set<Person.PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
+                for (final Person.PersonType personType: allowedPeople) {
+                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, personType.toString());
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             //Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
                             //newBuilding.actionsQueue.clear();
                             //newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
-                            Person newPerson = PersonFactory.newPerson(person.personType, selectedImprovement.world, selectedImprovement.clan, 0.0);
+                            Person newPerson = PersonFactory.newPerson(personType, selectedImprovement.world, selectedImprovement.clan, 0.0);
                             selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, newPerson));
                             return false;
                         }

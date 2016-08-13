@@ -14,7 +14,7 @@ public class Tech {
     public List<Tech> extraReqs;
     public List<Tech> unlockedTechs;
 
-    public List<BuildingType> unlockedAbilities;
+    public List<BuildingType> unlockedBuildings;
     public List<Person.PersonType> unlockedUnits;
     public List<ItemType> harvestableResources;
 
@@ -28,7 +28,7 @@ public class Tech {
         //unlocked = false;
         extraReqs = new ArrayList<>();
         unlockedTechs = new ArrayList<>();
-        unlockedAbilities = new ArrayList<>();
+        unlockedBuildings = new ArrayList<>();
         unlockedUnits = new ArrayList<>();
         harvestableResources = new ArrayList<>();
         //allowedBuildingsAndModules = new HashMap<>();

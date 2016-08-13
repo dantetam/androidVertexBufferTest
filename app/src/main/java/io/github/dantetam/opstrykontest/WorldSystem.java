@@ -1,5 +1,6 @@
 package io.github.dantetam.opstrykontest;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +27,8 @@ public class WorldSystem {
 
     public Clan playerClan;
 
-    public List<RelationModifier>[][] relations;
+    //public List<RelationModifier>[][] relations;
+    public HashMap<Clan, HashMap<Clan, List<RelationModifier>>> relations;
     public HashMap<Clan, Integer> clanId;
 
     public enum RelationModifier {
@@ -40,7 +42,9 @@ public class WorldSystem {
         artificialIntelligence = new ArtificialIntelligence(world);
         worldPathfinder = new WorldPathfinder(world);
         int len = world.getClans().size();
-        relations = (List<RelationModifier>[][]) new Object[len][len];
+        //relations = (List<RelationModifier>[][]) new Object[len][len];
+        relations = new HashMap<>();
+        //relations = (List<RelationModifier>[][]) Array.newInstance(Object.class, len, len);
         clanId = new HashMap<>();
         for (int i = 0; i < len; i++) {
             clanId.put(world.getClans().get(i), i);
@@ -49,7 +53,7 @@ public class WorldSystem {
 
     public boolean atWar(Clan atk, Clan def) {
         int atkId = clanId.get(atk), defId = clanId.get(def);
-        List<RelationModifier> relationModifierList = relations[atkId][defId];
+        List<RelationModifier> relationModifierList = relations.get(atk).get(def);
         return relationModifierList != null && relationModifierList.contains(RelationModifier.AT_WAR);
     }
 

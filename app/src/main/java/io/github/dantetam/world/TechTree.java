@@ -157,4 +157,29 @@ public class TechTree {
         //TODO: Unlock the tech
     }
 
+    public void traverseAndPrint() {
+        traverseAndPrint(root, 0);
+        /*List<Tech> fringe = new ArrayList<>();
+        fringe.add(root);
+        while (true) {
+            Tech first = fringe.remove(0);
+            //System.out.println(first);
+            System.out.println(first.name);
+            for (Tech child: first.unlockedTechs) {
+                fringe.add(child);
+            }
+            if (fringe.size() == 0) return;
+        }*/
+    }
+    private void traverseAndPrint(Tech t, int level) {
+        String stringy = "";
+        for (int i = 0; i < level; i++) {
+            stringy += ".   .";
+        }
+        System.out.println(stringy + t.name);
+        for (Tech tech: t.unlockedTechs) {
+            traverseAndPrint(tech, level + 1);
+        }
+    }
+
 }

@@ -163,8 +163,28 @@ public class Person extends Entity {
     }
 
     public enum PersonType {
-        WARRIOR,
-        SETTLER;
+        WARRIOR ("Warrior"),
+        SETTLER ("Settler");
+        String renderName;
+        PersonType(String name) {
+            renderName = name;
+        }
+        public String toString() {
+            return renderName;
+        }
+        private static PersonType[] types = null;
+        public static PersonType fromString(String name) {
+            if (types == null) {
+                types = PersonType.values();
+            }
+            for (PersonType personType: types) {
+                if (personType.renderName.equals(name)) {
+                    return personType;
+                }
+            }
+            System.err.println("Invalid person type: " + name);
+            return null;
+        }
     }
 
 }

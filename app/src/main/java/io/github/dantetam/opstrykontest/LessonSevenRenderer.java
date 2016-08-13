@@ -25,6 +25,7 @@ import io.github.dantetam.world.Building;
 import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.ClanFactory;
+import io.github.dantetam.world.TechTree;
 import io.github.dantetam.world.Tile;
 
 /**
@@ -185,7 +186,12 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //world = new World(WORLD_LENGTH, WORLD_LENGTH);
         //worldGenerator = new WorldGenerator(world);
         //worldGenerator.init();
-	}
+
+        //TechTree testTree = TechXmlParser.parse(worldHandler.world.getClans().get(0), lessonSevenActivity, R.raw.tech_tree);
+        //testTree.traverseAndPrint();
+        //TechXmlParser.parseTest(worldHandler.world.getClans().get(0), lessonSevenActivity, R.raw.tech_tree);
+        //worldHandler.world.getClans().get(0).techTree.traverseAndPrint();
+    }
 
     /*
     Initialize more data. Clean up the screen, move the camera, link shaders, load a few test textures.

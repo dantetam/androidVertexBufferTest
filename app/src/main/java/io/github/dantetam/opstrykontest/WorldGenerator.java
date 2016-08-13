@@ -28,9 +28,11 @@ import io.github.dantetam.world.World;
  */
 public class WorldGenerator {
 
+    private LessonSevenActivity mActivity;
     private World world;
 
-    public WorldGenerator(World w) {
+    public WorldGenerator(LessonSevenActivity mActivity, World w) {
+        this.mActivity = mActivity;
         world = w;
     }
 
@@ -112,6 +114,7 @@ public class WorldGenerator {
                 clan = ClanFactory.randomClan();
             }
             clans.add(clan);
+            TechXmlParser.parseTest(clan, mActivity, R.raw.tech_tree);
         }
         return clans;
     }

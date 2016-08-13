@@ -19,11 +19,21 @@ import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import io.github.dantetam.world.BuildingType;
+import io.github.dantetam.world.Clan;
+import io.github.dantetam.world.ItemType;
+import io.github.dantetam.world.Person;
+import io.github.dantetam.world.Tech;
+import io.github.dantetam.world.TechTree;
 
 /**
  * Given an InputStream representation of a feed, it returns a List of entries,
@@ -32,12 +42,11 @@ import java.util.List;
 public class TechXmlParser {
     private static final String ns = null;
 
-    public List<Entry> parse(final Context context,
-                                                final int resourceId) {
+    public static TechTree parseTest(Clan clan, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(
                 resourceId);
         try {
-            return parse(inputStream);
+            return parseTest(clan, inputStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -46,136 +55,91 @@ public class TechXmlParser {
         return null;
     }
 
-    private List<Entry> parse(InputStream in) throws XmlPullParserException, IOException {
-        try {
-            XmlPullParser parser = Xml.newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(in, null);
-            parser.nextTag();
-            return readFeed(parser);
-        } finally {
-            in.close();
-        }
-    }
+    /*
+    This method parses an XML document, line by line. It individually searches tags,
+    where <techroot>...</techroot> marks the first technology, and all its children
+    are future techs linked to the parent tech.
 
-    private List<Entry> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List<Entry> entries = new ArrayList<Entry>();
+    This builds the tech tree with the help of a stack, where a <tech> tag
+    pushes a new tech to the stack and sets the parent if it exists, and a </tech>
+    tag pops a tech off the stack. The stackCounter int represents distance from
+    the tech root, where -1 indicates no tech has been parsed.
+     */
+    public static TechTree parseTest(Clan clan, InputStream inputStream)
+            throws XmlPullParserException, IOException {
+        TechTree tree = new TechTree(clan);
 
-        parser.require(XmlPullParser.START_TAG, ns, "feed");
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        factory.setNamespaceAware(false);
+        XmlPullParser xpp = factory.newPullParser();
+        //xpp.setInput( new StringReader ( "<foo>Hello World!</foo>" ) );
+        //xpp.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+        xpp.setInput(inputStream, null);
+        int stackCounter = -1;
+        List<Tech> stack = new ArrayList<>();
+        HashMap<String, Tech> techMap = new HashMap<>();
+        HashMap<String, String> addRequirementsNames = new HashMap<>();
+        int eventType = xpp.getEventType();
+
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            if (eventType == XmlPullParser.START_DOCUMENT) {
+                //System.out.println("Start document");
+            } else if (eventType == XmlPullParser.START_TAG) {
+                //System.out.println("Start tag " + xpp.getName());
+                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
+                    String techName = xpp.getAttributeValue(null, "name");
+                    int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));
+                    //System.out.println(techName + " " + workNeeded);
+                    Tech newTech = new Tech(techName, 0, workNeeded);
+                    if (xpp.getName().equals("techroot")) {
+                        tree.root = newTech;
+                    }
+                    stack.add(newTech);
+                    if (stackCounter >= 0) {
+                        stack.get(stackCounter).unlockedTechs.add(newTech);
+                    }
+                    stackCounter++;
+
+                    String unlockBuilding = xpp.getAttributeValue(null, "building");
+                    String unlockResource = xpp.getAttributeValue(null, "resource");
+                    String unlockUnit = xpp.getAttributeValue(null, "unit");
+
+                    if (unlockBuilding != null) {
+                        newTech.unlockedBuildings.add(BuildingType.fromString(unlockBuilding));
+                    }
+                    if (unlockResource != null) {
+                        newTech.harvestableResources.add(ItemType.fromString(unlockResource));
+                    }
+                    if (unlockUnit != null) {
+                        newTech.unlockedUnits.add(Person.PersonType.fromString(unlockUnit));
+                    }
+
+                    techMap.put(techName, newTech);
+                    //A forward declaration for requirements?
+                    String extraRequirement = xpp.getAttributeValue(null, "requirement");
+                    if (extraRequirement != null) {
+                        addRequirementsNames.put(techName, extraRequirement);
+                    }
+                }
+            } else if (eventType == XmlPullParser.END_TAG) {
+                //System.out.println("End tag " + xpp.getName());
+                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
+                    stack.remove(stack.size() - 1);
+                    stackCounter--;
+                }
+            } else if (eventType == XmlPullParser.TEXT) {
+                //System.out.println("Text "+xpp.getText());
             }
-            String name = parser.getName();
-            // Starts by looking for the entry tag
-            if (name.equals("entry")) {
-                entries.add(readEntry(parser));
-            } else {
-                skip(parser);
-            }
+            eventType = xpp.next();
         }
-        return entries;
-    }
 
-    // This class represents a single entry (post) in the XML feed.
-    // It includes the data members "title," "link," and "summary."
-    public static class Entry {
-        public final String title;
-        public final String link;
-        public final String summary;
-
-        private Entry(String title, String summary, String link) {
-            this.title = title;
-            this.summary = summary;
-            this.link = link;
+        for (Map.Entry<String, String> entry: addRequirementsNames.entrySet()) {
+            Tech subject = techMap.get(entry.getKey());
+            Tech requirement = techMap.get(entry.getValue());
+            subject.extraReqs.add(requirement);
         }
+        //System.out.println("End document");
+        return tree;
     }
 
-    // Parses the contents of an entry. If it encounters a title, summary, or link tag, hands them
-    // off
-    // to their respective &quot;read&quot; methods for processing. Otherwise, skips the tag.
-    private Entry readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "entry");
-        String title = null;
-        String summary = null;
-        String link = null;
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String name = parser.getName();
-            if (name.equals("title")) {
-                title = readTitle(parser);
-            } else if (name.equals("summary")) {
-                summary = readSummary(parser);
-            } else if (name.equals("link")) {
-                link = readLink(parser);
-            } else {
-                skip(parser);
-            }
-        }
-        return new Entry(title, summary, link);
-    }
-
-    // Processes title tags in the feed.
-    private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "title");
-        String title = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "title");
-        return title;
-    }
-
-    // Processes link tags in the feed.
-    private String readLink(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String link = "";
-        parser.require(XmlPullParser.START_TAG, ns, "link");
-        String tag = parser.getName();
-        String relType = parser.getAttributeValue(null, "rel");
-        if (tag.equals("link")) {
-            if (relType.equals("alternate")) {
-                link = parser.getAttributeValue(null, "href");
-                parser.nextTag();
-            }
-        }
-        parser.require(XmlPullParser.END_TAG, ns, "link");
-        return link;
-    }
-
-    // Processes summary tags in the feed.
-    private String readSummary(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "summary");
-        String summary = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "summary");
-        return summary;
-    }
-
-    // For the tags title and summary, extracts their text values.
-    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String result = "";
-        if (parser.next() == XmlPullParser.TEXT) {
-            result = parser.getText();
-            parser.nextTag();
-        }
-        return result;
-    }
-
-    // Skips tags the parser isn't interested in. Uses depth to handle nested tags. i.e.,
-    // if the next tag after a START_TAG isn't a matching END_TAG, it keeps going until it
-    // finds the matching END_TAG (as indicated by the value of "depth" being 0).
-    private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser.getEventType() != XmlPullParser.START_TAG) {
-            throw new IllegalStateException();
-        }
-        int depth = 1;
-        while (depth != 0) {
-            switch (parser.next()) {
-            case XmlPullParser.END_TAG:
-                    depth--;
-                    break;
-            case XmlPullParser.START_TAG:
-                    depth++;
-                    break;
-            }
-        }
-    }
 }

@@ -28,7 +28,7 @@ public class Clan {
         people = new ArrayList<>();
         buildings = new ArrayList<>();
         cities = new ArrayList<>();
-        techTree = new TechTree(this);
+        //techTree = new TechTree(this);
     }
 
     public enum ClanType {
