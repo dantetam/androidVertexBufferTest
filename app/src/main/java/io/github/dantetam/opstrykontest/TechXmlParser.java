@@ -103,6 +103,7 @@ public class TechXmlParser {
                     String unlockBuilding = xpp.getAttributeValue(null, "building");
                     String unlockResource = xpp.getAttributeValue(null, "resource");
                     String unlockUnit = xpp.getAttributeValue(null, "unit");
+                    String unlockSpecialAbility = xpp.getAttributeValue(null, "specialAbility");
 
                     if (unlockBuilding != null) {
                         newTech.unlockedBuildings.add(BuildingType.fromString(unlockBuilding));
@@ -112,6 +113,9 @@ public class TechXmlParser {
                     }
                     if (unlockUnit != null) {
                         newTech.unlockedUnits.add(Person.PersonType.fromString(unlockUnit));
+                    }
+                    if (unlockSpecialAbility != null) {
+                        newTech.unlockedSpecialAbilities.add(unlockSpecialAbility);
                     }
 
                     techMap.put(techName, newTech);

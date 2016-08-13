@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<techroot name="Landing" workNeeded="1" building="Borough" unit="Settler">
+    <tech name="Agriculture" workNeeded="15" building="Farm">
+        <tech name="Xenoscience" workNeeded="50" resource="Extromass">
+            <tech name="Xenovoltaic Cells" workNeeded="80" requirement="Energy Science" resource="Xenovoltaic Cells">
+
+            </tech>
+            <tech name="Xenopharma" workNeeded="80" resource="Ascendia">
+
+            </tech>
+            <tech name="Advancement Lab" workNeeded="150" resource="Crystal Cells">
+                <tech name="Xenomind Lab" workNeeded="200" resource="Xenopharma">
+
+                </tech>
+                <tech name="Primordial Assembly" workNeeded="200" requirement="Genetics" building="Genetic Assembler" resource="Progenitor Matter">
+
+                </tech>
+            </tech>
+        </tech>
+    </tech>
+    <tech name="Field Science" workNeeded="15" building="Field">
+        <tech name="Energy Science" workNeeded="40">
+
+        </tech>
+        <tech name="Env. Control" workNeeded="40" requirement="Agriculture" building="Greenhouse">
+            <tech name="Xenolab" workNeeded="100" requirement="Xenoscience" resource="Glass Fire">
+                <tech name="Ecology" workNeeded="150">
+
+                </tech>
+                <tech name="Sustainability" workNeeded="150">
+
+                </tech>
+            </tech>
+        </tech>
+    </tech>
+    <tech name="Mining" workNeeded="15" building="Mine" resource="Steel">
+        <tech name="Alloy Forging" workNeeded="40" specialAbility="Alloys">
+            <tech name="Factorization" workNeeded="100" requirement="Workshops" building="Factory">
+                <tech name="Military Lab" workNeeded="150" requirement="Military Lab" resource="Hellenia">
+                    <tech name="Colonization" workNeeded="200" building="Quarry" resource="Ash Stone">
+
+                    </tech>
+                    <tech name="Discipline" workNeeded="200" requirement="Socialization">
+
+                    </tech>
+                </tech>
+                <tech name="Deep Sea Operations" workNeeded="150" requirement="Seafaring" building="Platform" resource="Abyss Matter">
+
+                </tech>
+                <tech name="Mechanized Farming" workNeeded="200" requirement="Agriculture" building="Slaughterhouse">
+
+                </tech>
+            </tech>
+        </tech>
+        <tech name="Workshops" workNeeded="40" building="Workshop">
+
+        </tech>
+    </tech>
+    <tech name="Seafaring" workNeeded="15" building="Boats" resource="">
+
+    </tech>
+    <tech name="Information" workNeeded="15" building="Study">
+        <tech name="Data Mining" workNeeded="40" building="Trade Post">
+            <tech name="Machine Learning" workNeeded="80">
+
+            </tech>
+        </tech>
+        <tech name="Socialization" workNeeded="40" building="Monument">
+            <tech name="Healthcare" workNeeded="100" building="Clinic">
+                <tech name="Genetics" workNeeded="200" building="Genetic Database">
+
+                </tech>
+            </tech>
+            <tech name="Social Belief" workNeeded="100" building="Temple">
+                <tech name="Mind Arcade" workNeeded="200" building="Mind Arcade">
+                    <tech name="Mind Nexus" workNeeded="300" requirement="Xenomind" building="Mind Nexus">
+
+                    </tech>
+                </tech>
+            </tech>
+            <tech name="Public Assembly" workNeeded="80" building="Park">
+                <tech name="Urban Forest" workNeeded="150" requirement="Factorization" building="Tech Plaza">
+
+                </tech>
+                <tech name="Xenoterra Harmony" workNeeded="150" building="Xenolands">
+
+                </tech>
+            </tech>
+        </tech>
+        <tech name="Militarization" workNeeded="40" building="Barracks">
+            <tech name="Specialized Weapons" workNeeded="120" requirement="Military Lab" specialAbility="AlloyWeapons">
+
+            </tech>
+        </tech>
+    </tech>
+</techroot>

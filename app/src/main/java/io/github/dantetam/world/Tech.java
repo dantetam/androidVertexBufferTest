@@ -17,6 +17,7 @@ public class Tech {
     public List<BuildingType> unlockedBuildings;
     public List<Person.PersonType> unlockedUnits;
     public List<ItemType> harvestableResources;
+    public List<String> unlockedSpecialAbilities;
 
     public int researchCompleted, researchNeeded;
 
@@ -31,6 +32,7 @@ public class Tech {
         unlockedBuildings = new ArrayList<>();
         unlockedUnits = new ArrayList<>();
         harvestableResources = new ArrayList<>();
+        unlockedSpecialAbilities = new ArrayList<>();
         //allowedBuildingsAndModules = new HashMap<>();
     }
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GameScreen">
+        <attr name="margin" format="integer" />
+        <attr name="margin_color" format="color" />
+    </declare-styleable>
+</resources>
