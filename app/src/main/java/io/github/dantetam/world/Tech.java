@@ -15,6 +15,7 @@ public class Tech {
     public List<Tech> unlockedTechs;
 
     public List<BuildingType> unlockedBuildings;
+    public List<BuildingType> unlockedDistricts;
     public List<String> unlockedUnits;
     public List<ItemType> harvestableResources;
     public List<String> unlockedSpecialAbilities;
@@ -30,6 +31,7 @@ public class Tech {
         extraReqs = new ArrayList<>();
         unlockedTechs = new ArrayList<>();
         unlockedBuildings = new ArrayList<>();
+        unlockedDistricts = new ArrayList<>();
         unlockedUnits = new ArrayList<>();
         harvestableResources = new ArrayList<>();
         unlockedSpecialAbilities = new ArrayList<>();

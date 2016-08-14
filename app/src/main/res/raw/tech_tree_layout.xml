@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<techroot name="Landing" x="0" y="0">
+    <tech name="Agriculture" x="-1" y="0">
+        <tech name="Xenoscience" x="-2" y="0">
+            <tech name="Xenovoltaic Cells" x="-2" y="1">
+
+            </tech>
+            <tech name="Xenopharma" x="-2" y="-1">
+
+            </tech>
+            <tech name="Advancement Lab" x="-3" y="0">
+                <tech name="Xenomind Lab" x="-3" y="-1">
+
+                </tech>
+                <tech name="Primordial Assembly" x="-4" y="-1">
+
+                </tech>
+            </tech>
+        </tech>
+    </tech>
+    <tech name="Field Science" x="0" y="1">
+        <tech name="Energy Science" x="-1" y="1">
+
+        </tech>
+        <tech name="Env. Control" x="0" y="2">
+            <tech name="Xenolab" x="0" y="3">
+                <tech name="Ecology" x="0" y="4">
+
+                </tech>
+                <tech name="Sustainability" x="-1" y="3">
+
+                </tech>
+            </tech>
+        </tech>
+    </tech>
+    <tech name="Mining" x="0" y="-1">
+        <tech name="Alloy Forging" x="-1" y="-2">
+            <tech name="Factorization" x="-1" y="-3">
+                <tech name="Military Lab" x="0" y="-3">
+                    <tech name="Colonization" x="-1" y="4">
+
+                    </tech>
+                    <tech name="Discipline" x="0" y="-4">
+
+                    </tech>
+                    <tech name="Deep Mining" x="-2" y="-4">
+
+                    </tech>
+                </tech>
+                <tech name="Deep Sea Operations" x="-2" y="-3">
+
+                </tech>
+                <tech name="Mechanized Farming" x="-2" y="-2">
+
+                </tech>
+            </tech>
+        </tech>
+        <tech name="Workshops" x="0" y="-2">
+
+        </tech>
+    </tech>
+    <tech name="Seafaring" x="-1" y="-1">
+
+    </tech>
+    <tech name="Information" x="1" y="0">
+        <tech name="Data Mining" x="2" y="1">
+            <tech name="Machine Learning" x="3" y="2">
+
+            </tech>
+        </tech>
+        <tech name="Socialization" x="2" y="0">
+            <tech name="Healthcare" x="3" y="1">
+                <tech name="Genetics" x="4" y="1">
+
+                </tech>
+            </tech>
+            <tech name="Social Belief" x="3" y="0">
+                <tech name="Mind Arcade" x="4" y="0">
+                    <tech name="Mind Nexus" x="5" y="0">
+
+                    </tech>
+                </tech>
+            </tech>
+            <tech name="Public Assembly" x="3" y="-1">
+                <tech name="Urban Forest" x="3" y="-2">
+
+                </tech>
+                <tech name="Xenoterra Harmony" x="4" y="-1">
+
+                </tech>
+            </tech>
+        </tech>
+        <tech name="Militarization" x="1" y="-2">
+            <tech name="Specialized Weapons" workNeeded="120" >
+
+            </tech>
+        </tech>
+    </tech>
+</techroot>

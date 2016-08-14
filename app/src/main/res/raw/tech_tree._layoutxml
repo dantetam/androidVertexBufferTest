@@ -35,15 +35,12 @@
     </tech>
     <tech name="Mining" workNeeded="15" building="Mine" resource="Steel">
         <tech name="Alloy Forging" workNeeded="40" specialAbility="Alloys" unit="Armored Infantry">
-            <tech name="Factorization" workNeeded="150" requirement="Workshops" building="Factory">
+            <tech name="Factorization" workNeeded="100" requirement="Workshops" building="Factory">
                 <tech name="Military Lab" workNeeded="150" requirement="Military Lab" resource="Hellenia" unit="Knives">
-                    <tech name="Colonization" workNeeded="200">
+                    <tech name="Colonization" workNeeded="200" building="Quarry" resource="Ash Stone">
 
                     </tech>
                     <tech name="Discipline" workNeeded="200" requirement="Socialization">
-
-                    </tech>
-                    <tech name="Deep Mining" workNeeded="200" requirement="Factorization" building="Quarry" resource="Ash Stone">
 
                     </tech>
                 </tech>

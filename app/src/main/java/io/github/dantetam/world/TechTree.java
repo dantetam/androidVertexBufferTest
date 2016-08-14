@@ -17,7 +17,7 @@ public class TechTree {
     public List<Tech> researchingTechQueue;
 
     //public HashMap<BuildingType, List<BuildingType>> allowedModules;
-    public HashMap<BuildingType, Boolean> allowedBuildings;
+    public HashMap<BuildingType, Boolean> allowedBuildings, allowedDistricts;
     public HashMap<BuildingType, List<BuildingType>> allowedBuildingsAndModules;
     public HashMap<PersonType, Boolean> allowedUnits;
     public HashMap<ItemType, Boolean> allowedHarvestable;
@@ -30,6 +30,7 @@ public class TechTree {
         researchingTechQueue = new ArrayList<>();
 
         allowedBuildings = new HashMap<>();
+        allowedDistricts = new HashMap<>();
 
         allowedBuildingsAndModules = new HashMap<>();
 
@@ -38,9 +39,7 @@ public class TechTree {
         allowedBuildingsAndModules.put(BuildingType.CITY, list);
 
         allowedUnits = new HashMap<>();
-
         allowedHarvestable = new HashMap<>();
-
         specialAbilities = new HashMap<>();
 
         //TODO: Define a method for parsing a tech tree from XML using Android utilities
@@ -65,6 +64,9 @@ public class TechTree {
     public void activateTechAbilities(Tech tech) {
         for (BuildingType buildingType: tech.unlockedBuildings) {
             allowedBuildings.put(buildingType, true);
+        }
+        for (BuildingType buildingType: tech.unlockedDistricts) {
+            allowedDistricts.put(buildingType, true);
         }
         for (String stringy: tech.unlockedUnits) {
             PersonType personType = clan.unitTree.personTypes.get(stringy);
