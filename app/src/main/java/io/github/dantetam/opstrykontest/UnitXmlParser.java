@@ -85,7 +85,7 @@ public class UnitXmlParser {
                         combatStats[i] = Integer.parseInt(splitCombatStats[i]);
                     }
 
-                    String normalStatsStringy = xpp.getAttributeValue(null, "combatStats");
+                    String normalStatsStringy = xpp.getAttributeValue(null, "normalStats");
                     String[] splitNormalStats = normalStatsStringy.split("/");
                     int[] normalStats = new int[splitNormalStats.length];
                     for (int i = 0; i < normalStats.length; i++) {
@@ -95,7 +95,7 @@ public class UnitXmlParser {
                     int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));
                     //System.out.println(techName + " " + workNeeded);
                     PersonType personType = new PersonType(unitName,
-                            normalStats[0], normalStats[1], normalStats[2], normalStats[3],
+                            normalStats[0], normalStats[0], normalStats[1], normalStats[1], //normalStats[2], normalStats[3],
                             combatStats[0], combatStats[1], combatStats[2], combatStats[3], combatStats[4]);
                     UnitTree.Unit newUnit = new UnitTree.Unit(personType);
                     if (xpp.getName().equals("unitroot")) {

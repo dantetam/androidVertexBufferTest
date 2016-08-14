@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Combat stats are atk/def/manu/fire/shock respectively -->
-<unitroot name="Soldier" workNeeded="15" combatStats="20/20/10/10/40" tech="Landing">
-    <unit name="Xenotactical" workNeeded="45" combatStats="20/35/30/35/27" tech="Env. Control">
-        <unit name="Xenoadapter" workNeeded="100" combatStats="20/35/50/45/20" tech="Xenolab" resource="Extromass">
+<unitroot name="Soldier" workNeeded="15" normalStats="100/2" combatStats="20/20/10/10/40" tech="Landing">
+    <unit name="Xenotactical" workNeeded="45" normalStats="150/2" combatStats="20/35/30/35/27" tech="Env. Control">
+        <unit name="Xenoadapter" workNeeded="100" normalStats="150/3" combatStats="20/35/50/45/20" tech="Xenolab" resource="Extromass">
 
         </unit>
     </unit>
-    <unit name="State Warriors" workNeeded="45" combatStats="25/25/15/20/35" tech="Social Belief">
-        <unit name="Powered Infantry" workNeeded="100" combatStats="27/27/40/10/45" tech="Advancement Lab" resource="Crystal Cells">
+    <unit name="State Warriors" workNeeded="45" normalStats="150/3" combatStats="25/25/15/20/35" tech="Social Belief">
+        <unit name="Powered Infantry" workNeeded="100" normalStats="180/3" combatStats="27/27/40/10/45" tech="Advancement Lab" resource="Crystal Cells">
 
         </unit>
     </unit>
-    <unit name="Armored Infantry" workNeeded="45" combatStats="20/30/15/20/27" tech="Alloy Forging">
-        <unit name="Knives" workNeeded="100" combatStats="32/27/12/15/45" tech="Military Lab" resource="Hellenia">
+    <unit name="Armored Infantry" workNeeded="45" normalStats="200/2" combatStats="20/30/15/20/27" tech="Alloy Forging">
+        <unit name="Knives" workNeeded="100" normalStats="150/3" combatStats="32/27/12/15/45" tech="Military Lab" resource="Hellenia">
 
         </unit>
     </unit>
-    <unit name="Ally Tribes" workNeeded="100" combatStats="0/0/0/0/0" tech="Ecology" resource="Tribes">
+    <unit name="Ally Tribes" workNeeded="100" normalStats="1/0" combatStats="0/0/0/0/0" tech="Ecology" resource="Tribes">
 
     </unit>
-    <unit name="Educated Tribes" workNeeded="100" combatStats="0/0/0/0/0" tech="Xenomind" resource="Tribes">
+    <unit name="Educated Tribes" workNeeded="100" normalStats="1/0" combatStats="0/0/0/0/0" tech="Xenomind" resource="Tribes">
 
     </unit>
-    <unit name="Pacified Tribes" workNeeded="100" combatStats="0/0/0/0/0" tech="Xenomind" resource="Tribes">
+    <unit name="Pacified Tribes" workNeeded="100" normalStats="1/0" combatStats="0/0/0/0/0" tech="Xenomind" resource="Tribes">
 
     </unit>
-    <unit name="Enslaved Tribes" workNeeded="100" combatStats="0/0/0/0/0" tech="Colonization" resource="Tribes">
+    <unit name="Enslaved Tribes" workNeeded="100" normalStats="1/0" combatStats="0/0/0/0/0" tech="Colonization" resource="Tribes">
 
     </unit>
-    <unit name="Assimilated Tribes" workNeeded="100" combatStats="0/0/0/0/0" tech="Discipline" resource="Tribes">
+    <unit name="Assimilated Tribes" workNeeded="100" normalStats="1/0" combatStats="0/0/0/0/0" tech="Discipline" resource="Tribes">
 
     </unit>
 </unitroot>
