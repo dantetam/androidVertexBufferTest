@@ -31,6 +31,7 @@ import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.ItemType;
 import io.github.dantetam.world.Person;
+import io.github.dantetam.world.PersonType;
 import io.github.dantetam.world.Tech;
 import io.github.dantetam.world.TechTree;
 import io.github.dantetam.world.UnitTree;
@@ -42,11 +43,11 @@ import io.github.dantetam.world.UnitTree;
 public class UnitXmlParser {
     private static final String ns = null;
 
-    public static UnitTree parseTechTree(Clan clan, Context context, int resourceId) {
+    public static UnitTree parseUnitTree(Clan clan, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(
                 resourceId);
         try {
-            return parseTechTree(clan, inputStream);
+            return parseUnitTree(clan, inputStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -55,7 +56,7 @@ public class UnitXmlParser {
         return null;
     }
 
-    public static UnitTree parseTechTree(Clan clan, InputStream inputStream)
+    public static UnitTree parseUnitTree(Clan clan, InputStream inputStream)
             throws XmlPullParserException, IOException {
         UnitTree tree = new UnitTree(clan);
 
@@ -65,7 +66,7 @@ public class UnitXmlParser {
         xpp.setInput(inputStream, null);
         int stackCounter = -1;
         List<UnitTree.Unit> stack = new ArrayList<>();
-        HashMap<String, Tech> techMap = new HashMap<>();
+
         HashMap<String, String> addRequirementsNames = new HashMap<>();
         int eventType = xpp.getEventType();
 
@@ -74,12 +75,45 @@ public class UnitXmlParser {
                 //System.out.println("Start document");
             } else if (eventType == XmlPullParser.START_TAG) {
                 //System.out.println("Start tag " + xpp.getName());
-                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
+                if (xpp.getName().equals("unit") || xpp.getName().equals("unitroot")) {
+                    String unitName = xpp.getAttributeValue(null, "name");
+
+                    String combatStatsStringy = xpp.getAttributeValue(null, "combatStats");
+                    String[] splitCombatStats = combatStatsStringy.split("/");
+                    int[] combatStats = new int[splitCombatStats.length];
+                    for (int i = 0; i < combatStats.length; i++) {
+                        combatStats[i] = Integer.parseInt(splitCombatStats[i]);
+                    }
+
+                    String normalStatsStringy = xpp.getAttributeValue(null, "combatStats");
+                    String[] splitNormalStats = normalStatsStringy.split("/");
+                    int[] normalStats = new int[splitNormalStats.length];
+                    for (int i = 0; i < normalStats.length; i++) {
+                        normalStats[i] = Integer.parseInt(splitCombatStats[i]);
+                    }
+
+                    int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));
+                    //System.out.println(techName + " " + workNeeded);
+                    PersonType personType = new PersonType(unitName,
+                            normalStats[0], normalStats[1], normalStats[2], normalStats[3],
+                            combatStats[0], combatStats[1], combatStats[2], combatStats[3], combatStats[4]);
+                    UnitTree.Unit newUnit = new UnitTree.Unit(personType);
+                    if (xpp.getName().equals("unitroot")) {
+                        tree.root = newUnit;
+                    }
+                    stack.add(newUnit);
+                    if (stackCounter >= 0) {
+                        stack.get(stackCounter).unlockedUnits.add(newUnit);
+                    }
                     stackCounter++;
+
+                    String unlockBuilding = xpp.getAttributeValue(null, "building");
+
+                    tree.personTypes.put(unitName, personType);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 //System.out.println("End tag " + xpp.getName());
-                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
+                if (xpp.getName().equals("unit") || xpp.getName().equals("unitroot")) {
                     stackCounter--;
                 }
             } else if (eventType == XmlPullParser.TEXT) {

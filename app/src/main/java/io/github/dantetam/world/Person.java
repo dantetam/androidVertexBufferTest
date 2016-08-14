@@ -3,6 +3,7 @@ package io.github.dantetam.world;
 import android.widget.PopupMenu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.github.dantetam.opstrykontest.WorldSystem;
@@ -24,11 +25,6 @@ public class Person extends Entity {
         clan.people.add(this);
         this.name = name;
         skills = new ArrayList<>();
-    }
-
-    public void initCombatStats(int a, int d, int m, int f, int s) {
-        atk = a; def = d;
-        maneuver = m; fire = f; shock = s;
     }
 
     public void executeQueue() {
@@ -167,7 +163,7 @@ public class Person extends Entity {
         }
     }
 
-    public enum PersonType {
+    /*public enum PersonType {
         WARRIOR ("Warrior"),
         SETTLER ("Settler");
         String renderName;
@@ -190,6 +186,6 @@ public class Person extends Entity {
             System.err.println("Invalid person type: " + name);
             return null;
         }
-    }
+    }*/
 
 }

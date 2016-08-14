@@ -44,6 +44,7 @@ import io.github.dantetam.world.Item;
 import io.github.dantetam.world.Person;
 import io.github.dantetam.world.PersonAction;
 import io.github.dantetam.world.PersonFactory;
+import io.github.dantetam.world.PersonType;
 import io.github.dantetam.world.Recipe;
 import io.github.dantetam.world.Tile;
 
@@ -350,8 +351,8 @@ public class LessonSevenActivity extends Activity implements
                     }
                 }
                 SubMenu unitSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build unit");
-                Set<Person.PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
-                for (final Person.PersonType personType: allowedPeople) {
+                Set<PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
+                for (final PersonType personType: allowedPeople) {
                     MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, personType.toString());
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {

@@ -15,7 +15,7 @@ public class Tech {
     public List<Tech> unlockedTechs;
 
     public List<BuildingType> unlockedBuildings;
-    public List<Person.PersonType> unlockedUnits;
+    public List<String> unlockedUnits;
     public List<ItemType> harvestableResources;
     public List<String> unlockedSpecialAbilities;
 

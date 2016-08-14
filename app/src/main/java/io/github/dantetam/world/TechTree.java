@@ -19,7 +19,7 @@ public class TechTree {
     //public HashMap<BuildingType, List<BuildingType>> allowedModules;
     public HashMap<BuildingType, Boolean> allowedBuildings;
     public HashMap<BuildingType, List<BuildingType>> allowedBuildingsAndModules;
-    public HashMap<Person.PersonType, Boolean> allowedUnits;
+    public HashMap<PersonType, Boolean> allowedUnits;
     public HashMap<ItemType, Boolean> allowedHarvestable;
     public HashMap<String, Boolean> specialAbilities;
 
@@ -66,7 +66,8 @@ public class TechTree {
         for (BuildingType buildingType: tech.unlockedBuildings) {
             allowedBuildings.put(buildingType, true);
         }
-        for (Person.PersonType personType: tech.unlockedUnits) {
+        for (String stringy: tech.unlockedUnits) {
+            PersonType personType = clan.unitTree.personTypes.get(stringy);
             allowedUnits.put(personType, true);
         }
         for (ItemType itemType: tech.harvestableResources) {

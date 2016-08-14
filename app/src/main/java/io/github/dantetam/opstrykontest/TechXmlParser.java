@@ -112,7 +112,7 @@ public class TechXmlParser {
                         newTech.harvestableResources.add(ItemType.fromString(unlockResource));
                     }
                     if (unlockUnit != null) {
-                        newTech.unlockedUnits.add(Person.PersonType.fromString(unlockUnit));
+                        newTech.unlockedUnits.add(unlockUnit);
                     }
                     if (unlockSpecialAbility != null) {
                         newTech.unlockedSpecialAbilities.add(unlockSpecialAbility);

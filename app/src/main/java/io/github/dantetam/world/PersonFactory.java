@@ -35,21 +35,21 @@ public class PersonFactory {
         person.enabled = false;
     }
 
-    public static Person newPerson(Person.PersonType type, final World world, final Clan clan, double completionPercentage) {
+    public static Person newPerson(PersonType type, final World world, final Clan clan, double completionPercentage) {
         int health, maxHealth;
         final int actionPoints, maxActionPoints;
         List<Tech> skills = new ArrayList<>();
         String name;
 
-        int atk = 0, def = 0, fire = 0, shock = 0, maneuver = 0;
+        //int atk = 0, def = 0, fire = 0, shock = 0, maneuver = 0;
         int exp = 0;
 
         int workCompleted = 15; //, workNeeded = 0;
-        int storageSpace = 3;
+        //int storageSpace = 3;
 
         Ability ability = null;
 
-        switch (type) {
+        /*switch (type) {
             case WARRIOR:
                 health = 5;
                 maxHealth = 5;
@@ -79,17 +79,17 @@ public class PersonFactory {
             default:
                 System.err.println("Invalid person type: " + type);
                 return null;
-        }
-        Person person = new Person(world, clan, name);
-        person.health = health;
-        person.maxHealth = maxHealth;
-        person.actionPoints = actionPoints;
-        person.maxActionPoints = maxActionPoints;
+        }*/
+        Person person = new Person(world, clan, type.name);
+        person.health = type.health;
+        person.maxHealth = type.maxH;
+        person.actionPoints = type.actionPoints;
+        person.maxActionPoints = type.maxP;
         person.skills = skills;
 
-        person.atk = atk; person.def = def;
-        person.fire = fire; person.shock = shock;
-        person.maneuver = maneuver;
+        person.atk = type.atk; person.def = type.def;
+        person.fire = type.fire; person.shock = type.shock;
+        person.maneuver = type.maneuver;
         person.exp = exp;
 
         person.workCompleted = workCompleted;
