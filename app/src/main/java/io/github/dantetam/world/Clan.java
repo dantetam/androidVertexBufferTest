@@ -19,6 +19,7 @@ public class Clan {
     public ClanFaction clanFaction;
 
     public TechTree techTree;
+    public UnitTree unitTree;
 
     public List<Building> buildings;
     public List<City> cities;

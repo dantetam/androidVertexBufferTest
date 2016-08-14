@@ -26,6 +26,11 @@ public class Person extends Entity {
         skills = new ArrayList<>();
     }
 
+    public void initCombatStats(int a, int d, int m, int f, int s) {
+        atk = a; def = d;
+        maneuver = m; fire = f; shock = s;
+    }
+
     public void executeQueue() {
         if (!enabled) {
             return;

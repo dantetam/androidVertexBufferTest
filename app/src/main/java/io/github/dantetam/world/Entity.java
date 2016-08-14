@@ -26,7 +26,7 @@ public abstract class Entity extends Representable {
     public List<Action> actionsQueue; //Do actions at position 0 first
     public int actionPoints, maxActionPoints;
 
-    public int atk, def, fire, shock, maneuver;
+    public int atk, def, maneuver, fire, shock;
     public List<String> combatAbilities;
     public int exp;
 

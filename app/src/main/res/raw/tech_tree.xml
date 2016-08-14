@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<techroot name="Landing" workNeeded="1" building="Borough" unit="Settler">
+<techroot name="Landing" workNeeded="1" district="Borough" unit="Settler">
     <tech name="Agriculture" workNeeded="15" building="Farm">
         <tech name="Xenoscience" workNeeded="50" resource="Extromass">
             <tech name="Xenovoltaic Cells" workNeeded="80" requirement="Energy Science" resource="Xenovoltaic Cells">
@@ -8,7 +8,7 @@
             <tech name="Xenopharma" workNeeded="80" resource="Ascendia">
 
             </tech>
-            <tech name="Advancement Lab" workNeeded="150" resource="Crystal Cells">
+            <tech name="Advancement Lab" workNeeded="150" resource="Crystal Cells" unit="Powered Infantry">
                 <tech name="Xenomind Lab" workNeeded="200" resource="Xenopharma">
 
                 </tech>
@@ -22,8 +22,8 @@
         <tech name="Energy Science" workNeeded="40">
 
         </tech>
-        <tech name="Env. Control" workNeeded="40" requirement="Agriculture" building="Greenhouse">
-            <tech name="Xenolab" workNeeded="100" requirement="Xenoscience" resource="Glass Fire">
+        <tech name="Env. Control" workNeeded="40" requirement="Agriculture" building="Greenhouse" unit="Xenotactical">
+            <tech name="Xenolab" workNeeded="100" requirement="Xenoscience" resource="Glass Fire" unit="Xenoadapter">
                 <tech name="Ecology" workNeeded="150">
 
                 </tech>
@@ -34,9 +34,9 @@
         </tech>
     </tech>
     <tech name="Mining" workNeeded="15" building="Mine" resource="Steel">
-        <tech name="Alloy Forging" workNeeded="40" specialAbility="Alloys">
+        <tech name="Alloy Forging" workNeeded="40" specialAbility="Alloys" unit="Armored Infantry">
             <tech name="Factorization" workNeeded="100" requirement="Workshops" building="Factory">
-                <tech name="Military Lab" workNeeded="150" requirement="Military Lab" resource="Hellenia">
+                <tech name="Military Lab" workNeeded="150" requirement="Military Lab" resource="Hellenia" unit="Knives">
                     <tech name="Colonization" workNeeded="200" building="Quarry" resource="Ash Stone">
 
                     </tech>
@@ -59,7 +59,7 @@
     <tech name="Seafaring" workNeeded="15" building="Boats" resource="">
 
     </tech>
-    <tech name="Information" workNeeded="15" building="Study">
+    <tech name="Information" workNeeded="15" district="Study">
         <tech name="Data Mining" workNeeded="40" building="Trade Post">
             <tech name="Machine Learning" workNeeded="80">
 
@@ -71,7 +71,7 @@
 
                 </tech>
             </tech>
-            <tech name="Social Belief" workNeeded="100" building="Temple">
+            <tech name="Social Belief" workNeeded="100" building="Temple" unit="State Warriors">
                 <tech name="Mind Arcade" workNeeded="200" building="Mind Arcade">
                     <tech name="Mind Nexus" workNeeded="300" requirement="Xenomind" building="Mind Nexus">
 
@@ -87,8 +87,8 @@
                 </tech>
             </tech>
         </tech>
-        <tech name="Militarization" workNeeded="40" building="Barracks">
-            <tech name="Specialized Weapons" workNeeded="120" requirement="Military Lab" specialAbility="AlloyWeapons">
+        <tech name="Militarization" workNeeded="40" district="Barracks">
+            <tech name="Specialized Weapons" workNeeded="120" requirement="Military Lab" specialAbility="AlloyWeapons" unit="Knives">
 
             </tech>
         </tech>

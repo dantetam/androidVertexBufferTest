@@ -42,11 +42,11 @@ import io.github.dantetam.world.TechTree;
 public class TechXmlParser {
     private static final String ns = null;
 
-    public static TechTree parseTest(Clan clan, Context context, int resourceId) {
+    public static TechTree parseTechTree(Clan clan, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(
                 resourceId);
         try {
-            return parseTest(clan, inputStream);
+            return parseTechTree(clan, inputStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -65,7 +65,7 @@ public class TechXmlParser {
     tag pops a tech off the stack. The stackCounter int represents distance from
     the tech root, where -1 indicates no tech has been parsed.
      */
-    public static TechTree parseTest(Clan clan, InputStream inputStream)
+    public static TechTree parseTechTree(Clan clan, InputStream inputStream)
             throws XmlPullParserException, IOException {
         TechTree tree = new TechTree(clan);
 
