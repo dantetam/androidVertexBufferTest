@@ -5,7 +5,32 @@ import java.util.HashMap;
 /**
  * Created by Dante on 7/21/2016.
  */
-public enum BuildingType {
+
+public class BuildingType {
+    public String name;
+    public int workNeeded;
+    public int food, production, science, capital, happiness, health;
+
+    public boolean created = false;
+    /*public void init() {
+        if (!created) {
+            types = new HashMap<>();
+        }
+    }
+    public void addPersonType(String name, int a, int d, int m, int f, int s) {
+        PersonType newType = new PersonType();
+        newType.name = name;
+        newType.PersonType(a, d, m, f, s);
+        types.put(name, newType);
+    }*/
+    public BuildingType(String n, int f, int p, int s, int c, int ha, int he) {
+        name = n;
+        food = f; production = p; science = s; capital = c;
+        happiness = ha; health = he;
+    }
+}
+
+/*public enum BuildingType {
     //WHEAT_PLOT (0, "Wheat Plot"),
     //SHALLOW_MINE (1, "Shallow Mine");
     CITY              (0,   "City"),
@@ -66,4 +91,4 @@ public enum BuildingType {
         return BuildingType.fromInt((int) (Math.random() * numBuildingTypes));
     }
     public int[] getYield() {return new int[]{0,0,0,0};}
-}
+}*/

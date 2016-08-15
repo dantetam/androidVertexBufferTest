@@ -20,6 +20,7 @@ public class Clan {
 
     public TechTree techTree;
     public UnitTree unitTree;
+    public BuildingTree buildingTree;
 
     public List<Building> buildings;
     public List<City> cities;

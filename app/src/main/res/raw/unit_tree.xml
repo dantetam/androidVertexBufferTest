@@ -31,4 +31,7 @@
     <unit name="Assimilated Tribes" workNeeded="100" normalStats="1/0" combatStats="0/0/0/0/0" tech="Discipline" resource="Tribes">
 
     </unit>
+    <unit name="Boats" workNeeded="15" normalStats="50/2" combatStats="0/0/0/0/0" tech="Seafaring" sea="true">
+
+    </unit>
 </unitroot>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <techroot name="Landing" workNeeded="1" district="Borough" unit="Settler">
     <tech name="Agriculture" workNeeded="15" building="Farm">
-        <tech name="Xenoscience" workNeeded="50" resource="Extromass">
+        <tech name="Xenoscience" workNeeded="50" building="Hunting Camp" resource="Extromass">
             <tech name="Xenovoltaic Cells" workNeeded="80" requirement="Energy Science" resource="Xenovoltaic Cells">
 
             </tech>
@@ -59,12 +59,12 @@
 
         </tech>
     </tech>
-    <tech name="Seafaring" workNeeded="15" building="Boats" resource="">
+    <tech name="Seafaring" workNeeded="15" building="Boats" unit="Deployed Boats" resource="">
 
     </tech>
     <tech name="Information" workNeeded="15" district="Study">
         <tech name="Data Mining" workNeeded="40" building="Trade Post">
-            <tech name="Machine Learning" workNeeded="80">
+            <tech name="Machine Learning" workNeeded="80" building="Exchange">
 
             </tech>
         </tech>

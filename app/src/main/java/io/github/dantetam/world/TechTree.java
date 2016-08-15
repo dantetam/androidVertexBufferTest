@@ -34,10 +34,6 @@ public class TechTree {
 
         allowedBuildingsAndModules = new HashMap<>();
 
-        List<BuildingType> list = new ArrayList<>();
-        list.add(BuildingType.FARM);
-        allowedBuildingsAndModules.put(BuildingType.CITY, list);
-
         allowedUnits = new HashMap<>();
         allowedHarvestable = new HashMap<>();
         specialAbilities = new HashMap<>();

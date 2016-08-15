@@ -238,7 +238,7 @@ public class LessonSevenActivity extends Activity implements
 
     public boolean onClickNextTurnButton(MenuItem item) {
         Entity en = mRenderer.findNextUnit();
-        if (en != null) {
+        if (en != null && (turnStyle == AutomaticTurn.AUTOMATIC || turnStyle == AutomaticTurn.ON_PRESS_TURN)) {
             mRenderer.moveCameraInFramesAfter = 1;
             mRenderer.nextUnit = en;
         }

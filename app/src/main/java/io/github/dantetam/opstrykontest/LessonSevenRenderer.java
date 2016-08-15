@@ -475,6 +475,25 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             if (moveCameraInFramesAfter == 0) {
                 moveCameraInFramesAfter = -1;
                 //Find the next unit to move, or the next building
+                if (nextUnit == null) {
+                    nextUnit = findNextUnit();
+                    if (nextUnit == null) {
+                        return;
+                    }
+                }
+                Vector3f pointAt = worldHandler.storedTileVertexPositions.get(nextUnit.location());
+                /*if (nextUnit instanceof Person) {
+                    pointAt = worldHandler.storedTileVertexPositions.get(nextUnit.location());
+                }
+                else {
+                    pointAt = worldHandler.storedTileVertexPositions.get(nextUnit.location());
+                }*/
+
+                /*camera.moveTo(5f, 6f, 7.5f);
+                camera.pointTo(5f, 1f, 6f);*/
+
+                camera.moveTo(pointAt.x, 6f, pointAt.z + 1.5f);
+                camera.pointTo(pointAt.x, 1f, pointAt.z);
             }
         }
     }
