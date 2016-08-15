@@ -133,6 +133,16 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                             }
                         }
                         executeSelectedAction(mousePicker, previousSelectedTile, previousSelectedEntity);
+
+                        if (previousSelectedEntity != null) {
+                            if (previousSelectedEntity.actionPoints <= 0 || previousSelectedEntity.actionsQueue.size() > 0) {
+                                if (mActivity.turnStyle == LessonSevenActivity.AutomaticTurn.AUTOMATIC) {
+                                    mRenderer.moveCameraInFramesAfter = 8;
+                                    mRenderer.nextUnit = mRenderer.findNextUnit();
+                                }
+                            }
+                        }
+
                     }
 				}
 			}	

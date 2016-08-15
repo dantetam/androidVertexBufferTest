@@ -25,6 +25,8 @@ public class Camera {
         Matrix.setLookAtM(viewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
     }
 
+
+
     /**
      * Convenient bulk setter methods. Force update on viewMatrix;
      */

@@ -25,6 +25,8 @@ import io.github.dantetam.world.Building;
 import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.ClanFactory;
+import io.github.dantetam.world.Entity;
+import io.github.dantetam.world.Person;
 import io.github.dantetam.world.TechTree;
 import io.github.dantetam.world.Tile;
 
@@ -328,6 +330,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         mGlSurfaceView.update();
 
+        moveCameraToNextUnit();
+
         Object[] renderObjects = worldHandler.totalWorldRepresentation();
         List<BaseModel> modelsToRender = (List<BaseModel>) renderObjects[0];
         List<RenderEntity> solidsToRender = (List<RenderEntity>) renderObjects[1];
@@ -448,6 +452,31 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             GLES20.glDisable(GLES20.GL_BLEND);
         }
         //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+    }
+
+    public int moveCameraInFramesAfter = -1;
+    public Entity nextUnit;
+    public Entity findNextUnit() {
+        for (Person person: worldSystem.playerClan.people) {
+            if (person.actionPoints > 0 && person.actionsQueue.size() == 0) {
+                return person;
+            }
+        }
+        for (Building building: worldSystem.playerClan.buildings) {
+            if (building.actionsQueue.size() == 0) {
+                return building;
+            }
+        }
+        return null;
+    }
+    public void moveCameraToNextUnit() {
+        if (moveCameraInFramesAfter != -1) {
+            moveCameraInFramesAfter--;
+            if (moveCameraInFramesAfter == 0) {
+                moveCameraInFramesAfter = -1;
+                //Find the next unit to move, or the next building
+            }
+        }
     }
 
     public void getUserInterfaceReady() {

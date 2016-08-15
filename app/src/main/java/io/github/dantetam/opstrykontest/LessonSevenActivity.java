@@ -71,6 +71,13 @@ public class LessonSevenActivity extends Activity implements
 
     private Clan playerClan;
 
+    public AutomaticTurn turnStyle = AutomaticTurn.AUTOMATIC;
+    public enum AutomaticTurn {
+        AUTOMATIC, //Automatically move to new units when completed action
+        ON_PRESS_TURN, //Move to the next unit when the user clicks the next turn button
+        NEVER //Never use this feature, the player
+    }
+
     /*public void onAttachedToWindow() {
         super.onAttachedToWindow();
         Window window = getWindow();
@@ -221,10 +228,22 @@ public class LessonSevenActivity extends Activity implements
         MenuInflater inflater = tempMenu.getMenuInflater();
         inflater.inflate(R.menu.next_turn_menu, tempMenu.getMenu());
         tempMenu.show();
+        if (mRenderer.findNextUnit() != null) {
+            ((MenuItem) findViewById(R.id.next_turn_button)).setTitle("UNIT NEEDS ORDERS");
+        }
+        else {
+            ((MenuItem) findViewById(R.id.next_turn_button)).setTitle("NEXT TURN");
+        }
     }
 
     public boolean onClickNextTurnButton(MenuItem item) {
-        mRenderer.worldSystem.turn();
+        Entity en = mRenderer.findNextUnit();
+        if (en != null) {
+            mRenderer.moveCameraInFramesAfter = 1;
+            mRenderer.nextUnit = en;
+        }
+        else
+            mRenderer.worldSystem.turn();
         return true;
     }
 
@@ -293,66 +312,95 @@ public class LessonSevenActivity extends Activity implements
         final Building selectedImprovement = selected != null ? selected.improvement : null;
 
         if (selectedImprovement != null) {
-            if (selectedImprovement.moduleLimit >= selectedImprovement.modules.size()) {
-                menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Cannot add modules.");
-            }
-            else {
-                for (int i = 0; i < selectedImprovement.modules.size(); i++) {
-                    Building module = selectedImprovement.modules.get(i);
-                    String stringy;
-                    if (module == null) {
-                        stringy = "Build improvement";
-                        SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+            if (selectedImprovement instanceof City) {
+                SubMenu improvementSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build improvement");
 
-                        List<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildingsAndModules.get(selectedImprovement.buildingType); //Well, that's all she wrote
-                        for (final BuildingType buildingType: allowedBuildings) {
-                            MenuItem menuItem = moduleSubMenu.add(Menu.NONE, i+1, Menu.NONE, buildingType.name);
-                            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                                public boolean onMenuItemClick(MenuItem item) {
-                                    Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
-                                    newBuilding.actionsQueue.clear();
-                                    newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
-                                    return false;
-                                }
-                            });
-                        }
+                Set<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildings.keySet();
+                int i = 0;
+                for (final BuildingType buildingType: allowedBuildings) {
+                    int[] yield = buildingType.getYield();
+                    String yieldString = "";
+                    if (yield[0] > 0) {
+                        yieldString += "+" + yield[0] + "Food";
                     }
-                    else {
-                        stringy = module.name;
+                    if (yield[1] > 0) {
+                        yieldString += ", +" + yield[1] + "Prod.";
+                    }
+                    if (yield[2] > 0) {
+                        yieldString += ", +" + yield[2] + "Sci.";
+                    }
+                    if (yield[3] > 0) {
+                        yieldString += ", +" + yield[3] + "Cap.";
+                    }
 
-                        if (module.completionPercentage() < 1) {
-                            stringy += " (" + (int) (module.completionPercentage() * 100) + "% Completed)";
-                            //SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+                    String displayName = buildingType.name + " " + yieldString;
+                    MenuItem menuItem = improvementSubMenu.add(Menu.NONE, i+1, Menu.NONE, displayName);
+                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
+                            newBuilding.actionsQueue.clear();
+                            newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
+                            return false;
                         }
-                        SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
-                        List<String> strings = new ArrayList<>();
-                        int[] yield = module.getYieldWithModules();
-                        String yieldString = "";
-                        if (yield[0] > 0) {
-                            yieldString += "+" + yield[0] + "Food";
-                        }
-                        if (yield[1] > 0) {
-                            yieldString += ", +" + yield[1] + "Prod.";
-                        }
-                        if (yield[2] > 0) {
-                            yieldString += ", +" + yield[2] + "Sci.";
-                        }
-                        if (yield[3] > 0) {
-                            yieldString += ", +" + yield[0] + "Cap.";
-                        }
-                        if (!yieldString.equals(""))
-                            strings.add(yieldString);
-                        for (Recipe recipe: module.recipes) {
-                            strings.add(recipe.toString());
-                        }
-                        for (String texty: strings) {
-                            MenuItem menuItem = moduleSubMenu.add(Menu.NONE, 0, Menu.NONE, texty);
-                        }
+                    });
+                    i++;
+                }
+            /*for (int i = 0; i < selectedImprovement.modules.size(); i++) {
+                Building module = selectedImprovement.modules.get(i);
+                String stringy;
+                if (module == null) {
+                    stringy = "Build improvement";
+                    SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+
+                    List<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildingsAndModules.get(selectedImprovement.buildingType); //Well, that's all she wrote
+                    for (final BuildingType buildingType: allowedBuildings) {
+                        MenuItem menuItem = moduleSubMenu.add(Menu.NONE, i+1, Menu.NONE, buildingType.name);
+                        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
+                                newBuilding.actionsQueue.clear();
+                                newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
+                                return false;
+                            }
+                        });
                     }
                 }
+                else {
+                    stringy = module.name;
+
+                    if (module.completionPercentage() < 1) {
+                        stringy += " (" + (int) (module.completionPercentage() * 100) + "% Completed)";
+                        //SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+                    }
+                    SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
+                    List<String> strings = new ArrayList<>();
+                    int[] yield = module.getYieldWithModules();
+                    String yieldString = "";
+                    if (yield[0] > 0) {
+                        yieldString += "+" + yield[0] + "Food";
+                    }
+                    if (yield[1] > 0) {
+                        yieldString += ", +" + yield[1] + "Prod.";
+                    }
+                    if (yield[2] > 0) {
+                        yieldString += ", +" + yield[2] + "Sci.";
+                    }
+                    if (yield[3] > 0) {
+                        yieldString += ", +" + yield[3] + "Cap.";
+                    }
+                    if (!yieldString.equals(""))
+                        strings.add(yieldString);
+                    for (Recipe recipe: module.recipes) {
+                        strings.add(recipe.toString());
+                    }
+                    for (String texty: strings) {
+                        MenuItem menuItem = moduleSubMenu.add(Menu.NONE, 0, Menu.NONE, texty);
+                    }
+                }
+            }*/
                 SubMenu unitSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build unit");
                 Set<PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
-                for (final PersonType personType: allowedPeople) {
+                for (final PersonType personType : allowedPeople) {
                     MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, personType.toString());
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {

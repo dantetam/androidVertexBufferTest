@@ -65,4 +65,5 @@ public enum BuildingType {
     public static BuildingType randomBuilding() {
         return BuildingType.fromInt((int) (Math.random() * numBuildingTypes));
     }
+    public int[] getYield() {return new int[]{0,0,0,0};}
 }

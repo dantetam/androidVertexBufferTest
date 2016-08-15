@@ -34,6 +34,8 @@ public class WorldHandler {
 
     //This block is to be rendered
     public HashMap<Tile.Biome, Solid> storedBiomeTiles; //Store all the hexes grouped by biomes, this way each biome can be rendered with its own texture.
+    public TerrainTextureHelper terrainTextureHelper;
+
     public Solid storedSelectedTileSolid;
     public Solid storedSelectedUnitSolid;
 
@@ -75,7 +77,7 @@ public class WorldHandler {
 
     public WorldHandler(LessonSevenActivity mActivity, LessonSevenRenderer mRenderer, MousePicker mousePicker, AssetHelper assetHelper, ChunkHelper chunkHelper, int len1, int len2) {
         world = new World(len1, len2);
-        worldGenerator = new WorldGenerator(world);
+        worldGenerator = new WorldGenerator(mActivity, world);
         worldGenerator.init();
         this.mActivity = mActivity;
         this.mRenderer = mRenderer;
@@ -271,6 +273,15 @@ public class WorldHandler {
             worldRepNeedsUpdate = false;
             //hexesShape = new HashMap<>();
             //tilesStored.add(generateHexes(world));
+
+            terrainTextureHelper = new TerrainTextureHelper(world);
+            HashMap<Tile.Biome, Integer> biomeTextures = terrainTextureHelper.getBiomeTextures();
+
+            float[][][] solidsOfBiomeData = new float[Tile.Biome.numBiomes][][];
+
+            //float minX = -9999, maxX = -9999, minZ = -9999, maxZ = -9999;
+            //float extra = (world.arrayLengthX + 1) % 2 == 1 ? TRANSLATE_FACTORZ * -0.5f : 0;
+
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
                 Condition cond = new Condition() {
                     public int desiredType = 0;
@@ -285,24 +296,55 @@ public class WorldHandler {
                     }
                 };
                 cond.init(i);
-                float[] color = Tile.Biome.colorFromInt(i);
                 //float[] color = {(int)(Math.random()*256f), (int)(Math.random()*256f), (int)(Math.random()*256f), 255f};
                 //System.out.println(color[0] + " " + color[1] + " " + color[2] + " " + color[3]);
-                int textureHandle = ColorTextureHelper.loadColor(color);
+                //int textureHandle = ColorTextureHelper.loadColor(color);
 
-                GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
+                /*GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
                 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
                 GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
                 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
-                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
+                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);*/
 
                 //int textureHandle = TextureHelper.loadTexture("usb_android");
-                Solid solidsOfBiome = generateHexes(textureHandle, world, tiles, cond);
-                storedBiomeTiles.put(Tile.Biome.fromInt(i), solidsOfBiome);
-                tilesStored.add(solidsOfBiome);
+                float[][] solidsOfBiome = generateHexes(world, tiles, cond);
+                /*for (int p = 0; p < solidsOfBiome[0].length; p += 3) {
+                    if (solidsOfBiome[0][p] < minX || minX == -9999) {
+                        minX = solidsOfBiome[0][p];
+                    }
+                    if (solidsOfBiome[0][p] > maxX || maxX == -9999) {
+                        maxX = solidsOfBiome[0][p];
+                    }
+                }*/
+                solidsOfBiomeData[i] = solidsOfBiome;
                 //tilesStored.add(solidsOfBiome[0]);
                 //tilesStored.add(solidsOfBiome[1]);
             }
+
+            //Find the bounds of the solid being generated. Then pretend that the bounding box is the canvas.
+            //We want to 'stretch' the texture generated over this canvas, such that it is seamless.
+            //If a and b are the bounding points in one dimension, and x is the in between point, then
+            //the percentage of 'betweenness' is measured by (x-a) / (b-a).
+            Vector3f maxBounds = new Vector3f((world.arrayLengthX + 1) * TRANSLATE_FACTORX, 0, 1 * TRANSLATE_FACTORZ);
+            Vector3f minBounds = new Vector3f(-1 * TRANSLATE_FACTORX, 0, (- world.arrayLengthZ - 1) * TRANSLATE_FACTORZ);
+            for (int i = 0; i < Tile.Biome.numBiomes; i++) {
+                float[][] solidsOfBiome = solidsOfBiomeData[i];
+                for (int p = 0; p < solidsOfBiome.length / 3; p++) {
+                    //Vector3f vertex = new Vector3f(solidsOfBiome[0][p], solidsOfBiome[0][p+1], solidsOfBiome[0][p+2]);
+                    float relativeX = (solidsOfBiome[0][3*p] - minBounds.x) / (maxBounds.x - minBounds.x);
+                    float relativeZ = (solidsOfBiome[0][3*p + 2] - minBounds.z) / (maxBounds.z - minBounds.z);
+                    solidsOfBiome[2][2*p] = relativeX; solidsOfBiome[2][2*p + 1] = relativeZ;
+                }
+            }
+
+            for (int i = 0; i < Tile.Biome.numBiomes; i++) {
+                //float[] color = Tile.Biome.colorFromInt(i);
+                int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
+                Solid solid = ObjLoader.loadSolid(textureHandle, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
+                storedBiomeTiles.put(Tile.Biome.fromInt(i), solid);
+                tilesStored.add(solid);
+            }
+
             /*LessonSevenRenderer.Condition cond = new LessonSevenRenderer.Condition() {
                 public boolean allowed(Object obj) {
                     if (!(obj instanceof Tile)) return false;
@@ -1335,13 +1377,13 @@ public class WorldHandler {
         return tilesStored;
     }*/
 
-    private Solid generateAllHexes(int textureHandle, World world) {
+    private float[][] generateAllHexes(World world) {
         Condition cond = new Condition() {
             public boolean allowed(Object obj) {
                 return true;
             }
         };
-        return generateHexes(textureHandle, world, world.getAllValidTiles(), cond);
+        return generateHexes(world, world.getAllValidTiles(), cond);
     }
 
     public Solid pathfinderRep(int textureHandle) {
@@ -1593,7 +1635,7 @@ public class WorldHandler {
 
     /**
      *
-     * @param textureHandle The texture for which this VBO will have
+     * @param //textureHandle The texture for which this VBO will have
      * @param world The world to represent
      * @param condition Some sort of restriction, if necessary. In this case,
      *                  we check that the tiles are of a certain biome.
@@ -1601,7 +1643,9 @@ public class WorldHandler {
      *                  under the same texture and VBO.
      * @return A new solid which is a representation of the provided world
      */
-    private Solid generateHexes(int textureHandle, World world, Collection<Tile> tiles, Condition condition) {
+    private static final float TRANSLATE_FACTORX = 3.3f;
+    private static final float TRANSLATE_FACTORZ = 4f;
+    private float[][] generateHexes(World world, Collection<Tile> tiles, Condition condition) {
         //Load the vtn data of one hex obj
         float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
 
@@ -1627,9 +1671,6 @@ public class WorldHandler {
         int cubeNormalDataOffset = 0;
         final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * numHexesToRender];
         int cubeTextureDataOffset = 0;
-
-        final float TRANSLATE_FACTORX = 3.3f;
-        final float TRANSLATE_FACTORZ = 4f;
 
         int xx = 0, zz = 0;
         for (int x = 0; x < world.arrayLengthX; x++) {
@@ -1665,9 +1706,9 @@ public class WorldHandler {
             //}
         }
 
-        tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-        Solid hexes = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
-        return hexes;
+        //tesselatedHexes = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+        //Solid hexes = ObjLoader.loadSolid(textureHandle, null, tesselatedHexes);
+        return new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
     }
 
     /**
