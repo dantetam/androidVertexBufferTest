@@ -106,7 +106,7 @@ public class TechXmlParser {
                     String unlockSpecialAbility = xpp.getAttributeValue(null, "specialAbility");
 
                     if (unlockBuilding != null) {
-                        newTech.unlockedBuildings.add(BuildingType.fromString(unlockBuilding));
+                        newTech.unlockedBuildings.add(clan.buildingTree.buildingTypes.get(unlockBuilding));
                     }
                     if (unlockResource != null) {
                         newTech.harvestableResources.add(ItemType.fromString(unlockResource));

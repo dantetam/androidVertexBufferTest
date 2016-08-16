@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.github.dantetam.world.BuildingTree;
+import io.github.dantetam.world.BuildingType;
 import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.PersonType;
 import io.github.dantetam.world.UnitTree;
@@ -70,8 +71,8 @@ public class BuildingXmlParser {
                 //System.out.println("Start document");
             } else if (eventType == XmlPullParser.START_TAG) {
                 //System.out.println("Start tag " + xpp.getName());
-                if (xpp.getName().equals("unit") || xpp.getName().equals("unitroot")) {
-                    String unitName = xpp.getAttributeValue(null, "name");
+                if (xpp.getName().equals("unit")) {
+                    String buildingName = xpp.getAttributeValue(null, "name");
 
                     String combatStatsStringy = xpp.getAttributeValue(null, "combatStats");
                     String[] splitCombatStats = combatStatsStringy.split("/");
@@ -80,36 +81,24 @@ public class BuildingXmlParser {
                         combatStats[i] = Integer.parseInt(splitCombatStats[i]);
                     }
 
-                    String normalStatsStringy = xpp.getAttributeValue(null, "normalStats");
-                    String[] splitNormalStats = normalStatsStringy.split("/");
-                    int[] normalStats = new int[splitNormalStats.length];
-                    for (int i = 0; i < normalStats.length; i++) {
-                        normalStats[i] = Integer.parseInt(splitCombatStats[i]);
+                    String yieldStatsStringy = xpp.getAttributeValue(null, "yield");
+                    String[] splitYieldStats = yieldStatsStringy.split("/");
+                    int[] yieldStats = new int[splitYieldStats.length];
+                    for (int i = 0; i < yieldStats.length; i++) {
+                        yieldStats[i] = Integer.parseInt(splitCombatStats[i]);
                     }
 
                     int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));
-                    //System.out.println(techName + " " + workNeeded);
-                    PersonType personType = new PersonType(unitName,
-                            normalStats[0], normalStats[0], normalStats[1], normalStats[1], //normalStats[2], normalStats[3],
-                            combatStats[0], combatStats[1], combatStats[2], combatStats[3], combatStats[4]);
-                    UnitTree.Unit newUnit = new UnitTree.Unit(personType);
-                    if (xpp.getName().equals("unitroot")) {
-                        tree.root = newUnit;
-                    }
-                    stack.add(newUnit);
-                    if (stackCounter >= 0) {
-                        stack.get(stackCounter).unlockedUnits.add(newUnit);
-                    }
-                    stackCounter++;
 
-                    String unlockBuilding = xpp.getAttributeValue(null, "building");
-
-                    tree.personTypes.put(unitName, personType);
+                    BuildingType buildingType = new BuildingType(buildingName,
+                            yieldStats[0], yieldStats[1], yieldStats[2], yieldStats[3], yieldStats[4], yieldStats[5]);
+                    buildingType.workNeeded = workNeeded;
+                    tree.buildingTypes.put(buildingName, buildingType);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 //System.out.println("End tag " + xpp.getName());
-                if (xpp.getName().equals("unit") || xpp.getName().equals("unitroot")) {
-                    stackCounter--;
+                if (xpp.getName().equals("unit")) {
+
                 }
             } else if (eventType == XmlPullParser.TEXT) {
                 //System.out.println("Text "+xpp.getText());

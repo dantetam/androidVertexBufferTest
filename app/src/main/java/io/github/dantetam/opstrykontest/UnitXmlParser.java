@@ -97,6 +97,8 @@ public class UnitXmlParser {
                     PersonType personType = new PersonType(unitName,
                             normalStats[0], normalStats[0], normalStats[1], normalStats[1], //normalStats[2], normalStats[3],
                             combatStats[0], combatStats[1], combatStats[2], combatStats[3], combatStats[4]);
+                    personType.workNeeded = workNeeded;
+
                     UnitTree.Unit newUnit = new UnitTree.Unit(personType);
                     if (xpp.getName().equals("unitroot")) {
                         tree.root = newUnit;
@@ -107,7 +109,7 @@ public class UnitXmlParser {
                     }
                     stackCounter++;
 
-                    String unlockBuilding = xpp.getAttributeValue(null, "building");
+                    String techNeeded = xpp.getAttributeValue(null, "tech"); //TODO: Use this data
 
                     tree.personTypes.put(unitName, personType);
                 }

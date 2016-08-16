@@ -30,4 +30,5 @@ public class PersonType {
         atk = a; def = d;
         maneuver = m; fire = f; shock = s;
     }
+
 }

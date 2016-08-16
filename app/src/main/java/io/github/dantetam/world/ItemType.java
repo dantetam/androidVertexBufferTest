@@ -31,7 +31,7 @@ public enum ItemType {
     STEEL             (100, "Steel"), //Workshop+
 
     GLASS_FIRE        (120, "Glass Fire"), //Lab+
-    CRYSTAL_CELLS     (121,  "Crystal Cells"),
+    CRYSTAL_CELLS     (121, "Crystal Cells"),
     PROGENITOR_MATTER (130, "Progenitor Matter"),
     XENOVOLTAIC_CELLS (131, "Xenovoltaic Cells"),
     ;

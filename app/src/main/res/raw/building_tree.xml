@@ -7,9 +7,12 @@ yields are in the form "food/production/science/capital/happiness/health"
 -->
 
 <imprroot>
-    <impr name="Farm" workNeeded="15" yield="2/0/0/0/0/0" tech="Agriculture">
-        <impr name="Greenhouse" workNeeded="30" yield="3/0/0/0/0/0" tech="Env. Control">
-            <impr name="Biodome" workNeeded="45" yield="4/1/0/0/0/0" tech="*">
+    <impr name="City" workNeeded="1" yield="1/1/1/1/0/1" tech="Landing">
+
+    </impr>
+    <impr name="Farm" workNeeded="15" resourceGroup="Farm" yield="2/0/0/0/0/0" tech="Agriculture">
+        <impr name="Greenhouse" workNeeded="30" resourceGroup="Farm" yield="3/0/0/0/0/0" tech="Env. Control">
+            <impr name="Biodome" workNeeded="45" resourceGroup="Farm" yield="4/1/0/0/0/0" tech="*">
 
             </impr>
         </impr>
@@ -21,23 +24,23 @@ yields are in the form "food/production/science/capital/happiness/health"
             </impr>
         </impr>
     </impr>
-    <impr name="Workshop" workNeeded="15" yield="0/1/0/1/0/0" tech="Workshops">
-        <impr name="Factory" workNeeded="30" yield="0/2/0/1/0/0" tech="Factorization">
-            <impr name="Automata" workNeeded="45" yield="0/3/0/2/0/0" tech="*">
+    <impr name="Workshop" workNeeded="15" resourceGroup="Workshop" yield="0/1/0/1/0/0" tech="Workshops">
+        <impr name="Factory" workNeeded="30" resourceGroup="Workshop" yield="0/2/0/1/0/0" tech="Factorization">
+            <impr name="Automata" workNeeded="45" resourceGroup="Workshop" yield="0/3/0/2/0/0" tech="*">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Mine" workNeeded="15" yield="0/2/0/0/0/0" tech="Mining">
-        <impr name="Quarry" workNeeded="30" yield="0/3/0/0/0/0" tech="Deep Mining">
-            <impr name="Drill" workNeeded="45" yield="0/4/0/0/0/0" tech="*">
+    <impr name="Mine" workNeeded="15" resourceGroup="Mine" yield="0/2/0/0/0/0" tech="Mining">
+        <impr name="Quarry" workNeeded="30" resourceGroup="Mine" yield="0/3/0/0/0/0" tech="Deep Mining">
+            <impr name="Drill" workNeeded="45" resourceGroup="Mine" yield="0/4/0/0/0/0" tech="*">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Field" workNeeded="15" yield="0/0/2/0/0/0" tech="Field Science">
-        <impr name="Lab" workNeeded="30" yield="0/1/4/0/0/0" tech="Lab">
-            <impr name="Advancement AI" workNeeded="45" yield="0/1/5/0/0/0" tech="*">
+    <impr name="Field" workNeeded="15" resourceGroup="Lab" yield="0/0/2/0/0/0" tech="Field Science">
+        <impr name="Lab" workNeeded="30" resourceGroup="Lab" yield="0/1/4/0/0/0" tech="Lab">
+            <impr name="Advancement AI" workNeeded="45" resourceGroup="Lab" yield="0/1/5/0/0/0" tech="*">
 
             </impr>
         </impr>

@@ -28,6 +28,11 @@ public class BuildingType {
         food = f; production = p; science = s; capital = c;
         happiness = ha; health = he;
     }
+
+    public int[] getYield() {
+        return new int[]{food, production, science, capital};
+    }
+
 }
 
 /*public enum BuildingType {

@@ -18,6 +18,7 @@ import io.github.dantetam.world.Item;
 import io.github.dantetam.world.ItemType;
 import io.github.dantetam.world.Person;
 import io.github.dantetam.world.PersonFactory;
+import io.github.dantetam.world.PersonType;
 import io.github.dantetam.world.Tile;
 import io.github.dantetam.world.World;
 
@@ -114,7 +115,7 @@ public class WorldGenerator {
                 clan = ClanFactory.randomClan();
             }
             clans.add(clan);
-            TechXmlParser.parseTest(clan, mActivity, R.raw.tech_tree);
+            TechXmlParser.parseTechTree(clan, mActivity, R.raw.tech_tree);
         }
         return clans;
     }
@@ -168,7 +169,7 @@ public class WorldGenerator {
             City firstCity = BuildingFactory.newCity(world, clan, clanHome, territory);
             firstCity.pickBestTiles();
             //first.move(clanHome);
-            Person unit = PersonFactory.newPerson(Person.PersonType.WARRIOR, world, clan, 1.0);
+            Person unit = PersonFactory.newPerson(clan.unitTree.personTypes.get("Warrior"), world, clan, 1.0);
             unit.move(clanHome);
         }
 
