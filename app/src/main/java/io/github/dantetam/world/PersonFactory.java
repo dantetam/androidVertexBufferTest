@@ -36,6 +36,14 @@ public class PersonFactory {
     }
 
     public static Person newPerson(PersonType type, final World world, final Clan clan, double completionPercentage) {
+        try {
+            if (type == null) {
+                throw new IllegalArgumentException("Improper type null given");
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+
         int health, maxHealth;
         final int actionPoints, maxActionPoints;
         List<Tech> skills = new ArrayList<>();

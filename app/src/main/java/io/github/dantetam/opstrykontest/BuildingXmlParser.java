@@ -71,21 +71,21 @@ public class BuildingXmlParser {
                 //System.out.println("Start document");
             } else if (eventType == XmlPullParser.START_TAG) {
                 //System.out.println("Start tag " + xpp.getName());
-                if (xpp.getName().equals("unit")) {
+                if (xpp.getName().equals("impr")) {
                     String buildingName = xpp.getAttributeValue(null, "name");
 
-                    String combatStatsStringy = xpp.getAttributeValue(null, "combatStats");
+                    /*String combatStatsStringy = xpp.getAttributeValue(null, "combatStats");
                     String[] splitCombatStats = combatStatsStringy.split("/");
                     int[] combatStats = new int[splitCombatStats.length];
                     for (int i = 0; i < combatStats.length; i++) {
                         combatStats[i] = Integer.parseInt(splitCombatStats[i]);
-                    }
+                    }*/
 
                     String yieldStatsStringy = xpp.getAttributeValue(null, "yield");
                     String[] splitYieldStats = yieldStatsStringy.split("/");
                     int[] yieldStats = new int[splitYieldStats.length];
                     for (int i = 0; i < yieldStats.length; i++) {
-                        yieldStats[i] = Integer.parseInt(splitCombatStats[i]);
+                        yieldStats[i] = Integer.parseInt(splitYieldStats[i]);
                     }
 
                     int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));
@@ -97,7 +97,7 @@ public class BuildingXmlParser {
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 //System.out.println("End tag " + xpp.getName());
-                if (xpp.getName().equals("unit")) {
+                if (xpp.getName().equals("impr")) {
 
                 }
             } else if (eventType == XmlPullParser.TEXT) {

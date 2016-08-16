@@ -10,6 +10,10 @@ import java.util.Set;
 public class BuildingFactory {
 
     public static City newCity(World world, Clan clan, Tile tile, Collection<Tile> cityTiles) {
+        /*System.out.println(clan.buildingTree);
+        System.out.println(clan.buildingTree.buildingTypes);
+        System.out.println(clan.buildingTree.buildingTypes.get("City"));*/
+
         City city = new City(world, clan, clan.buildingTree.buildingTypes.get("City"), cityTiles);
         clan.cities.add(city);
         //city.initModules(tile.numSpaces);

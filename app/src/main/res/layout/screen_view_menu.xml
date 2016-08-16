@@ -79,6 +79,7 @@
 
 
         </android.support.percent.PercentRelativeLayout>
+        <!--
         <io.github.dantetam.opstrykontest.GameScreen
             app:margin="5"
             android:layout_width="match_parent"
@@ -86,7 +87,7 @@
             app:layout_widthPercent="40%"
             app:layout_heightPercent="40%"
             app:layout_marginTopPercent="50%"
-            app:layout_marginLeftPercent="50%" />
+            app:layout_marginLeftPercent="50%" />-->
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/clan_menu"
             android:layout_width="match_parent"

@@ -329,17 +329,19 @@ public class WorldHandler {
             Vector3f minBounds = new Vector3f(-1 * TRANSLATE_FACTORX, 0, (- world.arrayLengthZ - 1) * TRANSLATE_FACTORZ);
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
                 float[][] solidsOfBiome = solidsOfBiomeData[i];
-                for (int p = 0; p < solidsOfBiome.length / 3; p++) {
+                for (int p = 0; p < solidsOfBiome[0].length / 3; p++) {
                     //Vector3f vertex = new Vector3f(solidsOfBiome[0][p], solidsOfBiome[0][p+1], solidsOfBiome[0][p+2]);
                     float relativeX = (solidsOfBiome[0][3*p] - minBounds.x) / (maxBounds.x - minBounds.x);
                     float relativeZ = (solidsOfBiome[0][3*p + 2] - minBounds.z) / (maxBounds.z - minBounds.z);
                     solidsOfBiome[2][2*p] = relativeX; solidsOfBiome[2][2*p + 1] = relativeZ;
+                    //System.out.println(relativeX + " < > " + relativeZ);
                 }
             }
 
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
                 //float[] color = Tile.Biome.colorFromInt(i);
-                int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
+                //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
+                int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
                 Solid solid = ObjLoader.loadSolid(textureHandle, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
                 storedBiomeTiles.put(Tile.Biome.fromInt(i), solid);
                 tilesStored.add(solid);

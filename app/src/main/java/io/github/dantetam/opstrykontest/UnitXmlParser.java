@@ -67,7 +67,7 @@ public class UnitXmlParser {
         int stackCounter = -1;
         List<UnitTree.Unit> stack = new ArrayList<>();
 
-        HashMap<String, String> addRequirementsNames = new HashMap<>();
+        //HashMap<String, String> addRequirementsNames = new HashMap<>();
         int eventType = xpp.getEventType();
 
         while (eventType != XmlPullParser.END_DOCUMENT) {

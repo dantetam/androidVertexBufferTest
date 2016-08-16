@@ -115,6 +115,8 @@ public class WorldGenerator {
                 clan = ClanFactory.randomClan();
             }
             clans.add(clan);
+            UnitXmlParser.parseUnitTree(clan, mActivity, R.raw.unit_tree);
+            BuildingXmlParser.parseBuildingTree(clan, mActivity, R.raw.building_tree);
             TechXmlParser.parseTechTree(clan, mActivity, R.raw.tech_tree);
         }
         return clans;
@@ -169,7 +171,8 @@ public class WorldGenerator {
             City firstCity = BuildingFactory.newCity(world, clan, clanHome, territory);
             firstCity.pickBestTiles();
             //first.move(clanHome);
-            Person unit = PersonFactory.newPerson(clan.unitTree.personTypes.get("Warrior"), world, clan, 1.0);
+
+            Person unit = PersonFactory.newPerson(clan.unitTree.personTypes.get("Soldier"), world, clan, 1.0);
             unit.move(clanHome);
         }
 

@@ -13,6 +13,7 @@ public class BuildingTree {
 
     public BuildingTree(Clan c) {
         clan = c;
+        clan.buildingTree = this;
         buildingTypes = new HashMap<>();
     }
 
