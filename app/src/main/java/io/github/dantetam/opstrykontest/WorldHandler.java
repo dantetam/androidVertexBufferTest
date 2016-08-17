@@ -340,8 +340,8 @@ public class WorldHandler {
 
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
                 //float[] color = Tile.Biome.colorFromInt(i);
-                //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
-                int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
+                int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
+                //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
                 Solid solid = ObjLoader.loadSolid(textureHandle, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
                 storedBiomeTiles.put(Tile.Biome.fromInt(i), solid);
                 tilesStored.add(solid);
@@ -1528,8 +1528,8 @@ public class WorldHandler {
 
             //mousePicker.selectedNeedsUpdating = false;
 
-            float[][] hexData = mRenderer.assetHelper.compressIntoFloatData("unitmarker.obj");
-            //float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+            //float[][] hexData = mRenderer.assetHelper.compressIntoFloatData("quad.obj");
+            float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
 
             //Create some appropriately sized tables which will store preliminary buffer data
             //Combine them all within these pieces of data.
@@ -1540,17 +1540,9 @@ public class WorldHandler {
             final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
             int cubeTextureDataOffset = 0;
 
-            //final float[] scaledData = scaleData(hexData[0], 0.3f, 0.3f, 0.3f);
-
-            //Vector3f selectedPos = storedTileVertexPositions.get(selectedLocation);
-
-            //final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 2f, selectedPos.z + 1.4f);
-
-            final float[] scaledData = scaleData(hexData[0], 0.3f, 0.3f, 0.3f);
-
+            final float[] scaledData = scaleData(hexData[0], 1, 0, 1);
             Vector3f selectedPos = storedTileVertexPositions.get(selectedLocation);
-
-            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 2f, selectedPos.z + 1.4f);
+            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.1f, selectedPos.z);
 
             //Interleave all the new vtn data, per hex.
             System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);

@@ -473,6 +473,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         if (moveCameraInFramesAfter != -1) {
             moveCameraInFramesAfter--;
             if (moveCameraInFramesAfter == 0) {
+                System.out.println("Moving");
                 moveCameraInFramesAfter = -1;
                 //Find the next unit to move, or the next building
                 if (nextUnit == null) {
@@ -494,6 +495,15 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
                 camera.moveTo(pointAt.x, 6f, pointAt.z + 1.5f);
                 camera.pointTo(pointAt.x, 1f, pointAt.z);
+
+                if (nextUnit instanceof Building) {
+                    mousePicker.changeSelectedTile(nextUnit.location());
+                }
+                else {
+                    mousePicker.changeSelectedUnit(nextUnit);
+                }
+
+                nextUnit = null;
             }
         }
     }

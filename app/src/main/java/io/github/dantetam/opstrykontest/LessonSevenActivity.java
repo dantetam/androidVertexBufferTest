@@ -224,25 +224,33 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public void onClickNextTurnMenu(View v) {
-        PopupMenu tempMenu = new PopupMenu(this, v);
-        MenuInflater inflater = tempMenu.getMenuInflater();
-        inflater.inflate(R.menu.next_turn_menu, tempMenu.getMenu());
-        tempMenu.show();
-        if (mRenderer.findNextUnit() != null) {
-            ((MenuItem) findViewById(R.id.next_turn_button)).setTitle("UNIT NEEDS ORDERS");
+        Entity en = mRenderer.findNextUnit();
+        if (en != null) {
+            ((Button)v).setText("UNIT NEEDS ORDERS");
+            //((MenuItem) findViewById(R.id.next_turn_button)).setTitle("UNIT NEEDS ORDERS");
+
+            mRenderer.debounceFrames = 10;
+
+            mRenderer.moveCameraInFramesAfter = 1;
+            mRenderer.nextUnit = en;
         }
         else {
-            ((MenuItem) findViewById(R.id.next_turn_button)).setTitle("NEXT TURN");
+            ((Button)v).setText("NEXT TURN");
+            //((MenuItem) findViewById(R.id.next_turn_button)).setTitle("NEXT TURN");
+            PopupMenu tempMenu = new PopupMenu(this, v);
+            MenuInflater inflater = tempMenu.getMenuInflater();
+            inflater.inflate(R.menu.next_turn_menu, tempMenu.getMenu());
+            tempMenu.show();
         }
     }
 
     public boolean onClickNextTurnButton(MenuItem item) {
         Entity en = mRenderer.findNextUnit();
-        if (en != null && (turnStyle == AutomaticTurn.AUTOMATIC || turnStyle == AutomaticTurn.ON_PRESS_TURN)) {
+        /*if (en != null && (turnStyle == AutomaticTurn.AUTOMATIC || turnStyle == AutomaticTurn.ON_PRESS_TURN)) {
             mRenderer.moveCameraInFramesAfter = 1;
             mRenderer.nextUnit = en;
         }
-        else
+        else*/
             mRenderer.worldSystem.turn();
         return true;
     }
@@ -401,6 +409,7 @@ public class LessonSevenActivity extends Activity implements
                 SubMenu unitSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build unit");
                 Set<PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
                 for (final PersonType personType : allowedPeople) {
+                    System.out.println(personType + " " + allowedPeople.size());
                     MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, personType.toString());
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {

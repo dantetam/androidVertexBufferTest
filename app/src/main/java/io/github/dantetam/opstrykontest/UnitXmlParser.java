@@ -89,7 +89,7 @@ public class UnitXmlParser {
                     String[] splitNormalStats = normalStatsStringy.split("/");
                     int[] normalStats = new int[splitNormalStats.length];
                     for (int i = 0; i < normalStats.length; i++) {
-                        normalStats[i] = Integer.parseInt(splitCombatStats[i]);
+                        normalStats[i] = Integer.parseInt(splitNormalStats[i]);
                     }
 
                     int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));

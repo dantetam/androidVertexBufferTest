@@ -118,6 +118,7 @@ public class WorldGenerator {
             UnitXmlParser.parseUnitTree(clan, mActivity, R.raw.unit_tree);
             BuildingXmlParser.parseBuildingTree(clan, mActivity, R.raw.building_tree);
             TechXmlParser.parseTechTree(clan, mActivity, R.raw.tech_tree);
+            clan.techTree.unlock("Landing");
         }
         return clans;
     }
