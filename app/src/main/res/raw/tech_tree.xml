@@ -9,7 +9,7 @@
 
             </tech>
             <tech name="Advancement Lab" workNeeded="150" resource="Crystal Cells" unit="Powered Infantry">
-                <tech name="Xenomind Lab" workNeeded="200" resource="Xenopharma">
+                <tech name="Xenomind" workNeeded="200" requirement="Xenopharma">
 
                 </tech>
                 <tech name="Primordial Assembly" workNeeded="200" requirement="Genetics" building="Genetic Assembler" resource="Progenitor Matter">

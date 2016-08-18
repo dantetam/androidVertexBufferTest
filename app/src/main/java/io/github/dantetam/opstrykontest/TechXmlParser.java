@@ -100,6 +100,7 @@ public class TechXmlParser {
                     stack.add(newTech);
                     if (stackCounter >= 0) {
                         stack.get(stackCounter).unlockedTechs.add(newTech);
+                        newTech.parent = stack.get(stackCounter);
                     }
                     stackCounter++;
 
@@ -143,6 +144,8 @@ public class TechXmlParser {
         for (Map.Entry<String, String> entry: addRequirementsNames.entrySet()) {
             Tech subject = tree.techMap.get(entry.getKey());
             Tech requirement = tree.techMap.get(entry.getValue());
+            /*if (requirement == null)
+                System.out.println(entry.getKey() + "<<<<" + entry.getValue());*/
             subject.extraReqs.add(requirement);
         }
         //System.out.println("End document");
@@ -160,8 +163,8 @@ public class TechXmlParser {
         int eventType = xpp.getEventType();
 
         //Adjust so that all the indices are not negative, this is required for the tech GridLayout
-        int minX = 0; int minY = 0;
-        int maxY = 0;
+        int minX = 0, minY = 0;
+        int maxX = 0, maxY = 0;
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_DOCUMENT) {
@@ -177,9 +180,13 @@ public class TechXmlParser {
                     int offX = Integer.parseInt(offsetStringX), offY = Integer.parseInt(offsetStringY);
 
                     if (offX < minX) minX = offX;
+                    else if (offX > maxX) maxX = offX;
                     if (offY < minY) minY = offY;
                     else if (offY > maxY) maxY = offY;
 
+                    if (modifyTech == null) {
+                        System.out.println(techName);
+                    }
                     modifyTech.offsetX = offX; modifyTech.offsetY = offY;
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
@@ -195,6 +202,9 @@ public class TechXmlParser {
 
         tree.globalOffsetX = minX; tree.globalOffsetY = minY;
         tree.globalOffsetMaxY = maxY;
+
+        tree.hardGlobalMinimum = new Vector2f(minX, minY);
+        tree.hardGlobalMaximum = new Vector2f(maxX - 4, maxY);
     }
 
 }

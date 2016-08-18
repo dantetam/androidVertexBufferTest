@@ -114,10 +114,20 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 					
 					//mRenderer.mDeltaX += deltaX;
 					//mRenderer.mDeltaY += deltaY;
-					mRenderer.camera.moveShift(-deltaX/10, 0, -deltaY/10);
-					mRenderer.camera.pointShift(-deltaX/10, 0, -deltaY/10);
 
-                    if (mousePicker != null) {
+                    if (mActivity.findViewById(R.id.tech_tree_screen) != null && mActivity.findViewById(R.id.tech_tree_screen).getVisibility() == View.VISIBLE) {
+                        int oldTechValueX = (int) playerClan.techTree.globalOffsetX;
+                        playerClan.techTree.modifYX(-deltaX / 50f);
+                        int newTechValueX = (int) playerClan.techTree.globalOffsetX;
+                        //System.out.println("updating " + oldTechValueX + " to " + newTechValueX);
+                        if (oldTechValueX != newTechValueX) {
+                            mActivity.updateTechMenu();
+                        }
+                    }
+                    else if (mousePicker != null) {
+                        mRenderer.camera.moveShift(-deltaX/10, 0, -deltaY/10);
+                        mRenderer.camera.pointShift(-deltaX/10, 0, -deltaY/10);
+
                         Tile previousSelectedTile = mousePicker.getSelectedTile();
                         Entity previousSelectedEntity = mousePicker.getSelectedEntity();
                         mousePicker.update(x, y, mRenderer.getCombatMode());
@@ -142,7 +152,6 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                                 }
                             }
                         }
-
                     }
 				}
 			}	

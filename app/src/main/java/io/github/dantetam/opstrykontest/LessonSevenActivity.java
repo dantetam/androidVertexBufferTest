@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -728,41 +729,53 @@ public class LessonSevenActivity extends Activity implements
             techScreen.setVisibility(View.VISIBLE);
             //Clear the tech tree and setup a new one
             //TODO: Update this only when techs update (set a listener?)
-            techScreen.removeAllViews();
+            updateTechMenu();
+        }
+    }
 
-            TechTree tree = playerClan.techTree;
-            for (Map.Entry<String, Tech> entry: playerClan.techTree.techMap.entrySet()) {
-                Tech tech = entry.getValue();
-                TextView textView = new TextView(this);
-                textView.setText(tech.name);
+    public void updateTechMenu() {
+        GridLayout techScreen = (GridLayout) findViewById(R.id.tech_tree_screen);
+        techScreen.removeAllViews();
 
-                if (playerClan.techTree.researchingTechQueue.contains(tech)) {
-                    textView.setBackgroundColor(Color.CYAN);
-                    textView.setTextColor(Color.LTGRAY);
-                }
-                else if (tech.unlocked()) {
-                    textView.setBackgroundColor(Color.BLUE);
-                }
-                else if (tech.parent.unlocked()) {
-                    textView.setBackgroundColor(Color.GREEN);
-                }
+        TechTree tree = playerClan.techTree;
+        for (Map.Entry<String, Tech> entry: playerClan.techTree.techMap.entrySet()) {
+            Tech tech = entry.getValue();
 
-                int calcGridPosX = tech.offsetX - tree.globalOffsetX;
-                int calcGridPosY = tree.globalOffsetMaxY - tech.offsetY;
+            int calcGridPosRow = (int)(tree.globalOffsetMaxY - tech.offsetY);
+            int calcGridPosCol = (int)(tech.offsetX - tree.globalOffsetX);
 
-                GridLayout.LayoutParams param = new GridLayout.LayoutParams(
-                        GridLayout.spec(calcGridPosX, GridLayout.LEFT),
-                        GridLayout.spec(calcGridPosY, GridLayout.BOTTOM));
-                param.height = GridLayout.LayoutParams.WRAP_CONTENT;
-                param.width = GridLayout.LayoutParams.WRAP_CONTENT;
-                //param.rightMargin = 5;
-                //param.topMargin = 5;
-                //param.setGravity(Gravity.CENTER);
-                //param.columnSpec = GridLayout.spec(c);
-                //param.rowSpec = GridLayout.spec(r);
-                textView.setLayoutParams(param);
-                techScreen.addView(textView);
+            if (calcGridPosRow < 0 || calcGridPosCol < 0 || calcGridPosRow > 8 || calcGridPosCol > 5) {
+                continue;
             }
+
+            TextView textView = new TextView(this);
+            textView.setText(tech.name);
+
+            if (playerClan.techTree.researchingTechQueue.contains(tech)) {
+                textView.setBackgroundColor(Color.MAGENTA);
+                //textView.setTextColor(Color.BLACK);
+            }
+            else if (tech.researched()) {
+                textView.setBackgroundColor(Color.BLUE);
+                textView.setTextColor(Color.WHITE);
+            }
+            else if (tech.researchable()) {
+                textView.setBackgroundColor(Color.GREEN);
+            }
+
+            GridLayout.LayoutParams param = new GridLayout.LayoutParams(
+                    GridLayout.spec(calcGridPosRow, GridLayout.LEFT),
+                    GridLayout.spec(calcGridPosCol, GridLayout.BOTTOM));
+            param.setGravity(Gravity.CENTER);
+            param.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            param.width = GridLayout.LayoutParams.WRAP_CONTENT;
+            //param.rightMargin = 5;
+            //param.topMargin = 5;
+            //param.setGravity(Gravity.CENTER);
+            //param.columnSpec = GridLayout.spec(c);
+            //param.rowSpec = GridLayout.spec(r);
+            textView.setLayoutParams(param);
+            techScreen.addView(textView);
         }
     }
 

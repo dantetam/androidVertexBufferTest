@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.github.dantetam.opstrykontest.Condition;
+import io.github.dantetam.opstrykontest.Vector2f;
 
 /**
  * Created by Dante on 7/4/2016.
@@ -25,8 +26,11 @@ public class TechTree {
     public HashMap<ItemType, Boolean> allowedHarvestable;
     public HashMap<String, Boolean> specialAbilities;
 
-    public int globalOffsetX = 0, globalOffsetY = 0;
-    public int globalOffsetMaxY = 0;
+    //These values are used for interfaces that render the tech tree GUI
+    //presumably as a GridLayout.
+    public Vector2f hardGlobalMinimum, hardGlobalMaximum;
+    public float globalOffsetX = 0, globalOffsetY = 0;
+    public float globalOffsetMaxY = 0;
 
     public TechTree(Clan clan) {
         this.clan = clan;
@@ -53,7 +57,7 @@ public class TechTree {
             return;
         }
         Tech researching = researchingTechQueue.get(0);
-        if (researching.unlocked()) {
+        if (researching.researched()) {
             activateTechAbilities(researching);
         }
         researchingTechQueue.remove(0);
@@ -131,7 +135,7 @@ public class TechTree {
             public boolean allowed(Object obj) {
                 if (!(obj instanceof Tech)) return false; //Safety check
                 Tech tech = (Tech) obj;
-                return tech.unlocked() && tech.hasUnresearchedChildren();
+                return tech.researched() && tech.hasUnresearchedChildren();
             }
         };
         return traverse(borderCondition);
@@ -142,7 +146,7 @@ public class TechTree {
         List<Tech> researchable = new ArrayList<>();
         for (Tech t: borderTech) {
             for (Tech child: t.unlockedTechs) {
-                if (!child.unlocked()) {
+                if (!child.researched()) {
                     researchable.add(child);
                 }
             }
@@ -195,6 +199,12 @@ public class TechTree {
         for (Tech tech: t.unlockedTechs) {
             traverseAndPrint(tech, level + 1);
         }
+    }
+
+    public void modifYX(float dx) {
+        globalOffsetX += dx;
+        if (globalOffsetX < hardGlobalMinimum.x) globalOffsetX = hardGlobalMinimum.x;
+        if (globalOffsetX > hardGlobalMaximum.x) globalOffsetX = hardGlobalMaximum.x;
     }
 
 }

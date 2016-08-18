@@ -14,6 +14,8 @@ public class Tech {
     public List<Tech> extraReqs;
     public List<Tech> unlockedTechs;
 
+    private boolean researched = false;
+
     public List<BuildingType> unlockedBuildings;
     public List<BuildingType> unlockedDistricts;
     public List<String> unlockedUnits;
@@ -40,21 +42,37 @@ public class Tech {
         //allowedBuildingsAndModules = new HashMap<>();
     }
 
-    public boolean unlocked() {
-        return researchCompleted >= researchNeeded;
+    public boolean researched() {
+        return researched;
+    }
+
+    public boolean researchable() {
+        for (Tech req: extraReqs) {
+            if (!req.researched()) {
+                return false;
+            }
+        }
+        if (parent != null) {
+            return parent.researched();
+        }
+        return !researched;
     }
 
     public void research(int researchAmount) {
         researchCompleted += researchAmount;
+        if (researchCompleted >= researchNeeded) {
+            researched = true;
+        }
     }
 
     public void forceUnlock() {
+        researched = true;
         researchCompleted = researchNeeded;
     }
 
     public boolean hasUnresearchedChildren() {
         for (Tech tech: unlockedTechs) {
-            if (!tech.unlocked()) {
+            if (!tech.researched()) {
                 return true;
             }
         }
