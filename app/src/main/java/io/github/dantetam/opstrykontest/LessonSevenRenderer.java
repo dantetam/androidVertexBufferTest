@@ -512,6 +512,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         mLessonSevenActivity.runOnUiThread(new Runnable() {
             public void run() {
                 mLessonSevenActivity.findViewById(R.id.main_menu).setVisibility(View.VISIBLE);
+                mLessonSevenActivity.findViewById(R.id.tech_menu).setVisibility(View.VISIBLE);
                 mLessonSevenActivity.findViewById(R.id.turn_menu).setVisibility(View.VISIBLE);
                 LinearLayout linearLayout = (LinearLayout) mLessonSevenActivity.findViewById(R.id.clan_menu);
                 linearLayout.setVisibility(View.VISIBLE);

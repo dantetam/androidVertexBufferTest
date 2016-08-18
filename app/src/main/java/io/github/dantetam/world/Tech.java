@@ -22,6 +22,8 @@ public class Tech {
 
     public int researchCompleted, researchNeeded;
 
+    public int offsetX, offsetY;
+
     public Tech(String n, int researchCompleted, int researchNeeded) {
         name = n;
         this.researchCompleted = researchCompleted;

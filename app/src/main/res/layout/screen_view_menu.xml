@@ -13,6 +13,45 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/tech_tree_screen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="10"
+            android:rowCount="10"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            app:layout_widthPercent="80%"
+            app:layout_heightPercent="80%"
+            app:layout_marginTopPercent="25%"
+            app:layout_marginLeftPercent="10%">
+            <!--
+            <Button
+                android:id="@+id/button3"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:text="Button3" />
+            <Button
+                android:id="@+id/button4"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:text="Button4" />
+            <Button
+                android:id="@+id/button5"
+                android:layout_column="2"
+                android:layout_row="2"
+                android:text="Button5" />
+            <Button
+                android:id="@+id/button6"
+                android:layout_column="3"
+                android:layout_row="3"
+                android:text="Button6" />
+            <Button
+                android:id="@+id/button7"
+                android:layout_column="4"
+                android:layout_row="4"
+                android:text="Button7" />-->
+        </GridLayout>
         <android.support.percent.PercentRelativeLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -107,12 +146,24 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_widthPercent="20%"
-            app:layout_heightPercent="15%"
+            app:layout_heightPercent="10%"
             app:layout_marginTopPercent="0%"
             app:layout_marginLeftPercent="0%"
             android:contentDescription="@string/new_world"
             android:visibility="invisible"
             android:onClick="onClickNewWorld" />
+        <Button
+            android:id="@+id/tech_menu"
+            android:text="@string/tech_menu"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_widthPercent="20%"
+            app:layout_heightPercent="10%"
+            app:layout_marginTopPercent="10%"
+            app:layout_marginLeftPercent="0%"
+            android:contentDescription="@string/tech_menu"
+            android:visibility="invisible"
+            android:onClick="onClickTechMenu" />
         <Button
             android:id="@+id/quick_summary_view"
             android:text=""

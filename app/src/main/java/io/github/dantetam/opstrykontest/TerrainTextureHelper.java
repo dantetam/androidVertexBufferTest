@@ -2,6 +2,7 @@ package io.github.dantetam.opstrykontest;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.ImageView;
 
 import java.util.HashMap;
 
@@ -49,27 +50,32 @@ public class TerrainTextureHelper {
         int r = (int)biomeColor[0]*255, g = (int)biomeColor[1]*255, b = (int)biomeColor[2]*255, a = (int)biomeColor[3]*255;
 
         //int gray = (int)(Math.random()*255);
-        //int blendR = (r + gray) / 2; int blendG = (g + gray) / 2; int blendB = (r + gray) / 2; int blendA = 255;
+        //int blendR = (r + gray) / 2; int blendG = (g + gray) / 2; int blendB = (b + gray) / 2; int blendA = 255;
         //int rgba = ColorTextureHelper.intFromColor(blendR, blendG, blendB, blendA);
 
-        for (int y = 0; y < bitmap.getHeight(); y++){
-            for (int x = 0; x < bitmap.getWidth(); x++){
+        for (int y = 0; y < bitmap.getHeight(); y++) {
+            for (int x = 0; x < bitmap.getWidth(); x++) {
                 int worldPositionX = (int)((float) x / (float) bitmap.getWidth() * (float) world.arrayLengthX);
                 int worldPositionZ = (int)((float) y / (float) bitmap.getHeight() * (float) world.arrayLengthZ);
-                Tile respTile = world.getTile(worldPositionX, worldPositionZ);
-                if (respTile != null) {
-
-                }
                 int noiseColor = noise.getPixel(x, y);
                 int nr = (noiseColor >>> 16) & 255;
                 int ng = (noiseColor >>> 8) & 255;
                 int nb = (noiseColor >>> 0) & 255;
                 int na = (noiseColor >>> 24) & 255;
 
+                Tile respTile = world.getTile(worldPositionX, worldPositionZ);
+                if (respTile != null) {
+                    int terrainNumProportion = (int)((float) Math.abs(Tile.Biome.numBiomes / 2 - respTile.biome.type) / (float) Tile.Biome.numBiomes * 255f) + 128;
+                    nr = (nr + terrainNumProportion) / 2;
+                    ng = (ng + terrainNumProportion) / 2;
+                    nb = (nb + terrainNumProportion) / 2;
+                }
+
                 int rgba = ColorTextureHelper.intFromColor((r + nr) / 2, (g + ng) / 2, (b + nb) / 2, 255);
                 bitmap.setPixel(x, y, rgba);
             }
         }
+
         //Bitmap bitMap = Bitmap.createBitmap(colors, width, height, Bitmap.Config.ARGB_8888);
         return bitmap;
     }

@@ -14,6 +14,8 @@ public class TechTree {
     public Clan clan;
     public Tech root;
 
+    public HashMap<String, Tech> techMap;
+
     public List<Tech> researchingTechQueue;
 
     //public HashMap<BuildingType, List<BuildingType>> allowedModules;
@@ -23,9 +25,14 @@ public class TechTree {
     public HashMap<ItemType, Boolean> allowedHarvestable;
     public HashMap<String, Boolean> specialAbilities;
 
+    public int globalOffsetX = 0, globalOffsetY = 0;
+    public int globalOffsetMaxY = 0;
+
     public TechTree(Clan clan) {
         this.clan = clan;
         clan.techTree = this;
+
+        techMap = new HashMap<>();
 
         researchingTechQueue = new ArrayList<>();
 

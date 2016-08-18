@@ -287,6 +287,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             Button unitMenu = (Button) mActivity.findViewById(R.id.unit_menu);
             unitMenu.setVisibility(View.INVISIBLE);
 
+            mActivity.findViewById(R.id.tech_menu).setVisibility(View.INVISIBLE);
+
             Button queueMenu = (Button) mActivity.findViewById(R.id.queue_menu);
             queueMenu.setVisibility(View.INVISIBLE);
 
@@ -296,14 +298,14 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             Button infoMenu = (Button) mActivity.findViewById(R.id.info_menu);
             infoMenu.setVisibility(View.INVISIBLE);
 
-            Button exitOombatMenu = (Button) mActivity.findViewById(R.id.combat_exit_menu);
-            exitOombatMenu.setVisibility(View.VISIBLE);
+            Button exitCombatMenu = (Button) mActivity.findViewById(R.id.combat_exit_menu);
+            exitCombatMenu.setVisibility(View.VISIBLE);
 
             //mActivity.setContentView(R.layout.combat_view_menu);
         }
         else {
-            Button exitOombatMenu = (Button) mActivity.findViewById(R.id.combat_exit_menu);
-            exitOombatMenu.setVisibility(View.INVISIBLE);
+            Button exitCombatMenu = (Button) mActivity.findViewById(R.id.combat_exit_menu);
+            exitCombatMenu.setVisibility(View.INVISIBLE);
 
             if (mousePicker.selectedNeedsUpdating()) {
                 mousePicker.nextFrameSelectedNeedsUpdating = false;
@@ -394,6 +396,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 infoMenu.setVisibility(
                         selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
                 );
+
+                mActivity.findViewById(R.id.tech_menu).setVisibility(!(selectedTileExists || selectedEntityExists) ? View.VISIBLE : View.INVISIBLE);
             }
         }
     }

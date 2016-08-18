@@ -37,7 +37,7 @@
         <tech name="Alloy Forging" x="-1" y="-2">
             <tech name="Factorization" x="-1" y="-3">
                 <tech name="Military Lab" x="0" y="-3">
-                    <tech name="Colonization" x="-1" y="4">
+                    <tech name="Colonization" x="-1" y="-4">
 
                     </tech>
                     <tech name="Discipline" x="0" y="-4">
@@ -90,8 +90,8 @@
                 </tech>
             </tech>
         </tech>
-        <tech name="Militarization" x="1" y="-2">
-            <tech name="Specialized Weapons" workNeeded="120" >
+        <tech name="Militarization" x="2" y="-2">
+            <tech name="Specialized Weapons" x="1" y="-3">
 
             </tech>
         </tech>

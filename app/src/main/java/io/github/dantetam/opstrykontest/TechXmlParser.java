@@ -42,11 +42,14 @@ import io.github.dantetam.world.TechTree;
 public class TechXmlParser {
     private static final String ns = null;
 
-    public static TechTree parseTechTree(Clan clan, Context context, int resourceId) {
-        final InputStream inputStream = context.getResources().openRawResource(
+    public static TechTree parseTechTree(Clan clan, Context context, int resourceId, int secondResourceId) {
+        final InputStream techStream = context.getResources().openRawResource(
                 resourceId);
+        final InputStream techLocationStream = context.getResources().openRawResource(
+                secondResourceId);
         try {
-            return parseTechTree(clan, inputStream);
+            TechTree result = parseTechTree(clan, techStream);
+            parseTechLocationTree(result, techLocationStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -77,7 +80,7 @@ public class TechXmlParser {
         xpp.setInput(inputStream, null);
         int stackCounter = -1;
         List<Tech> stack = new ArrayList<>();
-        HashMap<String, Tech> techMap = new HashMap<>();
+        tree.techMap = new HashMap<>();
         HashMap<String, String> addRequirementsNames = new HashMap<>();
         int eventType = xpp.getEventType();
 
@@ -118,7 +121,7 @@ public class TechXmlParser {
                         newTech.unlockedSpecialAbilities.add(unlockSpecialAbility);
                     }
 
-                    techMap.put(techName, newTech);
+                    tree.techMap.put(techName, newTech);
                     //A forward declaration for requirements?
                     String extraRequirement = xpp.getAttributeValue(null, "requirement");
                     if (extraRequirement != null) {
@@ -138,12 +141,60 @@ public class TechXmlParser {
         }
 
         for (Map.Entry<String, String> entry: addRequirementsNames.entrySet()) {
-            Tech subject = techMap.get(entry.getKey());
-            Tech requirement = techMap.get(entry.getValue());
+            Tech subject = tree.techMap.get(entry.getKey());
+            Tech requirement = tree.techMap.get(entry.getValue());
             subject.extraReqs.add(requirement);
         }
         //System.out.println("End document");
         return tree;
+    }
+
+    //Mutate a tech tree by setting all the render positions
+    public static void parseTechLocationTree(TechTree tree, InputStream inputStream)
+            throws XmlPullParserException, IOException {
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        factory.setNamespaceAware(false);
+        XmlPullParser xpp = factory.newPullParser();
+        xpp.setInput(inputStream, null);
+
+        int eventType = xpp.getEventType();
+
+        //Adjust so that all the indices are not negative, this is required for the tech GridLayout
+        int minX = 0; int minY = 0;
+        int maxY = 0;
+
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            if (eventType == XmlPullParser.START_DOCUMENT) {
+                //System.out.println("Start document");
+            } else if (eventType == XmlPullParser.START_TAG) {
+                //System.out.println("Start tag " + xpp.getName());
+                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
+                    String techName = xpp.getAttributeValue(null, "name");
+                    Tech modifyTech = tree.techMap.get(techName);
+
+                    String offsetStringX = xpp.getAttributeValue(null, "x");
+                    String offsetStringY = xpp.getAttributeValue(null, "y");
+                    int offX = Integer.parseInt(offsetStringX), offY = Integer.parseInt(offsetStringY);
+
+                    if (offX < minX) minX = offX;
+                    if (offY < minY) minY = offY;
+                    else if (offY > maxY) maxY = offY;
+
+                    modifyTech.offsetX = offX; modifyTech.offsetY = offY;
+                }
+            } else if (eventType == XmlPullParser.END_TAG) {
+                //System.out.println("End tag " + xpp.getName());
+                if (xpp.getName().equals("tech") || xpp.getName().equals("techroot")) {
+
+                }
+            } else if (eventType == XmlPullParser.TEXT) {
+                //System.out.println("Text "+xpp.getText());
+            }
+            eventType = xpp.next();
+        }
+
+        tree.globalOffsetX = minX; tree.globalOffsetY = minY;
+        tree.globalOffsetMaxY = maxY;
     }
 
 }

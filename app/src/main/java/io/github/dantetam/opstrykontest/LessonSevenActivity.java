@@ -6,6 +6,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ConfigurationInfo;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
@@ -22,9 +23,11 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -46,6 +49,8 @@ import io.github.dantetam.world.PersonAction;
 import io.github.dantetam.world.PersonFactory;
 import io.github.dantetam.world.PersonType;
 import io.github.dantetam.world.Recipe;
+import io.github.dantetam.world.Tech;
+import io.github.dantetam.world.TechTree;
 import io.github.dantetam.world.Tile;
 
 public class LessonSevenActivity extends Activity implements
@@ -321,6 +326,8 @@ public class LessonSevenActivity extends Activity implements
 
         if (selectedImprovement != null) {
             if (selectedImprovement instanceof City) {
+                City city = (City) selectedImprovement;
+
                 SubMenu improvementSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build improvement");
 
                 Set<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildings.keySet();
@@ -406,11 +413,17 @@ public class LessonSevenActivity extends Activity implements
                     }
                 }
             }*/
+
+                int[] yield = (int[]) (city.gameYield()[0]);
+
                 SubMenu unitSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build unit");
                 Set<PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
                 for (final PersonType personType : allowedPeople) {
-                    System.out.println(personType + " " + allowedPeople.size());
-                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, personType.toString());
+                    //System.out.println(personType.name + " " + allowedPeople.size());
+                    String stringy = personType.name;
+                    int turnsCalculated = (int)Math.ceil((double) personType.workNeeded / (double) yield[1]);
+                    stringy += " " + turnsCalculated + " turns";
+                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, stringy);
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             //Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
@@ -704,6 +717,53 @@ public class LessonSevenActivity extends Activity implements
 
     public void onClickNextCombatTurn(View v) {
         mRenderer.worldHandler.world.combatWorld.advanceTurn();
+    }
+
+    public void onClickTechMenu(View v) {
+        GridLayout techScreen = (GridLayout) findViewById(R.id.tech_tree_screen);
+        if (techScreen.getVisibility() == View.VISIBLE) {
+            techScreen.setVisibility(View.INVISIBLE);
+        }
+        else {
+            techScreen.setVisibility(View.VISIBLE);
+            //Clear the tech tree and setup a new one
+            //TODO: Update this only when techs update (set a listener?)
+            techScreen.removeAllViews();
+
+            TechTree tree = playerClan.techTree;
+            for (Map.Entry<String, Tech> entry: playerClan.techTree.techMap.entrySet()) {
+                Tech tech = entry.getValue();
+                TextView textView = new TextView(this);
+                textView.setText(tech.name);
+
+                if (playerClan.techTree.researchingTechQueue.contains(tech)) {
+                    textView.setBackgroundColor(Color.CYAN);
+                    textView.setTextColor(Color.LTGRAY);
+                }
+                else if (tech.unlocked()) {
+                    textView.setBackgroundColor(Color.BLUE);
+                }
+                else if (tech.parent.unlocked()) {
+                    textView.setBackgroundColor(Color.GREEN);
+                }
+
+                int calcGridPosX = tech.offsetX - tree.globalOffsetX;
+                int calcGridPosY = tree.globalOffsetMaxY - tech.offsetY;
+
+                GridLayout.LayoutParams param = new GridLayout.LayoutParams(
+                        GridLayout.spec(calcGridPosX, GridLayout.LEFT),
+                        GridLayout.spec(calcGridPosY, GridLayout.BOTTOM));
+                param.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                param.width = GridLayout.LayoutParams.WRAP_CONTENT;
+                //param.rightMargin = 5;
+                //param.topMargin = 5;
+                //param.setGravity(Gravity.CENTER);
+                //param.columnSpec = GridLayout.spec(c);
+                //param.rowSpec = GridLayout.spec(r);
+                textView.setLayoutParams(param);
+                techScreen.addView(textView);
+            }
+        }
     }
 
     /*@Override
