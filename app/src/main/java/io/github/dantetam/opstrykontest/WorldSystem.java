@@ -20,7 +20,7 @@ import io.github.dantetam.world.World;
 public class WorldSystem {
 
     public World world;
-    public ArtificialIntelligence artificialIntelligence;
+    //public ArtificialIntelligence artificialIntelligence;
     public static WorldPathfinder worldPathfinder;
 
     public int turnNumber = 0;
@@ -39,7 +39,7 @@ public class WorldSystem {
     public WorldSystem(WorldHandler worldHandler) {
         world = worldHandler.world;
         initClan(world.getClans().get(0));
-        artificialIntelligence = new ArtificialIntelligence(world);
+        //artificialIntelligence = new ArtificialIntelligence(world, clan);
         worldPathfinder = new WorldPathfinder(world);
         int len = world.getClans().size();
         //relations = (List<RelationModifier>[][]) new Object[len][len];
@@ -65,7 +65,7 @@ public class WorldSystem {
         processClan(playerClan);
         for (Clan clan: world.getClans()) {
             if (!clan.equals(playerClan)) {
-                artificialIntelligence.computerClanActions(clan);
+                clan.ai.allComputerClanActions();
             }
             processClan(clan);
         }
@@ -123,7 +123,12 @@ public class WorldSystem {
                 }
             }
 
-            totalScience += yield[2];
+            int science = yield[2];
+            int possibleExtra = clan.techTree.research(science);
+            if (possibleExtra > 0) {
+                //TODO: Do something with this?
+            }
+
             totalGold += yield[3];
 
             totalResources.addAnotherInventory(inventory);

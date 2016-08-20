@@ -54,15 +54,20 @@ public class TechTree {
         //TODO: Define a method for parsing a tech tree from XML using Android utilities
     }
 
-    public void research(int inputScience) {
+    //Put a specified amount of research into the tree. Return any extra left.
+    public int research(int inputScience) {
         if (researchingTechQueue.size() == 0) {
-            return;
+            throw new RuntimeException("Not researching a technology.");
+            //return;
         }
         Tech researching = researchingTechQueue.get(0);
+        researching.research(inputScience);
         if (researching.researched()) {
             activateTechAbilities(researching);
+            researchingTechQueue.remove(0);
+            return researching.researchCompleted - researching.researchNeeded;
         }
-        researchingTechQueue.remove(0);
+        return 0;
     }
 
     public void forceUnlock(Tech tech) {

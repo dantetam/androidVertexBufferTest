@@ -52,11 +52,19 @@ public class City extends Building {
             if (entry.getValue()) {
                 if (buildingType.resourceNeeded != null) {
                     ItemType resourceNeeded = ItemType.fromString(buildingType.resourceNeeded);
-                    if (clan.resources.hasItemInInventory(resourceNeeded, false)) {
-                        Commit code
+                    if (!clan.resources.hasItemInInventory(resourceNeeded, false)) {
+                        continue;
                     }
                 }
-                results.add(buildingType);
+                boolean foundCopy = false;
+                for (Building building: modules) {
+                    if (building.buildingType.equals(buildingType)) {
+                        foundCopy = true;
+                        break;
+                    }
+                }
+                if (!foundCopy)
+                    results.add(buildingType);
             }
         }
         return results;
@@ -66,8 +74,15 @@ public class City extends Building {
         TechTree tree = this.clan.techTree;
         List<PersonType> results = new ArrayList<>();
         for (Map.Entry<PersonType, Boolean> entry: tree.allowedUnits.entrySet()) {
+            PersonType personType = entry.getKey();
             if (entry.getValue()) {
-                results.add(entry.getKey());
+                if (buildingType.resourceNeeded != null) {
+                    ItemType resourceNeeded = ItemType.fromString(buildingType.resourceNeeded);
+                    if (!clan.resources.hasItemInInventory(resourceNeeded, false)) {
+                        continue;
+                    }
+                }
+                results.add(personType);
             }
         }
         return results;

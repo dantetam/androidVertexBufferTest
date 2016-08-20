@@ -431,7 +431,7 @@ public class LessonSevenActivity extends Activity implements
                             //newBuilding.actionsQueue.clear();
                             //newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
                             Person newPerson = PersonFactory.newPerson(personType, selectedImprovement.world, selectedImprovement.clan, 0.0);
-                            selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, newPerson));
+                            TODO: Use city method (subtract resources) selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, newPerson));
                             return false;
                         }
                     });
