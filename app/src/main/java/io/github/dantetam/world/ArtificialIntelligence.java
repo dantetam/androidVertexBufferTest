@@ -1,13 +1,25 @@
 package io.github.dantetam.world;
 
+import java.util.HashMap;
+
 /**
  * Created by Dante on 7/13/2016.
  */
 public class ArtificialIntelligence {
 
-    public static World world;
+    public static Clan parentClan;
+    public String abilityOne = null;
+    public String abilityTwo = null;
+    public HashMap<String, Integer> personality, strategy, tactics;
 
-    public ArtificialIntelligence(World world) {
+    public ArtificialIntelligence(Clan clan) {
+        parentClan = clan;
+        personality = new HashMap<>();
+        strategy = new HashMap<>();
+        tactics = new HashMap<>();
+    }
+
+    /*public ArtificialIntelligence(World world) {
         this.world = world;
     }
 
@@ -24,6 +36,6 @@ public class ArtificialIntelligence {
         for (Entity en: c.people) {
             plan.addAction(en, new CombatAction(Action.ActionType.COMBAT_MOVE, world.randomNeighbor(en.location)));
         }
-    }
+    }*/
 
 }

@@ -11,6 +11,8 @@ public class PersonType {
     public int health, maxH, actionPoints, maxP;
     public int atk, def, maneuver, fire, shock;
 
+    public String resourceNeeded;
+
     public boolean created = false;
     /*public void init() {
         if (!created) {

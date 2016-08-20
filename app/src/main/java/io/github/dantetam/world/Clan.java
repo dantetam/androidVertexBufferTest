@@ -11,6 +11,8 @@ import io.github.dantetam.opstrykontest.Vector4f;
  */
 public class Clan {
 
+    public ArtificialIntelligence ai;
+
     public String name;
     public Vector4f color, reducedColor;
     public Vector4f secondaryColor, reducedSecondaryColor;
@@ -24,12 +26,15 @@ public class Clan {
 
     public List<Building> buildings;
     public List<City> cities;
+    public Inventory resources;
 
     public Clan(String n) {
         name = n;
+        ai = new ArtificialIntelligence(this);
         people = new ArrayList<>();
         buildings = new ArrayList<>();
         cities = new ArrayList<>();
+        resources = new Inventory();
         //techTree = new TechTree(this);
     }
 

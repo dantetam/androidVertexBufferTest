@@ -93,6 +93,12 @@ public class BuildingXmlParser {
                     BuildingType buildingType = new BuildingType(buildingName,
                             yieldStats[0], yieldStats[1], yieldStats[2], yieldStats[3], yieldStats[4], yieldStats[5]);
                     buildingType.workNeeded = workNeeded;
+
+                    String resourceNeeded = xpp.getAttributeValue(null, "resource");
+                    if (resourceNeeded != null) {
+                        buildingType.resourceNeeded = resourceNeeded;
+                    }
+
                     tree.buildingTypes.put(buildingName, buildingType);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {

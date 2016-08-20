@@ -16,6 +16,7 @@ public class TechTree {
     public Tech root;
 
     public HashMap<String, Tech> techMap;
+    public HashMap<Tech, Boolean> researchedTech;
 
     public List<Tech> researchingTechQueue;
 
@@ -37,6 +38,7 @@ public class TechTree {
         clan.techTree = this;
 
         techMap = new HashMap<>();
+        researchedTech = new HashMap<>();
 
         researchingTechQueue = new ArrayList<>();
 
@@ -69,6 +71,8 @@ public class TechTree {
     }
 
     public void activateTechAbilities(Tech tech) {
+        researchedTech.put(tech, true);
+
         for (BuildingType buildingType: tech.unlockedBuildings) {
             allowedBuildings.put(buildingType, true);
         }

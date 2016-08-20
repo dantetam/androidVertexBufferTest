@@ -58,6 +58,10 @@ public class Inventory {
         return inventory;
     }
 
+    public boolean hasItemInInventory(ItemType type, boolean remove) {
+        return hasItemsInInventory(new Item[]{new Item(type)}, remove);
+    }
+
     public boolean hasItemsInInventory(Item[] items, boolean remove) {
         List<Item> inventoryItems = new ArrayList<>();
         for (Item item: items) {

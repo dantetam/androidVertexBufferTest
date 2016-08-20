@@ -44,6 +44,35 @@ public class City extends Building {
         cityTiles = tiles;
     }
 
+    public List<BuildingType> computePossibleBuildingsForCity() {
+        TechTree tree = this.clan.techTree;
+        List<BuildingType> results = new ArrayList<>();
+        for (Map.Entry<BuildingType, Boolean> entry: tree.allowedBuildings.entrySet()) {
+            BuildingType buildingType = entry.getKey();
+            if (entry.getValue()) {
+                if (buildingType.resourceNeeded != null) {
+                    ItemType resourceNeeded = ItemType.fromString(buildingType.resourceNeeded);
+                    if (clan.resources.hasItemInInventory(resourceNeeded, false)) {
+                        Commit code
+                    }
+                }
+                results.add(buildingType);
+            }
+        }
+        return results;
+    }
+
+    public List<PersonType> computePossibleUnitsForCity() {
+        TechTree tree = this.clan.techTree;
+        List<PersonType> results = new ArrayList<>();
+        for (Map.Entry<PersonType, Boolean> entry: tree.allowedUnits.entrySet()) {
+            if (entry.getValue()) {
+                results.add(entry.getKey());
+            }
+        }
+        return results;
+    }
+
     public void executeQueue() {
         /*while (true) {
             if (actionsQueue.size() == 0) {

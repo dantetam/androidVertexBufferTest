@@ -23,6 +23,10 @@ public class Item {
         quantity = n;
     }
 
+    public Item(ItemType t) {
+        this(t, 1);
+    }
+
     /*public static void generateResourcesForTile(Tile tile) {
 
     }*/

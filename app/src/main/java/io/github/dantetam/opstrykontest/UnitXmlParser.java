@@ -111,6 +111,11 @@ public class UnitXmlParser {
 
                     String techNeeded = xpp.getAttributeValue(null, "tech"); //TODO: Use this data
 
+                    String resourceNeeded = xpp.getAttributeValue(null, "resource");
+                    if (resourceNeeded != null) {
+                        personType.resourceNeeded = resourceNeeded;
+                    }
+
                     tree.personTypes.put(unitName, personType);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {

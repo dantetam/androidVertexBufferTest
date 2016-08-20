@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.dantetam.opstrykontest.ClanXmlParser;
+import io.github.dantetam.opstrykontest.LessonSevenActivity;
+import io.github.dantetam.opstrykontest.R;
 import io.github.dantetam.opstrykontest.Vector4f;
 
 /**
@@ -11,10 +14,17 @@ import io.github.dantetam.opstrykontest.Vector4f;
  */
 public class ClanFactory {
 
+    private static LessonSevenActivity mActivity;
+
     public static HashMap<Clan.ClanType, List<Vector4f>> clanTypeColorSchemes;
     public static HashMap<Clan.ClanFaction, List<Vector4f>> clanFactionColorSchemes;
 
-    public static void init() {
+    public static ClanXmlParser parser;
+    //public static HashMap<String, Clan> civilizationAi;
+
+    public static void init(LessonSevenActivity context) {
+        mActivity = context;
+
         clanTypeColorSchemes = new HashMap<>();
 
         List<Vector4f> list = new ArrayList<>();
@@ -22,7 +32,7 @@ public class ClanFactory {
         list.add(new Vector4f(0.5f,0,0,1f));
         list.add(new Vector4f(0.5f,0,0.5f,1f));
         list.add(new Vector4f(0, 0, 0, 1f));
-        list.add(new Vector4f(0.25f, 0, 0.1f,1f));
+        list.add(new Vector4f(0.25f, 0, 0.1f, 1f));
         clanTypeColorSchemes.put(Clan.ClanType.CLAN_AGGRESSIVE, list);
 
         list = new ArrayList<>();
@@ -67,25 +77,30 @@ public class ClanFactory {
         list = new ArrayList<>();
         list.add(new Vector4f(0,1f,0,1f));
         list.add(new Vector4f(0, 0.8f, 0f, 1f));
-        list.add(new Vector4f(0,0.6f,0.2f,1f));
+        list.add(new Vector4f(0, 0.6f, 0.2f, 1f));
         clanFactionColorSchemes.put(Clan.ClanFaction.FACTION_FOREIGNER, list);
 
         list = new ArrayList<>();
         list.add(new Vector4f(1f, 0, 0, 1f));
         list.add(new Vector4f(1f,0.5f,0.5f,1f));
-        list.add(new Vector4f(0.2f,0.3f,0.2f,1f));
+        list.add(new Vector4f(0.2f, 0.3f, 0.2f, 1f));
         clanFactionColorSchemes.put(Clan.ClanFaction.FACTION_SAVAGE, list);
+
+        parser = new ClanXmlParser();
+        parser.parseAllClans(mActivity, R.raw.clan_flavors);
     }
 
     public static Clan randomClan() {
         Clan clan = null;
         while (clan == null) {
-            clan = newClan(Clan.ClanType.random(), Clan.ClanFaction.random());
+            String key = parser.clanKeys[(int)(Math.random()*parser.clanKeys.length)];
+            Clan randomAi = parser.clans.get(key);
+            clan = newClan(Clan.ClanType.random(), Clan.ClanFaction.random(), randomAi);
         }
         return clan;
     }
 
-    public static Clan newClan(Clan.ClanType clanType, Clan.ClanFaction clanFaction) {
+    public static Clan newClan(Clan.ClanType clanType, Clan.ClanFaction clanFaction, Clan aiType) {
         /*Clan.ClanType clanType;
         Clan.ClanFaction clanFaction;*/
         List<Vector4f> colors = clanTypeColorSchemes.get(clanType);
@@ -107,6 +122,7 @@ public class ClanFactory {
                 return null;
         }*/
         Clan clan = new Clan("Clan" + clanType);
+        clan.ai = aiType.ai;
         clan.color = primaryColor;
         clan.reducedColor = primaryColor.scaled(0.7f);
         clan.secondaryColor = secondaryColor;

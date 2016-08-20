@@ -11,6 +11,8 @@ public class BuildingType {
     public int workNeeded;
     public int food, production, science, capital, happiness, health;
 
+    public String resourceNeeded;
+
     public boolean created = false;
     /*public void init() {
         if (!created) {
