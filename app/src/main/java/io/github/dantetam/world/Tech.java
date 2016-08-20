@@ -18,7 +18,7 @@ public class Tech {
 
     public List<BuildingType> unlockedBuildings;
     public List<BuildingType> unlockedDistricts;
-    public List<String> unlockedUnits;
+    public List<PersonType> unlockedUnits;
     public List<ItemType> harvestableResources;
     public List<String> unlockedSpecialAbilities;
 

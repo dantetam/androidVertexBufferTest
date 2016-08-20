@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import io.github.dantetam.opstrykontest.OpstrykonUtil;
+
 /**
  * Created by Dante on 7/25/2016.
  */
@@ -42,6 +44,18 @@ public class City extends Building {
         super(world, clan, type);
         workedTiles = new HashMap<>();
         cityTiles = tiles;
+    }
+
+    public void queueActionBuildModule(BuildingType buildingType) {
+        clan.resources.subtractFromInventory(new Item(ItemType.fromString(buildingType.resourceNeeded)));
+        Building queueBuilding = BuildingFactory.newBuilding(world, clan, buildingType, location, 0);
+        actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, queueBuilding));
+    }
+
+    public void queueActionBuildUnit(PersonType personType) {
+        clan.resources.subtractFromInventory(new Item(ItemType.fromString(personType.resourceNeeded)));
+        Person queuePerson = PersonFactory.newPerson(personType, world, clan, 0);
+        actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, queuePerson));
     }
 
     public List<BuildingType> computePossibleBuildingsForCity() {
@@ -179,23 +193,6 @@ public class City extends Building {
         }
     }
 
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map)
-    {
-        List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>( map.entrySet() );
-        //Note that below we reverse the compareTo operation so that this is a descending sort.
-        Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-                return (o2.getValue()).compareTo(o1.getValue());
-            }
-        } );
-
-        Map<K, V> result = new LinkedHashMap<K, V>();
-        for (Map.Entry<K, V> entry: list) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
-    }
-
     public void pickBestTiles() {
         //workedTiles.clear();
         freeWorkingPopulation = population - workedTiles.size();
@@ -214,7 +211,7 @@ public class City extends Building {
             }
             scoreTiles.put(tile, score);
         }
-        Map<Tile, Double> sorted = sortByValue(scoreTiles);
+        Map<Tile, Double> sorted = OpstrykonUtil.sortMapByValue(scoreTiles);
         Set<Tile> tilesToPick = sorted.keySet();
         for (Tile tile: tilesToPick) {
             if (freeWorkingPopulation > 0) {
