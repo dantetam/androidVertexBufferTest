@@ -43,7 +43,7 @@ public class CombatWorld {
         currentCombatPlan.execute();
         currentCombatPlan.clear();
         for (Clan clan: linkedWorld.getClans()) {
-            ArtificialIntelligence.computerClanCombat(currentCombatPlan, clan);
+            clan.ai.computerClanCombat(currentCombatPlan);
             currentCombatPlan.execute();
             currentCombatPlan.clear();
         }

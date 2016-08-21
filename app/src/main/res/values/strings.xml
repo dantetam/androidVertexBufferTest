@@ -18,6 +18,7 @@
     <string name="info_menu">Info</string>
     <string name="queue_menu">Queue</string>
     <string name="tech_menu">Technology</string>
+    <string name="diplomacy_menu">Diplomacy</string>
 
     <string name="combat_exit_menu">Exit Combat</string>
     <string name="combat_next_turn">Next Turn</string>

@@ -152,7 +152,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	 * Initialize the model data. Initialize other necessary classes.
 	 */
 	public LessonSevenRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
-        ClanFactory.init();
+        ClanFactory.init(lessonSevenActivity);
 
 		mLessonSevenActivity = lessonSevenActivity;
         BitmapHelper.init(mLessonSevenActivity);
@@ -514,25 +514,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
                 mLessonSevenActivity.findViewById(R.id.main_menu).setVisibility(View.VISIBLE);
                 mLessonSevenActivity.findViewById(R.id.tech_menu).setVisibility(View.VISIBLE);
                 mLessonSevenActivity.findViewById(R.id.turn_menu).setVisibility(View.VISIBLE);
-                LinearLayout linearLayout = (LinearLayout) mLessonSevenActivity.findViewById(R.id.clan_menu);
-                linearLayout.setVisibility(View.VISIBLE);
-                linearLayout.setBackgroundColor(Color.TRANSPARENT);
-                List<Clan> clans = worldHandler.world.getClans();
-
-                //mLessonSevenActivity.setContentView(R.layout.test_custom_gamescreen);
-
-                for (Clan clan: clans) {
-                    TextView clanView = new TextView(mLessonSevenActivity);
-                    if (clan.name.length() >= 12) {
-                        clanView.setText(clan.name.substring(0,12));
-                    }
-                    else {
-                        clanView.setText(clan.name);
-                    }
-                    //TODO: Transparency/Partial Transparency ->
-                    clanView.setBackgroundColor(Color.TRANSPARENT);
-                    linearLayout.addView(clanView);
-                }
             }
         });
     }

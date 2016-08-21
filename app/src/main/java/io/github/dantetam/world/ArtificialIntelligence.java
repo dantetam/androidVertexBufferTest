@@ -12,14 +12,12 @@ import io.github.dantetam.opstrykontest.OpstrykonUtil;
  */
 public class ArtificialIntelligence {
 
-    public World world;
     public Clan clan; //The 'parent' clan
     public String abilityOne = null;
     public String abilityTwo = null;
     public HashMap<String, Integer> personality, strategy, tactics;
 
-    public ArtificialIntelligence(World w, Clan c) {
-        world = w;
+    public ArtificialIntelligence(Clan c) {
         clan = c;
         personality = new HashMap<>();
         strategy = new HashMap<>();
@@ -39,6 +37,14 @@ public class ArtificialIntelligence {
                 else if (result instanceof PersonType) {
                     city.queueActionBuildUnit((PersonType) result);
                 }
+            }
+        }
+    }
+
+    public void computerClanCombat(CombatPlan combatPlan) {
+        for (Person person: clan.people) {
+            while (person.actionPoints > 0) {
+                person.gameMove(person.world.randomNeighbor(person.location));
             }
         }
     }

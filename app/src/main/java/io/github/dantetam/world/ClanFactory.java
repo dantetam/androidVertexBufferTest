@@ -121,7 +121,7 @@ public class ClanFactory {
                 System.err.println("Invalid clan type: " + type);
                 return null;
         }*/
-        Clan clan = new Clan("Clan" + clanType);
+        Clan clan = new Clan(aiType.name);
         clan.ai = aiType.ai;
         clan.color = primaryColor;
         clan.reducedColor = primaryColor.scaled(0.7f);

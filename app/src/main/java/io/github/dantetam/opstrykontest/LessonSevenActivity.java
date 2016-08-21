@@ -56,11 +56,12 @@ import io.github.dantetam.world.Tile;
 
 public class LessonSevenActivity extends Activity implements
         GestureDetector.OnGestureListener,
-        GestureDetector.OnDoubleTapListener
-{
-	/** Hold a reference to our GLSurfaceView */
-	private LessonSevenGLSurfaceView mGLSurfaceView;
-	public LessonSevenRenderer mRenderer;
+        GestureDetector.OnDoubleTapListener {
+    /**
+     * Hold a reference to our GLSurfaceView
+     */
+    private LessonSevenGLSurfaceView mGLSurfaceView;
+    public LessonSevenRenderer mRenderer;
 
     private GestureDetectorCompat mDetector;
 
@@ -78,6 +79,7 @@ public class LessonSevenActivity extends Activity implements
     private Clan playerClan;
 
     public AutomaticTurn turnStyle = AutomaticTurn.AUTOMATIC;
+
     public enum AutomaticTurn {
         AUTOMATIC, //Automatically move to new units when completed action
         ON_PRESS_TURN, //Move to the next unit when the user clicks the next turn button
@@ -91,16 +93,35 @@ public class LessonSevenActivity extends Activity implements
     }*/
 
     @Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        View decorView = getWindow().getDecorView();
+        final View decorView = getWindow().getDecorView();
         // Hide the status bar.
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        final int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
         decorView.setSystemUiVisibility(uiOptions);
 
-        //ActionBar actionBar = getActionBar();
-        //actionBar.hide();
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) actionBar.hide();
+
+        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                // Note that system bars will only be "visible" if none of the
+                // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    // TODO: The system bars are visible. Make any desired
+                    // adjustments to your UI, such as showing the action bar or
+                    // other navigational controls.
+                    decorView.setSystemUiVisibility(uiOptions);
+                } else {
+                    // TODO: The system bars are NOT visible. Make any desired
+                    // adjustments to your UI, such as hiding the action bar or
+                    // other navigational controls.
+                    if (actionBar != null) actionBar.hide();
+                }
+            }
+        });
 
         /*final LessonSevenActivity mActivity = this;
         System.out.println("Start");
@@ -142,32 +163,32 @@ public class LessonSevenActivity extends Activity implements
 
         findViewById(R.id.splash_screen_main).bringToFront();
 
-		mGLSurfaceView = (LessonSevenGLSurfaceView) findViewById(R.id.gl_surface_view);
+        mGLSurfaceView = (LessonSevenGLSurfaceView) findViewById(R.id.gl_surface_view);
 
-		// Check if the system supports OpenGL ES 2.0.
-		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-		final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
+        // Check if the system supports OpenGL ES 2.0.
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+        final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
 
-		if (supportsEs2) {
-			// Request an OpenGL ES 2.0 compatible context.
-			mGLSurfaceView.setEGLContextClientVersion(2);
+        if (supportsEs2) {
+            // Request an OpenGL ES 2.0 compatible context.
+            mGLSurfaceView.setEGLContextClientVersion(2);
 
-			final DisplayMetrics displayMetrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            final DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-			// Set the renderer to our demo renderer, defined below.
-			mRenderer = new LessonSevenRenderer(this, mGLSurfaceView);
-			mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
-		} else {
-			// This is where you could create an OpenGL ES 1.x compatible
-			// renderer if you wanted to support both ES 1 and ES 2.
-			return;
-		}
+            // Set the renderer to our demo renderer, defined below.
+            mRenderer = new LessonSevenRenderer(this, mGLSurfaceView);
+            mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
+        } else {
+            // This is where you could create an OpenGL ES 1.x compatible
+            // renderer if you wanted to support both ES 1 and ES 2.
+            return;
+        }
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        mDetector = new GestureDetectorCompat(this,this);
+        mDetector = new GestureDetectorCompat(this, this);
         mDetector.setOnDoubleTapListener(this);
 
         registerForContextMenu(mGLSurfaceView);
@@ -175,25 +196,26 @@ public class LessonSevenActivity extends Activity implements
         playerClan = mRenderer.worldSystem.playerClan;
     }
 
-	@Override
-	protected void onResume() {
-		// The activity must call the GL surface view's onResume() on activity
-		// onResume().
-		super.onResume();
-		mGLSurfaceView.onResume();
-	}
+    @Override
+    protected void onResume() {
+        // The activity must call the GL surface view's onResume() on activity
+        // onResume().
+        super.onResume();
+        mGLSurfaceView.onResume();
+    }
 
     @Override
-	protected void onPause() {
-		// The activity must call the GL surface view's onPause() on activity
-		// onPause().
-		super.onPause();
-		mGLSurfaceView.onPause();
-	}
+    protected void onPause() {
+        // The activity must call the GL surface view's onPause() on activity
+        // onPause().
+        super.onPause();
+        mGLSurfaceView.onPause();
+    }
 
     public final String DEBUG_TAG = "Debug (Gesture): ";
 
     private View newWorldMenu;
+
     public void onClickNewWorld(View v) {
         newWorldMenu = v;
 
@@ -201,6 +223,12 @@ public class LessonSevenActivity extends Activity implements
         MenuInflater inflater = mainMenu.getMenuInflater();
         inflater.inflate(R.menu.main_menu, mainMenu.getMenu());
         mainMenu.show();
+
+        LinearLayout diplomacyMenu = (LinearLayout) findViewById(R.id.clan_menu);
+        if (diplomacyMenu != null) {
+            diplomacyMenu.setVisibility(View.INVISIBLE);
+            diplomacyMenu.setBackgroundColor(Color.TRANSPARENT);
+        }
     }
 
     /*public void onClickNewWorldOptions(View v) {
@@ -229,19 +257,41 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
+    public boolean onClickDiplomacyMenu(MenuItem item) {
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.clan_menu);
+        linearLayout.setVisibility(View.VISIBLE);
+        linearLayout.setBackgroundColor(Color.TRANSPARENT);
+        List<Clan> clans = mRenderer.worldHandler.world.getClans();
+
+        //mLessonSevenActivity.setContentView(R.layout.test_custom_gamescreen);
+
+        for (Clan clan : clans) {
+            TextView clanView = new TextView(this);
+            /*if (clan.name.length() >= 12) {
+                clanView.setText(clan.name.substring(0,12));
+            }
+            else {*/
+            clanView.setText(clan.name);
+            //}
+            clanView.setBackgroundColor(Color.TRANSPARENT);
+            linearLayout.addView(clanView);
+        }
+
+        return true;
+    }
+
     public void onClickNextTurnMenu(View v) {
         Entity en = mRenderer.findNextUnit();
         if (en != null) {
-            ((Button)v).setText("UNIT NEEDS ORDERS");
+            ((Button) v).setText("UNIT NEEDS ORDERS");
             //((MenuItem) findViewById(R.id.next_turn_button)).setTitle("UNIT NEEDS ORDERS");
 
             mRenderer.debounceFrames = 10;
 
             mRenderer.moveCameraInFramesAfter = 1;
             mRenderer.nextUnit = en;
-        }
-        else {
-            ((Button)v).setText("NEXT TURN");
+        } else {
+            ((Button) v).setText("NEXT TURN");
             //((MenuItem) findViewById(R.id.next_turn_button)).setTitle("NEXT TURN");
             PopupMenu tempMenu = new PopupMenu(this, v);
             MenuInflater inflater = tempMenu.getMenuInflater();
@@ -257,7 +307,7 @@ public class LessonSevenActivity extends Activity implements
             mRenderer.nextUnit = en;
         }
         else*/
-            mRenderer.worldSystem.turn();
+        mRenderer.worldSystem.turn();
         return true;
     }
 
@@ -293,8 +343,7 @@ public class LessonSevenActivity extends Activity implements
         if (selected != null) {
             if (selected.occupants.size() == 0) {
                 menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "No units to select");
-            }
-            else {
+            } else {
                 for (int i = 0; i < selected.occupants.size(); i++) {
                     final Entity en = selected.occupants.get(i);
                     String extra = playerClan.equals(en.clan) ? " " + en.actionPoints + "/" + en.maxActionPoints + " AP" : "";
@@ -327,13 +376,13 @@ public class LessonSevenActivity extends Activity implements
 
         if (selectedImprovement != null) {
             if (selectedImprovement instanceof City) {
-                City city = (City) selectedImprovement;
+                final City city = (City) selectedImprovement;
 
                 SubMenu improvementSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build improvement");
 
                 Set<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildings.keySet();
                 int i = 0;
-                for (final BuildingType buildingType: allowedBuildings) {
+                for (final BuildingType buildingType : allowedBuildings) {
                     int[] yield = buildingType.getYield();
                     String yieldString = "";
                     if (yield[0] > 0) {
@@ -350,7 +399,7 @@ public class LessonSevenActivity extends Activity implements
                     }
 
                     String displayName = buildingType.name + " " + yieldString;
-                    MenuItem menuItem = improvementSubMenu.add(Menu.NONE, i+1, Menu.NONE, displayName);
+                    MenuItem menuItem = improvementSubMenu.add(Menu.NONE, i + 1, Menu.NONE, displayName);
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
@@ -422,7 +471,7 @@ public class LessonSevenActivity extends Activity implements
                 for (final PersonType personType : allowedPeople) {
                     //System.out.println(personType.name + " " + allowedPeople.size());
                     String stringy = personType.name;
-                    int turnsCalculated = (int)Math.ceil((double) personType.workNeeded / (double) yield[1]);
+                    int turnsCalculated = (int) Math.ceil((double) personType.workNeeded / (double) yield[1]);
                     stringy += " " + turnsCalculated + " turns";
                     MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, stringy);
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -430,8 +479,9 @@ public class LessonSevenActivity extends Activity implements
                             //Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
                             //newBuilding.actionsQueue.clear();
                             //newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
-                            Person newPerson = PersonFactory.newPerson(personType, selectedImprovement.world, selectedImprovement.clan, 0.0);
-                            TODO: Use city method (subtract resources) selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, newPerson));
+                            //Person newPerson = PersonFactory.newPerson(personType, selectedImprovement.world, selectedImprovement.clan, 0.0);
+                            //TODO: Use city method (subtract resources) selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, newPerson));
+                            city.queueActionBuildUnit(personType);
                             return false;
                         }
                     });
@@ -461,11 +511,9 @@ public class LessonSevenActivity extends Activity implements
             Clan owner = selected.world.getTileOwner(selected), influence = selected.world.getTileInfluence(selected);
             if (owner != null) {
                 affiliation = owner.name;
-            }
-            else if (influence != null) {
+            } else if (influence != null) {
                 affiliation = "(" + influence.name + ")";
-            }
-            else {
+            } else {
                 affiliation = "Free";
             }
             tooltips.put("text1", affiliation);
@@ -477,15 +525,14 @@ public class LessonSevenActivity extends Activity implements
             tooltips.put("text2", Tile.Biome.nameFromInt(selected.biome.type) + ", " + Tile.Terrain.nameFromInt(selected.terrain.type) + locationInfo);
             if (selected.improvement == null) {
                 tooltips.put("text3", "Can build improvement");
-            }
-            else {
-                int p = (int)(selected.improvement.completionPercentage() * 100d);
+            } else {
+                int p = (int) (selected.improvement.completionPercentage() * 100d);
                 String extra = p < 1 ? " (" + p + "% Completed)" : "";
                 tooltips.put("text3", selected.improvement.name + extra);
             }
             if (selected.resources.size() > 0) {
                 String stringy = "";
-                for (Item resource: selected.resources) {
+                for (Item resource : selected.resources) {
                     String s = resource.name;
                     if (!s.equals("No resource"))
                         stringy += s + " ";
@@ -500,14 +547,12 @@ public class LessonSevenActivity extends Activity implements
             int[] yieldData = City.evalTile(selected);
             String yield = "Yield: " + yieldData[0] + "F, " + yieldData[1] + "P, " + yieldData[2] + "S, " + yieldData[3] + "C";
             tooltips.put("text6", yield);
-        }
-        else if (selectedEntityExists) {
+        } else if (selectedEntityExists) {
             Entity entity = mRenderer.mousePicker.getSelectedEntity();
             String stringy = entity.name + " (";
             if (entity.clan != null) {
                 stringy += entity.clan.name + ")";
-            }
-            else {
+            } else {
                 stringy += "Free)";
             }
             if (entity instanceof Person) {
@@ -523,7 +568,7 @@ public class LessonSevenActivity extends Activity implements
         }
 
         int i = 0;
-        for (Map.Entry<String, String> en: tooltips.entrySet()) {
+        for (Map.Entry<String, String> en : tooltips.entrySet()) {
             SubMenu subMenu = menu.addSubMenu(Menu.NONE, i, Menu.NONE, en.getValue());
             final String finalAffiliation = affiliation;
             MenuItem title = subMenu.add(Menu.NONE, i, Menu.NONE, en.getValue());
@@ -532,23 +577,18 @@ public class LessonSevenActivity extends Activity implements
                 if (selectedTileExists || selectedEntityExists) {
                     if (finalAffiliation.equals("Free")) {
                         clanStringy = "This land has no influence.";
-                    }
-                    else if (finalAffiliation.contains("(")) {
+                    } else if (finalAffiliation.contains("(")) {
                         clanStringy = "The most influential clan.";
-                    }
-                    else {
+                    } else {
                         clanStringy = "The current owner.";
                     }
                 }
                 MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, clanStringy);
-            }
-            else if (en.getKey().equals("text2")) {
+            } else if (en.getKey().equals("text2")) {
                 MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "The biome (climate) and terrain type (shape).");
-            }
-            else if (en.getKey().equals("text3")) {
+            } else if (en.getKey().equals("text3")) {
                 MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "Buildings to increase yields, craft, etc.");
-            }
-            else if (en.getKey().equals("text4")) {
+            } else if (en.getKey().equals("text4")) {
                 MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "Used for buildings and items to equip units.");
             }
             /*else if (en.getKey().equals("text5")) {
@@ -593,13 +633,13 @@ public class LessonSevenActivity extends Activity implements
         if (selectedEntity != null) {
             if (selectedEntity.actionsQueue.size() == 0) {
                 menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Nothing in queue");
-            }
-            else {
+            } else {
                 for (int i = 0; i < selectedEntity.actionsQueue.size(); i++) {
                     Action action = selectedEntity.actionsQueue.get(i);
                     MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, action.toString());
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public int indexCondition = 0;
+
                         public boolean onMenuItemClick(MenuItem item) {
                             selectedEntity.actionsQueue.remove(indexCondition);
                             //System.out.println(mRenderer.mousePicker.getSelectedEntity());
@@ -724,8 +764,7 @@ public class LessonSevenActivity extends Activity implements
         GridLayout techScreen = (GridLayout) findViewById(R.id.tech_tree_screen);
         if (techScreen.getVisibility() == View.VISIBLE) {
             techScreen.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             techScreen.setVisibility(View.VISIBLE);
             //Clear the tech tree and setup a new one
             //TODO: Update this only when techs update (set a listener?)
@@ -738,11 +777,11 @@ public class LessonSevenActivity extends Activity implements
         techScreen.removeAllViews();
 
         TechTree tree = playerClan.techTree;
-        for (Map.Entry<String, Tech> entry: playerClan.techTree.techMap.entrySet()) {
+        for (Map.Entry<String, Tech> entry : playerClan.techTree.techMap.entrySet()) {
             Tech tech = entry.getValue();
 
-            int calcGridPosRow = (int)(tree.globalOffsetMaxY - tech.offsetY);
-            int calcGridPosCol = (int)(tech.offsetX - tree.globalOffsetX);
+            int calcGridPosRow = (int) (tree.globalOffsetMaxY - tech.offsetY);
+            int calcGridPosCol = (int) (tech.offsetX - tree.globalOffsetX);
 
             if (calcGridPosRow < 0 || calcGridPosCol < 0 || calcGridPosRow > 8 || calcGridPosCol > 5) {
                 continue;
@@ -754,12 +793,10 @@ public class LessonSevenActivity extends Activity implements
             if (playerClan.techTree.researchingTechQueue.contains(tech)) {
                 textView.setBackgroundColor(Color.MAGENTA);
                 //textView.setTextColor(Color.BLACK);
-            }
-            else if (tech.researched()) {
+            } else if (tech.researched()) {
                 textView.setBackgroundColor(Color.BLUE);
                 textView.setTextColor(Color.WHITE);
-            }
-            else if (tech.researchable()) {
+            } else if (tech.researchable()) {
                 textView.setBackgroundColor(Color.GREEN);
             }
 

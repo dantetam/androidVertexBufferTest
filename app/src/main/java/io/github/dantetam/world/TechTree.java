@@ -84,11 +84,10 @@ public class TechTree {
         for (BuildingType buildingType: tech.unlockedDistricts) {
             allowedDistricts.put(buildingType, true);
         }
-        for (String stringy: tech.unlockedUnits) {
-            PersonType personType = clan.unitTree.personTypes.get(stringy);
-            if (personType == null) {
+        for (PersonType personType: tech.unlockedUnits) {
+            /*if (personType == null) {
                 throw new IllegalArgumentException("For tech: " + tech.name + ", could not find " + stringy + " in unit tree");
-            }
+            }*/
             allowedUnits.put(personType, true);
         }
         for (ItemType itemType: tech.harvestableResources) {

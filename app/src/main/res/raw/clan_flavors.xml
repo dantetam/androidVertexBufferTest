@@ -88,28 +88,28 @@
         <ability name="Isolationism" desc="+15% defense on friendly territory."></ability>
         <ability name="Fruits of the Republic" desc="+1 food on 3+ food tiles, +1 worker per city."></ability>
 
-        <personalityflavor name="Cooperative"></personalityflavor>
-        <personalityflavor name="Jealous"></personalityflavor>
-        <personalityflavor name="Friendly"></personalityflavor>
-        <personalityflavor name="Hostile"></personalityflavor>
-        <personalityflavor name="Loyal"></personalityflavor>
-        <personalityflavor name="Deceptive"></personalityflavor>
-        <personalityflavor name="Diplomatic"></personalityflavor>
-        <personalityflavor name="Vicious"></personalityflavor>
+        <personalityflavor name="Cooperative" value="1"></personalityflavor>
+        <personalityflavor name="Jealous" value="1"></personalityflavor>
+        <personalityflavor name="Friendly" value="1"></personalityflavor>
+        <personalityflavor name="Hostile" value="1"></personalityflavor>
+        <personalityflavor name="Loyal" value="1"></personalityflavor>
+        <personalityflavor name="Deceptive" value="1"></personalityflavor>
+        <personalityflavor name="Diplomatic" value="1"></personalityflavor>
+        <personalityflavor name="Vicious" value="1"></personalityflavor>
 
-        <strategyflavor name="Diplomacy"></strategyflavor>
-        <strategyflavor name="Expansion"></strategyflavor>
-        <strategyflavor name="Gold"></strategyflavor>
-        <strategyflavor name="Growth"></strategyflavor>
-        <strategyflavor name="Raid"></strategyflavor>
-        <strategyflavor name="Science"></strategyflavor>
-        <strategyflavor name="War"></strategyflavor>
+        <strategyflavor name="Diplomacy" value="1"></strategyflavor>
+        <strategyflavor name="Expansion" value="1"></strategyflavor>
+        <strategyflavor name="Gold" value="1"></strategyflavor>
+        <strategyflavor name="Growth" value="1"></strategyflavor>
+        <strategyflavor name="Raid" value="1"></strategyflavor>
+        <strategyflavor name="Science" value="1"></strategyflavor>
+        <strategyflavor name="War" value="1"></strategyflavor>
 
-        <tacticsflavor name="Naval"></tacticsflavor>
-        <tacticsflavor name="Land"></tacticsflavor>
-        <tacticsflavor name="Air"></tacticsflavor>
-        <tacticsflavor name="Melee"></tacticsflavor>
-        <tacticsflavor name="Ranged"></tacticsflavor>
+        <tacticsflavor name="Naval" value="1"></tacticsflavor>
+        <tacticsflavor name="Land" value="1"></tacticsflavor>
+        <tacticsflavor name="Air" value="1"></tacticsflavor>
+        <tacticsflavor name="Melee" value="1"></tacticsflavor>
+        <tacticsflavor name="Ranged" value="1"></tacticsflavor>
     </clan>
     <clan name="Celestial Empire">
         <ability name="Centralization" desc="+15% capital per city."></ability>

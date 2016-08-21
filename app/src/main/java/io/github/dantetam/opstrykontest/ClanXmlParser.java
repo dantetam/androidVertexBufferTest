@@ -31,6 +31,7 @@ import io.github.dantetam.world.Clan;
 import io.github.dantetam.world.ItemType;
 import io.github.dantetam.world.Tech;
 import io.github.dantetam.world.TechTree;
+import io.github.dantetam.world.World;
 
 /**
  * Given an InputStream representation of a feed, it returns a List of entries,
@@ -46,7 +47,6 @@ public class ClanXmlParser {
         final InputStream clanStream = context.getResources().openRawResource(
                 resourceId);
         try {
-            clans = new HashMap<>();
             parseAllClans(clanStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
@@ -57,6 +57,8 @@ public class ClanXmlParser {
 
     public void parseAllClans(InputStream inputStream)
             throws XmlPullParserException, IOException {
+        clans = new HashMap<>();
+
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
         XmlPullParser xpp = factory.newPullParser();
@@ -76,9 +78,11 @@ public class ClanXmlParser {
                 //System.out.println("Start tag " + xpp.getName());
                 String startTag = xpp.getName();
                 if (startTag.equals("clan")) {
+                    System.out.println("Start tag " + xpp.getName());
                     String clanName = xpp.getAttributeValue(null, "name");
                     inspect = new Clan(clanName);
                     clans.put(clanName, inspect);
+                    System.out.println(clans.keySet().size());
                 }
                 else if (startTag.equals("ability")) {
                     if (inspect.ai.abilityOne == null) {
@@ -89,13 +93,13 @@ public class ClanXmlParser {
                     }
                 }
                 else if (startTag.equals("personalityflavor")) {
-                    inspect.ai.personality.put(xpp.getAttributeValue(null, "name"), Integer.parseInt(xpp.getText()));
+                    inspect.ai.personality.put(xpp.getAttributeValue(null, "name"), Integer.parseInt(xpp.getAttributeValue(null, "value")));
                 }
                 else if (startTag.equals("strategyflavor")) {
-                    inspect.ai.strategy.put(xpp.getAttributeValue(null, "name"), Integer.parseInt(xpp.getText()));
+                    inspect.ai.strategy.put(xpp.getAttributeValue(null, "name"), Integer.parseInt(xpp.getAttributeValue(null, "value")));
                 }
                 else if (startTag.equals("tacticsflavor")) {
-                    inspect.ai.tactics.put(xpp.getAttributeValue(null, "name"), Integer.parseInt(xpp.getText()));
+                    inspect.ai.tactics.put(xpp.getAttributeValue(null, "name"), Integer.parseInt(xpp.getAttributeValue(null, "value")));
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 //System.out.println("End tag " + xpp.getName());
@@ -108,6 +112,7 @@ public class ClanXmlParser {
             eventType = xpp.next();
         }
 
+        clanKeys = new String[clans.keySet().size()];
         clanKeys = clans.keySet().toArray(clanKeys);
     }
 

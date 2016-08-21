@@ -8,4 +8,11 @@
         android:orderInCategory="100"
         app:showAsAction="never"
         android:onClick="onClickNewWorldOptions" />
+    <item
+        android:id="@+id/diplomacy_menu"
+        android:title="@string/diplomacy_menu"
+        android:text="@string/diplomacy_menu"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:onClick="onClickDiplomacyMenu" />
 </menu>

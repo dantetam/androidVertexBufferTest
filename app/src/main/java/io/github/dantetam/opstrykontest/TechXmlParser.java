@@ -116,7 +116,7 @@ public class TechXmlParser {
                         newTech.harvestableResources.add(ItemType.fromString(unlockResource));
                     }
                     if (unlockUnit != null) {
-                        newTech.unlockedUnits.add(unlockUnit);
+                        newTech.unlockedUnits.add(clan.unitTree.personTypes.get(unlockUnit));
                     }
                     if (unlockSpecialAbility != null) {
                         newTech.unlockedSpecialAbilities.add(unlockSpecialAbility);
