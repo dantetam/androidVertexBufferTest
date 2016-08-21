@@ -208,6 +208,19 @@ public class World {
         return validTiles;
     }
 
+    private List<Tile> landTiles = null;
+    public List<Tile> getAllLandTiles() {
+        if (landTiles == null) {
+            landTiles = new ArrayList<>();
+            for (Tile tile: getAllValidTiles()) {
+                if (tile.biome != Tile.Biome.SEA) {
+                    landTiles.add(tile);
+                }
+            }
+        }
+        return landTiles;
+    }
+
     //Note that the order doesn't matter here, but other classes will rely on this.
     public static final int[][] neighborDirections = {
             {0, -1}, {-1, 0}, {-1, 1},

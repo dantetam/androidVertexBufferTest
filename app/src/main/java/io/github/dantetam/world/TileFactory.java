@@ -16,11 +16,11 @@ public class TileFactory {
         tile.biome = biome;
         tile.terrain = terrain;
         //TODO: tile.feature
-        tile.initBaseResources(1,1,1,1);
+        tile.initBaseResources(1,1,0,0);
         int numSpaces = 3;
         switch (biome) {
             case SEA:
-                tile.addBaseResources(-1,-1,0,1);
+                tile.addBaseResources(0,0,0,1);
                 numSpaces = 6;
                 break;
             case ICE:
@@ -53,22 +53,22 @@ public class TileFactory {
             case DEEP_SEA:
                 break;
             case ISLANDS:
-                tile.addBaseResources(0,0,2,1);
+                tile.addBaseResources(0,0,1,1);
                 numSpaces -= 2;
                 break;
             case PLAINS:
-                tile.addBaseResources(2,0,0,0);
+                tile.addBaseResources(1,0,0,0);
                 numSpaces += 2;
                 break;
             case HILLS:
-                tile.addBaseResources(1,1,0,0);
+                tile.addBaseResources(0,1,0,0);
                 break;
             case CLIFFS:
-                tile.addBaseResources(0,2,0,0);
+                tile.addBaseResources(0,1,0,0);
                 numSpaces -= 1;
                 break;
             case MOUNTAINS:
-                tile.addBaseResources(-1,3,0,0);
+                tile.addBaseResources(-1,1,1,0);
                 numSpaces -= 2;
                 break;
             default:

@@ -28,6 +28,11 @@ public class Vector3f {
     public void scale(float f) {
         x *= f; y *= f; z *= f;
     }
+    public Vector3f scaled(float f) {
+        Vector3f result = new Vector3f(x,y,z);
+        result.scale(f);
+        return result;
+    }
     public float magnitude() {
         return (float)Math.sqrt(x*x + y*y + z*z);
     }

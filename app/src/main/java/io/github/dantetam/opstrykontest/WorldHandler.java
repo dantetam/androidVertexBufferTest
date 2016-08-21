@@ -75,6 +75,8 @@ public class WorldHandler {
     public List<Tile> chunkTiles;
     public boolean chunksUpdated = false;
 
+    //TODO: Use change listeners to update 3d models when code is called
+
     public WorldHandler(LessonSevenActivity mActivity, LessonSevenRenderer mRenderer, MousePicker mousePicker, AssetHelper assetHelper, ChunkHelper chunkHelper, int len1, int len2) {
         world = new World(len1, len2);
         worldGenerator = new WorldGenerator(mActivity, world);
@@ -325,7 +327,7 @@ public class WorldHandler {
             //We want to 'stretch' the texture generated over this canvas, such that it is seamless.
             //If a and b are the bounding points in one dimension, and x is the in between point, then
             //the percentage of 'betweenness' is measured by (x-a) / (b-a).
-            Vector3f maxBounds = new Vector3f((world.arrayLengthX + 1) * TRANSLATE_FACTORX, 0, 1 * TRANSLATE_FACTORZ);
+            /*Vector3f maxBounds = new Vector3f((world.arrayLengthX + 1) * TRANSLATE_FACTORX, 0, 1 * TRANSLATE_FACTORZ);
             Vector3f minBounds = new Vector3f(-1 * TRANSLATE_FACTORX, 0, (- world.arrayLengthZ - 1) * TRANSLATE_FACTORZ);
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
                 float[][] solidsOfBiome = solidsOfBiomeData[i];
@@ -336,7 +338,7 @@ public class WorldHandler {
                     solidsOfBiome[2][2*p] = relativeX; solidsOfBiome[2][2*p + 1] = relativeZ;
                     //System.out.println(relativeX + " < > " + relativeZ);
                 }
-            }
+            }*/
 
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
                 //float[] color = Tile.Biome.colorFromInt(i);
@@ -455,6 +457,10 @@ public class WorldHandler {
     }
 
     public RenderEntity createCityTerritoryRep(City city) {
+        if (city == null) {
+            return null;
+        }
+
         if (borderObjData.length == 0 || borderObjData[0] == null) {
             for (int i = 0; i < borderMarkers.length; i++) {
                 borderObjData[i] = ObjLoader.loadObjModelByVertex(mActivity, borderMarkers[i]);

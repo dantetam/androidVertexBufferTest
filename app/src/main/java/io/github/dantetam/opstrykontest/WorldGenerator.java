@@ -126,7 +126,8 @@ public class WorldGenerator {
     private void setClanLands(World world) {
         List<Clan> clans = world.getClans();
         List<Tile> clanStartingLocations = new ArrayList<>();
-        List<Tile> validTiles = world.getAllValidTiles();
+        //List<Tile> validTiles = world.getAllValidTiles();
+        List<Tile> validTiles = world.getAllLandTiles();
         Tile start = validTiles.get((int)(Math.random()*validTiles.size()));
 
         clanStartingLocations.add(start);
@@ -196,7 +197,7 @@ public class WorldGenerator {
         }
     }
     private Tile findFurthestTileAway(World world, int q, int r) {
-        List<Tile> tiles = world.getAllValidTiles();
+        List<Tile> tiles = world.getAllLandTiles();
         Vector2f t = new Vector2f(q,r);
         float maxDist = 0;
         Tile maxTile = null;
