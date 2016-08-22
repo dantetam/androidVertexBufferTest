@@ -1,18 +1,15 @@
 package io.github.dantetam.opstrykontest;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 
-import io.github.dantetam.world.Action;
-import io.github.dantetam.world.ArtificialIntelligence;
-import io.github.dantetam.world.Building;
-import io.github.dantetam.world.City;
-import io.github.dantetam.world.Clan;
-import io.github.dantetam.world.Inventory;
-import io.github.dantetam.world.Pathfinder;
-import io.github.dantetam.world.Person;
-import io.github.dantetam.world.World;
+import io.github.dantetam.world.action.Action;
+import io.github.dantetam.world.entity.Building;
+import io.github.dantetam.world.entity.City;
+import io.github.dantetam.world.entity.Clan;
+import io.github.dantetam.world.entity.Inventory;
+import io.github.dantetam.world.entity.Person;
+import io.github.dantetam.world.entity.World;
 
 /**
  * Created by Dante on 7/13/2016.

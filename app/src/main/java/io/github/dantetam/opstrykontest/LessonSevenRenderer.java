@@ -1,6 +1,5 @@
 package io.github.dantetam.opstrykontest;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,26 +8,28 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.res.AssetManager;
-import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import io.github.dantetam.world.Building;
-import io.github.dantetam.world.BuildingType;
-import io.github.dantetam.world.Clan;
-import io.github.dantetam.world.ClanFactory;
-import io.github.dantetam.world.Entity;
-import io.github.dantetam.world.Person;
-import io.github.dantetam.world.TechTree;
-import io.github.dantetam.world.Tile;
+import io.github.dantetam.android.AssetHelper;
+import io.github.dantetam.android.BitmapHelper;
+import io.github.dantetam.android.ColorTextureHelper;
+import io.github.dantetam.android.FileParser;
+import io.github.dantetam.android.RawResourceReader;
+import io.github.dantetam.android.ShaderHelper;
+import io.github.dantetam.android.TextureHelper;
+import io.github.dantetam.opengl.BaseModel;
+import io.github.dantetam.opengl.Camera;
+import io.github.dantetam.opengl.MousePicker;
+import io.github.dantetam.opengl.RenderEntity;
+import io.github.dantetam.utilmath.Vector3f;
+import io.github.dantetam.world.entity.Building;
+import io.github.dantetam.world.factory.ClanFactory;
+import io.github.dantetam.world.entity.Entity;
+import io.github.dantetam.world.entity.Person;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter
@@ -222,10 +223,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		mViewMatrix = camera.getViewMatrix();
 		//Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
 
-		final String vertexShader = RawResourceReader.readTextFileFromRawResource(mLessonSevenActivity, R.raw.lesson_seven_vertex_shader);   		
+		final String vertexShader = RawResourceReader.readTextFileFromRawResource(mLessonSevenActivity, R.raw.lesson_seven_vertex_shader);
  		final String fragmentShader = RawResourceReader.readTextFileFromRawResource(mLessonSevenActivity, R.raw.lesson_seven_fragment_shader);
  				
-		final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);		
+		final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
 		final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);		
 		
 		mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, 

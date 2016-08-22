@@ -2,9 +2,9 @@ package io.github.dantetam.opstrykontest;
 
 import java.util.List;
 
-import io.github.dantetam.world.Pathfinder;
-import io.github.dantetam.world.Tile;
-import io.github.dantetam.world.World;
+import io.github.dantetam.utilmath.Pathfinder;
+import io.github.dantetam.world.entity.Tile;
+import io.github.dantetam.world.entity.World;
 
 /**
  * Created by Dante on 7/14/2016.

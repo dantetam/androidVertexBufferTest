@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
-import io.github.dantetam.world.Building;
-import io.github.dantetam.world.BuildingFactory;
-import io.github.dantetam.world.BuildingType;
-import io.github.dantetam.world.City;
-import io.github.dantetam.world.Clan;
-import io.github.dantetam.world.ClanFactory;
-import io.github.dantetam.world.DiamondSquare;
-import io.github.dantetam.world.Entity;
-import io.github.dantetam.world.Item;
-import io.github.dantetam.world.ItemType;
-import io.github.dantetam.world.Person;
-import io.github.dantetam.world.PersonFactory;
-import io.github.dantetam.world.PersonType;
-import io.github.dantetam.world.Tile;
-import io.github.dantetam.world.World;
+import io.github.dantetam.android.FileParser;
+import io.github.dantetam.utilmath.DiamondSquare;
+import io.github.dantetam.utilmath.Vector2f;
+import io.github.dantetam.world.factory.BuildingFactory;
+import io.github.dantetam.world.entity.City;
+import io.github.dantetam.world.entity.Clan;
+import io.github.dantetam.world.factory.ClanFactory;
+import io.github.dantetam.world.entity.Item;
+import io.github.dantetam.world.entity.ItemType;
+import io.github.dantetam.world.entity.Person;
+import io.github.dantetam.world.factory.PersonFactory;
+import io.github.dantetam.world.entity.Tile;
+import io.github.dantetam.world.entity.World;
+import io.github.dantetam.xml.BuildingXmlParser;
+import io.github.dantetam.xml.TechXmlParser;
+import io.github.dantetam.xml.UnitXmlParser;
 
 /**
  * Created by Dante on 6/17/2016.

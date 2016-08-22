@@ -2,16 +2,14 @@ package io.github.dantetam.opstrykontest;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.github.dantetam.world.Person;
-import io.github.dantetam.world.Tile;
-import io.github.dantetam.world.World;
+import io.github.dantetam.world.entity.Tile;
+import io.github.dantetam.world.entity.World;
 
 /**
  * Created by Dante on 7/18/2016.

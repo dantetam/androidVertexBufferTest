@@ -1,6 +1,6 @@
 package io.github.dantetam.opstrykontest;
 
-import io.github.dantetam.world.Tile;
+import io.github.dantetam.world.entity.Tile;
 
 /*
 Created by Dante on 7/4/2016.

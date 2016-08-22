@@ -1,48 +1,22 @@
 package io.github.dantetam.opstrykontest;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.opengl.GLSurfaceView;
-import android.support.annotation.NonNull;
 import android.support.percent.PercentRelativeLayout;
-import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.GestureDetector;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupMenu;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import io.github.dantetam.world.Action;
-import io.github.dantetam.world.Building;
-import io.github.dantetam.world.BuildingFactory;
-import io.github.dantetam.world.BuildingType;
-import io.github.dantetam.world.Clan;
-import io.github.dantetam.world.CombatAction;
-import io.github.dantetam.world.CombatWorld;
-import io.github.dantetam.world.Entity;
-import io.github.dantetam.world.Item;
-import io.github.dantetam.world.Person;
-import io.github.dantetam.world.PersonAction;
-import io.github.dantetam.world.Tile;
+import io.github.dantetam.opengl.MousePicker;
+import io.github.dantetam.world.action.Action;
+import io.github.dantetam.world.entity.Building;
+import io.github.dantetam.world.entity.Clan;
+import io.github.dantetam.world.action.CombatAction;
+import io.github.dantetam.world.entity.CombatWorld;
+import io.github.dantetam.world.entity.Entity;
+import io.github.dantetam.world.entity.Person;
+import io.github.dantetam.world.entity.Tile;
 
 public class LessonSevenGLSurfaceView extends GLSurfaceView
 {

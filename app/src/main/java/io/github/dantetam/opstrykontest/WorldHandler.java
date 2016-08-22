@@ -1,8 +1,5 @@
 package io.github.dantetam.opstrykontest;
 
-import android.opengl.GLES20;
-import android.support.percent.PercentRelativeLayout;
-import android.support.v4.content.res.TypedArrayUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,7 +11,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dantetam.world.*;
+import io.github.dantetam.android.AssetHelper;
+import io.github.dantetam.android.ColorTextureHelper;
+import io.github.dantetam.android.ObjLoader;
+import io.github.dantetam.android.TerrainTextureHelper;
+import io.github.dantetam.android.TextureHelper;
+import io.github.dantetam.opengl.BaseModel;
+import io.github.dantetam.opengl.ListModel;
+import io.github.dantetam.opengl.MapModel;
+import io.github.dantetam.opengl.MousePicker;
+import io.github.dantetam.opengl.RenderEntity;
+import io.github.dantetam.opengl.Solid;
+import io.github.dantetam.utilmath.Vector3f;
+import io.github.dantetam.utilmath.Vector4f;
+import io.github.dantetam.world.entity.Building;
+import io.github.dantetam.world.entity.City;
+import io.github.dantetam.world.entity.Clan;
+import io.github.dantetam.world.entity.CombatWorld;
+import io.github.dantetam.world.entity.Entity;
+import io.github.dantetam.world.entity.ItemType;
+import io.github.dantetam.world.entity.Tile;
+import io.github.dantetam.world.entity.World;
 
 /**
  * Created by Dante on 6/17/2016.
