@@ -8,6 +8,8 @@ public class Texture {
     public String fileName;
     public int textureHandle;
 
+    public int numberOfRows = 1;
+
     public Texture(String name, int handle) {
         fileName = name;
         textureHandle = handle;

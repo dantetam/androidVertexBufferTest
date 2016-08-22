@@ -8,7 +8,10 @@ attribute vec2 a_TexCoordinate; // Per-vertex texture coordinate information we 
 varying vec3 v_Position;		// This will be passed into the fragment shader.       		          		
 varying vec3 v_Normal;			// This will be passed into the fragment shader.  
 varying vec2 v_TexCoordinate;   // This will be passed into the fragment shader.
-		  
+
+uniform float numberOfRows;
+uniform vec2 offset;
+
 // The entry point for our vertex shader.  
 void main()                                                 	
 {                                                         
@@ -16,6 +19,7 @@ void main()
 	v_Position = vec3(u_MVMatrix * a_Position);            		
 	
 	// Pass through the texture coordinate.
+	pass_texCoord = (a_TexCoordinate / numberOfRows) + offset;
 	v_TexCoordinate = a_TexCoordinate;
 
 	// Transform the normal's orientation into eye space.

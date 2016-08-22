@@ -92,7 +92,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	private int mLightPosHandle;
     private int mCameraPosHandle;
 	private int mTextureUniformHandle;
-	
+
+    private int textureAtlasNumberOfRowsHandle;
+    private int textureAtlasOffsetHandle;
+
 	/** Additional info for cube generation. */
 	private int mLastRequestedCubeFactor;
 	private int mActualCubeFactor;
@@ -379,6 +382,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         solid.mNormalHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Normal");
         solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
 
+        textureAtlasNumberOfRowsHandle = GLES20.glGetUniformLocation(mProgramHandle, "numberOfRows");
+        textureAtlasOffsetHandle = GLES20.glGetUniformLocation(mProgramHandle, "offset");
+
         // Calculate position of the light. Push into the distance.
         Matrix.setIdentityM(mLightModelMatrix, 0);
         Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, -1.0f);
@@ -445,6 +451,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         // shader by binding to texture unit 0.
 
         GLES20.glUniform1i(mTextureUniformHandle, 0);
+
+        GLES20.glUniform1f(textureAtlasNumberOfRowsHandle, solid.texture.numberOfRows);
+        GLES20.glUniform2f(textureAtlasOffsetHandle, solid.getTextureOffsetX(), solid.getTextureOffsetY());
 
         //---
         solid.renderAll(solid.renderMode);

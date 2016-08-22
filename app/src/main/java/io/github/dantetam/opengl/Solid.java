@@ -185,7 +185,12 @@ public class Solid extends RenderEntity {
     }
 
     public Solid(Texture texture, float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int cubeFactor) {
+        this(texture, 0, cubePositions, cubeNormals, cubeTextureCoordinates, cubeFactor);
+    }
+
+    public Solid(Texture texture, int textureAtlasIndex, float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int cubeFactor) {
         this.texture = texture;
+        this.textureAtlasIndex = textureAtlasIndex;
 
         FloatBuffer cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, cubeFactor);
         generatedCubeFactor = cubeFactor;

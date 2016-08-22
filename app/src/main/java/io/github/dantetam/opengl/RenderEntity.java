@@ -33,6 +33,7 @@ public abstract class RenderEntity {
     public int mTextureCoordinateHandle;
 
     public Texture texture;
+    public int textureAtlasIndex = 0;
 
     public boolean hasName = false;
     public boolean alphaEnabled = false;
@@ -43,6 +44,15 @@ public abstract class RenderEntity {
     public abstract void renderAll(int mode);
     //abstract void render(int indexBlock);
     public abstract void release();
+
+    public float getTextureOffsetX() {
+        int col = textureAtlasIndex % texture.numberOfRows;
+        return (float) col / (float) texture.numberOfRows;
+    }
+    public float getTextureOffsetY() {
+        int row = textureAtlasIndex / texture.numberOfRows;
+        return (float) row / (float) texture.numberOfRows;
+    }
 
    /* FloatBuffer[] getBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         // First, copy cube information into client-side floating point buffers.
