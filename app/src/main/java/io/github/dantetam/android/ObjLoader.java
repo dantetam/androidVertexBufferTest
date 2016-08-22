@@ -54,7 +54,11 @@ All other data within the OBJ is ignored, for now.
  */
 public class ObjLoader {
 
-
+    public static Solid loadSolid(int texture, String textureName,
+                                  final Context context, final int resourceId)
+    {
+        return loadSolid(texture, 1, 0, textureName, context, resourceId);
+    }
     /**
      * Parse an OBJ to create a solid
      * @param texture A textureHandle to bind to
@@ -63,12 +67,10 @@ public class ObjLoader {
      * @param resourceId A resource "handle" such as R.drawable.usb_android (presumably an OBJ)
      * @return A new Solid (a VBO) containing the data contained with the resource
      */
-    public static Solid loadSolid(int texture,
-                                  String textureName,
-                                  final Context context,
-                                  final int resourceId)
+    public static Solid loadSolid(int texture, int numRows, int textureAtlasHandle, String textureName,
+                                  final Context context, final int resourceId)
     {
-        Texture newTexture = new Texture(null, texture);
+        Texture newTexture = new Texture(null, texture, numRows, textureAtlasHandle);
         if (textureName != null && solidData.containsKey(textureName)) {
             //System.out.println("Loading from memory too: " + textureName);
             return loadSolid(newTexture, textureName, solidData.get(textureName));

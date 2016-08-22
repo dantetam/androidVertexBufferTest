@@ -10,9 +10,25 @@ public class Texture {
 
     public int numberOfRows = 1;
 
+    public int textureAtlasIndex = 0;
+
     public Texture(String name, int handle) {
+        this(name, handle, 1, 0);
+    }
+    public Texture(String name, int handle, int numberOfRows, int textureAtlasIndex) {
         fileName = name;
         textureHandle = handle;
+        this.numberOfRows = numberOfRows;
+        this.textureAtlasIndex = textureAtlasIndex;
+    }
+
+    public float getTextureOffsetX() {
+        int col = textureAtlasIndex % numberOfRows;
+        return (float) col / (float) numberOfRows;
+    }
+    public float getTextureOffsetY() {
+        int row = textureAtlasIndex / numberOfRows;
+        return (float) row / (float) numberOfRows;
     }
 
 }

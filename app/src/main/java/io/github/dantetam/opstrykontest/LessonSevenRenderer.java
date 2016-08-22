@@ -226,8 +226,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		mViewMatrix = camera.getViewMatrix();
 		//Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
 
-		final String vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.lesson_seven_vertex_shader);
- 		final String fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.lesson_seven_fragment_shader);
+		//final String vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.lesson_seven_vertex_shader);
+ 		//final String fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.lesson_seven_fragment_shader);
+        final String vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.texture_atlas_vertex);
+        final String fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.texture_atlas_fragment);
  				
 		final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
 		final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);		
@@ -380,10 +382,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_Texture");
         solid.mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
         solid.mNormalHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Normal");
-        solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
 
-        textureAtlasNumberOfRowsHandle = GLES20.glGetUniformLocation(mProgramHandle, "numberOfRows");
-        textureAtlasOffsetHandle = GLES20.glGetUniformLocation(mProgramHandle, "offset");
+        solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate0");
+        textureAtlasNumberOfRowsHandle = GLES20.glGetUniformLocation(mProgramHandle, "numberOfRows0");
+        textureAtlasOffsetHandle = GLES20.glGetUniformLocation(mProgramHandle, "offset0");
 
         // Calculate position of the light. Push into the distance.
         Matrix.setIdentityM(mLightModelMatrix, 0);
@@ -453,7 +455,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         GLES20.glUniform1i(mTextureUniformHandle, 0);
 
         GLES20.glUniform1f(textureAtlasNumberOfRowsHandle, solid.texture.numberOfRows);
-        GLES20.glUniform2f(textureAtlasOffsetHandle, solid.getTextureOffsetX(), solid.getTextureOffsetY());
+        GLES20.glUniform2f(textureAtlasOffsetHandle, solid.texture.getTextureOffsetX(), solid.texture.getTextureOffsetY());
 
         //---
         solid.renderAll(solid.renderMode);

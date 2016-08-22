@@ -22,6 +22,7 @@ import io.github.dantetam.opengl.MapModel;
 import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.opengl.RenderEntity;
 import io.github.dantetam.opengl.Solid;
+import io.github.dantetam.opengl.Texture;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.utilmath.Vector4f;
 import io.github.dantetam.world.entity.Building;
@@ -361,7 +362,7 @@ public class WorldHandler {
                 //float[] color = Tile.Biome.colorFromInt(i);
                 int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
                 //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
-                Solid solid = ObjLoader.loadSolid(textureHandle, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
+                Solid solid = ObjLoader.loadSolid(new Texture("biomeHandle" + i, textureHandle, 2, i % 4), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
                 storedBiomeTiles.put(Tile.Biome.fromInt(i), solid);
                 tilesStored.add(solid);
             }
