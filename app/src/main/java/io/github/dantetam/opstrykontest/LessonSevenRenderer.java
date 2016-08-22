@@ -223,8 +223,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		mViewMatrix = camera.getViewMatrix();
 		//Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
 
-		final String vertexShader = RawResourceReader.readTextFileFromRawResource(mLessonSevenActivity, R.raw.lesson_seven_vertex_shader);
- 		final String fragmentShader = RawResourceReader.readTextFileFromRawResource(mLessonSevenActivity, R.raw.lesson_seven_fragment_shader);
+		final String vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.lesson_seven_vertex_shader);
+ 		final String fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.lesson_seven_fragment_shader);
  				
 		final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
 		final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);		
@@ -438,7 +438,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         // Bind the texture to this unit.
         //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mAndroidDataHandle);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, solid.textureHandle);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, solid.texture.textureHandle);
         //System.out.println(mAndroidDataHandle + " " + solid.textureHandle);
 
         // Tell the texture uniform sampler to use this texture in the

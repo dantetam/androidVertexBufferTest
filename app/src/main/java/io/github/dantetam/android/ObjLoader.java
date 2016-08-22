@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.github.dantetam.opengl.Solid;
+import io.github.dantetam.opengl.Texture;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.utilmath.Vector3f;
+import io.github.dantetam.world.entity.Tile;
 
 /*
 This class is from an old project inspired by ThinMatrix's OpenGL/LWJGL tutorials.
@@ -52,45 +54,24 @@ All other data within the OBJ is ignored, for now.
  */
 public class ObjLoader {
 
-    /*
-    Save data that's already been loaded under certain aliases.
-    It is much more efficient to store and retrieve than to initialize hundreds of InputStreams and parsers.
-     */
-    public static HashMap<String, float[][]> solidData = new HashMap<>();
-
-    private static Solid loadSolid(int textureHandle, String textureName) {
-        if (textureName != null && solidData.containsKey(textureName)) {
-            //System.out.println("Loading from memory: " + textureName);
-            return loadSolid(textureHandle, textureName, solidData.get(textureName));
-        }
-        //System.out.println("Not loading from memory: " + textureName);
-        return null;
-    }
-
-    private static Solid loadSolid(int textureHandle, String textureName, InputStream assetInputStream) {
-        final InputStreamReader inputStreamReader = new InputStreamReader(assetInputStream);
-        final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-        float[][] data = AssetHelper.compressIntoFloatData(AssetHelper.getTotalData(assetInputStream));
-        return loadSolid(textureHandle, textureName, data);
-    }
 
     /**
      * Parse an OBJ to create a solid
-     * @param textureHandle A textureHandle to bind to
+     * @param texture A textureHandle to bind to
      * @param textureName A name to save the solid data to if necessary
      * @param context An activity
      * @param resourceId A resource "handle" such as R.drawable.usb_android (presumably an OBJ)
      * @return A new Solid (a VBO) containing the data contained with the resource
      */
-    public static Solid loadSolid(int textureHandle,
+    public static Solid loadSolid(int texture,
                                   String textureName,
                                   final Context context,
                                   final int resourceId)
     {
+        Texture newTexture = new Texture(null, texture);
         if (textureName != null && solidData.containsKey(textureName)) {
             //System.out.println("Loading from memory too: " + textureName);
-            return loadSolid(textureHandle, textureName, solidData.get(textureName));
+            return loadSolid(newTexture, textureName, solidData.get(textureName));
         }
         //System.out.println("Not loading from memory too: " + textureName);
         float[][] data = loadObjModelByVertex(textureName, context, resourceId);
@@ -106,27 +87,84 @@ public class ObjLoader {
             }
             System.out.println();
         }*/
-        return loadSolid(textureHandle, textureName, data);
+        return loadSolid(newTexture, textureName, data);
+    }
+
+    /*
+    Save data that's already been loaded under certain aliases.
+    It is much more efficient to store and retrieve than to initialize hundreds of InputStreams and parsers.
+     */
+    public static HashMap<String, float[][]> solidData = new HashMap<>();
+
+    private static Solid loadSolid(Texture texture, String textureName) {
+        if (textureName != null && solidData.containsKey(textureName)) {
+            //System.out.println("Loading from memory: " + textureName);
+            return loadSolid(texture, textureName, solidData.get(textureName));
+        }
+        //System.out.println("Not loading from memory: " + textureName);
+        return null;
+    }
+
+    private static Solid loadSolid(Texture texture, String textureName, InputStream assetInputStream) {
+        final InputStreamReader inputStreamReader = new InputStreamReader(assetInputStream);
+        final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+        float[][] data = AssetHelper.compressIntoFloatData(AssetHelper.getTotalData(assetInputStream));
+        return loadSolid(texture, textureName, data);
+    }
+
+    /**
+     * Parse an OBJ to create a solid
+     * @param texture A textureHandle to bind to
+     * @param textureName A name to save the solid data to if necessary
+     * @param context An activity
+     * @param resourceId A resource "handle" such as R.drawable.usb_android (presumably an OBJ)
+     * @return A new Solid (a VBO) containing the data contained with the resource
+     */
+    public static Solid loadSolid(Texture texture,
+                                  String textureName,
+                                  final Context context,
+                                  final int resourceId)
+    {
+        if (textureName != null && solidData.containsKey(textureName)) {
+            //System.out.println("Loading from memory too: " + textureName);
+            return loadSolid(texture, textureName, solidData.get(textureName));
+        }
+        //System.out.println("Not loading from memory too: " + textureName);
+        float[][] data = loadObjModelByVertex(textureName, context, resourceId);
+        //solidData.put(textureName, data);
+        //Solid solid = new Solid(data[0], data[1], data[2], 1);
+        /*for (int t = 0; t < 3; t++) {
+            for (int i = 0; i < data[t].length; i++) {
+                System.out.print(data[t][i] + " ");
+                int f = t == 2 ? 2 : 3;
+                if (i % f == f - 1) {
+                    System.out.print("; ");
+                }
+            }
+            System.out.println();
+        }*/
+        return loadSolid(texture, textureName, data);
     }
     /*
     Do not save the texture under the name.
      */
-    private static Solid loadSolid(int textureHandle,
+    private static Solid loadSolid(Texture texture,
                                   final Context context,
                                   final int resourceId)
     {
-        return loadSolid(textureHandle, null, context, resourceId);
+        return loadSolid(texture, null, context, resourceId);
     }
 
     /**
      * Parse an OBJ to create a solid, but this time, manually from float[] data,
      * in VNT form.
-     * @param textureHandle A textureHandle to bind to
+     * @param texture A texture w/ textureHandle to bind to
      * @param data
      * @return A new Solid (a VBO) containing the data contained with the resource
      */
-    public static Solid loadSolid(int textureHandle, String solidName, float[][] data) {
-        Solid solid = new Solid(textureHandle, data[0], data[1], data[2], 1);
+    public static Solid loadSolid(Texture texture, String solidName, float[][] data) {
+        Solid solid = new Solid(texture, data[0], data[1], data[2], 1);
         if (solidName != null) {
             if (!solidData.containsKey(solidName)) {
                 solidData.put(solidName, data);
@@ -139,6 +177,9 @@ public class ObjLoader {
         }
         solid.numVerticesToRender = data[0].length;
         return solid;
+    }
+    public static Solid loadSolid(int texture, String solidName, float[][] data) {
+        return loadSolid(new Texture(null, texture), solidName, data);
     }
 
     /**

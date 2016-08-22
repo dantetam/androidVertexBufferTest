@@ -29,9 +29,9 @@ public class Solid extends RenderEntity {
 
     public final int renderMode = GLES20.GL_TRIANGLES;
 
-    public Solid(int textureHandle) {
+    /*public Solid() {
         this(textureHandle, defaultCubePos(), defaultCubeNormals(), defaultCubeTexture(), 1);
-    }
+    }*/
 
     private static float[] defaultCubePos() {
         final float[] cubePositionData = new float[108];
@@ -184,8 +184,8 @@ public class Solid extends RenderEntity {
         return cubeTextureCoordinateData;
     }
 
-    public Solid(int textureHandle, float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int cubeFactor) {
-        this.textureHandle = textureHandle;
+    public Solid(Texture texture, float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int cubeFactor) {
+        this.texture = texture;
 
         FloatBuffer cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, cubeFactor);
         generatedCubeFactor = cubeFactor;

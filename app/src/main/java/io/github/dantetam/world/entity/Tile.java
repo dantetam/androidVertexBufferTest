@@ -3,12 +3,10 @@ package io.github.dantetam.world.entity;
 import java.util.HashMap;
 import java.util.List;
 
-import io.github.dantetam.world.Representable;
-
 /**
  * Created by Dante on 6/13/2016.
  */
-public class Tile extends Representable implements Traversable<Tile> {
+public class Tile implements Traversable<Tile> {
 
     public World world;
     public int q, r;

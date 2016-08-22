@@ -54,10 +54,10 @@ public abstract class Action {
     */
     public ActionType type;
     public Object data;
-    Action(ActionType t, Object obj) {
+    public Action(ActionType t, Object obj) {
         type = t;
         data = obj;
     }
-    abstract ActionStatus execute(Object subject);
+    public abstract ActionStatus execute(Object subject);
 
 }

@@ -173,7 +173,7 @@ public class BuildingFactory {
 
         building.world = null;
         building.clan = null;
-        building.location = null;
+        building.setLocation(null);
 
         building.enabled = false;
     }

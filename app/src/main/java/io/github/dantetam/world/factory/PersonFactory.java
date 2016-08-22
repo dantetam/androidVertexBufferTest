@@ -37,7 +37,7 @@ public class PersonFactory {
 
         person.world = null;
         person.clan = null;
-        person.location = null;
+        person.setLocation(null);
 
         person.enabled = false;
     }

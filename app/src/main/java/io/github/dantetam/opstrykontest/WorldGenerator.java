@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.github.dantetam.android.FileParser;
+import io.github.dantetam.android.RawResourceReader;
 import io.github.dantetam.utilmath.DiamondSquare;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.world.factory.BuildingFactory;
@@ -29,7 +30,7 @@ import io.github.dantetam.xml.UnitXmlParser;
  */
 public class WorldGenerator {
 
-    private LessonSevenActivity mActivity;
+    private static LessonSevenActivity mActivity;
     private World world;
 
     public WorldGenerator(LessonSevenActivity mActivity, World w) {
@@ -216,7 +217,7 @@ public class WorldGenerator {
     public static HashMap<ItemType, float[][]> parseResourceSpawnRates() {
         if (resourceSpawnRates == null) {
             resourceSpawnRates = new HashMap<>();
-            List<String> data = FileParser.loadText(R.raw.resource_spawn_rates);
+            List<String> data = RawResourceReader.loadListOfText(mActivity, R.raw.resource_spawn_rates);
             int numBiomes = Tile.Biome.numBiomes, numTerrains = Tile.Terrain.numTerrains;
             int biomeCounter = 0;
             String resource = "";

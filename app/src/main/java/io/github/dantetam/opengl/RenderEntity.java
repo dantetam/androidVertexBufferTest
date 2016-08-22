@@ -32,17 +32,17 @@ public abstract class RenderEntity {
     /** This will be used to pass in model texture coordinate information. */
     public int mTextureCoordinateHandle;
 
-    public int textureHandle;
+    public Texture texture;
 
     public boolean hasName = false;
     public boolean alphaEnabled = false;
 
     public final int renderMode = GLES20.GL_TRIANGLES;
 
-    abstract void renderAll();
-    abstract void renderAll(int mode);
+    public abstract void renderAll();
+    public abstract void renderAll(int mode);
     //abstract void render(int indexBlock);
-    abstract void release();
+    public abstract void release();
 
    /* FloatBuffer[] getBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         // First, copy cube information into client-side floating point buffers.

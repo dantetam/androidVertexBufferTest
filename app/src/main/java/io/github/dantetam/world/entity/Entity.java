@@ -5,14 +5,13 @@ import java.util.List;
 
 import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
-import io.github.dantetam.world.Representable;
 
 import static io.github.dantetam.world.action.Action.ActionStatus;
 
 /**
  * Created by Dante on 6/13/2016.
  */
-public abstract class Entity extends Representable {
+public abstract class Entity {
 
     protected Tile location;
     public String name;
@@ -74,6 +73,7 @@ public abstract class Entity extends Representable {
     public Tile location() {
         return location;
     }
+    public void setLocation(Tile t) {location = t;}
 
     public boolean equals(Object other) {
         if (!(other instanceof Entity)) {
