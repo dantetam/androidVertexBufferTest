@@ -31,4 +31,13 @@ public class Texture {
         return (float) row / (float) numberOfRows;
     }
 
+    public static float getTextureOffsetX(int index, int rows) {
+        int col = index % rows;
+        return (float) col / (float) rows;
+    }
+    public static float getTextureOffsetY(int index, int rows) {
+        int row = index / rows;
+        return (float) row / (float) rows;
+    }
+
 }

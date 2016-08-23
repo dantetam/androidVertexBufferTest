@@ -380,6 +380,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         if (!(solid.texture instanceof MultiTexture)) {
             activeShaderProgram = mDefaultShaderHandleWithAtlas;
             GLES20.glUseProgram(activeShaderProgram);
+
             mTextureUniformHandle = GLES20.glGetUniformLocation(activeShaderProgram, "u_Texture");
             solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(activeShaderProgram, "a_TexCoordinate0");
             textureAtlasNumberOfRowsHandle = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows0");
@@ -399,8 +400,61 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             GLES20.glUniform1i(mTextureUniformHandle, 0);
         }
         else {
+            MultiTexture mt = (MultiTexture) solid.texture;
+
             activeShaderProgram = mMultiTextureShader;
             GLES20.glUseProgram(activeShaderProgram);
+
+            int[] handles = new int[4];
+            handles[0] = GLES20.glGetUniformLocation(activeShaderProgram, "blackTexture");
+            handles[3] = GLES20.glGetUniformLocation(activeShaderProgram, "rTexture");
+            handles[6] = GLES20.glGetUniformLocation(activeShaderProgram, "gTexture");
+            handles[9] = GLES20.glGetUniformLocation(activeShaderProgram, "bTexture");
+            handles[12] = GLES20.glGetUniformLocation(activeShaderProgram, "blendMap");
+
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle);
+            GLES20.glUniform1i(handles[0], 0);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle1);
+            GLES20.glUniform1i(handles[3], 1);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE2);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle2);
+            GLES20.glUniform1i(handles[6], 2);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle3);
+            GLES20.glUniform1i(handles[9], 3);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE4);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.blendMap);
+            GLES20.glUniform1i(handles[12], 4);
+
+            handles[1] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows0");
+            handles[2] = GLES20.glGetUniformLocation(activeShaderProgram, "offset0");
+            handles[4] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows1");
+            handles[5] = GLES20.glGetUniformLocation(activeShaderProgram, "offset1");
+            handles[7] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows2");
+            handles[8] = GLES20.glGetUniformLocation(activeShaderProgram, "offset2");
+            handles[10] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows3");
+            handles[11] = GLES20.glGetUniformLocation(activeShaderProgram, "offset3");
+
+            solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(activeShaderProgram, "a_TexCoordinate0");
+
+            GLES20.glUniform1f(handles[1], mt.numberOfRows);
+            GLES20.glUniform2f(handles[2],
+                    mt.getTextureOffsetX(mt.textureAtlasIndex, mt.numberOfRows),
+                    mt.getTextureOffsetY(mt.textureAtlasIndex, mt.numberOfRows));
+            GLES20.glUniform1f(handles[4], mt.numberOfRows1);
+            GLES20.glUniform2f(handles[5],
+                    mt.getTextureOffsetX(mt.textureAtlasIndex1, mt.numberOfRows1),
+                    mt.getTextureOffsetY(mt.textureAtlasIndex1, mt.numberOfRows1));
+            GLES20.glUniform1f(handles[7], mt.numberOfRows2);
+            GLES20.glUniform2f(handles[8],
+                    mt.getTextureOffsetX(mt.textureAtlasIndex2, mt.numberOfRows2),
+                    mt.getTextureOffsetY(mt.textureAtlasIndex2, mt.numberOfRows2));
+            GLES20.glUniform1f(handles[10], mt.numberOfRows3);
+            GLES20.glUniform2f(handles[11],
+                    mt.getTextureOffsetX(mt.textureAtlasIndex3, mt.numberOfRows3),
+                    mt.getTextureOffsetY(mt.textureAtlasIndex3, mt.numberOfRows3));
         }
 
         // Set program handles for cube drawing.
