@@ -24,6 +24,7 @@ import io.github.dantetam.android.TextureHelper;
 import io.github.dantetam.opengl.BaseModel;
 import io.github.dantetam.opengl.Camera;
 import io.github.dantetam.opengl.MousePicker;
+import io.github.dantetam.opengl.MultiTexture;
 import io.github.dantetam.opengl.RenderEntity;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.world.entity.Building;
@@ -83,7 +84,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     public AssetHelper assetHelper;
 
     /** Pass in data to shaders by OpenGL handles */
-    private int mProgramHandle;
+    private int mDefaultShaderHandleWithAtlas;
+    private int mMultiTextureShader;
+
     private int mAndroidDataHandle;
     private int mWhiteTextureHandle;
 
@@ -234,7 +237,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
 		final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);		
 		
-		mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, 
+		mDefaultShaderHandleWithAtlas = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
 				new String[] {"a_Position", "a_Normal", "a_TexCoordinate"});
         
 		// Load the texture
@@ -372,20 +375,38 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //int y = (i / mActualCubeFactor) % mActualCubeFactor;
         //int z = i % mActualCubeFactor;
         // Set our per-vertex lighting program.
-        GLES20.glUseProgram(mProgramHandle);
+
+        if (!(solid.texture instanceof MultiTexture)) {
+            GLES20.glUseProgram(mDefaultShaderHandleWithAtlas);
+            mTextureUniformHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "u_Texture");
+            solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(mDefaultShaderHandleWithAtlas, "a_TexCoordinate0");
+            textureAtlasNumberOfRowsHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "numberOfRows0");
+            textureAtlasOffsetHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "offset0");
+
+            // Pass in the texture information
+            // Set the active texture unit to texture unit 0.
+            //GLES20.glEnable(GLES20.GL_TEXTURE_2D);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            // Bind the texture to this unit.
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, solid.texture.textureHandle);
+            // Tell the texture uniform sampler to use this texture in the
+            // shader by binding to texture unit 0.
+            GLES20.glUniform1i(mTextureUniformHandle, 0);
+
+            GLES20.glUniform1f(textureAtlasNumberOfRowsHandle, solid.texture.numberOfRows);
+            GLES20.glUniform2f(textureAtlasOffsetHandle, solid.texture.getTextureOffsetX(), solid.texture.getTextureOffsetY());
+        }
+        else {
+            GLES20.glUseProgram(mMultiTextureShader);
+        }
 
         // Set program handles for cube drawing.
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
-        mMVMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVMatrix");
-        mLightPosHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_LightPos");
-        mCameraPosHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_CameraPos");
-        mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_Texture");
-        solid.mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
-        solid.mNormalHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Normal");
-
-        solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate0");
-        textureAtlasNumberOfRowsHandle = GLES20.glGetUniformLocation(mProgramHandle, "numberOfRows0");
-        textureAtlasOffsetHandle = GLES20.glGetUniformLocation(mProgramHandle, "offset0");
+        mMVPMatrixHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "u_MVPMatrix");
+        mMVMatrixHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "u_MVMatrix");
+        mLightPosHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "u_LightPos");
+        mCameraPosHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "u_CameraPos");
+        solid.mPositionHandle = GLES20.glGetAttribLocation(mDefaultShaderHandleWithAtlas, "a_Position");
+        solid.mNormalHandle = GLES20.glGetAttribLocation(mDefaultShaderHandleWithAtlas, "a_Normal");
 
         // Calculate position of the light. Push into the distance.
         Matrix.setIdentityM(mLightModelMatrix, 0);
@@ -438,24 +459,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
 
         GLES20.glUniform3f(mCameraPosHandle, camera.eyeX, camera.eyeY, camera.eyeZ);
-
-        // Pass in the texture information
-        // Set the active texture unit to texture unit 0.
-        //GLES20.glEnable(GLES20.GL_TEXTURE_2D);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-
-        // Bind the texture to this unit.
-        //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mAndroidDataHandle);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, solid.texture.textureHandle);
-        //System.out.println(mAndroidDataHandle + " " + solid.textureHandle);
-
-        // Tell the texture uniform sampler to use this texture in the
-        // shader by binding to texture unit 0.
-
-        GLES20.glUniform1i(mTextureUniformHandle, 0);
-
-        GLES20.glUniform1f(textureAtlasNumberOfRowsHandle, solid.texture.numberOfRows);
-        GLES20.glUniform2f(textureAtlasOffsetHandle, solid.texture.getTextureOffsetX(), solid.texture.getTextureOffsetY());
 
         //---
         solid.renderAll(solid.renderMode);

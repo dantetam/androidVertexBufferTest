@@ -218,27 +218,30 @@ public class WorldHandler {
 
             //TODO: Convert to IBOs next?
 
-            if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
-                if (mousePicker.getSelectedTile().improvement.buildingType.name.equals("City")) {
-                    improvementResourceProductionUi = null;
-                    improvementResourceStatUi = null;
+            if (mousePicker.getSelectedTile() != null) {
+                Building impr = mousePicker.getSelectedTile().improvement;
+                if (impr != null) {
+                    if (impr.buildingType.name.equals("City")) {
+                        improvementResourceProductionUi = null;
+                        improvementResourceStatUi = null;
 
-                    modelsToRender.add(updateTileYieldRep());
-                    modelsToRender.add(tileYieldInterface());
-                    if (highlightedCityTerritory == null) {
-                        highlightedCityTerritory = createCityTerritoryRep((City) mousePicker.getSelectedTile().improvement);
-                        //System.out.println("yes");
-                    }
-                    if (highlightedCityTerritory != null) {
-                        solidsToRender.add(highlightedCityTerritory);
-                    }
-                } else {
-                    highlightedCityTerritory = null;
+                        modelsToRender.add(updateTileYieldRep());
+                        modelsToRender.add(tileYieldInterface());
+                        if (highlightedCityTerritory == null) {
+                            highlightedCityTerritory = createCityTerritoryRep((City) impr);
+                            //System.out.println("yes");
+                        }
+                        if (highlightedCityTerritory != null) {
+                            solidsToRender.add(highlightedCityTerritory);
+                        }
+                    } else {
+                        highlightedCityTerritory = null;
 
-                    if (improvementResourceProductionUi == null) {
-                        createImprovementResourceRep();
-                        modelsToRender.add(improvementResourceProductionUi);
-                        modelsToRender.add(improvementResourceStatUi);
+                        if (improvementResourceProductionUi == null) {
+                            createImprovementResourceRep();
+                            modelsToRender.add(improvementResourceProductionUi);
+                            modelsToRender.add(improvementResourceStatUi);
+                        }
                     }
                 }
             } else {

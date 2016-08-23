@@ -8,6 +8,20 @@ attribute vec2 a_TexCoordinate0; // Per-vertex texture coordinate information we
 uniform float numberOfRows0;
 uniform vec2 offset0;
 
+attribute vec2 a_TexCoordinate1;
+uniform float numberOfRows1;
+uniform vec2 offset1;
+
+attribute vec2 a_TexCoordinate2;
+uniform float numberOfRows2;
+uniform vec2 offset2;
+
+attribute vec2 a_TexCoordinate3;
+uniform float numberOfRows3;
+uniform vec2 offset3;
+
+attribute vec2 blendMap;
+
 varying vec3 v_Position;		 // This will be passed into the fragment shader.
 varying vec3 v_Normal;			 // This will be passed into the fragment shader.
 varying vec2 v_TexCoordinate;    // This will be passed into the fragment shader.
