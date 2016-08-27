@@ -373,11 +373,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         for (RenderEntity renderEntity: solidsToRender) {
             renderSolid(renderEntity);
         }
-        if (testSolid == null) {
+        /*if (testSolid == null) {
             testSolid = new Solid("fbo", frameBufferHelper.fboTextureHandle);
-
         }
-        renderSolid(testSolid);
+        renderSolid(testSolid);*/
     }
 
     private RenderEntity testSolid;

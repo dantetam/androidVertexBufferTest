@@ -28,6 +28,7 @@ import io.github.dantetam.opengl.Texture;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.utilmath.Vector4f;
 import io.github.dantetam.world.entity.Building;
+import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.CombatWorld;
@@ -51,7 +52,6 @@ public class WorldHandler {
     private ChunkHelper chunkHelper;
 
     private ListModel tilesStored = null;
-
     //This block is to be rendered
     public HashMap<Tile.Biome, Solid> storedBiomeTiles; //Store all the hexes grouped by biomes, this way each biome can be rendered with its own texture.
     public TerrainTextureHelper terrainTextureHelper;
@@ -81,6 +81,8 @@ public class WorldHandler {
     public MapModel<Condition> improvementResourceStatUi;
 
     //public HashMap<Tile, Polygon> hexesShape; //Originally intended to be used for mouse picking. More efficient to use center vertices.
+
+    //private HashMap<BuildingType, Integer> improvementModels;
 
     private LessonSevenActivity mActivity;
     private LessonSevenRenderer mRenderer;

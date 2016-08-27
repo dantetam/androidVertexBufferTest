@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<imprroot name="City" workNeeded="15" yield="1/1/1/1" resourceGroup="" resource="Landing" specialAbility="">
+
+</imprroot>
+yields are in the form "food/production/science/capital/happiness/health"
+-->
+
+<resourceroot>
+    <resource name="Steel" techReveal="Landing" techHarvest="Landing" yield="0/2/0/0/0/0" model="steel">
+
+    </resource>
+    <resource name="Crystal Cells" techReveal="Landing" techHarvest="Advancement Lab" yield="0/0/3/0/0/0" model="crystalcells">
+
+    </resource>
+    <resource name="Glass Fire" techReveal="Landing" techHarvest="Xenolab" yield="0/2/1/0/0/0" model="glassfire">
+
+    </resource>
+    <resource name="Extromass" techReveal="Landing" techHarvest="Xenoscience" yield="2/0/1/0/0/0" texture="extromass">
+
+    </resource>
+    <resource name="Abyss Matter" techReveal="Seafaring" techHarvest="Deep Sea Operations" yield="0/2/1/0/0/0" texture="abyssmatter">
+
+    </resource>
+    <resource name="Ash Stone" techReveal="Mining" techHarvest="Deep Mining" yield="0/3/0/0/0/0" texture="ashstone">
+
+    </resource>
+    <resource name="Hellenia" techReveal="Military Lab" techHarvest="Military Lab" yield="0/3/0/0/0/0" model="hellenia">
+
+    </resource>
+</resourceroot>
