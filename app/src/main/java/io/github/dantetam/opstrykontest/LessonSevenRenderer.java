@@ -23,9 +23,11 @@ import io.github.dantetam.android.ShaderHelper;
 import io.github.dantetam.android.TextureHelper;
 import io.github.dantetam.opengl.BaseModel;
 import io.github.dantetam.opengl.Camera;
+import io.github.dantetam.opengl.FrameBuffer;
 import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.opengl.MultiTexture;
 import io.github.dantetam.opengl.RenderEntity;
+import io.github.dantetam.opengl.Solid;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.factory.ClanFactory;
@@ -47,7 +49,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
 	private final LessonSevenActivity mLessonSevenActivity;
 	private final LessonSevenGLSurfaceView mGlSurfaceView;
-	
+
+    public FrameBuffer frameBufferHelper;
+
 	/**
 	 * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
 	 * of being located at the center of the universe) to world space.
@@ -164,6 +168,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		mLessonSevenActivity = lessonSevenActivity;
         BitmapHelper.init(mLessonSevenActivity);
 
+        frameBufferHelper = new FrameBuffer(this);
+
         assetManager = mLessonSevenActivity.getAssets();
         assetHelper = new AssetHelper(lessonSevenActivity, assetManager);
 		mGlSurfaceView = (LessonSevenGLSurfaceView)glSurfaceView;
@@ -231,14 +237,19 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
 		//final String vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.lesson_seven_vertex_shader);
  		//final String fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.lesson_seven_fragment_shader);
-        final String vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.texture_atlas_vertex);
-        final String fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.texture_atlas_fragment);
- 				
-		final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
-		final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);		
-		
+        String vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.texture_atlas_vertex);
+        String fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.texture_atlas_fragment);
+		int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
+		int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
 		mDefaultShaderHandleWithAtlas = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
 				new String[] {"a_Position", "a_Normal", "a_TexCoordinate"});
+
+        vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.multitexture_atlas_vertex);
+        fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.multitexture_atlas_fragment);
+        vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
+        fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+        mMultiTextureShader = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
+                new String[] {"a_Position", "a_Normal", "a_TexCoordinate"});
         
 		// Load the texture
 		mAndroidDataHandle = TextureHelper.loadTexture("usb_android", mLessonSevenActivity, R.drawable.usb_android);
@@ -328,12 +339,24 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             debounceFrames--;
         }
 
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
 		//GLES20.glClearColor(0f/255f, 140f/255f, 255f/255f, 255f/255f);
 		mViewMatrix = camera.getViewMatrix();
 
         mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
+
+        /*frameBufferHelper.startRender();
+        renderSceneAll();
+        frameBufferHelper.stopRender();*/
+
+        renderSceneAll();
+
+        mousePicker.updateAfterFrame();
+
+        //System.out.println(mousePicker.getSelectedTile() + " " + mousePicker.getSelectedEntity());
+	}
+
+    private void renderSceneAll() {
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         //TODO: Convert to IBOs next?
 
@@ -350,11 +373,14 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         for (RenderEntity renderEntity: solidsToRender) {
             renderSolid(renderEntity);
         }
+        if (testSolid == null) {
+            testSolid = new Solid("fbo", frameBufferHelper.fboTextureHandle);
 
-        mousePicker.updateAfterFrame();
+        }
+        renderSolid(testSolid);
+    }
 
-        //System.out.println(mousePicker.getSelectedTile() + " " + mousePicker.getSelectedEntity());
-	}
+    private RenderEntity testSolid;
 
     private void renderModel(BaseModel model) {
         for (RenderEntity renderEntity: model.parts()) {
@@ -405,7 +431,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             activeShaderProgram = mMultiTextureShader;
             GLES20.glUseProgram(activeShaderProgram);
 
-            int[] handles = new int[4];
+            int[] handles = new int[13];
             handles[0] = GLES20.glGetUniformLocation(activeShaderProgram, "blackTexture");
             handles[3] = GLES20.glGetUniformLocation(activeShaderProgram, "rTexture");
             handles[6] = GLES20.glGetUniformLocation(activeShaderProgram, "gTexture");

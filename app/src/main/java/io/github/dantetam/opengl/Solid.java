@@ -29,9 +29,9 @@ public class Solid extends RenderEntity {
 
     public final int renderMode = GLES20.GL_TRIANGLES;
 
-    /*public Solid() {
-        this(textureHandle, defaultCubePos(), defaultCubeNormals(), defaultCubeTexture(), 1);
-    }*/
+    public Solid(String name, int textureHandle) {
+        this(new Texture(name, textureHandle), defaultCubePos(), defaultCubeNormals(), defaultCubeTexture(), 1);
+    }
 
     private static float[] defaultCubePos() {
         final float[] cubePositionData = new float[108];

@@ -17,15 +17,18 @@ varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
 // The entry point for our fragment shader.
 void main()                    		
 {
-    vec4 blendMapColor = texture(blendMap, v_TexCoordinate);
-    float blackTextureShade = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
+    vec4 blendMapColor = texture2D(blendMap, v_TexCoordinate);
+    float blackTextureShade = 1.0 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
     //vec2 tiled = v_TexCoordinate * 40;
-    vec4 blackTextureColor = texture(blackTexture, v_TexCoordinate) * blackTextureShade;
-    vec4 rTextureColor = texture(rTexture, v_TexCoordinate) * blendMapColor.r;
-    vec4 gTextureColor = texture(gTexture, v_TexCoordinate) * blendMapColor.g;
-    vec4 bTextureColor = texture(bTexture, v_TexCoordinate) * blendMapColor.b;
+    vec4 blackTextureColor = texture2D(blackTexture, v_TexCoordinate) * blackTextureShade;
+    vec4 rTextureColor = texture2D(rTexture, v_TexCoordinate) * blendMapColor.r;
+    vec4 gTextureColor = texture2D(gTexture, v_TexCoordinate) * blendMapColor.g;
+    vec4 bTextureColor = texture2D(bTexture, v_TexCoordinate) * blendMapColor.b;
 
     vec4 texel = blackTextureColor + rTextureColor + gTextureColor + bTextureColor;
+    texel.a = 1.0;
+
+    //texel = vec4(1.0, 0.0, 0.0, 1.0);
 
     //vec4 texel = texture2D(u_Texture, v_TexCoordinate);
     if (texel.a < 0.5)

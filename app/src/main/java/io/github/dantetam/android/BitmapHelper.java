@@ -30,6 +30,12 @@ public class BitmapHelper {
                 // number of items.
                 return bitmap.getByteCount() / 1024;
             }
+
+            @Override
+            protected void entryRemoved(boolean evicted, String key, Bitmap oldValue, Bitmap newValue) {
+                oldValue.recycle();
+                super.entryRemoved(evicted, key, oldValue, newValue);
+            }
         };
     }
 

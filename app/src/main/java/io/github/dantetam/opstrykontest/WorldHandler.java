@@ -1,5 +1,6 @@
 package io.github.dantetam.opstrykontest;
 
+import android.content.res.Resources;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -20,6 +21,7 @@ import io.github.dantetam.opengl.BaseModel;
 import io.github.dantetam.opengl.ListModel;
 import io.github.dantetam.opengl.MapModel;
 import io.github.dantetam.opengl.MousePicker;
+import io.github.dantetam.opengl.MultiTexture;
 import io.github.dantetam.opengl.RenderEntity;
 import io.github.dantetam.opengl.Solid;
 import io.github.dantetam.opengl.Texture;
@@ -363,9 +365,22 @@ public class WorldHandler {
 
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
                 //float[] color = Tile.Biome.colorFromInt(i);
-                int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
+                //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
                 //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
-                Solid solid = ObjLoader.loadSolid(new Texture("biomeHandle" + i, textureHandle, 2, i % 4), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
+                int blackTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.dryforest_texture), mActivity, R.drawable.dryforest_texture);
+                int rTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.desert_texture), mActivity, R.drawable.desert_texture);
+                int gTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.forest_texture), mActivity, R.drawable.forest_texture);
+                int bTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.ice_texture), mActivity, R.drawable.ice_texture);
+                int blendMap;
+                if (i % 2 == 0) {
+                    blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.blend_map), mActivity, R.drawable.blend_map);
+                }
+                else {
+                    blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.blend_map_2), mActivity, R.drawable.blend_map_2);
+                }
+                //Solid solid = ObjLoader.loadSolid(new Texture("biomeHandle" + i, textureHandle, 2, i % 4), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
+                MultiTexture multiTexture = new MultiTexture("biomeHandleMulti" + i, blackTexture, rTexture, gTexture, bTexture, blendMap);
+                Solid solid = ObjLoader.loadSolid(multiTexture, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
                 storedBiomeTiles.put(Tile.Biome.fromInt(i), solid);
                 tilesStored.add(solid);
             }
