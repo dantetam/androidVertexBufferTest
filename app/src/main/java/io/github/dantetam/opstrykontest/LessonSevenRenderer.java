@@ -92,7 +92,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private int mMultiTextureShader;
 
     private int mAndroidDataHandle;
-    private int mWhiteTextureHandle;
+    public int mWhiteTextureHandle;
 
     private int mMVPMatrixHandle;
 	private int mMVMatrixHandle;

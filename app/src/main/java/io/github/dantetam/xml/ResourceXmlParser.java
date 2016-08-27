@@ -36,7 +36,7 @@ import io.github.dantetam.world.entity.UnitTree;
 public class ResourceXmlParser {
     private static final String ns = null;
 
-    TODO: Impl. this class.
+    //TODO: Impl. this class.
 
     public static UnitTree parseUnitTree(Clan clan, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(

@@ -476,7 +476,7 @@ public class WorldHandler {
                         Vector3f vertices = storedTileVertexPositions.get(tile);
 
                         final float[] scaled = scaleData(borderObjData[i][0], 1f, 1f, 1f);
-                        final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.05f, vertices.z);
+                        final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.03f, vertices.z);
 
                         System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
                         System.arraycopy(borderObjData[i][1], 0, totalNormalPositionData, norOffset, borderObjData[i][1].length);
@@ -649,7 +649,7 @@ public class WorldHandler {
                 Vector3f vertices = storedTileVertexPositions.get(tile);
 
                 final float[] scaled = scaleData(objData[0], 0.6f, 0.6f, 0.6f);
-                final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.2f, vertices.z);
+                final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.1f, vertices.z);
 
                 System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
                 System.arraycopy(objData[1], 0, totalNormalPositionData, norOffset, objData[1].length);
@@ -747,7 +747,7 @@ public class WorldHandler {
 
                 Vector3f vertices = storedTileVertexPositions.get(tile);
 
-                final float[] scaledData = scaleData(objData[0], 0.2f, 0.2f, 0.2f);
+                final float[] scaledData = scaleData(objData[0], 0.06f, 0.06f, 0.06f);
 
                 final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y, vertices.z);
                 System.arraycopy(thisCubePositionData, 0, totalCubePositionData, 0, thisCubePositionData.length);
@@ -756,7 +756,7 @@ public class WorldHandler {
                 System.arraycopy(objData[2], 0, totalTexturePositionData, 0, objData[2].length);
 
                 float[][] improvementData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-                Solid improvement = ObjLoader.loadSolid(TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android), null, improvementData);
+                Solid improvement = ObjLoader.loadSolid(mRenderer.mWhiteTextureHandle, null, improvementData);
 
                 storedTileImprovements.put(tile, improvement);
             }
@@ -1123,6 +1123,7 @@ public class WorldHandler {
                 }
 
                 float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.quad);
+
                 //Count the number of hexes needed so that the correct space is allocated
                 int numHexesToRender = tilesToRender.size();
                 //Create some appropriately sized tables which will store preliminary buffer data
@@ -1150,7 +1151,7 @@ public class WorldHandler {
                 }
                 //int resId = resourceTextureHandles.get(items[i]);
                 //int textureHandle = TextureHelper.loadTexture(items[i].getAndroidResourceName(), mActivity, resourceTextureHandles.get(items[i]));
-                System.out.println(items[i] + " " + items[i].getAndroidResourceName());
+                //System.out.println(items[i] + " " + items[i].getAndroidResourceName());
                 int textureHandle = resourceTextureHandles.get(items[i]);
                 float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
 
@@ -1541,7 +1542,7 @@ public class WorldHandler {
 
             Vector3f selectedPos = storedTileVertexPositions.get(selected);
 
-            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.1f, selectedPos.z);
+            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.02f, selectedPos.z);
 
             //Interleave all the new vtn data, per hex.
             System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
