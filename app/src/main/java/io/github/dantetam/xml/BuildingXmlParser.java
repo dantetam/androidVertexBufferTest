@@ -98,6 +98,15 @@ public class BuildingXmlParser {
                         buildingType.resourceNeeded = resourceNeeded;
                     }
 
+                    String modelName = xpp.getAttributeValue(null, "model");
+                    if (modelName != null) {
+                        buildingType.modelName = modelName;
+                    }
+                    String textureName = xpp.getAttributeValue(null, "texture");
+                    if (textureName != null) {
+                        buildingType.textureName = textureName;
+                    }
+
                     tree.buildingTypes.put(buildingName, buildingType);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {

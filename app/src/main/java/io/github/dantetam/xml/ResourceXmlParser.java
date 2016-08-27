@@ -33,8 +33,10 @@ import io.github.dantetam.world.entity.UnitTree;
  * Given an InputStream representation of a feed, it returns a List of entries,
  * where each list element represents a single entry (post) in the XML feed.
  */
-public class UnitXmlParser {
+public class ResourceXmlParser {
     private static final String ns = null;
+
+    TODO: Impl. this class.
 
     public static UnitTree parseUnitTree(Clan clan, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(

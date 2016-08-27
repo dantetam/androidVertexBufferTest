@@ -13,6 +13,8 @@ public class BuildingType {
 
     public String resourceNeeded;
 
+    public String modelName, textureName;
+
     public boolean created = false;
     /*public void init() {
         if (!created) {

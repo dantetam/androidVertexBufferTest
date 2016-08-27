@@ -34,6 +34,7 @@ import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.CombatWorld;
 import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.ItemType;
+import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
 
@@ -737,7 +738,8 @@ public class WorldHandler {
         for (Tile tile : tiles) {
             if (tile != null && tile.improvement != null) {
                 //Solid improvement = ObjLoader.loadSolid(R.drawable.usb_android, tile.improvement.buildingType.name, assetManager.open(tile.improvement.name + ".obj"));
-                float[][] objData = assetHelper.loadVertexFromAssets(tile.improvement.name + ".obj");
+                //float[][] objData = assetHelper.loadVertexFromAssets(tile.improvement.name + ".obj");
+                float[][] objData = assetHelper.loadVertexFromAssets(tile.improvement.buildingType.modelName + ".obj");
 
                 final float[] totalCubePositionData = new float[objData[0].length];
                 final float[] totalNormalPositionData = new float[objData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
@@ -1082,6 +1084,9 @@ public class WorldHandler {
                 }*/
                 //textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
                 //assetHelper.loadVertexFromAssets(items[i].renderName);
+
+                //float[][] objData = assetHelper.loadVertexFromAssets(resourceName + ".obj");
+
                 int resId = mActivity.getResources().getIdentifier(resourceName, "drawable", mActivity.getPackageName());
                 if (resId == 0) {
                     System.out.println("Could not find " + resourceName + " in drawable, using usb_android");
@@ -1306,7 +1311,13 @@ public class WorldHandler {
                     int totalLength = 0;
                     for (int i = 0; i < tile.occupants.size(); i++) {
                         Entity en = tile.occupants.get(i);
-                        float[][] unitData = assetHelper.loadVertexFromAssets(en.name + ".obj");
+                        float[][] unitData;
+                        if (en instanceof Person) {
+                            unitData = assetHelper.loadVertexFromAssets(en + ".obj");
+                        }
+                        else {
+                            unitData = assetHelper.loadVertexFromAssets(en.name + ".obj");
+                        }
                         unitsData[i] = unitData;
                         totalLength += unitData[0].length;
                     }
@@ -1315,6 +1326,7 @@ public class WorldHandler {
                     final float[] totalTexturePositionData = new float[totalLength / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE];
                     for (int i = 0; i < tile.occupants.size(); i++) {
                         Entity en = tile.occupants.get(i);
+
                         float[][] objData = unitsData[i];
 
                         Vector3f vertices = storedTileVertexPositions.get(tile);
