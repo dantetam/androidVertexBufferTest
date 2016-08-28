@@ -37,6 +37,7 @@ import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
+import io.github.dantetam.xml.BuildingXmlParser;
 
 /**
  * Created by Dante on 6/17/2016.
@@ -55,6 +56,7 @@ public class WorldHandler {
     private ListModel tilesStored = null;
     //This block is to be rendered
     public HashMap<Tile.Biome, Solid> storedBiomeTiles; //Store all the hexes grouped by biomes, this way each biome can be rendered with its own texture.
+    public HashMap<BuildingType, Solid> storedImprTilesTex;
     public TerrainTextureHelper terrainTextureHelper;
 
     public Solid storedSelectedTileSolid;
@@ -212,6 +214,10 @@ public class WorldHandler {
             solidsToRender.add(selectedMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
             solidsToRender.add(selectedUnitMarkerRep(ColorTextureHelper.loadColor(255, 255, 255, 255)));
 
+            if (storedSelectedTileSolid != null) {
+                storedSelectedTileSolid.rotate((float) Math.sin((float) mRenderer.frames / 10f), 0, 1, 0);
+            }
+
             modelsToRender.add(tileTerritoryRep());
             tileHighlightRep();
 
@@ -298,6 +304,9 @@ public class WorldHandler {
     public ListModel worldRep(Collection<Tile> tiles) {
         if (tilesStored == null || worldRepNeedsUpdate) {
             tilesStored = new ListModel();
+
+            storedImprTilesTex = new HashMap<>();
+
             worldRepNeedsUpdate = false;
             //hexesShape = new HashMap<>();
             //tilesStored.add(generateHexes(world));
@@ -320,7 +329,7 @@ public class WorldHandler {
                         if (!(obj instanceof Tile)) return false;
                         Tile t = (Tile) obj;
                         //if (t.equals(mousePicker.selectedTile)) return false;
-                        return t.biome.type == desiredType;
+                        return t.biome.type == desiredType && t.improvement == null;
                     }
                 };
                 cond.init(i);
@@ -386,6 +395,50 @@ public class WorldHandler {
                 Solid solid = ObjLoader.loadSolid(multiTexture, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
                 storedBiomeTiles.put(Tile.Biome.fromInt(i), solid);
                 tilesStored.add(solid);
+            }
+
+            float[][][] imprData = new float[BuildingXmlParser.globalAllTypes.keySet().size()][][];
+
+            int index = 0;
+            for (BuildingType type: BuildingXmlParser.globalAllTypes.values()) {
+                Condition cond = new Condition() {
+                    public BuildingType desiredType;
+
+                    public void init(Object i) {
+                        desiredType = (BuildingType)i;
+                    }
+
+                    public boolean allowed(Object obj) {
+                        if (!(obj instanceof Tile)) return false;
+                        Tile t = (Tile) obj;
+                        //if (t.equals(mousePicker.selectedTile)) return false;
+                        return t.improvement != null && t.improvement.buildingType.equals(desiredType);
+                    }
+                };
+                cond.init(type);
+
+                float[][] solidsOfBiome = generateHexes(world, tiles, cond);
+                imprData[index] = solidsOfBiome;
+
+                index++;
+            }
+
+            int i = 0;
+            for (BuildingType buildingType: BuildingXmlParser.globalAllTypes.values()) {
+                //float[] color = Tile.Biome.colorFromInt(i);
+                //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
+                //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
+                int blackTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.dryforest_texture), mActivity, R.drawable.dryforest_texture);
+                int rTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.desert_texture), mActivity, R.drawable.desert_texture);
+                int gTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.forest_texture), mActivity, R.drawable.forest_texture);
+                int bTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.ice_texture), mActivity, R.drawable.ice_texture);
+                int blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.usb_android), mActivity, R.drawable.usb_android);
+                //Solid solid = ObjLoader.loadSolid(new Texture("biomeHandle" + i, textureHandle, 2, i % 4), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
+                MultiTexture multiTexture = new MultiTexture("imprHandleMulti" + i, blackTexture, rTexture, gTexture, bTexture, blendMap);
+                Solid solid = ObjLoader.loadSolid(multiTexture, "imprBiomeTiles", imprData[i]);
+                storedImprTilesTex.put(buildingType, solid);
+                tilesStored.add(solid);
+                i++;
             }
 
             /*LessonSevenRenderer.Condition cond = new LessonSevenRenderer.Condition() {
@@ -476,7 +529,7 @@ public class WorldHandler {
                         Vector3f vertices = storedTileVertexPositions.get(tile);
 
                         final float[] scaled = scaleData(borderObjData[i][0], 1f, 1f, 1f);
-                        final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.03f, vertices.z);
+                        final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.05f, vertices.z);
 
                         System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
                         System.arraycopy(borderObjData[i][1], 0, totalNormalPositionData, norOffset, borderObjData[i][1].length);
@@ -1542,7 +1595,7 @@ public class WorldHandler {
 
             Vector3f selectedPos = storedTileVertexPositions.get(selected);
 
-            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.02f, selectedPos.z);
+            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.06f, selectedPos.z);
 
             //Interleave all the new vtn data, per hex.
             System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
@@ -1698,7 +1751,8 @@ public class WorldHandler {
     private static final float TRANSLATE_FACTORZ = 4f;
     private float[][] generateHexes(World world, Collection<Tile> tiles, Condition condition) {
         //Load the vtn data of one hex obj
-        float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+        float[][] oldHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+        float[][] newHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.newflathexagon);
 
         //int mRequestedCubeFactor = WORLD_LENGTH;
 
@@ -1716,11 +1770,11 @@ public class WorldHandler {
 
         //Create some appropriately sized tables which will store preliminary buffer data
         //Combine them all within these pieces of data.
-        final float[] totalCubePositionData = new float[hexData[0].length * numHexesToRender];
+        final float[] totalCubePositionData = new float[oldHexData[0].length * numHexesToRender];
         int cubePositionDataOffset = 0;
-        final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * numHexesToRender];
+        final float[] totalNormalPositionData = new float[oldHexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * numHexesToRender];
         int cubeNormalDataOffset = 0;
-        final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * numHexesToRender];
+        final float[] totalTexturePositionData = new float[oldHexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * numHexesToRender];
         int cubeTextureDataOffset = 0;
 
         int xx = 0, zz = 0;
@@ -1729,27 +1783,29 @@ public class WorldHandler {
                 Tile tile = world.getTile(x,z);
                 if (tile == null) continue;
                 zz++;
+
+                //Scale and translate accordingly so everything fits together
+                float extra = x % 2 == 1 ? TRANSLATE_FACTORZ * -0.5f : 0;
+
+                //Store these positions for later use when we place tile improvements and such
+                Vector3f vertices = new Vector3f(xx * TRANSLATE_FACTORX, tile.elevation / 5f, - zz * TRANSLATE_FACTORZ + extra);
+                storedTileVertexPositions.put(tile, vertices);
+
                 if (condition.allowed(tile) && tiles.contains(tile)) {
                     tile.elevation = 0;
 
-                    //Scale and translate accordingly so everything fits together
-                    float extra = x % 2 == 1 ? TRANSLATE_FACTORZ * -0.5f : 0;
-                    final float[] scaledData = scaleData(hexData[0], 1, tile.elevation / 5f, 1);
+                    final float[] scaledData = scaleData(oldHexData[0], 1, 0, 1);
 
-                    //Store these positions for later use when we place tile improvements and such
-                    Vector3f vertices = new Vector3f(xx * TRANSLATE_FACTORX, tile.elevation / 5f, - zz * TRANSLATE_FACTORZ + extra);
-                    storedTileVertexPositions.put(tile, vertices);
-
-                    final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y/2f, vertices.z);
+                    final float[] thisCubePositionData = translateData(scaledData, vertices.x, 0, vertices.z);
 
                     //Interleave all the new vtn data, per hex.
                     System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
                     cubePositionDataOffset += thisCubePositionData.length;
 
-                    System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
-                    cubeNormalDataOffset += hexData[1].length;
-                    System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
-                    cubeTextureDataOffset += hexData[2].length;
+                    System.arraycopy(oldHexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, oldHexData[1].length);
+                    cubeNormalDataOffset += oldHexData[1].length;
+                    System.arraycopy(oldHexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, oldHexData[2].length);
+                    cubeTextureDataOffset += oldHexData[2].length;
                 }
             }
             xx++;

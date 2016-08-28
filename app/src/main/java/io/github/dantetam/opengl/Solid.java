@@ -22,11 +22,6 @@ public class Solid extends RenderEntity {
 
     public int generatedCubeFactor;
 
-    public final float[] position = new float[3];
-    public final float[] size = new float[3];
-    public final float[] rotation = new float[4];
-    public final float[] color = new float[4];
-
     public final int renderMode = GLES20.GL_TRIANGLES;
 
     public Solid(String name, int textureHandle) {
@@ -273,37 +268,6 @@ public class Solid extends RenderEntity {
         // Delete buffers from OpenGL's memory
         final int[] buffersToDelete = new int[] { mCubeBufferIdx };
         GLES20.glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
-    }
-
-    public void move(float a, float b, float c) {
-        position[0] = a; position[1] = b; position[2] = c;
-    }
-
-    public void scale(float a, float b, float c) {
-        size[0] = a; size[1] = b; size[2] = c;
-    }
-
-    public void rotate(float angle, float a, float b, float c) {
-        rotation[0] = angle; rotation[1] = a; rotation[2] = b; rotation[3] = c;
-    }
-
-    public void color(float[] t) {
-        if (t.length == 3)
-            color(t[0], t[1], t[2], 1.0f);
-        else if (t.length == 4)
-            color(t[0], t[1], t[2], t[3]);
-        else
-            throw new IllegalArgumentException("Color argument is not of correct length");
-    }
-    public void color(float a, float b, float c, float d) {
-        color[0] = a; color[1] = b; color[2] = c; color[3] = d;
-    }
-
-    public float angle() {
-        return rotation[0];
-    }
-    public void rotateAngle(float f) {
-        rotation[0] = f;
     }
 
 }

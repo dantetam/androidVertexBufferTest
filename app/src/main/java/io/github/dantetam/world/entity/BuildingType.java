@@ -37,6 +37,14 @@ public class BuildingType {
         return new int[]{food, production, science, capital};
     }
 
+    public boolean equals(Object other) {
+        if (!(other instanceof BuildingType)) {
+            return false;
+        }
+        BuildingType type = (BuildingType) other;
+        return name.equals(type.name);
+    }
+
 }
 
 /*public enum BuildingType {

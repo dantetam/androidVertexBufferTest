@@ -13,7 +13,7 @@ yields are in the form "food/production/science/capital/happiness/health"
     <impr name="Ruins" workNeeded="1" yield="1/1/1/1/0/1" tech="Landing" model="ruins1/ruins2/ruins3/ruins4">
 
     </impr>
-    <impr name="Farm" workNeeded="15" resourceGroup="Farm" yield="2/0/0/0/0/0" tech="Agriculture" >
+    <impr name="Farm" workNeeded="15" resourceGroup="Farm" yield="2/0/0/0/0/0" tech="Agriculture" texture="preset_farm">
         <impr name="Greenhouse" workNeeded="30" resourceGroup="Farm" yield="3/0/0/0/0/0" tech="Env. Control">
             <impr name="Biodome" workNeeded="45" resourceGroup="Farm" yield="4/1/0/0/0/0" tech="*">
 

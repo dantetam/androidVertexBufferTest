@@ -505,17 +505,22 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         // Set a matrix that contains the current rotation.
         Matrix.setIdentityM(mCurrentRotation, 0);
-        Matrix.rotateM(mCurrentRotation, 0, mDeltaX, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, solid.rotation[0], 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(mCurrentRotation, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
         mDeltaX = 0.0f;
         mDeltaY = 0.0f;
+        /*Matrix.setIdentityM(mCurrentRotation, 0);
+        Matrix.rotateM(mCurrentRotation, 0, solid.rotation[0], solid.rotation[1], solid.rotation[2], solid.rotation[3]);
+        mDeltaX = 0.0f;
+        mDeltaY = 0.0f;*/
+        //Matrix.rotateM(mCurrentRotation, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
 
         // Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
-        Matrix.multiplyMM(mTemporaryMatrix, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
-        System.arraycopy(mTemporaryMatrix, 0, mAccumulatedRotation, 0, 16);
+        /*Matrix.multiplyMM(mTemporaryMatrix, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
+        System.arraycopy(mTemporaryMatrix, 0, mAccumulatedRotation, 0, 16);*/
 
         // Rotate the cube taking the overall rotation into account.
-        Matrix.multiplyMM(mTemporaryMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
+        Matrix.multiplyMM(mTemporaryMatrix, 0, mModelMatrix, 0, mCurrentRotation, 0);
         System.arraycopy(mTemporaryMatrix, 0, mModelMatrix, 0, 16);
 
         // This multiplies the view matrix by the model matrix, and stores
