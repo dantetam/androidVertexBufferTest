@@ -121,6 +121,30 @@ public class TechTree {
         }*/
     }
 
+    /*
+    Recursive beeline of a tech through its 'natural' prereqs (parent within the tree structure),
+    as well as its 'artificial' prereqs (extra prereqs added on and defined, since it makes
+    no sense for a node in a tree to have two direct parents).
+
+    Add all necessary techs as well as the first tech argument called to the research queue.
+    Topological sort?
+     */
+    public void beeline(Tech tech) {
+        if (tech.researched()) {
+            return;
+        }
+        if (tech.researchable()) {
+
+        }
+        else {
+            beeline(tech.parent);
+            for (Tech extra: tech.extraReqs) {
+                beeline(extra);
+            }
+        }
+        researchingTechQueue.add(tech);
+    }
+
     public List<Tech> traverse(Condition cond) {
         return traverse(root, cond);
     }

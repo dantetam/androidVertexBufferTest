@@ -778,7 +778,7 @@ public class LessonSevenActivity extends Activity implements
                 continue;
             }
 
-            TextView textView = new TextView(this);
+            Button textView = new Button(this);
             textView.setText(tech.name);
 
             if (playerClan.techTree.researchingTechQueue.contains(tech)) {
@@ -804,6 +804,14 @@ public class LessonSevenActivity extends Activity implements
             //param.rowSpec = GridLayout.spec(r);
             textView.setLayoutParams(param);
             techScreen.addView(textView);
+
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playerClan.techTree.researchingTechQueue.clear();
+                    playerClan.techTree.beeline(tech);
+                }
+            });
         }
     }
 
