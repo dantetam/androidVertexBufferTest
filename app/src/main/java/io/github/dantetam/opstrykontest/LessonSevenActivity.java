@@ -258,29 +258,26 @@ public class LessonSevenActivity extends Activity implements
         //mLessonSevenActivity.setContentView(R.layout.test_custom_gamescreen);
 
         for (final Clan clan : clans) {
-            if (clan.equals(playerClan)) continue;
-
             Button clanView = new Button(this);
-
             clanView.setHeight(120);
-            /*if (clan.name.length() >= 12) {
-                clanView.setText(clan.name.substring(0,12));
-            }
-            else {*/
-            clanView.setText(clan.ai.leaderName + " of the " + clan.name);
-            //}
-            //clanView.setBackgroundColor(Color.TRANSPARENT);
-            linearLayout.addView(clanView);
 
-            clanView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LinearLayout clanMenu = (LinearLayout) findViewById(R.id.clan_menu);
-                    clanMenu.setVisibility(View.INVISIBLE);
-                    clanMenu.setBackgroundColor(Color.TRANSPARENT);
-                    onClickDiplomacyMenu(clan);
-                }
-            });
+            if (clan.equals(playerClan)) {
+                clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (You)");
+            }
+            else {
+                clanView.setText(clan.ai.leaderName + " of the " + clan.name);
+                clanView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.clan_menu);
+                        clanMenu.setVisibility(View.INVISIBLE);
+                        clanMenu.setBackgroundColor(Color.TRANSPARENT);
+                        onClickDiplomacyMenu(clan);
+                    }
+                });
+            }
+
+            linearLayout.addView(clanView);
         }
 
         return true;

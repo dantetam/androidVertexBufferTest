@@ -2,6 +2,7 @@ package io.github.dantetam.world.factory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import io.github.dantetam.world.entity.Clan;
@@ -21,6 +22,9 @@ public class ClanFactory {
     public static HashMap<Clan.ClanFaction, List<Vector4f>> clanFactionColorSchemes;
 
     public static ClanXmlParser parser;
+
+    public static HashSet<Clan> usedClans;
+
     //public static HashMap<String, Clan> civilizationAi;
 
     public static void init(LessonSevenActivity context) {
@@ -89,15 +93,18 @@ public class ClanFactory {
 
         parser = new ClanXmlParser();
         parser.parseAllClans(mActivity, R.raw.clan_flavors);
+
+        usedClans = new HashSet<>();
     }
 
-    public static Clan randomClan() {
+    public static Clan randomAvailableClan() {
         Clan clan = null;
-        while (clan == null) {
+        while (clan == null || usedClans.contains(clan)) {
             String key = parser.clanKeys[(int)(Math.random()*parser.clanKeys.length)];
             Clan randomAi = parser.clans.get(key);
             clan = newClan(Clan.ClanType.random(), Clan.ClanFaction.random(), randomAi);
         }
+        usedClans.add(clan);
         return clan;
     }
 

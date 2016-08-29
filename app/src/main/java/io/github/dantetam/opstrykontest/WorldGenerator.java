@@ -109,11 +109,11 @@ public class WorldGenerator {
         for (int i = 0; i < num; i++) {
             Clan clan;
             if (i == 0) {
-                clan = ClanFactory.randomClan();
-                clan.name = "PlayerClan";
+                clan = ClanFactory.randomAvailableClan();
+                //clan.name = "PlayerClan";
             }
             else {
-                clan = ClanFactory.randomClan();
+                clan = ClanFactory.randomAvailableClan();
             }
             clans.add(clan);
             UnitXmlParser.parseUnitTree(clan, mActivity, R.raw.unit_tree);
