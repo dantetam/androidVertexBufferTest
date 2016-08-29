@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.github.dantetam.world.action.Action;
+import io.github.dantetam.world.entity.ArtificialIntelligence;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
@@ -28,6 +29,8 @@ public class WorldSystem {
     public HashMap<Clan, HashMap<Clan, List<RelationModifier>>> relations;
     public HashMap<Clan, Integer> clanId;
 
+    public HashMap<Clan, Integer> calculatedClanScores;
+
     public enum RelationModifier {
         AT_WAR,
         AT_PEACE
@@ -45,6 +48,10 @@ public class WorldSystem {
         clanId = new HashMap<>();
         for (int i = 0; i < len; i++) {
             clanId.put(world.getClans().get(i), i);
+        }
+        calculatedClanScores = new HashMap<>();
+        for (int i = 0; i < len; i++) {
+            calculatedClanScores.put(world.getClans().get(i), 0);
         }
     }
 
@@ -79,6 +86,12 @@ public class WorldSystem {
                 city.actionPoints = city.maxActionPoints;
                 //building.executeQueue();
             }
+        }
+
+        //When done processing all actions, calculate new scores.
+        for (Clan c: world.getClans()) {
+            int score = ArtificialIntelligence.calcClanTotalScore(world, c);
+            calculatedClanScores.put(c, score);
         }
         turnNumber++;
         System.err.println("#turns passed: " + turnNumber);

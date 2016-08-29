@@ -20,6 +20,8 @@
     <string name="tech_menu">Technology</string>
     <string name="diplomacy_menu">Diplomacy</string>
 
+    <string name="end_comm">End Communication</string>
+
     <string name="combat_exit_menu">Exit Combat</string>
     <string name="combat_next_turn">Next Turn</string>
 

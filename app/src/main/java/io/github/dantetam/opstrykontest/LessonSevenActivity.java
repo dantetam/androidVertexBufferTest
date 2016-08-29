@@ -215,7 +215,7 @@ public class LessonSevenActivity extends Activity implements
         inflater.inflate(R.menu.main_menu, mainMenu.getMenu());
         mainMenu.show();
 
-        LinearLayout diplomacyMenu = (LinearLayout) findViewById(R.id.clan_menu);
+        LinearLayout diplomacyMenu = (LinearLayout) findViewById(R.id.diplomacy_menu);
         if (diplomacyMenu != null) {
             diplomacyMenu.setVisibility(View.INVISIBLE);
             diplomacyMenu.setBackgroundColor(Color.TRANSPARENT);
@@ -248,27 +248,52 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
-    public boolean onClickDiplomacyMenu(MenuItem item) {
+    public boolean onClickClanMenu(MenuItem item) {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.clan_menu);
+
         linearLayout.setVisibility(View.VISIBLE);
         linearLayout.setBackgroundColor(Color.TRANSPARENT);
         List<Clan> clans = mRenderer.worldHandler.world.getClans();
 
         //mLessonSevenActivity.setContentView(R.layout.test_custom_gamescreen);
 
-        for (Clan clan : clans) {
-            TextView clanView = new TextView(this);
+        for (final Clan clan : clans) {
+            Button clanView = new Button(this);
+
+            clanView.setHeight(120);
             /*if (clan.name.length() >= 12) {
                 clanView.setText(clan.name.substring(0,12));
             }
             else {*/
-            clanView.setText(clan.name);
+            clanView.setText(clan.ai.leaderName + " of the " + clan.name);
             //}
-            clanView.setBackgroundColor(Color.TRANSPARENT);
+            //clanView.setBackgroundColor(Color.TRANSPARENT);
             linearLayout.addView(clanView);
+
+            clanView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LinearLayout clanMenu = (LinearLayout) findViewById(R.id.clan_menu);
+                    clanMenu.setVisibility(View.INVISIBLE);
+                    clanMenu.setBackgroundColor(Color.TRANSPARENT);
+                    onClickDiplomacyMenu(clan);
+                }
+            });
         }
 
         return true;
+    }
+
+    public void onClickDiplomacyMenu(Clan c) {
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu);
+        clanMenu.setVisibility(View.VISIBLE);
+
+        ((Button) findViewById(R.id.clan_title)).setText(c.ai.leaderName + " of the " + c.name);
+    }
+
+    public void onClickEndDiplomacyMenu(View v) {
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu);
+        clanMenu.setVisibility(View.INVISIBLE);
     }
 
     public void onClickNextTurnMenu(View v) {

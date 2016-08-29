@@ -14,5 +14,5 @@
         android:text="@string/diplomacy_menu"
         android:orderInCategory="100"
         app:showAsAction="never"
-        android:onClick="onClickDiplomacyMenu" />
+        android:onClick="onClickClanMenu" />
 </menu>

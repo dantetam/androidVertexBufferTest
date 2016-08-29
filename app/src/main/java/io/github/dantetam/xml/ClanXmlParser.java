@@ -74,11 +74,14 @@ public class ClanXmlParser {
                 //System.out.println("Start tag " + xpp.getName());
                 String startTag = xpp.getName();
                 if (startTag.equals("clan")) {
-                    System.out.println("Start tag " + xpp.getName());
+                    //System.out.println("Start tag " + xpp.getName());
+
                     String clanName = xpp.getAttributeValue(null, "name");
                     inspect = new Clan(clanName);
                     clans.put(clanName, inspect);
-                    System.out.println(clans.keySet().size());
+
+                    String leaderName = xpp.getAttributeValue(null, "ruler");
+                    inspect.ai.leaderName = leaderName;
                 }
                 else if (startTag.equals("ability")) {
                     if (inspect.ai.abilityOne == null) {

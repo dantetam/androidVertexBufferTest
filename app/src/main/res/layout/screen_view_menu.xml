@@ -134,11 +134,58 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:orientation="vertical"
-            app:layout_widthPercent="30%"
+            app:layout_widthPercent="40%"
             app:layout_heightPercent="40%"
-            app:layout_marginTopPercent="0%"
-            app:layout_marginLeftPercent="70%"
+            app:layout_marginTopPercent="30%"
+            app:layout_marginLeftPercent="30%"
             android:visibility="invisible">
+        </LinearLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/diplomacy_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="vertical"
+            app:layout_widthPercent="40%"
+            app:layout_heightPercent="40%"
+            app:layout_marginTopPercent="30%"
+            app:layout_marginLeftPercent="30%"
+            android:visibility="invisible">
+            <Button
+                android:id="@+id/clan_title"
+                android:text=""
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_widthPercent="100%"
+                app:layout_heightPercent="20%"
+                app:layout_marginTopPercent="0%"
+                app:layout_marginLeftPercent="0%"
+                android:contentDescription="@string/new_world"
+                android:visibility="visible" />
+            <Button
+                android:id="@+id/test_button_2"
+                android:text="Hello, what brings you here today?"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_widthPercent="100%"
+                app:layout_heightPercent="20%"
+                app:layout_marginTopPercent="20%"
+                app:layout_marginLeftPercent="0%"
+                android:contentDescription="@string/new_world"
+                android:visibility="visible" />
+            <Button
+                android:id="@+id/end_comm"
+                android:text="@string/end_comm"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_widthPercent="100%"
+                app:layout_heightPercent="20%"
+                app:layout_marginTopPercent="80%"
+                app:layout_marginLeftPercent="0%"
+                android:contentDescription="@string/end_comm"
+                android:visibility="visible"
+                android:onClick="onClickEndDiplomacyMenu" />
         </LinearLayout>
         <Button
             android:id="@+id/main_menu"

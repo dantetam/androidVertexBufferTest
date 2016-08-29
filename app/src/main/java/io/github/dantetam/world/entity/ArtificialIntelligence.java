@@ -20,6 +20,7 @@ import io.github.dantetam.world.entity.Tech;
 public class ArtificialIntelligence {
 
     public Clan clan; //The 'parent' clan
+    public String leaderName;
     public String abilityOne = null;
     public String abilityTwo = null;
     public HashMap<String, Integer> personality, strategy, tactics;
@@ -130,8 +131,8 @@ public class ArtificialIntelligence {
 
         double foodPerTurn = (strategy.get("Growth") / 10d + 0.5d) * buildingType.food;
         double prodPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * buildingType.production;
-        double sciPerTurn = (strategy.get("Science") / 10d + 0.5d) * buildingType.food;
-        double capPerTurn = (strategy.get("Gold") / 10d + 0.5d) * buildingType.food;
+        double sciPerTurn = (strategy.get("Science") / 10d + 0.5d) * buildingType.science;
+        double capPerTurn = (strategy.get("Gold") / 10d + 0.5d) * buildingType.capital;
         int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn) * 10d);
 
         double roiTurns = workNeeded / scorePerTenTurns;
@@ -163,7 +164,7 @@ public class ArtificialIntelligence {
         }
     }*/
 
-    public static int calcClanTotalScore(Clan clan) {
+    public static int calcClanTotalScore(World world, Clan clan) {
         int score = 0;
 
         int[] yield = new int[4];
@@ -187,13 +188,34 @@ public class ArtificialIntelligence {
 
         //Military score (score exponential) + production output
         for (Person person: clan.people) {
-            score += computeUn
+            PersonType personType = person.personType;
+            score += (personType.atk + personType.def + personType.maneuver + personType.fire + personType.shock)/25;
         }
 
         //Building + impr score
+        for (Building building: clan.buildings) {
+            BuildingType buildingType = building.buildingType;
+            int foodPerTurn = buildingType.food;
+            int prodPerTurn = buildingType.production;
+            int sciPerTurn = buildingType.science;
+            int capPerTurn = buildingType.capital;
+            score += foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn;
+        }
+        for (Tile tile: world.getAllValidTiles()) {
+            if (tile.improvement == null) {
+                if (world.getTileOwner(tile).equals(clan) || world.getTileInfluence(tile).equals(clan)) {
+                    BuildingType buildingType = tile.improvement.buildingType;
+                    int foodPerTurn = buildingType.food;
+                    int prodPerTurn = buildingType.production;
+                    int sciPerTurn = buildingType.science;
+                    int capPerTurn = buildingType.capital;
+                    score += foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn;
+                }
+            }
+        }
 
         //Diplomacy score? Number of friends?
-
+        //TODO:
 
         return score;
     }
