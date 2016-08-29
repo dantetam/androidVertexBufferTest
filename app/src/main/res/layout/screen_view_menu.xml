@@ -141,7 +141,7 @@
             android:visibility="invisible">
         </LinearLayout>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/diplomacy_menu"
+            android:id="@+id/diplomacy_menu_talk"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="16dp"
@@ -152,11 +152,11 @@
             app:layout_marginTopPercent="30%"
             app:layout_marginLeftPercent="30%"
             android:visibility="invisible">
-            <Button
+            <!--<Button
                 android:id="@+id/clan_title"
                 android:text=""
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 app:layout_widthPercent="100%"
                 app:layout_heightPercent="20%"
                 app:layout_marginTopPercent="0%"
@@ -166,8 +166,8 @@
             <Button
                 android:id="@+id/test_button_2"
                 android:text="Hello, what brings you here today?"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 app:layout_widthPercent="100%"
                 app:layout_heightPercent="20%"
                 app:layout_marginTopPercent="20%"
@@ -177,15 +177,15 @@
             <Button
                 android:id="@+id/end_comm"
                 android:text="@string/end_comm"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 app:layout_widthPercent="100%"
                 app:layout_heightPercent="20%"
                 app:layout_marginTopPercent="80%"
                 app:layout_marginLeftPercent="0%"
                 android:contentDescription="@string/end_comm"
                 android:visibility="visible"
-                android:onClick="onClickEndDiplomacyMenu" />
+                android:onClick="onClickEndDiplomacyMenu" />-->
         </LinearLayout>
         <Button
             android:id="@+id/main_menu"

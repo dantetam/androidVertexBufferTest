@@ -215,7 +215,7 @@ public class LessonSevenActivity extends Activity implements
         inflater.inflate(R.menu.main_menu, mainMenu.getMenu());
         mainMenu.show();
 
-        LinearLayout diplomacyMenu = (LinearLayout) findViewById(R.id.diplomacy_menu);
+        LinearLayout diplomacyMenu = (LinearLayout) findViewById(R.id.clan_button);
         if (diplomacyMenu != null) {
             diplomacyMenu.setVisibility(View.INVISIBLE);
             diplomacyMenu.setBackgroundColor(Color.TRANSPARENT);
@@ -258,6 +258,8 @@ public class LessonSevenActivity extends Activity implements
         //mLessonSevenActivity.setContentView(R.layout.test_custom_gamescreen);
 
         for (final Clan clan : clans) {
+            if (clan.equals(playerClan)) continue;
+
             Button clanView = new Button(this);
 
             clanView.setHeight(120);
@@ -284,15 +286,36 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
-    public void onClickDiplomacyMenu(Clan c) {
-        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu);
+    public void onClickDiplomacyMenu(final Clan c) {
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk);
         clanMenu.setVisibility(View.VISIBLE);
 
-        ((Button) findViewById(R.id.clan_title)).setText(c.ai.leaderName + " of the " + c.name);
+        //((Button) findViewById(R.id.clan_title)).setText(c.ai.leaderName + " of the " + c.name);
+
+        Button clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText(c.ai.leaderName + " of the " + c.name);
+        clanMenu.addView(clanView);
+
+        clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText("Hello, what brings you here today?");
+        clanMenu.addView(clanView);
+
+        clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText("< End communication. >");
+        clanView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickEndDiplomacyMenu(v);
+            }
+        });
+        clanMenu.addView(clanView);
     }
 
     public void onClickEndDiplomacyMenu(View v) {
-        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu);
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk);
         clanMenu.setVisibility(View.INVISIBLE);
     }
 
