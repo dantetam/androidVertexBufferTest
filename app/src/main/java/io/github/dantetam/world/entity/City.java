@@ -155,14 +155,6 @@ public class City extends Building {
                 }
             }
         }
-
-        int workingPopulation = population - freeWorkingPopulation;
-        foodStoredForGrowth += food - workingPopulation;
-        if (foodStoredForGrowth >= foodNeededForGrowth) {
-            foodStoredForGrowth -= foodNeededForGrowth;
-        }
-        population++; freeWorkingPopulation++;
-        foodNeededForGrowth = generateCityFoodData[population];
         //System.out.println(food + " " + production + " " + science + " " + capital);
 
         //lastYield = new int[]{(int)food, (int)production, (int)science, (int)capital};

@@ -141,7 +141,7 @@ public class ArtificialIntelligence {
         return finalScore;
     }
 
-    private int computeUnitTypeScore(City city, PersonType type) {
+    private static int computeUnitTypeScore(City city, PersonType type) {
         return 0;
     }
     /*public ArtificialIntelligence(World world) {
@@ -162,5 +162,40 @@ public class ArtificialIntelligence {
             plan.addAction(en, new CombatAction(Action.ActionType.COMBAT_MOVE, world.randomNeighbor(en.location)));
         }
     }*/
+
+    public static int calcClanTotalScore(Clan clan) {
+        int score = 0;
+
+        int[] yield = new int[4];
+        for (City city: clan.cities) {
+            Object[] yieldData = city.gameYield();
+            int[] cityYield = (int[]) yieldData[0];
+            Inventory inventory = (Inventory) yieldData[1];
+            for (int i = 0; i <= 3; i++)
+                yield[i] += cityYield[i];
+        }
+
+        //City population score and number of cities + food output
+        for (City city: clan.cities) {
+            score += city.population;
+        }
+        score += yield[0];
+
+        //Tech score + science output
+        score += clan.techTree.researchedTech.size();
+        score += yield[1];
+
+        //Military score (score exponential) + production output
+        for (Person person: clan.people) {
+            score += computeUn
+        }
+
+        //Building + impr score
+
+        //Diplomacy score? Number of friends?
+
+
+        return score;
+    }
 
 }

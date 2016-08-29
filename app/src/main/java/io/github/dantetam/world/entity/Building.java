@@ -16,10 +16,10 @@ public class Building extends Entity {
     private Building parent;
     public boolean isModule = false;
 
-    private int food, production, science, capital;
-    public void setYield(int[] yield) {
+    //private int food, production, science, capital;
+    /*public void setYield(int[] yield) {
         food = yield[0];
-    }
+    }*/
 
     public List<Recipe> recipes;
     public List<String> effects;
@@ -104,11 +104,11 @@ public class Building extends Entity {
     }
 
     public int[] getYieldNoModules() {
-        int[] yields = {food, production, science, capital};
+        int[] yields = {buildingType.food, buildingType.production, buildingType.science, buildingType.capital};
         return yields;
     }
     public int[] getYieldWithModules() {
-        int[] yields = {food, production, science, capital};
+        int[] yields = {buildingType.food, buildingType.production, buildingType.science, buildingType.capital};
         if (modules != null) {
             for (Building module : modules) {
                 if (module != null) {

@@ -125,7 +125,7 @@ public class BuildingFactory {
         build.production = yield[1];
         build.science = yield[2];
         build.capital = yield[3];*/
-        build.setYield(new int[]{type.food, type.production, type.science, type.capital});
+        //build.setYield(new int[]{type.food, type.production, type.science, type.capital});
 
         build.actionPoints = 0;
         build.maxActionPoints = 0;

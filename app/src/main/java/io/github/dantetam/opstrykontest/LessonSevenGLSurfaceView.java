@@ -90,9 +90,9 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 					//mRenderer.mDeltaY += deltaY;
 
                     if (mActivity.findViewById(R.id.tech_tree_screen) != null && mActivity.findViewById(R.id.tech_tree_screen).getVisibility() == View.VISIBLE) {
-                        int oldTechValueX = (int) playerClan.techTree.globalOffsetX;
-                        playerClan.techTree.modifYX(-deltaX / 50f);
-                        int newTechValueX = (int) playerClan.techTree.globalOffsetX;
+                        int oldTechValueX = (int) playerClan.techTree.screenCenterX;
+                        playerClan.techTree.modifyX(-deltaX / 50f);
+                        int newTechValueX = (int) playerClan.techTree.screenCenterX;
                         //System.out.println("updating " + oldTechValueX + " to " + newTechValueX);
                         if (oldTechValueX != newTechValueX) {
                             mActivity.updateTechMenu();

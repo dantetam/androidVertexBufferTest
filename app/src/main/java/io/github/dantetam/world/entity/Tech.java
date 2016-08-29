@@ -23,7 +23,7 @@ public class Tech {
 
     public int researchCompleted, researchNeeded;
 
-    public int offsetX, offsetY;
+    public int treeOffsetX, treeOffsetY;
 
     public Tech(String n, int researchCompleted, int researchNeeded) {
         name = n;
@@ -76,6 +76,14 @@ public class Tech {
             }
         }
         return false;
+    }
+
+    public boolean equals(Object other) {
+        if (!(other instanceof Tech)) {
+            return false;
+        }
+        Tech tech = (Tech) other;
+        return name.equals(tech.name);
     }
 
 }

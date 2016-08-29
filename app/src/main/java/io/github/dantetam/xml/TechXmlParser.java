@@ -185,7 +185,7 @@ public class TechXmlParser {
                     if (modifyTech == null) {
                         System.out.println(techName);
                     }
-                    modifyTech.offsetX = offX; modifyTech.offsetY = offY;
+                    modifyTech.treeOffsetX = offX; modifyTech.treeOffsetY = offY;
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 //System.out.println("End tag " + xpp.getName());
@@ -198,11 +198,17 @@ public class TechXmlParser {
             eventType = xpp.next();
         }
 
-        tree.globalOffsetX = minX; tree.globalOffsetY = minY;
+        /*tree.globalOffsetX = minX; tree.globalOffsetY = minY;
         tree.globalOffsetMaxY = maxY;
 
         tree.hardGlobalMinimum = new Vector2f(minX, minY);
-        tree.hardGlobalMaximum = new Vector2f(maxX - 4, maxY);
+        tree.hardGlobalMaximum = new Vector2f(maxX - 4, maxY);*/
+
+        tree.minX = minX; tree.minY = minY;
+        tree.maxX = maxX; tree.maxY = maxY;
+
+        tree.screenCenterX = 0;
+        tree.screenCenterY = 0;
     }
 
 }

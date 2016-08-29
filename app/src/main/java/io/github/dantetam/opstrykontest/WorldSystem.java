@@ -84,6 +84,17 @@ public class WorldSystem {
         System.err.println("#turns passed: " + turnNumber);
     }
 
+    public static int getGlobalScience(Clan clan) {
+        int globalScience = 0;
+        for (City city: clan.cities) {
+            //Determine yield here? Don't separate process.
+            Object[] objects = city.gameYield();
+            int[] yield = (int[]) objects[0];
+            globalScience += yield[2];
+        }
+        return globalScience;
+    }
+
     private void processClan(Clan clan) {
         /*for (Building building: clan.buildings) {
             building.executeQueue();
@@ -98,6 +109,15 @@ public class WorldSystem {
             Object[] objects = city.gameYield();
             int[] yield = (int[]) objects[0];
             Inventory inventory = (Inventory) objects[1];
+
+            int workingPopulation = city.population - city.freeWorkingPopulation;
+            city.foodStoredForGrowth += yield[0] - workingPopulation;
+            if (city.foodStoredForGrowth >= city.foodNeededForGrowth) {
+                city.foodStoredForGrowth -= city.foodNeededForGrowth;
+
+                city.population++; city.freeWorkingPopulation++;
+                city.foodNeededForGrowth = City.generateCityFoodData()[city.population];
+            }
 
             if (city.actionsQueue.size() > 0) {
                 Action action = city.actionsQueue.get(0);

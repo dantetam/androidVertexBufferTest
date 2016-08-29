@@ -84,7 +84,7 @@
         //All ranged units. Willingness to fight from a distance.
 -->
 <root>
-    <clan name="Eternal Republic">
+    <clan name="Eternal Republic" ruler="Saa">
         <ability name="Isolationism" desc="+15% defense on friendly territory."></ability>
         <ability name="Fruits of the Republic" desc="+1 food on 3+ food tiles, +1 worker per city."></ability>
 
@@ -111,31 +111,31 @@
         <tacticsflavor name="Melee" value="1"></tacticsflavor>
         <tacticsflavor name="Ranged" value="1"></tacticsflavor>
     </clan>
-    <clan name="Celestial Empire">
+    <clan name="Celestial Empire" ruler="Caesar">
         <ability name="Centralization" desc="+15% capital per city."></ability>
         <ability name="Imperial Blood" desc="-20% city upkeep."></ability>
     </clan>
-    <clan name="Star Federation">
+    <clan name="Star Federation" ruler="Synthesia">
         <ability name="Multiculturalist Economy" desc="+1 production on 3+ production tiles."></ability>
         <ability name="Unification of the Tribes" desc="+15% science per city."></ability>
     </clan>
-    <clan name="Stellar Kingdom">
+    <clan name="Stellar Kingdom" ruler="John X">
         <ability name="Followers' Legacy" desc="30% faster city-state actions."></ability>
         <ability name="Divine Burden" desc="+15% production when at war."></ability>
     </clan>
-    <clan name="Sky Raiders">
+    <clan name="Sky Raiders" ruler="Lukas">
         <ability name="Disdain for Civilization" desc="+25% raid actions, +50% unhappiness for number of cities."></ability>
         <ability name="Forever Bleeding" desc="+15% offense on enemy territory."></ability>
     </clan>
-    <clan name="Settlers">
+    <clan name="Settlers" ruler="Austin">
         <ability name="Sedentary Lifestyle" desc="+15% production on buildings, -15% for units."></ability>
         <ability name="Nomads No More" desc="Added +1 food for farms, +1 science for science improvements."></ability>
     </clan>
-    <clan name="Ecologists">
+    <clan name="Ecologists" ruler="Sakharov">
         <ability name="Xenoharmony" desc="+10% production on buildings, -10% for units."></ability>
         <ability name="In Search of Answers" desc="+1 science on 2+ science tiles, +1 specialist per city."></ability>
     </clan>
-    <clan name="Xenocolonists">
+    <clan name="Xenocolonists" ruler="Xenia">
         <ability name="New Manifest Destiny" desc="+15% faster city population growth."></ability>
         <ability name="Settler Spirit" desc="+25% happiness and health for every city."></ability>
     </clan>

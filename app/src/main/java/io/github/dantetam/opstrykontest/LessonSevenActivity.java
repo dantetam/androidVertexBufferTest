@@ -281,6 +281,10 @@ public class LessonSevenActivity extends Activity implements
 
             mRenderer.moveCameraInFramesAfter = 1;
             mRenderer.nextUnit = en;
+        } else if (playerClan.techTree.researchingTechQueue.size() == 0) {
+            ((Button) v).setText("CHOOSE RESEARCH");
+            if (findViewById(R.id.tech_tree_screen).getVisibility() == View.INVISIBLE)
+                onClickTechMenu(findViewById(R.id.tech_menu));
         } else {
             ((Button) v).setText("NEXT TURN");
             //((MenuItem) findViewById(R.id.next_turn_button)).setTitle("NEXT TURN");
@@ -767,33 +771,59 @@ public class LessonSevenActivity extends Activity implements
         GridLayout techScreen = (GridLayout) findViewById(R.id.tech_tree_screen);
         techScreen.removeAllViews();
 
+        int playerGlobalScience = WorldSystem.getGlobalScience(playerClan);
+        if (playerGlobalScience <= 0)
+            playerGlobalScience = 1;
+
         TechTree tree = playerClan.techTree;
         for (Map.Entry<String, Tech> entry : playerClan.techTree.techMap.entrySet()) {
-            Tech tech = entry.getValue();
+            final Tech tech = entry.getValue();
 
-            int calcGridPosRow = (int) (tree.globalOffsetMaxY - tech.offsetY);
-            int calcGridPosCol = (int) (tech.offsetX - tree.globalOffsetX);
+            int minX = (int) tree.screenCenterX - tree.sightX;
+            int maxX = (int) tree.screenCenterX + tree.sightX;
+            int minY = (int) tree.screenCenterY - tree.sightY;
+            int maxY = (int) tree.screenCenterY + tree.sightY;
 
-            if (calcGridPosRow < 0 || calcGridPosCol < 0 || calcGridPosRow > 8 || calcGridPosCol > 5) {
+            if (tech.treeOffsetX < minX || tech.treeOffsetY < minY || tech.treeOffsetX > maxX || tech.treeOffsetY > maxY) {
                 continue;
             }
 
-            Button textView = new Button(this);
-            textView.setText(tech.name);
+            int adjCoordX = tech.treeOffsetX - minX;
+            int adjCoordY = (tree.sightY*2 + 1) - (tech.treeOffsetY - minY);
 
-            if (playerClan.techTree.researchingTechQueue.contains(tech)) {
+            Button textView = new Button(this);
+            String stringy = tech.name;
+
+            int estimatedTurns = (tech.researchNeeded - tech.researchCompleted) / playerGlobalScience;
+
+            int foundInResearchingIndex = -1;
+            int i = 0;
+            for (Tech t: playerClan.techTree.researchingTechQueue) {
+                if (tech.equals(t)) {
+                    foundInResearchingIndex = i;
+                    break;
+                }
+                i++;
+            }
+
+            if (foundInResearchingIndex != -1) {
                 textView.setBackgroundColor(Color.MAGENTA);
+                stringy += " (" + estimatedTurns + ")";
+                stringy = (foundInResearchingIndex + 1) + ". " + stringy;
                 //textView.setTextColor(Color.BLACK);
             } else if (tech.researched()) {
                 textView.setBackgroundColor(Color.BLUE);
                 textView.setTextColor(Color.WHITE);
             } else if (tech.researchable()) {
+                stringy += " (" + estimatedTurns + ")";
                 textView.setBackgroundColor(Color.GREEN);
             }
 
+            textView.setText(stringy);
+
             GridLayout.LayoutParams param = new GridLayout.LayoutParams(
-                    GridLayout.spec(calcGridPosRow, GridLayout.LEFT),
-                    GridLayout.spec(calcGridPosCol, GridLayout.BOTTOM));
+                    GridLayout.spec(adjCoordY, GridLayout.LEFT),
+                    GridLayout.spec(adjCoordX, GridLayout.BOTTOM));
             param.setGravity(Gravity.CENTER);
             param.height = GridLayout.LayoutParams.WRAP_CONTENT;
             param.width = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -810,6 +840,7 @@ public class LessonSevenActivity extends Activity implements
                 public void onClick(View v) {
                     playerClan.techTree.researchingTechQueue.clear();
                     playerClan.techTree.beeline(tech);
+                    updateTechMenu();
                 }
             });
         }

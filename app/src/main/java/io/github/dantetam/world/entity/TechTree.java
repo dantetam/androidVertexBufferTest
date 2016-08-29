@@ -34,9 +34,9 @@ public class TechTree {
 
     //These values are used for interfaces that render the tech tree GUI
     //presumably as a GridLayout.
-    public Vector2f hardGlobalMinimum, hardGlobalMaximum;
-    public float globalOffsetX = 0, globalOffsetY = 0;
-    public float globalOffsetMaxY = 0;
+    public float screenCenterX, screenCenterY;
+    public int sightX = 2, sightY = 3;
+    public int minX, maxX, minY, maxY;
 
     public TechTree(Clan clan) {
         this.clan = clan;
@@ -130,6 +130,9 @@ public class TechTree {
     Topological sort?
      */
     public void beeline(Tech tech) {
+        if (researchingTechQueue.contains(tech)) {
+            return;
+        }
         if (tech.researched()) {
             return;
         }
@@ -142,7 +145,8 @@ public class TechTree {
                 beeline(extra);
             }
         }
-        researchingTechQueue.add(tech);
+        if (!researchingTechQueue.contains(tech))
+            researchingTechQueue.add(tech);
     }
 
     public List<Tech> traverse(Condition cond) {
@@ -238,10 +242,10 @@ public class TechTree {
         }
     }
 
-    public void modifYX(float dx) {
-        globalOffsetX += dx;
-        if (globalOffsetX < hardGlobalMinimum.x) globalOffsetX = hardGlobalMinimum.x;
-        if (globalOffsetX > hardGlobalMaximum.x) globalOffsetX = hardGlobalMaximum.x;
+    public void modifyX(float dx) {
+        screenCenterX += dx;
+        if (screenCenterX < minX) screenCenterX = minX;
+        if (screenCenterX > maxX) screenCenterX = maxX;
     }
 
 }
