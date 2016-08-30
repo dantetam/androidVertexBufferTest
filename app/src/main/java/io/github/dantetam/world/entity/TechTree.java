@@ -196,7 +196,7 @@ public class TechTree {
     }
 
     public void unlock(String techNameToUnlock) {
-        Condition matchCondition = new Condition() {
+        /*Condition matchCondition = new Condition() {
             public String match = null;
             public boolean allowed(Object obj) {
                 if (!(obj instanceof Tech)) return false; //Safety check
@@ -211,8 +211,8 @@ public class TechTree {
         List<Tech> candidate = traverse(matchCondition);
         if (candidate.size() != 1) {
             return;
-        }
-        Tech techToUnlock = candidate.get(0);
+        }*/
+        Tech techToUnlock = techMap.get(techNameToUnlock);
         forceUnlock(techToUnlock);
         //TODO: Unlock the tech
     }

@@ -46,13 +46,17 @@ public class City extends Building {
     }
 
     public void queueActionBuildModule(BuildingType buildingType) {
-        clan.resources.subtractFromInventory(new Item(ItemType.fromString(buildingType.resourceNeeded)));
+        if (buildingType.resourceNeeded != null) {
+            clan.resources.subtractFromInventory(new Item(ItemType.fromString(buildingType.resourceNeeded)));
+        }
         Building queueBuilding = BuildingFactory.newBuilding(world, clan, buildingType, location, 0);
         actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, queueBuilding));
     }
 
     public void queueActionBuildUnit(PersonType personType) {
-        clan.resources.subtractFromInventory(new Item(ItemType.fromString(personType.resourceNeeded)));
+        if (personType.resourceNeeded != null) {
+            clan.resources.subtractFromInventory(new Item(ItemType.fromString(personType.resourceNeeded)));
+        }
         Person queuePerson = PersonFactory.newPerson(personType, world, clan, 0);
         actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, queuePerson));
     }

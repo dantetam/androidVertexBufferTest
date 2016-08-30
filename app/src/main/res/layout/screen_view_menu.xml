@@ -198,7 +198,8 @@
             app:layout_marginLeftPercent="0%"
             android:contentDescription="@string/new_world"
             android:visibility="invisible"
-            android:onClick="onClickNewWorld" />
+            android:onClick="onClickNewWorld"
+            android:longClickable="true" />
         <Button
             android:id="@+id/tech_menu"
             android:text="@string/tech_menu"

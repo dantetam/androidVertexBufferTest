@@ -84,8 +84,8 @@ public class Clan {
         return name.equals(clan.name) && color.equals(clan.color) ;
     }
 
-    public int hashCode() {
+    /*public int hashCode() {
         return name.hashCode();
-    }
+    }*/
 
 }
