@@ -341,6 +341,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
                 mActivity.findViewById(R.id.build_menu).setVisibility(selectedImprovementExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
 
+                InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.build_menu), new String[]{"test_tooltip"});
+
                 Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
                 selectedEntityMenu.setVisibility(selectedEntityExists && playerClan.equals(selectedEntity.clan) ? View.VISIBLE : View.INVISIBLE);
                 if (selectedEntityExists) {

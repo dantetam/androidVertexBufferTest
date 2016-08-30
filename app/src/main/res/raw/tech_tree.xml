@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<techroot name="Landing" workNeeded="1" district="Borough" unit="Settler/Soldier/Worker" resource="Steel">
+<techroot name="Landing" workNeeded="1" district="Borough" building="Clinic" unit="Settler/Soldier/Worker" resource="Steel">
     <tech name="Agriculture" workNeeded="15" building="Farm">
         <tech name="Xenoscience" workNeeded="50" building="Hunting Camp" resource="Extromass">
             <tech name="Xenovoltaic Cells" workNeeded="80" requirement="Energy Science" resource="Xenovoltaic Cells">

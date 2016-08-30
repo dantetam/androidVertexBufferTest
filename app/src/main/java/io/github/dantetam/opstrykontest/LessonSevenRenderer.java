@@ -196,6 +196,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         mGlSurfaceView.init(mLessonSevenActivity, mousePicker, worldSystem.playerClan);
 
+        InfoHelper.init(mLessonSevenActivity);
+
         //worldSystem.initClan(worldHandler.world.cl);
         //testMarker = worldHandler.testMarker(mAndroidDataHandle, mousePicker);
         //world = new World(WORLD_LENGTH, WORLD_LENGTH);

@@ -448,6 +448,7 @@ public class LessonSevenActivity extends Activity implements
                             return false;
                         }
                     });
+
                     i++;
                 }
             /*for (int i = 0; i < selectedImprovement.modules.size(); i++) {
