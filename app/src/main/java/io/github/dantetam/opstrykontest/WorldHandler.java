@@ -35,6 +35,7 @@ import io.github.dantetam.world.entity.CombatWorld;
 import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.Person;
+import io.github.dantetam.world.entity.PersonType;
 import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
 import io.github.dantetam.xml.BuildingXmlParser;
@@ -219,7 +220,6 @@ public class WorldHandler {
             }
 
             modelsToRender.add(tileTerritoryRep());
-            tileHighlightRep();
 
             modelsToRender.add(updateTileResourceRep());
 
@@ -266,7 +266,8 @@ public class WorldHandler {
             solidsToRender.add(highlightedCityTerritory);
         }*/
 
-        modelsToRender.add(tileHighlightOwnerStored);
+        //tileHighlightRep();
+        //modelsToRender.add(tileHighlightOwnerStored);
 
         if (!mRenderer.buildingWorldFinished) {
             mRenderer.buildingWorldFinished = true;
@@ -701,7 +702,7 @@ public class WorldHandler {
             for (Tile tile: ownerTiles) {
                 Vector3f vertices = storedTileVertexPositions.get(tile);
 
-                final float[] scaled = scaleData(objData[0], 0.6f, 0.6f, 0.6f);
+                final float[] scaled = scaleData(objData[0], 0.2f, 0.2f, 0.2f);
                 final float[] thisCubePositionData = translateData(scaled, vertices.x, vertices.y + 0.1f, vertices.z);
 
                 System.arraycopy(thisCubePositionData, 0, totalCubePositionData, posOffset, thisCubePositionData.length);
@@ -835,134 +836,139 @@ public class WorldHandler {
             {2, 2}
     };
     public void createImprovementResourceRep() {
-        improvementResourceStatUi = new MapModel<>();
+        if (improvementResourceStatUi == null) {
+            improvementResourceStatUi = new MapModel<>();
+            List<Condition> inputConditions = new ArrayList<>();
+            List<Condition> outputConditions = new ArrayList<>();
+            ItemType[] items = ItemType.values();
+            for (int i = 0; i < items.length; i++) {
+                Condition inputCond = new Condition() {
+                    public ItemType target;
 
-        List<Condition> inputConditions = new ArrayList<>();
-        List<Condition> outputConditions = new ArrayList<>();
-        ItemType[] items = ItemType.values();
-        for (int i = 0; i < items.length; i++) {
-            Condition inputCond = new Condition() {
-                public ItemType target;
-                public boolean allowedTile(Tile t) {
-                    if (t.improvement == null) return false;
-                    return t.improvement.containsInput(target);
-                }
-                public void init(Object object) {
-                    target = (ItemType) object;
-                }
-            };
-            inputCond.init(items[i]);
-            inputConditions.add(inputCond);
+                    public boolean allowedTile(Tile t) {
+                        if (t.improvement == null) return false;
+                        return t.improvement.containsInput(target);
+                    }
 
-            Condition outputCond = new Condition() {
-                public ItemType target;
-                public boolean allowedTile(Tile t) {
-                    if (t.improvement == null) return false;
-                    return t.improvement.containsOutput(target);
-                }
-                public void init(Object object) {
-                    target = (ItemType) object;
-                }
-            };
-            outputCond.init(items[i]);
-            outputConditions.add(outputCond);
-        }
+                    public void init(Object object) {
+                        target = (ItemType) object;
+                    }
+                };
+                inputCond.init(items[i]);
+                inputConditions.add(inputCond);
 
-        float[][] hexData = ObjLoader.loadObjModelByVertex("quad", mActivity, R.raw.quad);
+                Condition outputCond = new Condition() {
+                    public ItemType target;
 
-        HashMap<ItemType, Integer> textureHandles = new HashMap<>();
-        for (int i = 0; i < items.length; i++) {
-            //textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
-            //assetHelper.loadVertexFromAssets(items[i].renderName);
-            int resId = mActivity.getResources().getIdentifier(items[i].renderName, "drawable", mActivity.getPackageName());
-            textureHandles.put(items[i], TextureHelper.loadTexture(items[i].renderName, mActivity, resId));
-        }
+                    public boolean allowedTile(Tile t) {
+                        if (t.improvement == null) return false;
+                        return t.improvement.containsOutput(target);
+                    }
 
-        for (int i = 0; i < inputConditions.size(); i++) {
-            Condition cond = inputConditions.get(i);
-            List<Tile> tilesToRender = new ArrayList<>();
-            for (Tile tile : world.getAllValidTiles()) {
-                if (cond.allowedTile(tile)) {
-                    tilesToRender.add(tile);
-                }
+                    public void init(Object object) {
+                        target = (ItemType) object;
+                    }
+                };
+                outputCond.init(items[i]);
+                outputConditions.add(outputCond);
             }
 
-            //Create some appropriately sized tables which will store preliminary buffer data
-            //Combine them all within these pieces of data.
-            final float[] totalCubePositionData = new float[hexData[0].length * tilesToRender.size()];
-            int cubePositionDataOffset = 0;
-            final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * tilesToRender.size()];
-            int cubeNormalDataOffset = 0;
-            final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
-            int cubeTextureDataOffset = 0;
+            float[][] hexData = ObjLoader.loadObjModelByVertex("quad", mActivity, R.raw.quad);
 
-            float[] offset = imprIconInputOffsets[i];
-            float[] trueOffset = {offset[0] * TRANSLATE_FACTOR_UI_X, offset[1] * TRANSLATE_FACTOR_UI_Z};
-
-            for (Tile tile : tilesToRender) {
-                Vector3f vertices = storedTileVertexPositions.get(tile);
-
-                float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTOR_UI_X, 1f, TRANSLATE_FACTOR_UI_Z);
-                final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
-
-                //Interleave all the new vtn data, per hex.
-                System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
-                cubePositionDataOffset += thisCubePositionData.length;
-
-                System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
-                cubeNormalDataOffset += hexData[1].length;
-                System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
-                cubeTextureDataOffset += hexData[2].length;
+            HashMap<ItemType, Integer> textureHandles = new HashMap<>();
+            for (int i = 0; i < items.length; i++) {
+                //textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
+                //assetHelper.loadVertexFromAssets(items[i].renderName);
+                int resId = mActivity.getResources().getIdentifier(items[i].renderName, "drawable", mActivity.getPackageName());
+                textureHandles.put(items[i], TextureHelper.loadTexture(items[i].renderName, mActivity, resId));
             }
 
-            float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-            Solid hexes = ObjLoader.loadSolid(R.drawable.iron_ore, null, generatedData);
-            hexes.alphaEnabled = true;
-
-            improvementResourceStatUi.put(cond, hexes);
-        }
-        for (int i = 0; i < outputConditions.size(); i++) {
-            Condition cond = outputConditions.get(i);
-            List<Tile> tilesToRender = new ArrayList<>();
-            for (Tile tile : world.getAllValidTiles()) {
-                if (cond.allowedTile(tile)) {
-                    tilesToRender.add(tile);
+            for (int i = 0; i < inputConditions.size(); i++) {
+                Condition cond = inputConditions.get(i);
+                List<Tile> tilesToRender = new ArrayList<>();
+                for (Tile tile : world.getAllValidTiles()) {
+                    if (cond.allowedTile(tile)) {
+                        tilesToRender.add(tile);
+                    }
                 }
+
+                //Create some appropriately sized tables which will store preliminary buffer data
+                //Combine them all within these pieces of data.
+                final float[] totalCubePositionData = new float[hexData[0].length * tilesToRender.size()];
+                int cubePositionDataOffset = 0;
+                final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * tilesToRender.size()];
+                int cubeNormalDataOffset = 0;
+                final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
+                int cubeTextureDataOffset = 0;
+
+                float[] offset = imprIconInputOffsets[i];
+                float[] trueOffset = {offset[0] * TRANSLATE_FACTOR_UI_X, offset[1] * TRANSLATE_FACTOR_UI_Z};
+
+                for (Tile tile : tilesToRender) {
+                    Vector3f vertices = storedTileVertexPositions.get(tile);
+
+                    float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTOR_UI_X, 1f, TRANSLATE_FACTOR_UI_Z);
+                    final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
+
+                    //Interleave all the new vtn data, per hex.
+                    System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+                    cubePositionDataOffset += thisCubePositionData.length;
+
+                    System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+                    cubeNormalDataOffset += hexData[1].length;
+                    System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+                    cubeTextureDataOffset += hexData[2].length;
+                }
+
+                float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+                Solid hexes = ObjLoader.loadSolid(R.drawable.iron_ore, null, generatedData);
+                hexes.alphaEnabled = true;
+
+                improvementResourceStatUi.put(cond, hexes);
             }
+            for (int i = 0; i < outputConditions.size(); i++) {
+                Condition cond = outputConditions.get(i);
+                List<Tile> tilesToRender = new ArrayList<>();
+                for (Tile tile : world.getAllValidTiles()) {
+                    if (cond.allowedTile(tile)) {
+                        tilesToRender.add(tile);
+                    }
+                }
 
-            //Create some appropriately sized tables which will store preliminary buffer data
-            //Combine them all within these pieces of data.
-            final float[] totalCubePositionData = new float[hexData[0].length * tilesToRender.size()];
-            int cubePositionDataOffset = 0;
-            final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * tilesToRender.size()];
-            int cubeNormalDataOffset = 0;
-            final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
-            int cubeTextureDataOffset = 0;
+                //Create some appropriately sized tables which will store preliminary buffer data
+                //Combine them all within these pieces of data.
+                final float[] totalCubePositionData = new float[hexData[0].length * tilesToRender.size()];
+                int cubePositionDataOffset = 0;
+                final float[] totalNormalPositionData = new float[hexData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE * tilesToRender.size()];
+                int cubeNormalDataOffset = 0;
+                final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
+                int cubeTextureDataOffset = 0;
 
-            float[] offset = imprIconOutputOffsets[i];
-            float[] trueOffset = {offset[0] * TRANSLATE_FACTOR_UI_X, offset[1] * TRANSLATE_FACTOR_UI_Z};
+                float[] offset = imprIconOutputOffsets[i];
+                float[] trueOffset = {offset[0] * TRANSLATE_FACTOR_UI_X, offset[1] * TRANSLATE_FACTOR_UI_Z};
 
-            for (Tile tile : tilesToRender) {
-                Vector3f vertices = storedTileVertexPositions.get(tile);
+                for (Tile tile : tilesToRender) {
+                    Vector3f vertices = storedTileVertexPositions.get(tile);
 
-                float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTOR_UI_X, 1f, TRANSLATE_FACTOR_UI_Z);
-                final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
+                    float[] scaledData = scaleData(hexData[0], TRANSLATE_FACTOR_UI_X, 1f, TRANSLATE_FACTOR_UI_Z);
+                    final float[] thisCubePositionData = translateData(scaledData, vertices.x + trueOffset[0], vertices.y + 0.5f, vertices.z + trueOffset[1]);
 
-                //Interleave all the new vtn data, per hex.
-                System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
-                cubePositionDataOffset += thisCubePositionData.length;
+                    //Interleave all the new vtn data, per hex.
+                    System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
+                    cubePositionDataOffset += thisCubePositionData.length;
 
-                System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
-                cubeNormalDataOffset += hexData[1].length;
-                System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
-                cubeTextureDataOffset += hexData[2].length;
+                    System.arraycopy(hexData[1], 0, totalNormalPositionData, cubeNormalDataOffset, hexData[1].length);
+                    cubeNormalDataOffset += hexData[1].length;
+                    System.arraycopy(hexData[2], 0, totalTexturePositionData, cubeTextureDataOffset, hexData[2].length);
+                    cubeTextureDataOffset += hexData[2].length;
+                }
+
+                float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
+                Solid hexes = ObjLoader.loadSolid(textureHandles.get(items[i]), null, generatedData);
+                hexes.alphaEnabled = true;
+
+                improvementResourceStatUi.put(cond, hexes);
             }
-
-            float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-            Solid hexes = ObjLoader.loadSolid(textureHandles.get(items[i]), null, generatedData);
-            hexes.alphaEnabled = true;
-
-            improvementResourceStatUi.put(cond, hexes);
         }
     }
 
@@ -1365,18 +1371,26 @@ public class WorldHandler {
                     int totalLength = 0;
                     for (int i = 0; i < tile.occupants.size(); i++) {
                         Entity en = tile.occupants.get(i);
-                        float[][] unitData;
+                        float[][] finalData = new float[3][];
                         if (en instanceof Person) {
-                            if (((Person) en).personType.modelName == null) {
-
+                            if (((Person) en).personType.modelName != null) {
+                                PersonType personType = ((Person) en).personType;
+                                float[][] unitData = assetHelper.loadVertexFromAssets(personType.modelName + ".obj");
+                                float[] scaledData = scaleData(unitData[0], personType.modelScale, personType.modelScale, personType.modelScale);
+                                finalData[0] = scaledData;
+                                finalData[1] = unitData[1]; finalData[2] = unitData[2];
+                                //System.out.println(">" + personType.modelScale + "<");
                             }
-                            unitData = assetHelper.loadVertexFromAssets(((Person) en).personType.modelName + ".obj");
+                            else {
+                                System.err.println("No designated model for " + en.name + ", using default basic_box_char.obj");
+                                finalData = assetHelper.loadVertexFromAssets("basic_box_char.obj");
+                            }
                         }
                         else {
-                            unitData = assetHelper.loadVertexFromAssets(en.name + ".obj");
+                            finalData = assetHelper.loadVertexFromAssets(en.name + ".obj");
                         }
-                        unitsData[i] = unitData;
-                        totalLength += unitData[0].length;
+                        unitsData[i] = finalData;
+                        totalLength += finalData[0].length;
                     }
                     final float[] totalCubePositionData = new float[totalLength];
                     final float[] totalNormalPositionData = new float[totalLength / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];

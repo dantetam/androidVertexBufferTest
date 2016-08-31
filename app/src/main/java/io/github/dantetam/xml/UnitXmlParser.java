@@ -111,7 +111,15 @@ public class UnitXmlParser {
 
                     String modelName = xpp.getAttributeValue(null, "model");
                     if (modelName != null) {
-                        personType.modelName = modelName;
+                        int colonIndex = modelName.indexOf(":");
+                        if (colonIndex != -1) {
+                            personType.modelName = modelName.substring(0, colonIndex);
+                            //Defensive programming? What's that?
+                            float scale = Float.parseFloat(modelName.substring(colonIndex + 1));
+                            personType.modelScale = scale;
+                        }
+                        else
+                            personType.modelName = modelName;
                     }
                     String textureName = xpp.getAttributeValue(null, "texture");
                     if (textureName != null) {

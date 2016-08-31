@@ -319,7 +319,13 @@ public class ObjLoader {
 
         float[][] data = null;
         if (solidData.containsKey(solidName)) {
-            data = solidData.get(solidName);
+            float[][] stored = solidData.get(solidName);
+            data = new float[stored.length][];
+            for (int i = 0; i < stored.length; i++) {
+                data[i] = new float[stored[i].length];
+                System.arraycopy(stored[i], 0, data[i], 0, stored[i].length);
+            }
+
             System.out.println("Loaded from memory obj model: " + solidName);
         }
         else {

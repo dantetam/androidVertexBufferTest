@@ -14,6 +14,7 @@ public class PersonType {
     public String resourceNeeded;
 
     public String modelName, textureName;
+    public float modelScale = 1;
 
     public boolean created = false;
     /*public void init() {
