@@ -49,6 +49,7 @@ public class InfoHelper {
     }*/
 
     public static void addInfoOnLongClick(Button button, final String[] info) {
+        //System.out.println(button.getText());
         if (!button.getText().toString().contains("(i)")) {
             button.setText(button.getText() + " (i)");
             button.setOnLongClickListener(new View.OnLongClickListener() {

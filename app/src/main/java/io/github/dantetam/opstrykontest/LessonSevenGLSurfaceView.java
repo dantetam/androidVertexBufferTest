@@ -340,8 +340,10 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 quickSummaryMenu.setText(stringy);
 
                 mActivity.findViewById(R.id.build_menu).setVisibility(selectedImprovementExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
-
-                InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.build_menu), new String[]{"test_tooltip"});
+                InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.build_menu), new String[]{
+                        "This city can build units and improvements.",
+                        "These use production from the city."
+                });
 
                 Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
                 selectedEntityMenu.setVisibility(selectedEntityExists && playerClan.equals(selectedEntity.clan) ? View.VISIBLE : View.INVISIBLE);
@@ -349,6 +351,10 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     //selectedEntityMenu.setText(mousePicker.getSelectedEntity().name);
                     selectedEntityMenu.setText("Actions");
                 }
+                InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.selected_unit_menu), new String[]{
+                        "Units have action points, or AP,",
+                        "which can be used each turn."
+                });
 
                 Button unitMenu = (Button) mActivity.findViewById(R.id.unit_menu);
                 unitMenu.setVisibility(
@@ -359,6 +365,10 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 } else if (selectedEntityExists) {
                     unitMenu.setText("Units (" + mousePicker.getSelectedEntity().location().occupants.size() + ")");
                 }
+                InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.unit_menu), new String[]{
+                        "This lists the units here,",
+                        "which you can select."
+                });
 
                 Button queueMenu = (Button) mActivity.findViewById(R.id.queue_menu);
                 queueMenu.setVisibility(
@@ -369,6 +379,10 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 } else if (selectedEntityExists) {
                     queueMenu.setText("Queue (" + mousePicker.getSelectedEntity().actionsQueue.size() + ")");
                 }
+                InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.queue_menu), new String[]{
+                        "This is a set of actions",
+                        "which are planned for the future."
+                });
 
                 PercentRelativeLayout selectedStatMenu = (PercentRelativeLayout) mActivity.findViewById(R.id.selected_stat_menu);
                 selectedStatMenu.setVisibility(
@@ -383,6 +397,11 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 );
 
                 mActivity.findViewById(R.id.tech_menu).setVisibility(!(selectedTileExists || selectedEntityExists) ? View.VISIBLE : View.INVISIBLE);
+                InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.tech_menu), new String[]{
+                        "This opens the technology tree",
+                        "which lists the tech you can research.",
+                        "This uses your total science output."
+                });
             }
         }
     }

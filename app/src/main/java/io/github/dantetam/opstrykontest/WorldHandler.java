@@ -1367,7 +1367,10 @@ public class WorldHandler {
                         Entity en = tile.occupants.get(i);
                         float[][] unitData;
                         if (en instanceof Person) {
-                            unitData = assetHelper.loadVertexFromAssets(en + ".obj");
+                            if (((Person) en).personType.modelName == null) {
+
+                            }
+                            unitData = assetHelper.loadVertexFromAssets(((Person) en).personType.modelName + ".obj");
                         }
                         else {
                             unitData = assetHelper.loadVertexFromAssets(en.name + ".obj");

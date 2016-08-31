@@ -96,6 +96,7 @@ public class PersonFactory {
                 return null;
         }*/
         Person person = new Person(world, clan, type.name);
+        person.personType = type;
         person.health = type.health;
         person.maxHealth = type.maxH;
         person.actionPoints = type.actionPoints;

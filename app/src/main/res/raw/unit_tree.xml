@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Combat stats are atk/def/manu/fire/shock respectively -->
-<unitroot name="Soldier" workNeeded="15" normalStats="100/2" combatStats="20/20/10/10/40" tech="Landing">
+<unitroot name="Soldier" workNeeded="15" normalStats="100/2" combatStats="20/20/10/10/40" tech="Landing" model="basic_box_char">
     <unit name="Settler" workNeeded="40" normalStats="50/2" combatStats="0/0/0/0/0" tech="Landing">
 
     </unit>
