@@ -3,6 +3,8 @@ package io.github.dantetam.world.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.dantetam.world.action.Ability;
+
 /**
  * Created by Dante on 7/4/2016.
  */
@@ -18,8 +20,9 @@ public class Tech {
     public List<BuildingType> unlockedBuildings;
     public List<BuildingType> unlockedDistricts;
     public List<PersonType> unlockedUnits;
+    public List<ItemType> revealResources;
     public List<ItemType> harvestableResources;
-    public List<String> unlockedSpecialAbilities;
+    public List<Ability> unlockedSpecialAbilities;
 
     public int researchCompleted, researchNeeded;
 
@@ -36,6 +39,7 @@ public class Tech {
         unlockedBuildings = new ArrayList<>();
         unlockedDistricts = new ArrayList<>();
         unlockedUnits = new ArrayList<>();
+        revealResources = new ArrayList<>();
         harvestableResources = new ArrayList<>();
         unlockedSpecialAbilities = new ArrayList<>();
         //allowedBuildingsAndModules = new HashMap<>();

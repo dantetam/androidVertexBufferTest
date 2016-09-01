@@ -7,10 +7,11 @@ import io.github.dantetam.world.entity.Entity;
  */
 public class Ability {
 
-    public String name;
+    public String name, desc;
 
-    public Ability(String n) {
+    public Ability(String n, String d) {
         name = n;
+        desc = d;
     }
 
     public Action.ActionStatus gameExecuteAbility(Entity person) {

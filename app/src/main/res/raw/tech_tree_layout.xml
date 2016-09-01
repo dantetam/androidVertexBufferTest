@@ -47,10 +47,10 @@
 
                     </tech>
                 </tech>
-                <tech name="Deep Sea Operations" x="-2" y="-3">
+                <tech name="Deep Sea" x="-2" y="-3">
 
                 </tech>
-                <tech name="Mechanized Farming" x="-2" y="-2">
+                <tech name="Mechanization" x="-2" y="-2">
 
                 </tech>
             </tech>
@@ -85,13 +85,13 @@
                 <tech name="Urban Forest" x="3" y="-2">
 
                 </tech>
-                <tech name="Xenoterra Harmony" x="4" y="-1">
+                <tech name="Xenoterra" x="4" y="-1">
 
                 </tech>
             </tech>
         </tech>
         <tech name="Militarization" x="2" y="-2">
-            <tech name="Specialized Weapons" x="1" y="-3">
+            <tech name="Weaponization" x="1" y="-3">
 
             </tech>
         </tech>

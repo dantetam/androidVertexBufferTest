@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
 
+import java.util.List;
 import java.util.Set;
 
 import io.github.dantetam.world.action.Action;
@@ -47,6 +48,12 @@ public class InfoHelper {
             }
         });
     }*/
+
+    public static void addInfoOnLongClick(Button button, List<String> info) {
+        //System.out.println(button.getText());
+        String[] strings = info.toArray(new String[info.size()]);
+        addInfoOnLongClick(button, strings);
+    }
 
     public static void addInfoOnLongClick(Button button, final String[] info) {
         //System.out.println(button.getText());

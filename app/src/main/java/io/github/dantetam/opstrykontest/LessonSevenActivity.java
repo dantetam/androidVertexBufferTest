@@ -24,14 +24,17 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.action.BuildingAction;
+import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.factory.BuildingFactory;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
@@ -837,6 +840,10 @@ public class LessonSevenActivity extends Activity implements
             int adjCoordX = tech.treeOffsetX - minX;
             int adjCoordY = (tree.sightY*2 + 1) - (tech.treeOffsetY - minY);
 
+            if (adjCoordX < 0 || adjCoordX >= techScreen.getColumnCount() || adjCoordY < 0 || adjCoordY >= techScreen.getRowCount()) {
+                continue;
+            }
+
             Button textView = new Button(this);
             String stringy = tech.name;
 
@@ -871,8 +878,10 @@ public class LessonSevenActivity extends Activity implements
                     GridLayout.spec(adjCoordY, GridLayout.LEFT),
                     GridLayout.spec(adjCoordX, GridLayout.BOTTOM));
             param.setGravity(Gravity.CENTER);
-            param.height = GridLayout.LayoutParams.WRAP_CONTENT;
-            param.width = GridLayout.LayoutParams.WRAP_CONTENT;
+            param.height = 150;
+            param.width = 400;
+            //param.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            //param.width = GridLayout.LayoutParams.WRAP_CONTENT;
             //param.rightMargin = 5;
             //param.topMargin = 5;
             //param.setGravity(Gravity.CENTER);
@@ -889,6 +898,24 @@ public class LessonSevenActivity extends Activity implements
                     updateTechMenu();
                 }
             });
+
+            List<String> techInfo = new ArrayList<>();
+            for (PersonType personType: tech.unlockedUnits) {
+                techInfo.add(personType.name);
+            }
+            for (BuildingType buildingType: tech.unlockedBuildings) {
+                techInfo.add(buildingType.name);
+            }
+            for (ItemType itemType: tech.harvestableResources) {
+                techInfo.add()
+            }
+            for (Ability ability: tech.unlockedSpecialAbilities) {
+                techInfo.add(ability.desc);
+            }
+            for (Tech unlockedTech: tech.unlockedTechs) {
+                techInfo.add("Leads to " + unlockedTech.name);
+            }
+            InfoHelper.addInfoOnLongClick(textView, techInfo);
         }
     }
 

@@ -233,9 +233,6 @@ public class WorldHandler {
                 Building impr = mousePicker.getSelectedTile().improvement;
                 if (impr != null) {
                     if (impr.buildingType.name.equals("City")) {
-                        improvementResourceProductionUi = null;
-                        improvementResourceStatUi = null;
-
                         modelsToRender.add(updateTileYieldRep());
                         modelsToRender.add(tileYieldInterface());
                         if (highlightedCityTerritory == null) {

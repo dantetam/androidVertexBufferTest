@@ -116,6 +116,13 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                                 mousePicker.changeSelectedAction("CombatMove");
                             }
                         }
+
+                        if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
+                            //Force update here
+                            mRenderer.worldHandler.improvementResourceStatUi = null;
+                            mRenderer.worldHandler.improvementResourceProductionUi = null;
+                        }
+
                         executeSelectedAction(mousePicker, previousSelectedTile, previousSelectedEntity);
 
                         if (previousSelectedEntity != null) {

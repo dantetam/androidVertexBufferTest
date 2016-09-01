@@ -7,7 +7,12 @@ import java.util.List;
 /**
  * Created by Dante on 7/21/2016.
  */
-public enum ItemType {
+
+public class ItemType {
+
+}
+
+/*public enum ItemType {
     NO_RESOURCE       (-1,  "No resource"),
 
     FOOD              (0,   "Food"), //These are not actual items but they're used for item recipes
@@ -65,16 +70,16 @@ public enum ItemType {
         id = n;
         renderName = name;
     }
-    /*ItemType(int i, int q) {
+    *//*ItemType(int i, int q) {
         id = i;
         quantity = q;
-    }*/
+    }*//*
     ItemType(ItemType type) {
         id = type.id;
         renderName = type.renderName;
     }
     private static HashMap<Integer, ItemType> types;
-    /*private static String[] names = {
+    *//*private static String[] names = {
             "No resource",
             "Food",
             "Production",
@@ -105,7 +110,7 @@ public enum ItemType {
             "Strong Tools",
             "Weapons",
             "Strong Weapons"
-    };*/
+    };*//*
     public static int numItems;
 
     public static void init() {
@@ -155,4 +160,4 @@ public enum ItemType {
     public static ItemType randomResource() {
         return ItemType.fromInt((int) (Math.random() * (numItems - 1)) + 1);
     }
-}
+}*/

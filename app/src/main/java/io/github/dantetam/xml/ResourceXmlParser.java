@@ -27,6 +27,7 @@ import java.util.List;
 
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.PersonType;
+import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.UnitTree;
 
 /**
@@ -38,11 +39,11 @@ public class ResourceXmlParser {
 
     //TODO: Impl. this class.
 
-    public static UnitTree parseUnitTree(Clan clan, Context context, int resourceId) {
+    public static UnitTree parseResourceTree(Clan clan, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(
                 resourceId);
         try {
-            return parseUnitTree(clan, inputStream);
+            return parseResourceTree(clan, inputStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -51,16 +52,12 @@ public class ResourceXmlParser {
         return null;
     }
 
-    public static UnitTree parseUnitTree(Clan clan, InputStream inputStream)
+    public static void parseResourceTree(TechTree tree, InputStream inputStream)
             throws XmlPullParserException, IOException {
-        UnitTree tree = new UnitTree(clan);
-
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
         XmlPullParser xpp = factory.newPullParser();
         xpp.setInput(inputStream, null);
-        int stackCounter = -1;
-        List<UnitTree.Unit> stack = new ArrayList<>();
 
         //HashMap<String, String> addRequirementsNames = new HashMap<>();
         int eventType = xpp.getEventType();
@@ -71,16 +68,9 @@ public class ResourceXmlParser {
             } else if (eventType == XmlPullParser.START_TAG) {
                 //System.out.println("Start tag " + xpp.getName());
                 if (xpp.getName().equals("unit") || xpp.getName().equals("unitroot")) {
-                    String unitName = xpp.getAttributeValue(null, "name");
+                    String resourceName = xpp.getAttributeValue(null, "name");
 
-                    String combatStatsStringy = xpp.getAttributeValue(null, "combatStats");
-                    String[] splitCombatStats = combatStatsStringy.split("/");
-                    int[] combatStats = new int[splitCombatStats.length];
-                    for (int i = 0; i < combatStats.length; i++) {
-                        combatStats[i] = Integer.parseInt(splitCombatStats[i]);
-                    }
-
-                    String normalStatsStringy = xpp.getAttributeValue(null, "normalStats");
+                    String normalStatsStringy = xpp.getAttributeValue(null, "yield");
                     String[] splitNormalStats = normalStatsStringy.split("/");
                     int[] normalStats = new int[splitNormalStats.length];
                     for (int i = 0; i < normalStats.length; i++) {
@@ -93,16 +83,6 @@ public class ResourceXmlParser {
                             normalStats[0], normalStats[0], normalStats[1], normalStats[1], //normalStats[2], normalStats[3],
                             combatStats[0], combatStats[1], combatStats[2], combatStats[3], combatStats[4]);
                     personType.workNeeded = workNeeded;
-
-                    UnitTree.Unit newUnit = new UnitTree.Unit(personType);
-                    if (xpp.getName().equals("unitroot")) {
-                        tree.root = newUnit;
-                    }
-                    stack.add(newUnit);
-                    if (stackCounter >= 0) {
-                        stack.get(stackCounter).unlockedUnits.add(newUnit);
-                    }
-                    stackCounter++;
 
                     String techNeeded = xpp.getAttributeValue(null, "tech"); //TODO: Use this data
 

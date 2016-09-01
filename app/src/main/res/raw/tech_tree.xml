@@ -47,10 +47,10 @@
 
                     </tech>
                 </tech>
-                <tech name="Deep Sea Operations" workNeeded="150" requirement="Seafaring" building="Platform" resource="Abyss Matter">
+                <tech name="Deep Sea" workNeeded="150" requirement="Seafaring" building="Platform" resource="Abyss Matter">
 
                 </tech>
-                <tech name="Mechanized Farming" workNeeded="200" requirement="Agriculture" building="Slaughterhouse">
+                <tech name="Mechanization" workNeeded="200" requirement="Agriculture" building="Slaughterhouse">
 
                 </tech>
             </tech>
@@ -85,13 +85,13 @@
                 <tech name="Urban Forest" workNeeded="150" requirement="Factorization" building="Tech Plaza">
 
                 </tech>
-                <tech name="Xenoterra Harmony" workNeeded="150" building="Xenolands">
+                <tech name="Xenoterra" workNeeded="150" building="Xenolands">
 
                 </tech>
             </tech>
         </tech>
         <tech name="Militarization" workNeeded="40" district="Barracks">
-            <tech name="Specialized Weapons" workNeeded="120" requirement="Military Lab" specialAbility="AlloyWeapons" unit="Knives">
+            <tech name="Weaponization" workNeeded="120" requirement="Military Lab" specialAbility="AlloyWeapons" unit="Knives">
 
             </tech>
         </tech>
