@@ -2,7 +2,7 @@
 <techroot name="Landing" workNeeded="1" district="Borough" building="Clinic" unit="Settler/Soldier/Worker" resource="Steel">
     <tech name="Agriculture" workNeeded="15" building="Farm">
         <tech name="Xenoscience" workNeeded="50" building="Hunting Camp" resource="Extromass">
-            <tech name="Xenovoltaic Cells" workNeeded="80" requirement="Energy Science" resource="Xenovoltaic Cells">
+            <tech name="Xenovoltaics" workNeeded="80" requirement="Energy Science" resource="Xenovoltaic Cells">
 
             </tech>
             <tech name="Xenopharma" workNeeded="80" resource="Ascendia">
@@ -59,7 +59,7 @@
 
         </tech>
     </tech>
-    <tech name="Seafaring" workNeeded="15" building="Boats" unit="Deployed Boats" resource="">
+    <tech name="Seafaring" workNeeded="15" building="Deployed Boats" unit="Boats" resource="">
 
     </tech>
     <tech name="Information" workNeeded="15" district="Study">

@@ -89,7 +89,12 @@ public class BuildingXmlParser {
                     String[] splitYieldStats = yieldStatsStringy.split("/");
                     int[] yieldStats = new int[splitYieldStats.length];
                     for (int i = 0; i < yieldStats.length; i++) {
-                        yieldStats[i] = Integer.parseInt(splitYieldStats[i]);
+                        try {
+                            yieldStats[i] = Integer.parseInt(splitYieldStats[i]);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            yieldStats[i] = 0;
+                        }
                     }
 
                     int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));

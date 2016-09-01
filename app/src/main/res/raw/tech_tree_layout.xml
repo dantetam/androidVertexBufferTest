@@ -2,7 +2,7 @@
 <techroot name="Landing" x="0" y="0">
     <tech name="Agriculture" x="-1" y="0">
         <tech name="Xenoscience" x="-2" y="0">
-            <tech name="Xenovoltaic Cells" x="-2" y="1">
+            <tech name="Xenovoltaics" x="-2" y="1">
 
             </tech>
             <tech name="Xenopharma" x="-2" y="-1">

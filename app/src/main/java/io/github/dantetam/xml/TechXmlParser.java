@@ -102,26 +102,42 @@ public class TechXmlParser {
                     stackCounter++;
 
                     String unlockBuilding = xpp.getAttributeValue(null, "building");
-                    String unlockResource = xpp.getAttributeValue(null, "resource");
+                    String unlockRevealResource = xpp.getAttributeValue(null, "resource_reveal");
+                    String unlockHarvestResource = xpp.getAttributeValue(null, "resource_harvest");
                     String unlockUnit = xpp.getAttributeValue(null, "unit");
                     String unlockUnits = xpp.getAttributeValue(null, "units");
                     String unlockSpecialAbility = xpp.getAttributeValue(null, "specialAbility");
 
                     if (unlockBuilding != null) {
+                        if (tree.clan.buildingTree.buildingTypes.get(unlockBuilding) == null) {
+                            System.err.println("Could not find building " + unlockBuilding);
+                        }
                         newTech.unlockedBuildings.add(tree.clan.buildingTree.buildingTypes.get(unlockBuilding));
                     }
-                    if (unlockResource != null) {
-                        newTech.harvestableResources.add(TechTree.itemTypes.get(unlockResource));
+                    if (unlockRevealResource != null) {
+                        if (TechTree.itemTypes.get(unlockHarvestResource) == null) {
+                            System.err.println("Could not find unit " + unlockHarvestResource);
+                        }
+                        newTech.revealResources.add(TechTree.itemTypes.get(unlockHarvestResource));
+                    }
+                    if (unlockHarvestResource != null) {
+                        newTech.harvestableResources.add(TechTree.itemTypes.get(unlockHarvestResource));
                     }
                     if (unlockUnit != null) {
                         String[] unitsToUnlock;
                         if (unlockUnit.contains("/")) {
                             unitsToUnlock = unlockUnit.split("/");
                             for (String stringy: unitsToUnlock) {
+                                if (tree.clan.unitTree.personTypes.get(stringy) == null) {
+                                    System.err.println("Could not find unit " + stringy + " within " + unlockUnit);
+                                }
                                 newTech.unlockedUnits.add(tree.clan.unitTree.personTypes.get(stringy));
                             }
                         }
                         else {
+                            if (tree.clan.unitTree.personTypes.get(unlockUnit) == null) {
+                                System.err.println("Could not find unit " + unlockUnit);
+                            }
                             newTech.unlockedUnits.add(tree.clan.unitTree.personTypes.get(unlockUnit));
                         }
                     }

@@ -890,31 +890,53 @@ public class LessonSevenActivity extends Activity implements
             textView.setLayoutParams(param);
             techScreen.addView(textView);
 
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    playerClan.techTree.researchingTechQueue.clear();
-                    playerClan.techTree.beeline(tech);
-                    updateTechMenu();
-                }
-            });
+            if (!tech.researched()) {
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        playerClan.techTree.researchingTechQueue.clear();
+                        playerClan.techTree.beeline(tech);
+                        updateTechMenu();
+                    }
+                });
+            }
 
             List<String> techInfo = new ArrayList<>();
-            for (PersonType personType: tech.unlockedUnits) {
-                techInfo.add(personType.name);
+
+            if (tech.unlockedUnits.size() > 0) {
+                String infoStringy = "";
+                for (PersonType personType : tech.unlockedUnits) {
+                    infoStringy += personType.name + " ";
+                }
+                techInfo.add(infoStringy);
             }
-            for (BuildingType buildingType: tech.unlockedBuildings) {
-                techInfo.add(buildingType.name);
+
+            if (tech.unlockedBuildings.size() > 0) {
+                String buildStringy = "";
+                for (BuildingType buildingType : tech.unlockedBuildings) {
+                    buildStringy += buildingType.name + " ";
+                }
+                techInfo.add(buildStringy);
+            }
+
+            for (ItemType itemType: tech.revealResources) {
+                techInfo.add("Reveals " + itemType.name);
             }
             for (ItemType itemType: tech.harvestableResources) {
-                techInfo.add(itemType.name);
+                techInfo.add("Access" + itemType.name);
             }
             for (Ability ability: tech.unlockedSpecialAbilities) {
                 techInfo.add(ability.desc);
             }
-            for (Tech unlockedTech: tech.unlockedTechs) {
-                techInfo.add("Leads to " + unlockedTech.name);
+
+            if (tech.unlockedTechs.size() > 0) {
+                String unlockStringy = "Leads to ";
+                for (Tech unlockedTech : tech.unlockedTechs) {
+                    unlockStringy += unlockedTech.name + " ";
+                }
+                techInfo.add(unlockStringy);
             }
+
             InfoHelper.addInfoOnLongClick(textView, techInfo);
         }
     }
