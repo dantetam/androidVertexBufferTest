@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.github.dantetam.opstrykontest.Condition;
 import io.github.dantetam.utilmath.Vector2f;
+import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.ItemType;
@@ -23,6 +24,8 @@ public class TechTree {
     public HashMap<String, Tech> techMap;
     public HashMap<Tech, Boolean> researchedTech;
 
+    public static HashMap<String, ItemType> itemTypes;
+
     public List<Tech> researchingTechQueue;
 
     //public HashMap<BuildingType, List<BuildingType>> allowedModules;
@@ -30,7 +33,7 @@ public class TechTree {
     public HashMap<BuildingType, List<BuildingType>> allowedBuildingsAndModules;
     public HashMap<PersonType, Boolean> allowedUnits;
     public HashMap<ItemType, Boolean> allowedHarvestable;
-    public HashMap<String, Boolean> specialAbilities;
+    public HashMap<Ability, Boolean> specialAbilities;
 
     //These values are used for interfaces that render the tech tree GUI
     //presumably as a GridLayout.
@@ -98,7 +101,7 @@ public class TechTree {
         for (ItemType itemType: tech.harvestableResources) {
             allowedHarvestable.put(itemType, true);
         }
-        for (String ability: tech.unlockedSpecialAbilities) {
+        for (Ability ability: tech.unlockedSpecialAbilities) {
             specialAbilities.put(ability, true);
         }
         /*for (String stringy: strings) {

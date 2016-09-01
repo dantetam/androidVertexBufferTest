@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.dantetam.utilmath.Vector2f;
+import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.Tech;
@@ -40,13 +41,13 @@ import io.github.dantetam.world.entity.TechTree;
 public class TechXmlParser {
     private static final String ns = null;
 
-    public static TechTree parseTechTree(Clan clan, Context context, int resourceId, int secondResourceId) {
+    public static TechTree parseTechTree(TechTree tree, Context context, int resourceId, int secondResourceId) {
         final InputStream techStream = context.getResources().openRawResource(
                 resourceId);
         final InputStream techLocationStream = context.getResources().openRawResource(
                 secondResourceId);
         try {
-            TechTree result = parseTechTree(clan, techStream);
+            TechTree result = parseTechTree(tree, techStream);
             parseTechLocationTree(result, techLocationStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
@@ -66,10 +67,8 @@ public class TechXmlParser {
     tag pops a tech off the stack. The stackCounter int represents distance from
     the tech root, where -1 indicates no tech has been parsed.
      */
-    public static TechTree parseTechTree(Clan clan, InputStream inputStream)
+    public static TechTree parseTechTree(TechTree tree, InputStream inputStream)
             throws XmlPullParserException, IOException {
-        TechTree tree = new TechTree(clan);
-
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
         XmlPullParser xpp = factory.newPullParser();
@@ -109,25 +108,25 @@ public class TechXmlParser {
                     String unlockSpecialAbility = xpp.getAttributeValue(null, "specialAbility");
 
                     if (unlockBuilding != null) {
-                        newTech.unlockedBuildings.add(clan.buildingTree.buildingTypes.get(unlockBuilding));
+                        newTech.unlockedBuildings.add(tree.clan.buildingTree.buildingTypes.get(unlockBuilding));
                     }
                     if (unlockResource != null) {
-                        newTech.harvestableResources.add(ItemType.fromString(unlockResource));
+                        newTech.harvestableResources.add(TechTree.itemTypes.get(unlockResource));
                     }
                     if (unlockUnit != null) {
                         String[] unitsToUnlock;
                         if (unlockUnit.contains("/")) {
                             unitsToUnlock = unlockUnit.split("/");
                             for (String stringy: unitsToUnlock) {
-                                newTech.unlockedUnits.add(clan.unitTree.personTypes.get(stringy));
+                                newTech.unlockedUnits.add(tree.clan.unitTree.personTypes.get(stringy));
                             }
                         }
                         else {
-                            newTech.unlockedUnits.add(clan.unitTree.personTypes.get(unlockUnit));
+                            newTech.unlockedUnits.add(tree.clan.unitTree.personTypes.get(unlockUnit));
                         }
                     }
                     if (unlockSpecialAbility != null) {
-                        newTech.unlockedSpecialAbilities.add(unlockSpecialAbility);
+                        newTech.unlockedSpecialAbilities.add(new Ability(unlockSpecialAbility, ""));
                     }
 
                     tree.techMap.put(techName, newTech);

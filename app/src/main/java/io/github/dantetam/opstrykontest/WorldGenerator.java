@@ -9,6 +9,7 @@ import io.github.dantetam.android.FileParser;
 import io.github.dantetam.android.RawResourceReader;
 import io.github.dantetam.utilmath.DiamondSquare;
 import io.github.dantetam.utilmath.Vector2f;
+import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.factory.BuildingFactory;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
@@ -20,6 +21,7 @@ import io.github.dantetam.world.factory.PersonFactory;
 import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
 import io.github.dantetam.xml.BuildingXmlParser;
+import io.github.dantetam.xml.ResourceXmlParser;
 import io.github.dantetam.xml.TechXmlParser;
 import io.github.dantetam.xml.UnitXmlParser;
 
@@ -52,8 +54,8 @@ public class WorldGenerator {
         int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(System.currentTimeMillis()/2).getIntTerrain(1, 10);
         world.init(biomes, terrains, elevations);
         //makeRandomBuildings();
-        makeNewResources(world);
         world.initClans(makeClans());
+        makeNewResources(world);
         setClanLands(world);
     }
 
@@ -118,7 +120,13 @@ public class WorldGenerator {
             clans.add(clan);
             UnitXmlParser.parseUnitTree(clan, mActivity, R.raw.unit_tree);
             BuildingXmlParser.parseBuildingTree(clan, mActivity, R.raw.building_tree);
-            TechXmlParser.parseTechTree(clan, mActivity, R.raw.tech_tree, R.raw.tech_tree_layout);
+            clan.techTree = new TechTree(clan);
+
+            if (TechTree.itemTypes == null) {
+                ResourceXmlParser.parseResourceTree(clan.techTree, mActivity, R.raw.resource_tree);
+            }
+
+            TechXmlParser.parseTechTree(clan.techTree, mActivity, R.raw.tech_tree, R.raw.tech_tree_layout);
             clan.techTree.unlock("Landing");
         }
         return clans;
@@ -229,14 +237,14 @@ public class WorldGenerator {
                 if (stringy.startsWith("Resource/")) {
                     currentAction = "Resource";
                     if (resourceData != null) {
-                        resourceSpawnRates.put(ItemType.fromString(resource), resourceData);
+                        resourceSpawnRates.put(TechTree.itemTypes.get(resource), resourceData);
                     }
                     resource = stringy.substring(9);
                     resourceData = new float[numBiomes][numTerrains];
                 } else if (stringy.startsWith("ResourceQuick/")) {
                     currentAction = "ResourceQuick";
                     if (resourceData != null) {
-                        resourceSpawnRates.put(ItemType.fromString(resource), resourceData);
+                        resourceSpawnRates.put(TechTree.itemTypes.get(resource), resourceData);
                     }
                     resource = stringy.substring(14);
                     resourceData = new float[numBiomes][numTerrains];

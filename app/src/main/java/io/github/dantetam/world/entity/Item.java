@@ -19,7 +19,7 @@ public class Item {
 
     public Item(ItemType t, int n) {
         type = t;
-        name = t.renderName;
+        name = t.name;
         quantity = n;
     }
 

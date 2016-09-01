@@ -23,9 +23,11 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.github.dantetam.world.entity.Clan;
+import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.PersonType;
 import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.UnitTree;
@@ -39,17 +41,16 @@ public class ResourceXmlParser {
 
     //TODO: Impl. this class.
 
-    public static UnitTree parseResourceTree(Clan clan, Context context, int resourceId) {
+    public static void parseResourceTree(TechTree tree, Context context, int resourceId) {
         final InputStream inputStream = context.getResources().openRawResource(
                 resourceId);
         try {
-            return parseResourceTree(clan, inputStream);
+            parseResourceTree(tree, inputStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
     public static void parseResourceTree(TechTree tree, InputStream inputStream)
@@ -62,12 +63,16 @@ public class ResourceXmlParser {
         //HashMap<String, String> addRequirementsNames = new HashMap<>();
         int eventType = xpp.getEventType();
 
+        if (tree.itemTypes == null) {
+            tree.itemTypes = new HashMap<>();
+        }
+
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_DOCUMENT) {
                 //System.out.println("Start document");
             } else if (eventType == XmlPullParser.START_TAG) {
                 //System.out.println("Start tag " + xpp.getName());
-                if (xpp.getName().equals("unit") || xpp.getName().equals("unitroot")) {
+                if (xpp.getName().equals("resource")) {
                     String resourceName = xpp.getAttributeValue(null, "name");
 
                     String normalStatsStringy = xpp.getAttributeValue(null, "yield");
@@ -77,44 +82,35 @@ public class ResourceXmlParser {
                         normalStats[i] = Integer.parseInt(splitNormalStats[i]);
                     }
 
-                    int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));
-                    //System.out.println(techName + " " + workNeeded);
-                    PersonType personType = new PersonType(unitName,
-                            normalStats[0], normalStats[0], normalStats[1], normalStats[1], //normalStats[2], normalStats[3],
-                            combatStats[0], combatStats[1], combatStats[2], combatStats[3], combatStats[4]);
-                    personType.workNeeded = workNeeded;
-
-                    String techNeeded = xpp.getAttributeValue(null, "tech"); //TODO: Use this data
-
-                    String resourceNeeded = xpp.getAttributeValue(null, "resource");
-                    if (resourceNeeded != null) {
-                        personType.resourceNeeded = resourceNeeded;
-                    }
+                    ItemType itemType = new ItemType(resourceName,
+                            normalStats[0], normalStats[1], normalStats[2], normalStats[3], normalStats[4], normalStats[5]);
 
                     String modelName = xpp.getAttributeValue(null, "model");
                     if (modelName != null) {
-                        personType.modelName = modelName;
+                        //TODO: Fix this so it randomly splits models
+                        if (modelName.contains("/")) {
+                            modelName = modelName.split("/")[0];
+                        }
+                        itemType.modelName = modelName;
                     }
                     String textureName = xpp.getAttributeValue(null, "texture");
                     if (textureName != null) {
-                        personType.textureName = textureName;
+                        //TODO: Fix this so it randomly splits textures
+                        if (textureName.contains("/")) {
+                            textureName = textureName.split("/")[0];
+                        }
+                        itemType.textureName = textureName;
                     }
 
-                    tree.personTypes.put(unitName, personType);
+                    tree.itemTypes.put(resourceName, itemType);
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
-                //System.out.println("End tag " + xpp.getName());
-                if (xpp.getName().equals("unit") || xpp.getName().equals("unitroot")) {
-                    stackCounter--;
-                }
+
             } else if (eventType == XmlPullParser.TEXT) {
-                //System.out.println("Text "+xpp.getText());
+
             }
             eventType = xpp.next();
         }
-
-        //System.out.println("End document");
-        return tree;
     }
 
 }

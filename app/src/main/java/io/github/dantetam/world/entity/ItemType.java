@@ -10,6 +10,28 @@ import java.util.List;
 
 public class ItemType {
 
+    public String name;
+    public String modelName, textureName;
+    public int food, production, science, capital, happiness, health;
+
+    public ItemType(String n, int f, int p, int s, int c, int ha, int he) {
+        name = n;
+        food = f; production = p; science = s; capital = c;
+        happiness = ha; health = he;
+    }
+
+    public boolean equals(Object other) {
+        if (!(other instanceof ItemType)) {
+            return false;
+        }
+        ItemType type = (ItemType) other;
+        return name.equals(type.name);
+    }
+
+    public String getAndroidResourceName() {
+        return name.replace(" ", "_").toLowerCase();
+    }
+
 }
 
 /*public enum ItemType {

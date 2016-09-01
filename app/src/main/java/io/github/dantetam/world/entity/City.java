@@ -47,7 +47,7 @@ public class City extends Building {
 
     public void queueActionBuildModule(BuildingType buildingType) {
         if (buildingType.resourceNeeded != null) {
-            clan.resources.subtractFromInventory(new Item(ItemType.fromString(buildingType.resourceNeeded)));
+            clan.resources.subtractFromInventory(new Item(TechTree.itemTypes.get(buildingType.resourceNeeded)));
         }
         Building queueBuilding = BuildingFactory.newBuilding(world, clan, buildingType, location, 0);
         actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, queueBuilding));
@@ -55,7 +55,7 @@ public class City extends Building {
 
     public void queueActionBuildUnit(PersonType personType) {
         if (personType.resourceNeeded != null) {
-            clan.resources.subtractFromInventory(new Item(ItemType.fromString(personType.resourceNeeded)));
+            clan.resources.subtractFromInventory(new Item(TechTree.itemTypes.get(personType.resourceNeeded)));
         }
         Person queuePerson = PersonFactory.newPerson(personType, world, clan, 0);
         actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, queuePerson));
@@ -68,7 +68,7 @@ public class City extends Building {
             BuildingType buildingType = entry.getKey();
             if (entry.getValue()) {
                 if (buildingType.resourceNeeded != null) {
-                    ItemType resourceNeeded = ItemType.fromString(buildingType.resourceNeeded);
+                    ItemType resourceNeeded = TechTree.itemTypes.get(buildingType.resourceNeeded);
                     if (!clan.resources.hasItemInInventory(resourceNeeded, false)) {
                         continue;
                     }
@@ -94,7 +94,7 @@ public class City extends Building {
             PersonType personType = entry.getKey();
             if (entry.getValue()) {
                 if (buildingType.resourceNeeded != null) {
-                    ItemType resourceNeeded = ItemType.fromString(buildingType.resourceNeeded);
+                    ItemType resourceNeeded = TechTree.itemTypes.get(buildingType.resourceNeeded);
                     if (!clan.resources.hasItemInInventory(resourceNeeded, false)) {
                         continue;
                     }
@@ -200,9 +200,7 @@ public class City extends Building {
             double score = 0;
             score += tile.food*3 + tile.production*2 + tile.science + tile.capital;
             if (tile.resources.size() > 0) {
-                if (tile.resources.get(0).type != ItemType.NO_RESOURCE) {
-                    score += tile.resources.size()*3;
-                }
+                score += tile.resources.size()*3;
             }
             scoreTiles.put(tile, score);
         }

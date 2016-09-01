@@ -26,7 +26,7 @@ public class BuildingFactory {
         clan.cities.add(city);
         //city.initModules(tile.numSpaces);
 
-        city.recipes.add(new Recipe().addIn(new Item(ItemType.FOOD, 1)).addOut(new Item(ItemType.PRODUCTION, 1)));
+        //city.recipes.add(new Recipe().addIn(new Item(ItemType.FOOD, 1)).addOut(new Item(ItemType.PRODUCTION, 1)));
 
         city.actionPoints = 1;
         city.maxActionPoints = 1;

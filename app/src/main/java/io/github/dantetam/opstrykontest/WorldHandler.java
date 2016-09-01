@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.github.dantetam.android.AssetHelper;
 import io.github.dantetam.android.ColorTextureHelper;
@@ -36,6 +37,7 @@ import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.PersonType;
+import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
 import io.github.dantetam.xml.BuildingXmlParser;
@@ -837,8 +839,8 @@ public class WorldHandler {
             improvementResourceStatUi = new MapModel<>();
             List<Condition> inputConditions = new ArrayList<>();
             List<Condition> outputConditions = new ArrayList<>();
-            ItemType[] items = ItemType.values();
-            for (int i = 0; i < items.length; i++) {
+            Collection<ItemType> items = TechTree.itemTypes.values();
+            for (ItemType itemType: items) {
                 Condition inputCond = new Condition() {
                     public ItemType target;
 
@@ -851,7 +853,7 @@ public class WorldHandler {
                         target = (ItemType) object;
                     }
                 };
-                inputCond.init(items[i]);
+                inputCond.init(itemType);
                 inputConditions.add(inputCond);
 
                 Condition outputCond = new Condition() {
@@ -866,18 +868,18 @@ public class WorldHandler {
                         target = (ItemType) object;
                     }
                 };
-                outputCond.init(items[i]);
+                outputCond.init(itemType);
                 outputConditions.add(outputCond);
             }
 
             float[][] hexData = ObjLoader.loadObjModelByVertex("quad", mActivity, R.raw.quad);
 
             HashMap<ItemType, Integer> textureHandles = new HashMap<>();
-            for (int i = 0; i < items.length; i++) {
+            for (ItemType itemType: items) {
                 //textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
                 //assetHelper.loadVertexFromAssets(items[i].renderName);
-                int resId = mActivity.getResources().getIdentifier(items[i].renderName, "drawable", mActivity.getPackageName());
-                textureHandles.put(items[i], TextureHelper.loadTexture(items[i].renderName, mActivity, resId));
+                int resId = mActivity.getResources().getIdentifier(itemType.name, "drawable", mActivity.getPackageName());
+                textureHandles.put(itemType, TextureHelper.loadTexture(itemType.name, mActivity, resId));
             }
 
             for (int i = 0; i < inputConditions.size(); i++) {
@@ -923,7 +925,9 @@ public class WorldHandler {
 
                 improvementResourceStatUi.put(cond, hexes);
             }
-            for (int i = 0; i < outputConditions.size(); i++) {
+
+            int i = 0;
+            for (ItemType itemType: items) {
                 Condition cond = outputConditions.get(i);
                 List<Tile> tilesToRender = new ArrayList<>();
                 for (Tile tile : world.getAllValidTiles()) {
@@ -961,7 +965,7 @@ public class WorldHandler {
                 }
 
                 float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
-                Solid hexes = ObjLoader.loadSolid(textureHandles.get(items[i]), null, generatedData);
+                Solid hexes = ObjLoader.loadSolid(textureHandles.get(itemType), null, generatedData);
                 hexes.alphaEnabled = true;
 
                 improvementResourceStatUi.put(cond, hexes);
@@ -1130,11 +1134,11 @@ public class WorldHandler {
     public MapModel<Condition> updateTileResourceRep() {
         if (tileResourceStored == null) {
             tileResourceStored = new MapModel<>();
-            ItemType[] items = ItemType.values();
+            Collection<ItemType> items = TechTree.itemTypes.values();
             HashMap<ItemType, Integer> resourceTextureHandles = new HashMap<>();
             List<Condition> resourceConditions = new ArrayList<>();
-            for (int i = 0; i < items.length; i++) {
-                String resourceName = items[i].getAndroidResourceName();
+            for (ItemType itemType: items) {
+                String resourceName = itemType.getAndroidResourceName();
                 /*if (resourceName.equals("no_resource")) {
                     continue;
                 }*/
@@ -1146,10 +1150,10 @@ public class WorldHandler {
                 int resId = mActivity.getResources().getIdentifier(resourceName, "drawable", mActivity.getPackageName());
                 if (resId == 0) {
                     System.out.println("Could not find " + resourceName + " in drawable, using usb_android");
-                    resourceTextureHandles.put(items[i], TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android));
+                    resourceTextureHandles.put(itemType, TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android));
                 }
                 else
-                    resourceTextureHandles.put(items[i], TextureHelper.loadTexture(resourceName, mActivity, resId));
+                    resourceTextureHandles.put(itemType, TextureHelper.loadTexture(resourceName, mActivity, resId));
 
                 Condition cond = new Condition() {
                     public ItemType type;
@@ -1162,14 +1166,15 @@ public class WorldHandler {
                         type = (ItemType) obj;
                     }
                 };
-                cond.init(items[i]);
+                cond.init(itemType);
                 resourceConditions.add(cond);
             }
 
             float[] offset = {2, 2};
             float[] trueOffset = {offset[0] * TRANSLATE_FACTOR_UI_X, offset[1] * TRANSLATE_FACTOR_UI_Z};
             int i = 0;
-            for (Condition cond : resourceConditions) {
+            for (ItemType itemType: items) {
+                Condition cond = resourceConditions.get(i);
 
                 List<Tile> tilesToRender = new ArrayList<>();
                 for (Tile tile : world.getAllValidTiles()) {
@@ -1208,7 +1213,7 @@ public class WorldHandler {
                 //int resId = resourceTextureHandles.get(items[i]);
                 //int textureHandle = TextureHelper.loadTexture(items[i].getAndroidResourceName(), mActivity, resourceTextureHandles.get(items[i]));
                 //System.out.println(items[i] + " " + items[i].getAndroidResourceName());
-                int textureHandle = resourceTextureHandles.get(items[i]);
+                int textureHandle = resourceTextureHandles.get(itemType);
                 float[][] generatedData = new float[][]{totalCubePositionData, totalNormalPositionData, totalTexturePositionData};
 
                 Solid hexes = ObjLoader.loadSolid(textureHandle, null, generatedData);

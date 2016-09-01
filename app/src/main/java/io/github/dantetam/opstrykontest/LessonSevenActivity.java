@@ -907,7 +907,7 @@ public class LessonSevenActivity extends Activity implements
                 techInfo.add(buildingType.name);
             }
             for (ItemType itemType: tech.harvestableResources) {
-                techInfo.add()
+                techInfo.add(itemType.name);
             }
             for (Ability ability: tech.unlockedSpecialAbilities) {
                 techInfo.add(ability.desc);
