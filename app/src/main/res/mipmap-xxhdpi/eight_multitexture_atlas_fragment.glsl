@@ -3,33 +3,58 @@ precision mediump float;       	// Set the default precision to medium. We don't
 uniform vec3 u_LightPos;       	// The position of the light in eye space.
 uniform vec3 u_CameraPos;       // The position of the camera in eye space
 
-uniform sampler2D blackTexture;    // The input texture.
-uniform sampler2D rTexture;
-uniform sampler2D gTexture;
-uniform sampler2D bTexture;
-uniform sampler2D blendMap;
+uniform sampler2D backgroundTexture;
+uniform sampler2D texture0;    // The input texture.
+uniform sampler2D texture1;
+uniform sampler2D texture2;
+uniform sampler2D texture3;
+uniform sampler2D texture4;
+uniform sampler2D texture5;
+uniform sampler2D texture6;
+uniform sampler2D texture7;
   
 varying vec3 v_Position;		// Interpolated position for this fragment.
 varying vec3 v_Normal;         	// Interpolated normal for this fragment.
-varying vec2 v_TexCoordinate0;   // Interpolated texture coordinate per fragment.
-varying vec2 v_TexCoordinate1;
-varying vec2 v_TexCoordinate2;
-varying vec2 v_TexCoordinate3;
-
+varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
 //varying vec4 v_Color;
   
 // The entry point for our fragment shader.
 void main()                    		
 {
-    vec4 blendMapColor = texture2D(blendMap, v_TexCoordinate0);
-    float blackTextureShade = 1.0 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
-    //vec2 tiled = v_TexCoordinate * 40;
-    vec4 blackTextureColor = texture2D(blackTexture, v_TexCoordinate0) * blackTextureShade;
-    vec4 rTextureColor = texture2D(rTexture, v_TexCoordinate1) * blendMapColor.r;
-    vec4 gTextureColor = texture2D(gTexture, v_TexCoordinate2) * blendMapColor.g;
-    vec4 bTextureColor = texture2D(bTexture, v_TexCoordinate3) * blendMapColor.b;
+    vec4 totalColor;
 
-    vec4 texel = blackTextureColor + rTextureColor + gTextureColor + bTextureColor;
+    vec4 blendMapColor = texture2D(blendMap, v_TexCoordinate0);
+    vec2 tiledCoords = v_TexCoordinate;
+    float v = blendMapColor.r;
+    if (v < 0.02) {
+        totalColor = texture(backgroundTexture, tiledCoords);
+    }
+    else if (v <= 1.0/8.0) {
+        totalColor = texture(texture0, tiledCoords);
+    }
+    else if (v <= 2.0/8.0) {
+        totalColor = texture(texture1, tiledCoords);
+    }
+    else if (v <= 3.0/8.0) {
+        totalColor = texture(texture2, tiledCoords);
+    }
+    else if (v <= 4.0/8.0) {
+        totalColor = texture(texture3, tiledCoords);
+    }
+    else if (v <= 5.0/8.0) {
+        totalColor = texture(texture4, tiledCoords);
+    }
+    else if (v <= 6.0/8.0) {
+        totalColor = texture(texture5, tiledCoords);
+    }
+    else if (v <= 7.0/8.0) {
+        totalColor = texture(texture6, tiledCoords);
+    }
+    else {
+        totalColor = texture(texture7, tiledCoords);
+    }
+
+    vec4 texel = totalColor;
     //texel.a = 1.0;
 
     //texel = vec4(1.0, 0.0, 0.0, 1.0);
