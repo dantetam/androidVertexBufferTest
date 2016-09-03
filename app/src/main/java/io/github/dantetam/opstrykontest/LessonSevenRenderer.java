@@ -23,11 +23,13 @@ import io.github.dantetam.android.ShaderHelper;
 import io.github.dantetam.android.TextureHelper;
 import io.github.dantetam.opengl.BaseModel;
 import io.github.dantetam.opengl.Camera;
+import io.github.dantetam.opengl.EightMultiTexture;
 import io.github.dantetam.opengl.FrameBuffer;
 import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.opengl.MultiTexture;
 import io.github.dantetam.opengl.RenderEntity;
 import io.github.dantetam.opengl.Solid;
+import io.github.dantetam.opengl.Texture;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.factory.ClanFactory;
@@ -90,6 +92,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     /** Pass in data to shaders by OpenGL handles */
     private int mDefaultShaderHandleWithAtlas;
     private int mMultiTextureShader;
+    private int mEightMultiTextureShader;
 
     private int mAndroidDataHandle;
     public int mWhiteTextureHandle;
@@ -251,6 +254,13 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
         fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
         mMultiTextureShader = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
+                new String[] {"a_Position", "a_Normal", "a_TexCoordinate"});
+
+        vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.eight_multitexture_atlas_vertex);
+        fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.eight_multitexture_atlas_fragment);
+        vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
+        fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+        mEightMultiTextureShader = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
                 new String[] {"a_Position", "a_Normal", "a_TexCoordinate"});
         
 		// Load the texture
@@ -426,7 +436,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             // shader by binding to texture unit 0.
             GLES20.glUniform1i(mTextureUniformHandle, 0);
         }
-        else {
+        else if (solid.texture instanceof MultiTexture) {
             MultiTexture mt = (MultiTexture) solid.texture;
 
             activeShaderProgram = mMultiTextureShader;
@@ -439,30 +449,15 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             handles[9] = GLES20.glGetUniformLocation(activeShaderProgram, "bTexture");
             handles[12] = GLES20.glGetUniformLocation(activeShaderProgram, "blendMap");
 
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle);
-            GLES20.glUniform1i(handles[0], 0);
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle1);
-            GLES20.glUniform1i(handles[3], 1);
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE2);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle2);
-            GLES20.glUniform1i(handles[6], 2);
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle3);
-            GLES20.glUniform1i(handles[9], 3);
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE4);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.blendMap);
-            GLES20.glUniform1i(handles[12], 4);
-
-            handles[1] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows0");
-            handles[2] = GLES20.glGetUniformLocation(activeShaderProgram, "offset0");
-            handles[4] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows1");
-            handles[5] = GLES20.glGetUniformLocation(activeShaderProgram, "offset1");
-            handles[7] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows2");
-            handles[8] = GLES20.glGetUniformLocation(activeShaderProgram, "offset2");
-            handles[10] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows3");
-            handles[11] = GLES20.glGetUniformLocation(activeShaderProgram, "offset3");
+            int[] texUnits = {GLES20.GL_TEXTURE0, GLES20.GL_TEXTURE1, GLES20.GL_TEXTURE2, GLES20.GL_TEXTURE3, GLES20.GL_TEXTURE4};
+            int[] multiTexHandles = {mt.textureHandle, mt.textureHandle1, mt.textureHandle2, mt.textureHandle3};
+            for (int i = 0; i < texUnits.length; i++) {
+                GLES20.glActiveTexture(texUnits[i]);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, multiTexHandles[i]);
+                GLES20.glUniform1i(handles[i * 3], i);
+                handles[i*3 + 1] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows" + i);
+                handles[i*3 + 2] = GLES20.glGetUniformLocation(activeShaderProgram, "offset" + i);
+            }
 
             solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(activeShaderProgram, "a_TexCoordinate0");
 
@@ -482,6 +477,40 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             GLES20.glUniform2f(handles[11],
                     mt.getTextureOffsetX(mt.textureAtlasIndex3, mt.numberOfRows3),
                     mt.getTextureOffsetY(mt.textureAtlasIndex3, mt.numberOfRows3));
+        }
+        else if (solid.texture instanceof EightMultiTexture) {
+            EightMultiTexture emt = (EightMultiTexture) solid.texture;
+
+            activeShaderProgram = mMultiTextureShader;
+            GLES20.glUseProgram(activeShaderProgram);
+
+            int[] handles = new int[13];
+            for (int i = 0; i < emt.twentyFourArray.length / 3; i++) {
+                handles[i*3] = GLES20.glGetUniformLocation(activeShaderProgram, "texture" + i);
+            }
+
+            int[] texUnits = {GLES20.GL_TEXTURE0, GLES20.GL_TEXTURE1, GLES20.GL_TEXTURE2, GLES20.GL_TEXTURE3,
+                    GLES20.GL_TEXTURE4, GLES20.GL_TEXTURE5, GLES20.GL_TEXTURE6, GLES20.GL_TEXTURE7,
+                    GLES20.GL_TEXTURE8};
+            for (int i = 0; i < emt.twentyFourArray.length / 3; i++) {
+                GLES20.glActiveTexture(texUnits[i]);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, emt.twentyFourArray[i*3]);
+                GLES20.glUniform1i(handles[i * 3], i);
+                handles[i*3 + 1] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows" + i);
+                handles[i*3 + 2] = GLES20.glGetUniformLocation(activeShaderProgram, "offset" + i);
+            }
+
+            solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(activeShaderProgram, "a_TexCoordinate0");
+
+            for (int i = 0; i < emt.twentyFourArray.length / 3; i++) {
+                GLES20.glUniform1f(handles[i*3 + 1], emt.twentyFourArray[i*3 + 1]);
+                GLES20.glUniform2f(handles[i * 3 + 2],
+                        Texture.getTextureOffsetX(emt.twentyFourArray[i * 3 + 2], emt.twentyFourArray[i * 3 + 1]),
+                        Texture.getTextureOffsetY(emt.twentyFourArray[i * 3 + 2], emt.twentyFourArray[i * 3 + 1]));
+            }
+        }
+        else {
+            throw new RuntimeException("Invalid texture class for solid and solid texture: " + solid.texture);
         }
 
         // Set program handles for cube drawing.

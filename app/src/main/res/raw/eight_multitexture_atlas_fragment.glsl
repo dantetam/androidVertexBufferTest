@@ -3,7 +3,7 @@ precision mediump float;       	// Set the default precision to medium. We don't
 uniform vec3 u_LightPos;       	// The position of the light in eye space.
 uniform vec3 u_CameraPos;       // The position of the camera in eye space
 
-uniform sampler2D backgroundTexture;
+//uniform sampler2D backgroundTexture;
 uniform sampler2D texture0;    // The input texture.
 uniform sampler2D texture1;
 uniform sampler2D texture2;
@@ -12,7 +12,8 @@ uniform sampler2D texture4;
 uniform sampler2D texture5;
 uniform sampler2D texture6;
 uniform sampler2D texture7;
-  
+uniform sampler2D blendMap;
+
 varying vec3 v_Position;		// Interpolated position for this fragment.
 varying vec3 v_Normal;         	// Interpolated normal for this fragment.
 varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
@@ -26,10 +27,7 @@ void main()
     vec4 blendMapColor = texture2D(blendMap, v_TexCoordinate0);
     vec2 tiledCoords = v_TexCoordinate;
     float v = blendMapColor.r;
-    if (v < 0.02) {
-        totalColor = texture(backgroundTexture, tiledCoords);
-    }
-    else if (v <= 1.0/8.0) {
+    if (v <= 1.0/8.0) {
         totalColor = texture(texture0, tiledCoords);
     }
     else if (v <= 2.0/8.0) {
