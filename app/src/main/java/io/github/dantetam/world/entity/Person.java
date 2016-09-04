@@ -23,7 +23,8 @@ public class Person extends Entity {
 
     public Person(World world, Clan clan, String name) {
         super(world, clan);
-        clan.people.add(this);
+        if (clan != null)
+            clan.people.add(this);
         this.name = name;
         skills = new ArrayList<>();
     }

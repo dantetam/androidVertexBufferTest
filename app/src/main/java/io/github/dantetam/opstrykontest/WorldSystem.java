@@ -140,6 +140,8 @@ public class WorldSystem {
                     Person target = (Person) action.data;
                     target.workCompleted += production;
                     if (target.workCompleted >= target.workNeeded) {
+                        target.clan = clan;
+                        clan.people.add(target);
                         target.move(city.location());
                         city.actionsQueue.remove(0);
                     }

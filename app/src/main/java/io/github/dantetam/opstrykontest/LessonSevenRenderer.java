@@ -630,6 +630,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
                         return;
                     }
                 }
+                if (nextUnit.location() == null) { //A queued unit. Interesting.
+                    return;
+                }
+                //System.out.println(nextUnit + " " + nextUnit.clan.name + " " + nextUnit.clan.ai.leaderName + " " + nextUnit.name);
                 Vector3f pointAt = worldHandler.storedTileVertexPositions.get(nextUnit.location());
                 /*if (nextUnit instanceof Person) {
                     pointAt = worldHandler.storedTileVertexPositions.get(nextUnit.location());

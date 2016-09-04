@@ -95,8 +95,17 @@ public class PersonFactory {
                 System.err.println("Invalid person type: " + type);
                 return null;
         }*/
-        Person person = new Person(world, clan, type.name);
+
+        Person person;
+        //Note that here, when we queue a unit, it is stateless so it is not processed in the normal manner (e.g. is forced to move).
+        if (completionPercentage >= 1) {
+            person = new Person(world, clan, type.name);
+        }
+        else {
+            person = new Person(world, null, type.name);
+        }
         person.personType = type;
+        //TODO: Use the raw PersonType data below and adjust accordingly.
         person.health = type.health;
         person.maxHealth = type.maxH;
         person.actionPoints = type.actionPoints;

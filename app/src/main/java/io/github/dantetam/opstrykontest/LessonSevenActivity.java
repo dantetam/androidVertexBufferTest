@@ -331,6 +331,8 @@ public class LessonSevenActivity extends Activity implements
             mRenderer.moveCameraInFramesAfter = 1;
             mRenderer.nextUnit = en;
         } else if (playerClan.techTree.researchingTechQueue.size() == 0) {
+            mRenderer.mousePicker.changeSelectedTile(null);
+            mRenderer.mousePicker.changeSelectedUnit(null);
             ((Button) v).setText("CHOOSE RESEARCH");
             if (findViewById(R.id.tech_tree_screen).getVisibility() == View.INVISIBLE)
                 onClickTechMenu(findViewById(R.id.tech_menu));
@@ -872,6 +874,24 @@ public class LessonSevenActivity extends Activity implements
                 stringy += " (" + estimatedTurns + ")";
                 textView.setBackgroundColor(Color.GREEN);
             }
+
+            String unlocked = "";
+            for (PersonType personType : tech.unlockedUnits) {
+                unlocked += personType.name + " ";
+            }
+            for (BuildingType buildingType : tech.unlockedBuildings) {
+                unlocked += buildingType.name + " ";
+            }
+            for (ItemType itemType: tech.revealResources) {
+                unlocked += itemType.name + " ";
+            }
+            for (ItemType itemType: tech.harvestableResources) {
+                unlocked += itemType.name + " ";
+            }
+            for (Ability ability: tech.unlockedSpecialAbilities) {
+                unlocked += ability.name + " ";
+            }
+            stringy += "\n" + unlocked;
 
             textView.setText(stringy);
 

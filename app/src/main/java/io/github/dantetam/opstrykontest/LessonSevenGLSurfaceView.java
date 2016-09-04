@@ -354,6 +354,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         Person person = (Person) selectedEntity;
                         stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP";
                     }
+                    stringy += " " + selectedEntity.location();
                 }
                 quickSummaryMenu.setText(stringy);
 
