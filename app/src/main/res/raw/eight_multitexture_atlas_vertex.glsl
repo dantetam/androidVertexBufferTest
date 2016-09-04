@@ -20,8 +20,9 @@ void main()
 	v_Position = vec3(u_MVMatrix * a_Position);            		
 	
 	// Pass through the texture coordinate.
-	vec2 pass_texCoord = (a_TexCoordinate0 / numberOfRows0) + offset0;
-	v_TexCoordinate = pass_texCoord;
+	vec2 pass_texCoord = (a_TexCoordinate0 / texArrayRowsAndOffset[1]) + texArrayRowsAndOffset[2];
+
+	v_TexCoordinates[0] = pass_texCoord;
 
 	// Transform the normal's orientation into eye space.
     v_Normal = vec3(u_MVMatrix * vec4(a_Normal, 0.0));

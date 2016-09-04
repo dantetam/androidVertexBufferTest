@@ -80,8 +80,18 @@ public class ClanXmlParser {
                     inspect = new Clan(clanName);
                     clans.put(clanName, inspect);
 
+                    String adjective = xpp.getAttributeValue(null, "adjective");
+                    inspect.adjective = adjective;
+
                     String leaderName = xpp.getAttributeValue(null, "ruler");
                     inspect.ai.leaderName = leaderName;
+                }
+                else if (startTag.equals("citynames")) {
+                    inspect.cityNames = new ArrayList<>();
+                }
+                else if (startTag.equals("cityname")) {
+                    String name = xpp.getAttributeValue(null, "name");
+                    inspect.cityNames.add(name);
                 }
                 else if (startTag.equals("ability")) {
                     if (inspect.ai.abilityOne == null) {

@@ -15,6 +15,7 @@ import java.util.Set;
 
 import io.github.dantetam.android.AssetHelper;
 import io.github.dantetam.android.ColorTextureHelper;
+import io.github.dantetam.android.MultiTextureHelper;
 import io.github.dantetam.android.ObjLoader;
 import io.github.dantetam.android.TerrainTextureHelper;
 import io.github.dantetam.android.TextureHelper;
@@ -59,6 +60,7 @@ public class WorldHandler {
     private ListModel tilesStored = null;
     //This block is to be rendered
     public HashMap<Tile.Biome, Solid> storedBiomeTiles; //Store all the hexes grouped by biomes, this way each biome can be rendered with its own texture.
+    public HashMap<Tile.Terrain, Solid> storedTerrainTiles;
     public HashMap<BuildingType, Solid> storedImprTilesTex;
     public TerrainTextureHelper terrainTextureHelper;
 
@@ -307,19 +309,21 @@ public class WorldHandler {
 
             storedImprTilesTex = new HashMap<>();
 
+            storedTerrainTiles = new HashMap<>();
+
             worldRepNeedsUpdate = false;
             //hexesShape = new HashMap<>();
             //tilesStored.add(generateHexes(world));
 
             terrainTextureHelper = new TerrainTextureHelper(world);
-            HashMap<Tile.Biome, Integer> biomeTextures = terrainTextureHelper.getBiomeTextures();
+            //HashMap<Tile.Biome, Integer> biomeTextures = terrainTextureHelper.getBiomeTextures();
 
             float[][][] solidsOfBiomeData = new float[Tile.Biome.numBiomes][][];
 
             //float minX = -9999, maxX = -9999, minZ = -9999, maxZ = -9999;
             //float extra = (world.arrayLengthX + 1) % 2 == 1 ? TRANSLATE_FACTORZ * -0.5f : 0;
 
-            for (int i = 0; i < Tile.Biome.numBiomes; i++) {
+            for (int i = 0; i < Tile.Terrain.numTerrains; i++) {
                 Condition cond = new Condition() {
                     public int desiredType = 0;
                     public void init(int i) {
@@ -329,7 +333,7 @@ public class WorldHandler {
                         if (!(obj instanceof Tile)) return false;
                         Tile t = (Tile) obj;
                         //if (t.equals(mousePicker.selectedTile)) return false;
-                        return t.biome.type == desiredType && t.improvement == null;
+                        return t.terrain.type == desiredType && t.improvement == null;
                     }
                 };
                 cond.init(i);
@@ -362,7 +366,7 @@ public class WorldHandler {
             //We want to 'stretch' the texture generated over this canvas, such that it is seamless.
             //If a and b are the bounding points in one dimension, and x is the in between point, then
             //the percentage of 'betweenness' is measured by (x-a) / (b-a).
-            /*Vector3f maxBounds = new Vector3f((world.arrayLengthX + 1) * TRANSLATE_FACTORX, 0, 1 * TRANSLATE_FACTORZ);
+            Vector3f maxBounds = new Vector3f((world.arrayLengthX + 1) * TRANSLATE_FACTORX, 0, 1 * TRANSLATE_FACTORZ);
             Vector3f minBounds = new Vector3f(-1 * TRANSLATE_FACTORX, 0, (- world.arrayLengthZ - 1) * TRANSLATE_FACTORZ);
             for (int i = 0; i < Tile.Biome.numBiomes; i++) {
                 float[][] solidsOfBiome = solidsOfBiomeData[i];
@@ -370,16 +374,18 @@ public class WorldHandler {
                     //Vector3f vertex = new Vector3f(solidsOfBiome[0][p], solidsOfBiome[0][p+1], solidsOfBiome[0][p+2]);
                     float relativeX = (solidsOfBiome[0][3*p] - minBounds.x) / (maxBounds.x - minBounds.x);
                     float relativeZ = (solidsOfBiome[0][3*p + 2] - minBounds.z) / (maxBounds.z - minBounds.z);
-                    solidsOfBiome[2][2*p] = relativeX; solidsOfBiome[2][2*p + 1] = relativeZ;
+                    solidsOfBiome[2][2*p] = relativeX * 3f; solidsOfBiome[2][2*p + 1] = relativeZ * 6.5f;
                     //System.out.println(relativeX + " < > " + relativeZ);
                 }
-            }*/
+            }
 
-            for (int i = 0; i < Tile.Biome.numBiomes; i++) {
+            for (int i = 0; i < Tile.Terrain.numTerrains; i++) {
+                Tile.Terrain terrain = Tile.Terrain.fromInt(i);
                 //float[] color = Tile.Biome.colorFromInt(i);
                 //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
                 //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
-                int blackTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.dryforest_texture), mActivity, R.drawable.dryforest_texture);
+
+                /*int blackTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.dryforest_texture), mActivity, R.drawable.dryforest_texture);
                 int rTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.desert_texture), mActivity, R.drawable.desert_texture);
                 int gTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.forest_texture), mActivity, R.drawable.forest_texture);
                 int bTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.ice_texture), mActivity, R.drawable.ice_texture);
@@ -393,7 +399,12 @@ public class WorldHandler {
                 //Solid solid = ObjLoader.loadSolid(new Texture("biomeHandle" + i, textureHandle, 2, i % 4), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
                 MultiTexture multiTexture = new MultiTexture("biomeHandleMulti" + i, blackTexture, rTexture, gTexture, bTexture, blendMap);
                 Solid solid = ObjLoader.loadSolid(multiTexture, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
-                storedBiomeTiles.put(Tile.Biome.fromInt(i), solid);
+                storedTerrainTiles.put(terrain, solid);
+                tilesStored.add(solid);*/
+
+                List<Texture> texture = MultiTextureHelper.terrainTextures.get(terrain);
+                Solid solid = ObjLoader.loadSolid(texture.get((int)(Math.random()*texture.size())), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
+                storedTerrainTiles.put(terrain, solid);
                 tilesStored.add(solid);
             }
 
@@ -1770,8 +1781,8 @@ public class WorldHandler {
     private static final float TRANSLATE_FACTORZ = 4f;
     private float[][] generateHexes(World world, Collection<Tile> tiles, Condition condition) {
         //Load the vtn data of one hex obj
-        float[][] oldHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
-        float[][] newHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.newflathexagon);
+        float[][] newHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+        float[][] oldHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.newflathexagon);
 
         //int mRequestedCubeFactor = WORLD_LENGTH;
 

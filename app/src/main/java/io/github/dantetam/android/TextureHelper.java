@@ -8,6 +8,8 @@ import android.opengl.GLUtils;
 
 import java.util.HashMap;
 
+import io.github.dantetam.opstrykontest.R;
+
 /*
 A helper class which is solely responsible for loading all textures.
 All textures must be loaded here so their names can be stored in the hash map.
@@ -25,6 +27,17 @@ public class TextureHelper
             return texturesByName.get(name);
         }
         return -1;
+    }
+
+    public static HashMap<Integer, String> resourceIdAndNames = new HashMap<>();
+
+    public static int loadTexture(Context context, int resourceId) {
+        String name = resourceIdAndNames.get(resourceId);
+        if (name == null) {
+            name = context.getResources().getResourceEntryName(resourceId);
+            resourceIdAndNames.put(resourceId, name);
+        }
+        return loadTexture(name, context, resourceId);
     }
 
     /**
@@ -46,6 +59,7 @@ public class TextureHelper
 			bindBitmap(BitmapHelper.findBitmapOrBuild(resourceId), textureHandle[0]);
 		}
 		else {
+            System.err.println(name + " " + resourceId + " " + context.getResources().getResourceEntryName(resourceId));
 			throw new RuntimeException("Error loading texture.");
 		}
 

@@ -49,7 +49,13 @@ public class WorldGenerator {
     public void init() {
         int width = Math.max(world.arrayLengthX, world.arrayLengthZ);
         int[][] biomes = new DiamondSquare(width, 16, 0.4).seed(870).getIntTerrain(0, Tile.Biome.numBiomes - 1);
-        int[][] terrains = new DiamondSquare(width, 10, 0.4).seed(System.currentTimeMillis()).getIntTerrain(0, Tile.Terrain.numTerrains - 1);
+        for (int r = 0; r < biomes.length; r++) {
+            for (int c = 0; c < biomes[0].length; c++) {
+                System.out.print(biomes[r][c] + " ");
+            }
+            System.out.println();
+        }
+        int[][] terrains = new DiamondSquare(width, 12, 0.4).seed(System.currentTimeMillis()).getIntTerrain(0, Tile.Terrain.numTerrains - 1);
         //Item[][] resources = makeNewResources(width, width);
         int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(System.currentTimeMillis()/2).getIntTerrain(1, 10);
         world.init(biomes, terrains, elevations);

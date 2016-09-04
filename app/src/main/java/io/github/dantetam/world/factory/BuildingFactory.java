@@ -22,7 +22,15 @@ public class BuildingFactory {
         System.out.println(clan.buildingTree.buildingTypes);
         System.out.println(clan.buildingTree.buildingTypes.get("City"));*/
 
-        City city = new City(world, clan, clan.buildingTree.buildingTypes.get("City"), cityTiles);
+        String cityName;
+        if (clan.cities.size() < clan.cityNames.size()) {
+            cityName = clan.cityNames.get(clan.cities.size());
+        }
+        else {
+            cityName = clan.adjective + " City " + (clan.cities.size() + 1);
+        }
+
+        City city = new City(world, clan, cityName, clan.buildingTree.buildingTypes.get("City"), cityTiles);
         clan.cities.add(city);
         //city.initModules(tile.numSpaces);
 

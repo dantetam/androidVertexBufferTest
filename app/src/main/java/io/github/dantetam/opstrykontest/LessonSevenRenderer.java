@@ -18,6 +18,7 @@ import io.github.dantetam.android.AssetHelper;
 import io.github.dantetam.android.BitmapHelper;
 import io.github.dantetam.android.ColorTextureHelper;
 import io.github.dantetam.android.FileParser;
+import io.github.dantetam.android.MultiTextureHelper;
 import io.github.dantetam.android.RawResourceReader;
 import io.github.dantetam.android.ShaderHelper;
 import io.github.dantetam.android.TextureHelper;
@@ -105,6 +106,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
     private int textureAtlasNumberOfRowsHandle;
     private int textureAtlasOffsetHandle;
+
+    private int[] multiTexShaderHandles;
 
 	/** Additional info for cube generation. */
 	private int mLastRequestedCubeFactor;
@@ -284,7 +287,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
 
         // Initialize the accumulated rotation matrix
-        Matrix.setIdentityM(mAccumulatedRotation, 0);        
+        Matrix.setIdentityM(mAccumulatedRotation, 0);
+
+        MultiTextureHelper.init(mLessonSevenActivity);
 	}	
 		
 	@Override
@@ -376,15 +381,37 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         moveCameraToNextUnit();
 
-        Object[] renderObjects = worldHandler.totalWorldRepresentation();
-        List<BaseModel> modelsToRender = (List<BaseModel>) renderObjects[0];
-        List<RenderEntity> solidsToRender = (List<RenderEntity>) renderObjects[1];
+        //Shader setup. Make sure we don't calculate the uniform/attr handles over and over again
+        GLES20.glUseProgram(mDefaultShaderHandleWithAtlas);
+        mTextureUniformHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "u_Texture");
+        textureAtlasNumberOfRowsHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "numberOfRows0");
+        textureAtlasOffsetHandle = GLES20.glGetUniformLocation(mDefaultShaderHandleWithAtlas, "offset0");
+
+        GLES20.glUseProgram(mMultiTextureShader);
+        multiTexShaderHandles = new int[13];
+        multiTexShaderHandles[0] = GLES20.glGetUniformLocation(mMultiTextureShader, "blackTexture");
+        multiTexShaderHandles[3] = GLES20.glGetUniformLocation(mMultiTextureShader, "rTexture");
+        multiTexShaderHandles[6] = GLES20.glGetUniformLocation(mMultiTextureShader, "gTexture");
+        multiTexShaderHandles[9] = GLES20.glGetUniformLocation(mMultiTextureShader, "bTexture");
+        multiTexShaderHandles[12] = GLES20.glGetUniformLocation(mMultiTextureShader, "blendMap");
+        for (int i = 0; i <= 4; i++) {
+            if (i * 3 + 1 < multiTexShaderHandles.length) {
+                multiTexShaderHandles[i * 3 + 1] = GLES20.glGetUniformLocation(mMultiTextureShader, "numberOfRows" + i);
+                multiTexShaderHandles[i * 3 + 2] = GLES20.glGetUniformLocation(mMultiTextureShader, "offset" + i);
+            }
+        }
+
+        Object[] objects = worldHandler.totalWorldRepresentation();
+        List<BaseModel> modelsToRender = (List<BaseModel>) objects[0];
+        List<RenderEntity> solidsToRender = (List<RenderEntity>) objects[1];
+
         for (BaseModel model: modelsToRender) {
             renderModel(model);
         }
         for (RenderEntity renderEntity: solidsToRender) {
             renderSolid(renderEntity);
         }
+
         /*if (testSolid == null) {
             testSolid = new Solid("fbo", frameBufferHelper.fboTextureHandle);
         }
@@ -392,6 +419,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     }
 
     private RenderEntity testSolid;
+    private int[] texUnits = {GLES20.GL_TEXTURE0, GLES20.GL_TEXTURE1, GLES20.GL_TEXTURE2, GLES20.GL_TEXTURE3, GLES20.GL_TEXTURE4};
 
     private void renderModel(BaseModel model) {
         for (RenderEntity renderEntity: model.parts()) {
@@ -418,10 +446,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             activeShaderProgram = mDefaultShaderHandleWithAtlas;
             GLES20.glUseProgram(activeShaderProgram);
 
-            mTextureUniformHandle = GLES20.glGetUniformLocation(activeShaderProgram, "u_Texture");
             solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(activeShaderProgram, "a_TexCoordinate0");
-            textureAtlasNumberOfRowsHandle = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows0");
-            textureAtlasOffsetHandle = GLES20.glGetUniformLocation(activeShaderProgram, "offset0");
 
             GLES20.glUniform1f(textureAtlasNumberOfRowsHandle, solid.texture.numberOfRows);
             GLES20.glUniform2f(textureAtlasOffsetHandle, solid.texture.getTextureOffsetX(), solid.texture.getTextureOffsetY());
@@ -439,42 +464,32 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         else if (solid.texture instanceof MultiTexture) {
             MultiTexture mt = (MultiTexture) solid.texture;
 
-            activeShaderProgram = mMultiTextureShader;
-            GLES20.glUseProgram(activeShaderProgram);
-
-            int[] handles = new int[13];
-            handles[0] = GLES20.glGetUniformLocation(activeShaderProgram, "blackTexture");
-            handles[3] = GLES20.glGetUniformLocation(activeShaderProgram, "rTexture");
-            handles[6] = GLES20.glGetUniformLocation(activeShaderProgram, "gTexture");
-            handles[9] = GLES20.glGetUniformLocation(activeShaderProgram, "bTexture");
-            handles[12] = GLES20.glGetUniformLocation(activeShaderProgram, "blendMap");
-
-            int[] texUnits = {GLES20.GL_TEXTURE0, GLES20.GL_TEXTURE1, GLES20.GL_TEXTURE2, GLES20.GL_TEXTURE3, GLES20.GL_TEXTURE4};
-            int[] multiTexHandles = {mt.textureHandle, mt.textureHandle1, mt.textureHandle2, mt.textureHandle3};
+            int[] multiTexHandles = {mt.textureHandle, mt.textureHandle1, mt.textureHandle2, mt.textureHandle3, mt.blendMap};
             for (int i = 0; i < texUnits.length; i++) {
                 GLES20.glActiveTexture(texUnits[i]);
                 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, multiTexHandles[i]);
-                GLES20.glUniform1i(handles[i * 3], i);
-                handles[i*3 + 1] = GLES20.glGetUniformLocation(activeShaderProgram, "numberOfRows" + i);
-                handles[i*3 + 2] = GLES20.glGetUniformLocation(activeShaderProgram, "offset" + i);
+                GLES20.glUniform1i(multiTexShaderHandles[i * 3], i);
             }
+
+            activeShaderProgram = mMultiTextureShader;
+            GLES20.glUseProgram(activeShaderProgram);
 
             solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(activeShaderProgram, "a_TexCoordinate0");
 
-            GLES20.glUniform1f(handles[1], mt.numberOfRows);
-            GLES20.glUniform2f(handles[2],
+            GLES20.glUniform1f(multiTexShaderHandles[1], mt.numberOfRows);
+            GLES20.glUniform2f(multiTexShaderHandles[2],
                     mt.getTextureOffsetX(mt.textureAtlasIndex, mt.numberOfRows),
                     mt.getTextureOffsetY(mt.textureAtlasIndex, mt.numberOfRows));
-            GLES20.glUniform1f(handles[4], mt.numberOfRows1);
-            GLES20.glUniform2f(handles[5],
+            GLES20.glUniform1f(multiTexShaderHandles[4], mt.numberOfRows1);
+            GLES20.glUniform2f(multiTexShaderHandles[5],
                     mt.getTextureOffsetX(mt.textureAtlasIndex1, mt.numberOfRows1),
                     mt.getTextureOffsetY(mt.textureAtlasIndex1, mt.numberOfRows1));
-            GLES20.glUniform1f(handles[7], mt.numberOfRows2);
-            GLES20.glUniform2f(handles[8],
+            GLES20.glUniform1f(multiTexShaderHandles[7], mt.numberOfRows2);
+            GLES20.glUniform2f(multiTexShaderHandles[8],
                     mt.getTextureOffsetX(mt.textureAtlasIndex2, mt.numberOfRows2),
                     mt.getTextureOffsetY(mt.textureAtlasIndex2, mt.numberOfRows2));
-            GLES20.glUniform1f(handles[10], mt.numberOfRows3);
-            GLES20.glUniform2f(handles[11],
+            GLES20.glUniform1f(multiTexShaderHandles[10], mt.numberOfRows3);
+            GLES20.glUniform2f(multiTexShaderHandles[11],
                     mt.getTextureOffsetX(mt.textureAtlasIndex3, mt.numberOfRows3),
                     mt.getTextureOffsetY(mt.textureAtlasIndex3, mt.numberOfRows3));
         }

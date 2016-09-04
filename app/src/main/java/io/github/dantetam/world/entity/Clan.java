@@ -13,6 +13,9 @@ public class Clan {
     public ArtificialIntelligence ai;
 
     public String name;
+    public String adjective;
+    public List<String> cityNames;
+
     public Vector4f color, reducedColor;
     public Vector4f secondaryColor, reducedSecondaryColor;
     public List<Person> people;
@@ -33,6 +36,7 @@ public class Clan {
         people = new ArrayList<>();
         buildings = new ArrayList<>();
         cities = new ArrayList<>();
+        cityNames = new ArrayList<>();
         resources = new Inventory();
         //techTree = new TechTree(this);
     }

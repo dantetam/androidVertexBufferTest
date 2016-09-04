@@ -16,7 +16,7 @@ uniform sampler2D blendMap;
 
 varying vec3 v_Position;		// Interpolated position for this fragment.
 varying vec3 v_Normal;         	// Interpolated normal for this fragment.
-varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
+varying vec2 v_TexCoordinates[8];  // Interpolated texture coordinate per fragment.
 //varying vec4 v_Color;
   
 // The entry point for our fragment shader.
@@ -24,32 +24,32 @@ void main()
 {
     vec4 totalColor;
 
-    vec4 blendMapColor = texture2D(blendMap, v_TexCoordinate0);
-    vec2 tiledCoords = v_TexCoordinate;
+    vec4 blendMapColor = texture2D(blendMap, v_TexCoordinates[0]);
+    vec2 tiledCoords = v_TexCoordinates[0];
     float v = blendMapColor.r;
     if (v <= 1.0/8.0) {
-        totalColor = texture(texture0, tiledCoords);
+        totalColor = texture2D(texture0, tiledCoords);
     }
     else if (v <= 2.0/8.0) {
-        totalColor = texture(texture1, tiledCoords);
+        totalColor = texture2D(texture1, tiledCoords);
     }
     else if (v <= 3.0/8.0) {
-        totalColor = texture(texture2, tiledCoords);
+        totalColor = texture2D(texture2, tiledCoords);
     }
     else if (v <= 4.0/8.0) {
-        totalColor = texture(texture3, tiledCoords);
+        totalColor = texture2D(texture3, tiledCoords);
     }
     else if (v <= 5.0/8.0) {
-        totalColor = texture(texture4, tiledCoords);
+        totalColor = texture2D(texture4, tiledCoords);
     }
     else if (v <= 6.0/8.0) {
-        totalColor = texture(texture5, tiledCoords);
+        totalColor = texture2D(texture5, tiledCoords);
     }
     else if (v <= 7.0/8.0) {
-        totalColor = texture(texture6, tiledCoords);
+        totalColor = texture2D(texture6, tiledCoords);
     }
     else {
-        totalColor = texture(texture7, tiledCoords);
+        totalColor = texture2D(texture7, tiledCoords);
     }
 
     vec4 texel = totalColor;

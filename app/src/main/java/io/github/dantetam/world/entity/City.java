@@ -39,8 +39,9 @@ public class City extends Building {
     public HashMap<Tile, Boolean> workedTiles;
     public Collection<Tile> cityTiles;
 
-    public City(World world, Clan clan, BuildingType type, Collection<Tile> tiles) {
+    public City(World world, Clan clan, String name, BuildingType type, Collection<Tile> tiles) {
         super(world, clan, type);
+        this.name = name;
         workedTiles = new HashMap<>();
         cityTiles = tiles;
     }
