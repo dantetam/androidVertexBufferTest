@@ -78,64 +78,12 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 			
 			if (event.getAction() == MotionEvent.ACTION_MOVE)
 			{
-				if (mRenderer != null)
-				{
-					float deltaX = (x - mPreviousX) / mDensity / 2f;
-					float deltaY = (y - mPreviousY) / mDensity / 2f;
-                    /*if (mPreviousX == -1 || mPreviousY == -1) {
-                        deltaX = 0; deltaY = 0;
-                    }*/
-					
-					//mRenderer.mDeltaX += deltaX;
-					//mRenderer.mDeltaY += deltaY;
-
-                    if (mActivity.findViewById(R.id.tech_tree_screen) != null && mActivity.findViewById(R.id.tech_tree_screen).getVisibility() == View.VISIBLE) {
-                        int oldTechValueX = (int) playerClan.techTree.screenCenterX;
-                        playerClan.techTree.modifyX(-deltaX / 50f);
-                        int newTechValueX = (int) playerClan.techTree.screenCenterX;
-                        //System.out.println("updating " + oldTechValueX + " to " + newTechValueX);
-                        if (oldTechValueX != newTechValueX) {
-                            mActivity.updateTechMenu();
-                        }
-                    }
-                    else if (mousePicker != null) {
-                        mRenderer.camera.moveShift(-deltaX/10, 0, -deltaY/10);
-                        mRenderer.camera.pointShift(-deltaX/10, 0, -deltaY/10);
-
-                        Tile previousSelectedTile = mousePicker.getSelectedTile();
-                        Entity previousSelectedEntity = mousePicker.getSelectedEntity();
-                        mousePicker.update(x, y, mRenderer.getCombatMode());
-                        /*Vector3f v = mousePicker.rayCastHit;
-                        mousePicker.getTileClickedOn();*/
-                        if (mRenderer.getCombatMode()) {
-                            if (!mRenderer.worldHandler.world.combatWorld.checkTileWithinZone(mousePicker.getSelectedTile())) {
-                                mousePicker.changeSelectedTile(null);
-                                mousePicker.changeSelectedUnit(null);
-                            }
-                            if (previousSelectedEntity != null) {
-                                mousePicker.changeSelectedAction("CombatMove");
-                            }
-                        }
-
-                        if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
-                            //Force update here
-                            mRenderer.worldHandler.improvementResourceStatUi = null;
-                            mRenderer.worldHandler.improvementResourceProductionUi = null;
-                        }
-
-                        executeSelectedAction(mousePicker, previousSelectedTile, previousSelectedEntity);
-
-                        if (previousSelectedEntity != null) {
-                            if (previousSelectedEntity.actionPoints <= 0 || previousSelectedEntity.actionsQueue.size() > 0) {
-                                if (mActivity.turnStyle == LessonSevenActivity.AutomaticTurn.AUTOMATIC) {
-                                    mRenderer.moveCameraInFramesAfter = 8;
-                                    mRenderer.nextUnit = mRenderer.findNextUnit();
-                                }
-                            }
-                        }
-                    }
-				}
-			}	
+				processMoveAction(x, y);
+			}
+            else
+            {
+                //System.out.println(">>>>" + MotionEvent.actionToString(event.getAction()));
+            }
 			
 			mPreviousX = x;
 			mPreviousY = y;
@@ -147,6 +95,69 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 			return super.onTouchEvent(event);
 		}		
 	}
+
+    public void processMoveAction(float x, float y) {
+        if (mRenderer != null)
+        {
+            float deltaX = (x - mPreviousX) / mDensity / 2f;
+            float deltaY = (y - mPreviousY) / mDensity / 2f;
+                    /*if (mPreviousX == -1 || mPreviousY == -1) {
+                        deltaX = 0; deltaY = 0;
+                    }*/
+
+            //mRenderer.mDeltaX += deltaX;
+            //mRenderer.mDeltaY += deltaY;
+
+            if (mActivity.findViewById(R.id.tech_tree_screen) != null && mActivity.findViewById(R.id.tech_tree_screen).getVisibility() == View.VISIBLE) {
+                int oldTechValueX = (int) playerClan.techTree.screenCenterX;
+                int oldTechValueY = (int) playerClan.techTree.screenCenterY;
+                playerClan.techTree.modifyX(-deltaX / 50f);
+                playerClan.techTree.modifyY(deltaY / 30f);
+                int newTechValueX = (int) playerClan.techTree.screenCenterX;
+                int newTechValueY = (int) playerClan.techTree.screenCenterY;
+                //System.out.println("updating " + oldTechValueX + " to " + newTechValueX);
+                if (oldTechValueX != newTechValueX || oldTechValueY != newTechValueY) {
+                    mActivity.updateTechMenu();
+                }
+            }
+            else if (mousePicker != null) {
+                mRenderer.camera.moveShift(-deltaX/10, 0, -deltaY/10);
+                mRenderer.camera.pointShift(-deltaX/10, 0, -deltaY/10);
+
+                Tile previousSelectedTile = mousePicker.getSelectedTile();
+                Entity previousSelectedEntity = mousePicker.getSelectedEntity();
+                mousePicker.update(x, y, mRenderer.getCombatMode());
+                        /*Vector3f v = mousePicker.rayCastHit;
+                        mousePicker.getTileClickedOn();*/
+                if (mRenderer.getCombatMode()) {
+                    if (!mRenderer.worldHandler.world.combatWorld.checkTileWithinZone(mousePicker.getSelectedTile())) {
+                        mousePicker.changeSelectedTile(null);
+                        mousePicker.changeSelectedUnit(null);
+                    }
+                    if (previousSelectedEntity != null) {
+                        mousePicker.changeSelectedAction("CombatMove");
+                    }
+                }
+
+                if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
+                    //Force update here
+                    mRenderer.worldHandler.improvementResourceStatUi = null;
+                    mRenderer.worldHandler.improvementResourceProductionUi = null;
+                }
+
+                executeSelectedAction(mousePicker, previousSelectedTile, previousSelectedEntity);
+
+                if (previousSelectedEntity != null) {
+                    if (previousSelectedEntity.actionPoints <= 0 || previousSelectedEntity.actionsQueue.size() > 0) {
+                        if (mActivity.turnStyle == LessonSevenActivity.AutomaticTurn.AUTOMATIC) {
+                            mRenderer.moveCameraInFramesAfter = 8;
+                            mRenderer.nextUnit = mRenderer.findNextUnit();
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public void executeSelectedAction(MousePicker mousePicker, Tile previousSelectedTile, Entity previousSelectedEntity) {
         String action = mousePicker.getSelectedAction();

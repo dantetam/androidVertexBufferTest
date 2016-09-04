@@ -879,7 +879,7 @@ public class LessonSevenActivity extends Activity implements
                     GridLayout.spec(adjCoordY, GridLayout.LEFT),
                     GridLayout.spec(adjCoordX, GridLayout.BOTTOM));
             param.setGravity(Gravity.CENTER);
-            param.height = 150;
+            param.height = 250;
             param.width = 400;
             //param.height = GridLayout.LayoutParams.WRAP_CONTENT;
             //param.width = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -891,6 +891,10 @@ public class LessonSevenActivity extends Activity implements
             textView.setLayoutParams(param);
             techScreen.addView(textView);
 
+            /*textView.setFocusable(false);
+            textView.setFocusableInTouchMode(false);
+            textView.setClickable(false);*/
+
             if (!tech.researched()) {
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -899,6 +903,10 @@ public class LessonSevenActivity extends Activity implements
                         playerClan.techTree.beeline(tech);
                         updateTechMenu();
                     }
+
+                    /*public boolean onTouchEvent(MotionEvent event) {
+                        return false;
+                    }*/
                 });
             }
 

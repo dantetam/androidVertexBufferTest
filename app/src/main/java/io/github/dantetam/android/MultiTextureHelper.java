@@ -78,12 +78,12 @@ public class MultiTextureHelper {
         terrainTextures.put(Tile.Terrain.MOUNTAINS, tex2);
 
         List<Texture> tex3 = new ArrayList<>();
-        tex3.add(new MultiTexture("plains1", dryforest, desert, forest, ice, load(R.drawable.noise1)));
-        tex3.add(new MultiTexture("plains2", dryforest, desert, forest, ice, load(R.drawable.noise2)));
+        tex3.add(new MultiTexture("plains1", forest, forest, forest, ice, load(R.drawable.noise1)));
+        tex3.add(new MultiTexture("plains2", forest, forest, forest, ice, load(R.drawable.noise2)));
         terrainTextures.put(Tile.Terrain.PLAINS, tex3);
 
         List<Texture> tex4 = new ArrayList<>();
-        tex4.add(new MultiTexture("cliffs1", dryforest, desert, forest, ice, load(R.drawable.mountain_blendmap)));
+        tex4.add(new MultiTexture("cliffs1", desert, desert, desert, desert, load(R.drawable.mountain_blendmap)));
         terrainTextures.put(Tile.Terrain.CLIFFS, tex4);
 
         List<Texture> tex5 = new ArrayList<>();

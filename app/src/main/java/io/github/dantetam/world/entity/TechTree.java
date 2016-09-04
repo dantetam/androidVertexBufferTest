@@ -248,7 +248,13 @@ public class TechTree {
     public void modifyX(float dx) {
         screenCenterX += dx;
         if (screenCenterX < minX) screenCenterX = minX;
-        if (screenCenterX > maxX) screenCenterX = maxX;
+        if (screenCenterX > maxX - 2) screenCenterX = maxX - 2;
+    }
+
+    public void modifyY(float dy) {
+        screenCenterY += dy;
+        if (screenCenterY < minY) screenCenterY = minY;
+        if (screenCenterY > maxY - 3) screenCenterY = maxY - 3;
     }
 
 }
