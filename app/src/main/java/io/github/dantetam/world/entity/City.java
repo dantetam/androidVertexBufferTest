@@ -20,6 +20,8 @@ import io.github.dantetam.world.factory.PersonFactory;
  */
 public class City extends Building {
 
+    public Clan isCapital;
+
     public int population, freeWorkingPopulation;
     public int foodStoredForGrowth, foodNeededForGrowth;
 

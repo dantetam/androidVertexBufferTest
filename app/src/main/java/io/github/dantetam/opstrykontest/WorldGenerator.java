@@ -186,6 +186,7 @@ public class WorldGenerator {
             }
             //Building first = BuildingFactory.newBuilding(world, clan, BuildingType.ENCAMPMENT, clanHome, 1);
             City firstCity = BuildingFactory.newCity(world, clan, clanHome, territory);
+            firstCity.isCapital = clan;
             firstCity.pickBestTiles();
             //first.move(clanHome);
 

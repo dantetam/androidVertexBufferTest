@@ -59,8 +59,8 @@ public class WorldHandler {
 
     private ListModel tilesStored = null;
     //This block is to be rendered
-    public HashMap<Tile.Biome, Solid> storedBiomeTiles; //Store all the hexes grouped by biomes, this way each biome can be rendered with its own texture.
-    public HashMap<Tile.Terrain, Solid> storedTerrainTiles;
+    //public HashMap<Tile.Biome, Solid> storedBiomeTiles; //Store all the hexes grouped by biomes, this way each biome can be rendered with its own texture.
+    public HashMap<Integer, Solid> storedTerrainBiomeTiles;
     public HashMap<BuildingType, Solid> storedImprTilesTex;
     public TerrainTextureHelper terrainTextureHelper;
 
@@ -117,7 +117,8 @@ public class WorldHandler {
         this.assetHelper = assetHelper;
         this.chunkHelper = chunkHelper;
 
-        storedBiomeTiles = new HashMap<>();
+        //storedBiomeTiles = new HashMap<>();
+        storedTerrainBiomeTiles = new HashMap<>();
         storedTileVertexPositions = new HashMap<>();
         storedTileImprovements = new HashMap<>();
         storedTileUnits = new HashMap<>();
@@ -309,7 +310,7 @@ public class WorldHandler {
 
             storedImprTilesTex = new HashMap<>();
 
-            storedTerrainTiles = new HashMap<>();
+            //storedTerrainBiomeTiles = new HashMap<>();
 
             worldRepNeedsUpdate = false;
             //hexesShape = new HashMap<>();
@@ -318,48 +319,55 @@ public class WorldHandler {
             terrainTextureHelper = new TerrainTextureHelper(world);
             //HashMap<Tile.Biome, Integer> biomeTextures = terrainTextureHelper.getBiomeTextures();
 
-            float[][][] solidsOfBiomeData = new float[Tile.Biome.numBiomes][][];
+            float[][][] solidsOfBiomeData = new float[Tile.Terrain.numTerrains * Tile.Biome.numBiomes][][];
 
             //float minX = -9999, maxX = -9999, minZ = -9999, maxZ = -9999;
             //float extra = (world.arrayLengthX + 1) % 2 == 1 ? TRANSLATE_FACTORZ * -0.5f : 0;
 
+            int condIndex = 0;
             for (int i = 0; i < Tile.Terrain.numTerrains; i++) {
-                Condition cond = new Condition() {
-                    public int desiredType = 0;
-                    public void init(int i) {
-                        desiredType = i;
-                    }
-                    public boolean allowed(Object obj) {
-                        if (!(obj instanceof Tile)) return false;
-                        Tile t = (Tile) obj;
-                        //if (t.equals(mousePicker.selectedTile)) return false;
-                        return t.terrain.type == desiredType && t.improvement == null;
-                    }
-                };
-                cond.init(i);
-                //float[] color = {(int)(Math.random()*256f), (int)(Math.random()*256f), (int)(Math.random()*256f), 255f};
-                //System.out.println(color[0] + " " + color[1] + " " + color[2] + " " + color[3]);
-                //int textureHandle = ColorTextureHelper.loadColor(color);
+                for (int j = 0; j < Tile.Biome.numBiomes; j++) {
+                    Condition cond = new Condition() {
+                        public int desiredType = 0, desiredType2;
 
-                /*GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
-                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
-                GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);*/
+                        public void init(int i, int j) {
+                            desiredType = i;
+                            desiredType2 = j;
+                        }
 
-                //int textureHandle = TextureHelper.loadTexture("usb_android");
-                float[][] solidsOfBiome = generateHexes(world, tiles, cond);
-                /*for (int p = 0; p < solidsOfBiome[0].length; p += 3) {
+                        public boolean allowed(Object obj) {
+                            if (!(obj instanceof Tile)) return false;
+                            Tile t = (Tile) obj;
+                            //if (t.equals(mousePicker.selectedTile)) return false;
+                            return t.terrain.type == desiredType && t.biome.type == desiredType2 && t.improvement == null;
+                        }
+                    };
+                    cond.init(i, j);
+                    //float[] color = {(int)(Math.random()*256f), (int)(Math.random()*256f), (int)(Math.random()*256f), 255f};
+                    //System.out.println(color[0] + " " + color[1] + " " + color[2] + " " + color[3]);
+                    //int textureHandle = ColorTextureHelper.loadColor(color);
+
+                    /*GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);*/
+
+                    //int textureHandle = TextureHelper.loadTexture("usb_android");
+                    float[][] solidsOfBiome = generateHexes(world, tiles, cond);
+                    /*for (int p = 0; p < solidsOfBiome[0].length; p += 3) {
                     if (solidsOfBiome[0][p] < minX || minX == -9999) {
                         minX = solidsOfBiome[0][p];
                     }
                     if (solidsOfBiome[0][p] > maxX || maxX == -9999) {
                         maxX = solidsOfBiome[0][p];
                     }
-                }*/
-                solidsOfBiomeData[i] = solidsOfBiome;
-                //tilesStored.add(solidsOfBiome[0]);
-                //tilesStored.add(solidsOfBiome[1]);
+                    }*/
+                    solidsOfBiomeData[condIndex] = solidsOfBiome;
+                    //tilesStored.add(solidsOfBiome[0]);
+                    //tilesStored.add(solidsOfBiome[1]);
+                    condIndex++;
+                }
             }
 
             //Find the bounds of the solid being generated. Then pretend that the bounding box is the canvas.
@@ -368,7 +376,7 @@ public class WorldHandler {
             //the percentage of 'betweenness' is measured by (x-a) / (b-a).
             Vector3f maxBounds = new Vector3f((world.arrayLengthX + 1) * TRANSLATE_FACTORX, 0, 1 * TRANSLATE_FACTORZ);
             Vector3f minBounds = new Vector3f(-1 * TRANSLATE_FACTORX, 0, (- world.arrayLengthZ - 1) * TRANSLATE_FACTORZ);
-            for (int i = 0; i < Tile.Biome.numBiomes; i++) {
+            for (int i = 0; i < solidsOfBiomeData.length; i++) {
                 float[][] solidsOfBiome = solidsOfBiomeData[i];
                 for (int p = 0; p < solidsOfBiome[0].length / 3; p++) {
                     //Vector3f vertex = new Vector3f(solidsOfBiome[0][p], solidsOfBiome[0][p+1], solidsOfBiome[0][p+2]);
@@ -379,33 +387,39 @@ public class WorldHandler {
                 }
             }
 
+            condIndex = 0;
             for (int i = 0; i < Tile.Terrain.numTerrains; i++) {
-                Tile.Terrain terrain = Tile.Terrain.fromInt(i);
-                //float[] color = Tile.Biome.colorFromInt(i);
-                //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
-                //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
+                for (int j = 0; j < Tile.Biome.numBiomes; j++) {
+                    Tile.Terrain terrain = Tile.Terrain.fromInt(i);
+                    Tile.Biome biome = Tile.Biome.fromInt(j);
+                    //float[] color = Tile.Biome.colorFromInt(i);
+                    //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
+                    //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
 
-                /*int blackTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.dryforest_texture), mActivity, R.drawable.dryforest_texture);
-                int rTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.desert_texture), mActivity, R.drawable.desert_texture);
-                int gTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.forest_texture), mActivity, R.drawable.forest_texture);
-                int bTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.ice_texture), mActivity, R.drawable.ice_texture);
-                int blendMap;
-                if (i % 2 == 0) {
-                    blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.blend_map), mActivity, R.drawable.blend_map);
-                }
-                else {
-                    blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.blend_map_2), mActivity, R.drawable.blend_map_2);
-                }
-                //Solid solid = ObjLoader.loadSolid(new Texture("biomeHandle" + i, textureHandle, 2, i % 4), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
-                MultiTexture multiTexture = new MultiTexture("biomeHandleMulti" + i, blackTexture, rTexture, gTexture, bTexture, blendMap);
-                Solid solid = ObjLoader.loadSolid(multiTexture, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
-                storedTerrainTiles.put(terrain, solid);
-                tilesStored.add(solid);*/
+                    /*int blackTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.dryforest_texture), mActivity, R.drawable.dryforest_texture);
+                    int rTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.desert_texture), mActivity, R.drawable.desert_texture);
+                    int gTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.forest_texture), mActivity, R.drawable.forest_texture);
+                    int bTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.ice_texture), mActivity, R.drawable.ice_texture);
+                    int blendMap;
+                    if (i % 2 == 0) {
+                        blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.blend_map), mActivity, R.drawable.blend_map);
+                    }
+                    else {
+                        blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.blend_map_2), mActivity, R.drawable.blend_map_2);
+                    }
+                    //Solid solid = ObjLoader.loadSolid(new Texture("biomeHandle" + i, textureHandle, 2, i % 4), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
+                    MultiTexture multiTexture = new MultiTexture("biomeHandleMulti" + i, blackTexture, rTexture, gTexture, bTexture, blendMap);
+                    Solid solid = ObjLoader.loadSolid(multiTexture, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
+                    storedTerrainTiles.put(terrain, solid);
+                    tilesStored.add(solid);*/
 
-                List<Texture> texture = MultiTextureHelper.terrainTextures.get(terrain);
-                Solid solid = ObjLoader.loadSolid(texture.get((int)(Math.random()*texture.size())), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
-                storedTerrainTiles.put(terrain, solid);
-                tilesStored.add(solid);
+                    List<Texture> texture = MultiTextureHelper.getTerrainBiomeTexture(terrain, biome);
+                    Solid solid = ObjLoader.loadSolid(texture.get((int) (Math.random() * texture.size())), "worldBiomeTiles" + condIndex, solidsOfBiomeData[condIndex]);
+                    storedTerrainBiomeTiles.put(i * Tile.Biome.numBiomes + j, solid);
+                    tilesStored.add(solid);
+
+                    condIndex++;
+                }
             }
 
             float[][][] imprData = new float[BuildingXmlParser.globalAllTypes.keySet().size()][][];

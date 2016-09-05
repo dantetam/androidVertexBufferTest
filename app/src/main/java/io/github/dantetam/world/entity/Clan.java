@@ -30,6 +30,8 @@ public class Clan {
     public List<City> cities;
     public Inventory resources;
 
+    public int totalGold;
+
     public Clan(String n) {
         name = n;
         ai = new ArtificialIntelligence(this);
@@ -38,6 +40,7 @@ public class Clan {
         cities = new ArrayList<>();
         cityNames = new ArrayList<>();
         resources = new Inventory();
+        totalGold = 0;
         //techTree = new TechTree(this);
     }
 

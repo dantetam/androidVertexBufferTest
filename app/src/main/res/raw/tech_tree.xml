@@ -25,7 +25,9 @@
         <tech name="Env. Control" workNeeded="40" requirement="Agriculture" building="Greenhouse" unit="Xenotactical">
             <tech name="Xenolab" workNeeded="100" requirement="Xenoscience" resource="Glass Fire" unit="Xenoadapter">
                 <tech name="Ecology" workNeeded="150">
+                    <tech name="Transcendence" workNeeded="500">
 
+                    </tech>
                 </tech>
                 <tech name="Sustainability" workNeeded="150">
 

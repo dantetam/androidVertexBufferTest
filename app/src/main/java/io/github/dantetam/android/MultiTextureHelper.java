@@ -13,6 +13,8 @@ import io.github.dantetam.opstrykontest.Condition;
 import io.github.dantetam.opstrykontest.LessonSevenActivity;
 import io.github.dantetam.opstrykontest.R;
 import io.github.dantetam.world.entity.BuildingType;
+import io.github.dantetam.world.entity.ItemType;
+import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.xml.BuildingXmlParser;
 
@@ -23,7 +25,10 @@ public class MultiTextureHelper {
 
     private static LessonSevenActivity mActivity;
     public static HashMap<String, List<Texture>> buildingTextures;
-    public static HashMap<Tile.Terrain, List<Texture>> terrainTextures;
+
+    public static HashMap<TerrainBiomePair, List<Texture>> terrainBiomeTextures;
+
+    public static HashMap<ItemType, List<Texture>> resourceTextures;
 
     public static boolean init = false;
     public static void init(LessonSevenActivity activity) {
@@ -33,9 +38,11 @@ public class MultiTextureHelper {
         init = true;
         mActivity = activity;
         buildingTextures = new HashMap<>();
-        terrainTextures = new HashMap<>();
+        terrainBiomeTextures = new HashMap<>();
+        resourceTextures = new HashMap<>();
         initBuildings();
-        initTerrain();
+        initTerrainAndBiome();
+        initResources();
     }
 
     public static int load(int resourceId) {
@@ -52,47 +59,82 @@ public class MultiTextureHelper {
 
         List<Texture> tex = new ArrayList<>();
         tex.add(new MultiTexture("farm", dryforest, desert, forest, ice, blendMap));
-        buildingTextures.put("Farm", tex);
+        buildingTextures.put("farm", tex);
     }
 
-    public static void initTerrain() {
+    public static void initTerrainAndBiome() {
         int dryforest = load(R.drawable.dryforest_texture);
         int desert = load(R.drawable.desert_texture);
         int forest = load(R.drawable.forest_texture);
         int ice = load(R.drawable.ice_texture);
 
+        for (Tile.Biome biome: Tile.Biome.values()) {
+            List<Texture> tex = new ArrayList<>();
+            tex.add(new MultiTexture("hill1", dryforest, desert, forest, ice, load(R.drawable.hill_blendmap)));
+            tex.add(new MultiTexture("hill2", dryforest, desert, forest, ice, load(R.drawable.hill_blendmap_2)));
+            terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.HILLS, biome), tex);
+
+            List<Texture> tex1 = new ArrayList<>();
+            tex1.add(new MultiTexture("island1", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island2", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island3", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island4", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
+            terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.ISLANDS, biome), tex1);
+
+            List<Texture> tex2 = new ArrayList<>();
+            tex2.add(new MultiTexture("mountain1", dryforest, desert, forest, ice, load(R.drawable.mountain_blendmap)));
+            terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.MOUNTAINS, biome), tex2);
+
+            List<Texture> tex3 = new ArrayList<>();
+            tex3.add(new MultiTexture("plains1", forest, forest, forest, ice, load(R.drawable.noise1)));
+            tex3.add(new MultiTexture("plains2", forest, forest, forest, ice, load(R.drawable.noise2)));
+            terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.PLAINS, biome), tex3);
+
+            List<Texture> tex4 = new ArrayList<>();
+            tex4.add(new MultiTexture("cliffs1", desert, desert, desert, desert, load(R.drawable.mountain_blendmap)));
+            terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.CLIFFS, biome), tex4);
+
+            List<Texture> tex5 = new ArrayList<>();
+            tex5.add(new Texture("shallow_sea1", load(R.drawable.deep_sea_texture)));
+            terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.SHALLOW_SEA, biome), tex5);
+
+            List<Texture> tex6 = new ArrayList<>();
+            tex6.add(new Texture("deep_sea1", load(R.drawable.deep_sea_texture)));
+            terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.DEEP_SEA, biome), tex6);
+        }
+    }
+
+    public static void initResources() {
+        int extromass = load(R.drawable.extromass_blendmap);
+
         List<Texture> tex = new ArrayList<>();
-        tex.add(new MultiTexture("hill1", dryforest, desert, forest, ice, load(R.drawable.hill_blendmap)));
-        tex.add(new MultiTexture("hill2", dryforest, desert, forest, ice, load(R.drawable.hill_blendmap_2)));
-        terrainTextures.put(Tile.Terrain.HILLS, tex);
+        tex.add(new MultiTexture("extromass", extromass, extromass, extromass, extromass, extromass));
+        resourceTextures.put(TechTree.itemTypes.get("Extromass"), tex);
+    }
 
-        List<Texture> tex1 = new ArrayList<>();
-        tex1.add(new MultiTexture("island1", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
-        tex1.add(new MultiTexture("island2", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
-        tex1.add(new MultiTexture("island3", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
-        tex1.add(new MultiTexture("island4", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
-        terrainTextures.put(Tile.Terrain.ISLANDS, tex1);
+    public static class TerrainBiomePair {
+        public Tile.Terrain terrain;
+        public Tile.Biome biome;
+        public TerrainBiomePair(Tile.Terrain t, Tile.Biome b) {
+            terrain = t;
+            biome = b;
+        }
+        public int hashCode() {
+            return terrain.type * 17 + biome.type;
+        }
+        public boolean equals(Object other) {
+            if (!(other instanceof TerrainBiomePair)) {
+                return false;
+            }
+            TerrainBiomePair pair = (TerrainBiomePair) other;
+            return terrain.equals(pair.terrain) && biome.equals(pair.biome);
+        }
+    }
 
-        List<Texture> tex2 = new ArrayList<>();
-        tex2.add(new MultiTexture("mountain1", dryforest, desert, forest, ice, load(R.drawable.mountain_blendmap)));
-        terrainTextures.put(Tile.Terrain.MOUNTAINS, tex2);
-
-        List<Texture> tex3 = new ArrayList<>();
-        tex3.add(new MultiTexture("plains1", forest, forest, forest, ice, load(R.drawable.noise1)));
-        tex3.add(new MultiTexture("plains2", forest, forest, forest, ice, load(R.drawable.noise2)));
-        terrainTextures.put(Tile.Terrain.PLAINS, tex3);
-
-        List<Texture> tex4 = new ArrayList<>();
-        tex4.add(new MultiTexture("cliffs1", desert, desert, desert, desert, load(R.drawable.mountain_blendmap)));
-        terrainTextures.put(Tile.Terrain.CLIFFS, tex4);
-
-        List<Texture> tex5 = new ArrayList<>();
-        tex5.add(new Texture("shallow_sea1", load(R.drawable.deep_sea_texture)));
-        terrainTextures.put(Tile.Terrain.SHALLOW_SEA, tex5);
-
-        List<Texture> tex6 = new ArrayList<>();
-        tex6.add(new Texture("deep_sea1", load(R.drawable.deep_sea_texture)));
-        terrainTextures.put(Tile.Terrain.DEEP_SEA, tex6);
+    public static List<Texture> getTerrainBiomeTexture(Tile.Terrain terrain, Tile.Biome biome) {
+        TerrainBiomePair pair = new TerrainBiomePair(terrain, biome);
+        //System.out.println(Tile.Terrain.nameFromInt(terrain.type) + " " + Tile.Biome.nameFromInt(biome.type) + " " + terrainBiomeTextures.get(pair));
+        return terrainBiomeTextures.get(pair);
     }
 
 }

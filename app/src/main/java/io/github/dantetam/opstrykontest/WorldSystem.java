@@ -22,6 +22,9 @@ public class WorldSystem {
     public static WorldPathfinder worldPathfinder;
 
     public int turnNumber = 0;
+    public int turnLimit = 200;
+
+    public boolean victory = false;
 
     public Clan playerClan;
 
@@ -89,12 +92,20 @@ public class WorldSystem {
         }
 
         //When done processing all actions, calculate new scores.
+        Clan maxClan = null;
+        int maxScore = -1;
         for (Clan c: world.getClans()) {
             int score = ArtificialIntelligence.calcClanTotalScore(world, c);
             calculatedClanScores.put(c, score);
+            if (maxClan == null || score > maxScore) {
+                maxClan = c;
+                maxScore = score;
+            }
         }
         turnNumber++;
         System.err.println("#turns passed: " + turnNumber);
+
+        checkVictoryConditions(maxClan);
     }
 
     public static int getGlobalScience(Clan clan) {
@@ -115,7 +126,7 @@ public class WorldSystem {
         for (Person person: clan.people) {
             person.executeQueue();
         }
-        int totalScience = 0, totalGold = 0;
+        //int totalScience = 0, totalGold = 0;
         Inventory totalResources = new Inventory();
         for (City city: clan.cities) {
             //Determine yield here? Don't separate process.
@@ -161,9 +172,49 @@ public class WorldSystem {
                 //TODO: Do something with this?
             }
 
-            totalGold += yield[3];
+            clan.totalGold += yield[3];
 
             totalResources.addAnotherInventory(inventory);
+        }
+    }
+
+    private void checkVictoryConditions(Clan maxScoreClan) {
+        List<Clan> clans = world.getClans();
+
+        for (Clan c: clans) {
+            int capitalCount = 0;
+            for (City city: c.cities) {
+                if (city.isCapital != null) {
+                    capitalCount++;
+                }
+            }
+            if (capitalCount == clans.size()) {
+                victory = true;
+                System.err.println(c.ai.leaderName + " of the " + c.name + " has won a conquest victory!");
+                return;
+            }
+        }
+
+        for (Clan c: clans) {
+            if (c.techTree.researchedTech.get("Transcendence") != null) {
+                victory = true;
+                System.err.println(c.ai.leaderName + " of the " + c.name + " has won a transcendence victory!");
+                return;
+            }
+        }
+
+        for (Clan c: clans) {
+            if (c.totalGold > 5000) {
+                victory = true;
+                System.err.println(c.ai.leaderName + " of the " + c.name + " has won a business victory!");
+                return;
+            }
+        }
+
+        if (turnNumber == turnLimit) {
+            victory = true;
+            System.err.println(maxScoreClan.ai.leaderName + " of the " + maxScoreClan.name + " has won a time victory!");
+            return;
         }
     }
 
