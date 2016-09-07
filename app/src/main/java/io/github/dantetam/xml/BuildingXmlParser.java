@@ -29,6 +29,7 @@ import java.util.List;
 import io.github.dantetam.world.entity.BuildingTree;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.Clan;
+import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.UnitTree;
 
 /**
@@ -123,6 +124,12 @@ public class BuildingXmlParser {
                             textureName = textureName.split("/")[0];
                         }
                         buildingType.textureName = textureName;
+                    }
+
+                    String isWonder = xpp.getAttributeValue(null, "wonder");
+                    if (isWonder != null) {
+                        buildingType.wonder = true;
+                        TechTree.wonders.put(buildingType, true);
                     }
 
                     tree.buildingTypes.put(buildingName, buildingType);

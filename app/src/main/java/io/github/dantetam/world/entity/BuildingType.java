@@ -11,6 +11,8 @@ public class BuildingType {
     public int workNeeded;
     public int food, production, science, capital, happiness, health;
 
+    public boolean wonder = false;
+
     public String resourceNeeded;
 
     public String modelName, textureName;

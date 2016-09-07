@@ -215,25 +215,19 @@ public class MousePicker {
 
     //Reverse of the transformation in the previous function. Although that was the reverse,
     //so I guess this is the "normal" forward directed transformation?
-    public Vector2f calculateScreenPos(float posX, float posZ)
+    public Vector2f calculateGraphicsScreenPos(float posX, float posZ)
     {
-        //Create a new transformation matrix for the different position
-        float[] transformMatrix = createTransformMatrix(new Vector3f(posX, 0, posZ), 0, 0, 0, 1);
+        float[] viewProj = new float[16];
+        Matrix.multiplyMM(viewProj, 0, projMatrix, 0, viewMatrix, 0);
+        //transform world to clipping coordinates
+        float[] point = new float[4];
+        Matrix.multiplyMV(point, 0, viewProj, 0, new float[]{posX, 0, posZ, 1}, 0);
 
-        float[] worldPosition = new float[4];
-        Matrix.multiplyMV(worldPosition, 0, transformMatrix, 0, new float[]{posX, 0, posZ, 1.0f}, 0);
-
-        float[] viewTimesWorld = new float[4];
-        Matrix.multiplyMV(viewTimesWorld, 0, viewMatrix, 0, worldPosition, 0);
-
-        float[] glPosition = new float[4];
-
-        //equivalent: glPosition = projectionMatrix * (viewMatrix * worldPosition);
-        Matrix.multiplyMV(glPosition, 0, projMatrix, 0, viewTimesWorld, 0);
-        Vector2f normalized = new Vector2f(glPosition[0], glPosition[1]);
-
-        //Reverse: y = 2x/width - 1, reverse's inverse: (width/2)(y + 1) = x
-        return new Vector2f((normalized.x + 1f)*width/2f,(normalized.y + 1f)*height/2f);
+        int winX = (int) Math.round(((point[0] + 1.0) / 2.0) * width);
+        //we calculate -point3D.getY() because the screen Y axis is
+        //oriented top->down
+        int winY = (int) Math.round(((1.0 - point[2]) / 2.0) * height);
+        return new Vector2f(winX, winY);
     }
 
     /**

@@ -35,6 +35,8 @@ public class TechTree {
     public HashMap<ItemType, Boolean> allowedHarvestable;
     public HashMap<Ability, Boolean> specialAbilities;
 
+    public static HashMap<BuildingType, Boolean> wonders = new HashMap<>();
+
     //These values are used for interfaces that render the tech tree GUI
     //presumably as a GridLayout.
     public float screenCenterX, screenCenterY;

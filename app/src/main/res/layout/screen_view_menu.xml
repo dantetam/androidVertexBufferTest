@@ -329,6 +329,17 @@
             android:contentDescription="@string/combat_next_turn"
             android:visibility="invisible"
             android:onClick="onClickNextCombatTurn" />
+        <Button
+            android:id="@+id/city_menu"
+            android:text=""
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_widthPercent="10%"
+            app:layout_heightPercent="10%"
+            app:layout_marginTopPercent="90%"
+            app:layout_marginLeftPercent="60%"
+            android:contentDescription=""
+            android:visibility="visible" />
     </android.support.percent.PercentRelativeLayout>
         <!--
         <ImageButton

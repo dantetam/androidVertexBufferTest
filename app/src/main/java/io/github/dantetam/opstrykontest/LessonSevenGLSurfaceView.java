@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 
 import io.github.dantetam.opengl.MousePicker;
+import io.github.dantetam.utilmath.Vector2f;
+import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.Clan;
@@ -155,6 +157,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         }
                     }
                 }
+
+                updateGui();
             }
         }
     }
@@ -423,6 +427,14 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 });
             }
         }
+    }
+
+    public void updateGui() {
+        Vector3f storedCityPosition = mRenderer.worldHandler.storedTileVertexPositions.get(playerClan.cities.get(0).location());
+        Vector2f guiPosition = mousePicker.calculateGraphicsScreenPos(storedCityPosition.x, storedCityPosition.z);
+        mActivity.findViewById(R.id.city_menu).setX(guiPosition.x);
+        mActivity.findViewById(R.id.city_menu).setY(guiPosition.y);
+        System.out.println(guiPosition.toString());
     }
 
     // Hides superclass method.

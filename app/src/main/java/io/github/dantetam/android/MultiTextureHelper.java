@@ -66,40 +66,72 @@ public class MultiTextureHelper {
         int dryforest = load(R.drawable.dryforest_texture);
         int desert = load(R.drawable.desert_texture);
         int forest = load(R.drawable.forest_texture);
+        int rainforest = load(R.drawable.extromass_blendmap);
         int ice = load(R.drawable.ice_texture);
 
+        int shallowSea = load(R.drawable.shallow_sea_texture);
+        int deepSea = load(R.drawable.deep_sea_texture);
+
+        int[] baseColorTextures;
+
         for (Tile.Biome biome: Tile.Biome.values()) {
+            switch (biome) {
+                case SEA:
+                    baseColorTextures = new int[]{deepSea, deepSea, shallowSea, shallowSea};
+                    break;
+                case ICE:
+                    baseColorTextures = new int[]{ice, ice, forest, shallowSea};
+                    break;
+                case TUNDRA:
+                    baseColorTextures = new int[]{dryforest, ice, forest, shallowSea};
+                    break;
+                case DESERT:
+                    baseColorTextures = new int[]{desert, desert, desert, desert};
+                    break;
+                case STEPPE:
+                    baseColorTextures = new int[]{dryforest, dryforest, forest, shallowSea};
+                    break;
+                case FOREST:
+                    baseColorTextures = new int[]{forest, forest, rainforest, shallowSea};
+                    break;
+                case RAINFOREST:
+                    baseColorTextures = new int[]{rainforest, rainforest, rainforest, shallowSea};
+                    break;
+                default:
+                    baseColorTextures = new int[]{};
+                    break;
+            }
             List<Texture> tex = new ArrayList<>();
-            tex.add(new MultiTexture("hill1", dryforest, desert, forest, ice, load(R.drawable.hill_blendmap)));
-            tex.add(new MultiTexture("hill2", dryforest, desert, forest, ice, load(R.drawable.hill_blendmap_2)));
+            tex.add(new MultiTexture("hill1", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.hill_blendmap)));
+            tex.add(new MultiTexture("hill2", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.hill_blendmap_2)));
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.HILLS, biome), tex);
 
             List<Texture> tex1 = new ArrayList<>();
-            tex1.add(new MultiTexture("island1", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
-            tex1.add(new MultiTexture("island2", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
-            tex1.add(new MultiTexture("island3", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
-            tex1.add(new MultiTexture("island4", load(R.drawable.shallow_sea_texture), dryforest, forest, ice, load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island1", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island2", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island3", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island4", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.ISLANDS, biome), tex1);
 
             List<Texture> tex2 = new ArrayList<>();
-            tex2.add(new MultiTexture("mountain1", dryforest, desert, forest, ice, load(R.drawable.mountain_blendmap)));
+            tex2.add(new MultiTexture("mountain1", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.mountain_blendmap)));
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.MOUNTAINS, biome), tex2);
 
             List<Texture> tex3 = new ArrayList<>();
-            tex3.add(new MultiTexture("plains1", forest, forest, forest, ice, load(R.drawable.noise1)));
-            tex3.add(new MultiTexture("plains2", forest, forest, forest, ice, load(R.drawable.noise2)));
+            tex3.add(new MultiTexture("plains1", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.noise1)));
+            tex3.add(new MultiTexture("plains2", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.noise2)));
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.PLAINS, biome), tex3);
 
             List<Texture> tex4 = new ArrayList<>();
-            tex4.add(new MultiTexture("cliffs1", desert, desert, desert, desert, load(R.drawable.mountain_blendmap)));
+            tex4.add(new MultiTexture("cliffs1", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.mountain_blendmap)));
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.CLIFFS, biome), tex4);
 
             List<Texture> tex5 = new ArrayList<>();
-            tex5.add(new Texture("shallow_sea1", load(R.drawable.deep_sea_texture)));
+            tex5.add(new MultiTexture("shallow_sea1", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.deep_sea_texture)));
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.SHALLOW_SEA, biome), tex5);
 
             List<Texture> tex6 = new ArrayList<>();
-            tex6.add(new Texture("deep_sea1", load(R.drawable.deep_sea_texture)));
+            tex6.add(new MultiTexture("deep_sea1", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.deep_sea_texture)));
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.DEEP_SEA, biome), tex6);
         }
     }

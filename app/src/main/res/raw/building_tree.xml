@@ -87,4 +87,7 @@ yields are in the form "food/production/science/capital/happiness/health"
 
         </impr>
     </impr>
+    <impr name="Ancients" workNeeded="100" yield="0/2/0/0/3/3" tech="Landing" model="ruins1" wonder="true">
+
+    </impr>
 </imprroot>

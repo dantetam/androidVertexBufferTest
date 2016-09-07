@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.github.dantetam.world.action.Action;
+import io.github.dantetam.world.action.BuildingAction;
 import io.github.dantetam.world.entity.ArtificialIntelligence;
 import io.github.dantetam.world.entity.Building;
+import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.Inventory;
@@ -162,6 +164,10 @@ public class WorldSystem {
                     target.workCompleted += production;
                     if (target.workCompleted >= target.workNeeded) {
                         city.actionsQueue.remove(0);
+                        if (target.buildingType.wonder) {
+                            endAllWondersInQueue(target.buildingType);
+                            System.err.println(clan.ai.leaderName + " has built the " + target.buildingType.name);
+                        }
                     }
                 }
             }
@@ -215,6 +221,23 @@ public class WorldSystem {
             victory = true;
             System.err.println(maxScoreClan.ai.leaderName + " of the " + maxScoreClan.name + " has won a time victory!");
             return;
+        }
+    }
+
+    private void endAllWondersInQueue(BuildingType wonderBuilt) {
+        List<Clan> clans = world.getClans();
+        for (Clan clan: clans) {
+            for (City city: clan.cities) {
+                for (Action action: city.actionsQueue) {
+                    if (action.type == Action.ActionType.QUEUE_BUILD_UNIT) {
+                        Building queuedBuilding = (Building) action.data;
+                        if (queuedBuilding.buildingType == wonderBuilt) {
+                            clan.totalGold += queuedBuilding.workCompleted;
+                            city.actionsQueue.remove(action);
+                        }
+                    }
+                }
+            }
         }
     }
 

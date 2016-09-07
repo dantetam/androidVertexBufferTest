@@ -105,14 +105,26 @@ public class TechXmlParser {
                     String unlockRevealResource = xpp.getAttributeValue(null, "resource_reveal");
                     String unlockHarvestResource = xpp.getAttributeValue(null, "resource_harvest");
                     String unlockUnit = xpp.getAttributeValue(null, "unit");
-                    String unlockUnits = xpp.getAttributeValue(null, "units");
+                    //String unlockUnits = xpp.getAttributeValue(null, "units");
                     String unlockSpecialAbility = xpp.getAttributeValue(null, "specialAbility");
 
                     if (unlockBuilding != null) {
-                        if (tree.clan.buildingTree.buildingTypes.get(unlockBuilding) == null) {
-                            System.err.println("Could not find building " + unlockBuilding);
+                        String[] buildingsToUnlock;
+                        if (unlockBuilding.contains("/")) {
+                            buildingsToUnlock = unlockBuilding.split("/");
+                            for (String stringy: buildingsToUnlock) {
+                                if (tree.clan.unitTree.personTypes.get(stringy) == null) {
+                                    System.err.println("Could not find building " + stringy + " within " + unlockUnit);
+                                }
+                                newTech.unlockedBuildings.add(tree.clan.buildingTree.buildingTypes.get(stringy));
+                            }
                         }
-                        newTech.unlockedBuildings.add(tree.clan.buildingTree.buildingTypes.get(unlockBuilding));
+                        else {
+                            if (tree.clan.unitTree.personTypes.get(unlockBuilding) == null) {
+                                System.err.println("Could not find building " + unlockBuilding);
+                            }
+                            newTech.unlockedBuildings.add(tree.clan.buildingTree.buildingTypes.get(unlockBuilding));
+                        }
                     }
                     if (unlockRevealResource != null) {
                         if (TechTree.itemTypes.get(unlockHarvestResource) == null) {
