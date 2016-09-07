@@ -30,7 +30,7 @@ public class Clan {
     public List<City> cities;
     public Inventory resources;
 
-    public int totalGold;
+    public int totalGold, totalCulture;
 
     public Clan(String n) {
         name = n;

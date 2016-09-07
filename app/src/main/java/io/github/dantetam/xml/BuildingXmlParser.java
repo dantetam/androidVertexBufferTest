@@ -101,7 +101,7 @@ public class BuildingXmlParser {
                     int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));
 
                     BuildingType buildingType = new BuildingType(buildingName,
-                            yieldStats[0], yieldStats[1], yieldStats[2], yieldStats[3], yieldStats[4], yieldStats[5]);
+                            new int[]{yieldStats[0], yieldStats[1], yieldStats[2], yieldStats[3], yieldStats[4], yieldStats[5], yieldStats[6]});
                     buildingType.workNeeded = workNeeded;
 
                     String resourceNeeded = xpp.getAttributeValue(null, "resource");

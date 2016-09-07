@@ -17,12 +17,25 @@ public class Tile implements Traversable<Tile> {
     public List<Item> resources;
     public List<Entity> occupants;
 
-    public int food, production, science, capital;
-    public void initBaseResources(int a, int b, int c, int d) {
-        food = a; production = b; science = c; capital = d;
+    private int[] yield;
+    public int[] yield() {return yield;}
+    //public int food, production, science, capital, happiness, health, culture;
+    public int food() {return yield[0];}
+    public int production() {return yield[1];}
+    public int science() {return yield[2];}
+    public int capital() {return yield[3];}
+    public int happiness() {return yield[4];}
+    public int health() {return yield[5];}
+    public int culture() {return yield[6];}
+
+    //public int food, production, science, capital;
+    public void initBaseResources(int... base) {
+        yield = base;
     }
-    public void addBaseResources(int a, int b, int c, int d) {
-        food += a; production += b; science += c; capital += d;
+    public void addBaseResources(int... add) {
+        for (int i = 0; i < add.length; i++) {
+            yield[i] += add[i];
+        }
     }
     public int numSpaces;
 

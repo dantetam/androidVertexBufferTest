@@ -21,32 +21,32 @@ public class TileFactory {
         tile.biome = biome;
         tile.terrain = terrain;
         //TODO: tile.feature
-        tile.initBaseResources(1,1,0,0);
+        tile.initBaseResources(1,1,0,0,0,0,0);
         int numSpaces = 3;
         switch (biome) {
             case SEA:
-                tile.addBaseResources(0,0,0,1);
+                tile.addBaseResources(0,0,0,1,0,0,0);
                 numSpaces = 6;
                 break;
             case ICE:
-                tile.addBaseResources(-1,1,0,0);
+                tile.addBaseResources(-1,1,0,0,0,0,0);
                 break;
             case TUNDRA:
-                tile.addBaseResources(0,1,0,0);
+                tile.addBaseResources(0,1,0,0,0,0,0);
                 break;
             case DESERT:
-                tile.addBaseResources(-1,1,0,1);
+                tile.addBaseResources(-1,1,0,1,0,0,0);
                 break;
             case STEPPE:
-                tile.addBaseResources(1,0,0,0);
+                tile.addBaseResources(1,0,0,0,0,0,0);
                 numSpaces = 4;
                 break;
             case FOREST:
-                tile.addBaseResources(1,1,0,0);
+                tile.addBaseResources(1,1,0,0,0,0,0);
                 numSpaces = 4;
                 break;
             case RAINFOREST:
-                tile.addBaseResources(1,0,1,1);
+                tile.addBaseResources(1,0,1,1,0,0,0);
                 break;
             default:
                 System.err.println("Invalid biome");
@@ -58,22 +58,22 @@ public class TileFactory {
             case DEEP_SEA:
                 break;
             case ISLANDS:
-                tile.addBaseResources(0,0,1,1);
+                tile.addBaseResources(0,0,1,1,0,0,0);
                 numSpaces -= 2;
                 break;
             case PLAINS:
-                tile.addBaseResources(1,0,0,0);
+                tile.addBaseResources(1,0,0,0,0,0,0);
                 numSpaces += 2;
                 break;
             case HILLS:
-                tile.addBaseResources(0,1,0,0);
+                tile.addBaseResources(0,1,0,0,0,0,0);
                 break;
             case CLIFFS:
-                tile.addBaseResources(0,1,0,0);
+                tile.addBaseResources(0,1,0,0,0,0,0);
                 numSpaces -= 1;
                 break;
             case MOUNTAINS:
-                tile.addBaseResources(-1,1,1,0);
+                tile.addBaseResources(-1,1,1,0,0,0,0);
                 numSpaces -= 2;
                 break;
             default:

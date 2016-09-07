@@ -104,11 +104,10 @@ public class Building extends Entity {
     }
 
     public int[] getYieldNoModules() {
-        int[] yields = {buildingType.food, buildingType.production, buildingType.science, buildingType.capital};
-        return yields;
+        return buildingType.getYield();
     }
     public int[] getYieldWithModules() {
-        int[] yields = {buildingType.food, buildingType.production, buildingType.science, buildingType.capital};
+        int[] yields = buildingType.getYield();
         if (modules != null) {
             for (Building module : modules) {
                 if (module != null) {

@@ -221,6 +221,18 @@ public class World {
         return landTiles;
     }
 
+    public List<Tile> getValidExpansionTiles(City c) {
+        List<Tile> expansion = new ArrayList<>();
+        for (Tile cityTile: c.cityTiles) {
+            for (Tile neighbor: cityTile.neighbors()) {
+                if (getTileOwner(neighbor) == null) {
+                    expansion.add(neighbor);
+                }
+            }
+        }
+        return expansion;
+    }
+
     //Note that the order doesn't matter here, but other classes will rely on this.
     public static final int[][] neighborDirections = {
             {0, -1}, {-1, 0}, {-1, 1},

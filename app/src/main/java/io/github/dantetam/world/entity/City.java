@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,17 +26,32 @@ public class City extends Building {
     public int population, freeWorkingPopulation;
     public int foodStoredForGrowth, foodNeededForGrowth;
 
-    //where generateCityFoodData[n] represents the needed food to go from n to n+1
-    private static int[] generateCityFoodData = null;
-    public static int[] generateCityFoodData() {
-        if (generateCityFoodData == null) {
-            generateCityFoodData = new int[30];
-            generateCityFoodData[0] = 0;
-            for (int i = 1; i < generateCityFoodData.length; i++) {
-                generateCityFoodData[i] = 10 + i*5;
+    //where generateCityFoodData[n] represents the needed food to go from n-1 to n
+    private static int[] cityFoodData = null;
+    public static int[] cityFoodData() {
+        if (cityFoodData == null) {
+            cityFoodData = new int[30];
+            cityFoodData[0] = 0;
+            for (int i = 1; i < cityFoodData.length; i++) {
+                cityFoodData[i] = 10 + i*5;
             }
         }
-        return generateCityFoodData;
+        return cityFoodData;
+    }
+
+    public int tilesExpanded = 0;
+    public int cultureStoredForExpansion, cultureNeededForExpansion;
+
+    private static int[] cultureExpansionData = null;
+    public static int[] cultureExpansionData() {
+        if (cultureExpansionData == null) {
+            cultureExpansionData = new int[30];
+            cultureExpansionData[0] = 0;
+            for (int i = 1; i < cultureExpansionData.length; i++) {
+                cultureExpansionData[i] = 10 + (int)Math.pow(i, 1.1)*5;
+            }
+        }
+        return cultureExpansionData;
     }
 
     public HashMap<Tile, Boolean> workedTiles;
@@ -137,22 +153,21 @@ public class City extends Building {
             pickBestTiles();
         }
 
-        double food = 0, production = 0, science = 0, capital = 0;
+        double[] totalTileYield = new double[7];
         Inventory inventory = new Inventory();
 
         HashMap<ItemType, Boolean> allowedHarvestable = clan.techTree.allowedHarvestable;
 
         for (Tile tile: workedTiles.keySet()) {
-            food += tile.food;
-            production += tile.production;
-            science += tile.science;
-            capital += tile.capital;
+            int[] tileYield = evalTile(tile);
+            for (int i = 0; i < tileYield.length; i++) {
+                totalTileYield[i] += tileYield[i];
+            }
             if (tile.improvement != null) {
                 int[] imprYield = tile.improvement.getYieldWithModules();
-                food += imprYield[0];
-                production += imprYield[1];
-                science += imprYield[2];
-                capital += imprYield[3];
+                for (int i = 0; i < imprYield.length; i++) {
+                    tileYield[i] += imprYield[i];
+                }
                 for (Recipe recipe: tile.improvement.recipes) {
                     for (Item item: recipe.output) {
                         if (allowedHarvestable.containsKey(item)) {
@@ -166,23 +181,30 @@ public class City extends Building {
 
         //lastYield = new int[]{(int)food, (int)production, (int)science, (int)capital};
 
-        return new Object[]{new int[]{(int)food, (int)production, (int)science, (int)capital}, inventory};
+        int[] intYield = new int[totalTileYield.length];
+        for (int i = 0; i < intYield.length; i++) {
+            intYield[i] = (int) totalTileYield[i];
+        }
+
+        return new Object[]{intYield, inventory};
     }
 
     public static int[] evalTile(Tile tile) {
-        int[] yield = new int[4];
-        yield[0] += tile.food;
-        yield[1] += tile.production;
-        yield[2] += tile.science;
-        yield[3] += tile.capital;
+        int[] calcYield = tile.yield();
         if (tile.improvement != null) {
             int[] imprYield = tile.improvement.getYieldWithModules();
-            yield[0] += imprYield[0];
-            yield[1] += imprYield[1];
-            yield[2] += imprYield[2];
-            yield[3] += imprYield[3];
+            for (int i = 0; i < imprYield.length; i++) {
+                calcYield[i] += imprYield[i];
+            }
+            /*for (Recipe recipe: tile.improvement.recipes) {
+                for (Item item: recipe.output) {
+                    if (allowedHarvestable.containsKey(item)) {
+                        clan.resources.addToInventory(item);
+                    }
+                }
+            }*/
         }
-        return yield;
+        return calcYield;
     }
 
     public void addTileToTerritory(Tile t) {
@@ -200,12 +222,7 @@ public class City extends Building {
             }
         });
         for (Tile tile: cityTiles) {
-            double score = 0;
-            score += tile.food*3 + tile.production*2 + tile.science + tile.capital;
-            if (tile.resources.size() > 0) {
-                score += tile.resources.size()*3;
-            }
-            scoreTiles.put(tile, score);
+            scoreTiles.put(tile, scoreTile(tile));
         }
         Map<Tile, Double> sorted = OpstrykonUtil.sortMapByValue(scoreTiles);
         Set<Tile> tilesToPick = sorted.keySet();
@@ -221,6 +238,19 @@ public class City extends Building {
         /*for (Map.Entry<Tile, Double> en: sorted.entrySet()) {
             System.out.println(en.getKey().toString() + " " + en.getValue());
         }*/
+    }
+
+    public double scoreTile(Tile tile) {
+        double score = 0;
+        int[] weights = {3, 3, 2, 1, 1, 1, 1};
+        int[] tileYield = tile.yield();
+        for (int i = 0; i < tileYield.length; i++) {
+            score += weights[i] * tileYield[i];
+        }
+        if (tile.resources.size() > 0) {
+            score += tile.resources.size()*3;
+        }
+        return score;
     }
 
     public boolean pickTile(Tile t) {
@@ -239,6 +269,20 @@ public class City extends Building {
             return true;
         }
         return false;
+    }
+
+    public void expandToBestTile() {
+        LinkedHashMap<Tile, Double> tilesByScore = new LinkedHashMap<>();
+
+        List<Tile> expansion = world.getValidExpansionTiles(this);
+        for (Tile tile: expansion) {
+            tilesByScore.put(tile, scoreTile(tile));
+        }
+
+        Map<Tile, Double> sorted = OpstrykonUtil.sortMapByValue(tilesByScore);
+        Set<Tile> tilesToPick = sorted.keySet();
+
+        cityTiles.add(tilesToPick.iterator().next());
     }
 
 }

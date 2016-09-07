@@ -129,10 +129,10 @@ public class ArtificialIntelligence {
             turnsNeeded = (int) Math.ceil(workNeeded / 8d);
         }
 
-        double foodPerTurn = (strategy.get("Growth") / 10d + 0.5d) * buildingType.food;
-        double prodPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * buildingType.production;
-        double sciPerTurn = (strategy.get("Science") / 10d + 0.5d) * buildingType.science;
-        double capPerTurn = (strategy.get("Gold") / 10d + 0.5d) * buildingType.capital;
+        double foodPerTurn = (strategy.get("Growth") / 10d + 0.5d) * buildingType.food();
+        double prodPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * buildingType.production();
+        double sciPerTurn = (strategy.get("Science") / 10d + 0.5d) * buildingType.science();
+        double capPerTurn = (strategy.get("Gold") / 10d + 0.5d) * buildingType.capital();
         int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn) * 10d);
 
         double roiTurns = workNeeded / scorePerTenTurns;
@@ -195,20 +195,20 @@ public class ArtificialIntelligence {
         //Building + impr score
         for (Building building: clan.buildings) {
             BuildingType buildingType = building.buildingType;
-            int foodPerTurn = buildingType.food;
-            int prodPerTurn = buildingType.production;
-            int sciPerTurn = buildingType.science;
-            int capPerTurn = buildingType.capital;
+            int foodPerTurn = buildingType.food();
+            int prodPerTurn = buildingType.production();
+            int sciPerTurn = buildingType.science();
+            int capPerTurn = buildingType.capital();
             score += foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn;
         }
         for (Tile tile: world.getAllValidTiles()) {
             if (tile.improvement == null) {
                 if (world.getTileOwner(tile).equals(clan) || world.getTileInfluence(tile).equals(clan)) {
                     BuildingType buildingType = tile.improvement.buildingType;
-                    int foodPerTurn = buildingType.food;
-                    int prodPerTurn = buildingType.production;
-                    int sciPerTurn = buildingType.science;
-                    int capPerTurn = buildingType.capital;
+                    int foodPerTurn = buildingType.food();
+                    int prodPerTurn = buildingType.production();
+                    int sciPerTurn = buildingType.science();
+                    int capPerTurn = buildingType.capital();
                     score += foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn;
                 }
             }

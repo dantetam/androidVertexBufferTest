@@ -9,7 +9,16 @@ import java.util.HashMap;
 public class BuildingType {
     public String name;
     public int workNeeded;
-    public int food, production, science, capital, happiness, health;
+    private int[] yield;
+    public int[] yield() {return yield;}
+    //public int food, production, science, capital, happiness, health, culture;
+    public int food() {return yield[0];}
+    public int production() {return yield[1];}
+    public int science() {return yield[2];}
+    public int capital() {return yield[3];}
+    public int happiness() {return yield[4];}
+    public int health() {return yield[5];}
+    public int culture() {return yield[6];}
 
     public boolean wonder = false;
 
@@ -29,14 +38,13 @@ public class BuildingType {
         newType.PersonType(a, d, m, f, s);
         types.put(name, newType);
     }*/
-    public BuildingType(String n, int f, int p, int s, int c, int ha, int he) {
+    public BuildingType(String n, int[] data) {
         name = n;
-        food = f; production = p; science = s; capital = c;
-        happiness = ha; health = he;
+        yield = data;
     }
 
     public int[] getYield() {
-        return new int[]{food, production, science, capital};
+        return yield;
     }
 
     public boolean equals(Object other) {

@@ -508,7 +508,7 @@ public class WorldHandler {
     public void createTerritoryRep(MapModel model, List<Tile> tiles) {
         Object[] data = world.aggregateOwners(tiles);
         HashMap<Clan, List<Tile>> owners = (HashMap<Clan, List<Tile>>) data[0];
-        HashMap<Clan, List<Tile>> influencers = (HashMap<Clan, List<Tile>>) data[1];
+        //HashMap<Clan, List<Tile>> influencers = (HashMap<Clan, List<Tile>>) data[1];
         List<Tile> neutral = (List<Tile>) data[2];
 
         for (int i = 0; i < borderMarkers.length; i++) {
@@ -524,11 +524,11 @@ public class WorldHandler {
                     clanTiles.add(t);
                 }
             }
-            for (Tile t: influencers.get(clan)) {
+            /*for (Tile t: influencers.get(clan)) {
                 if (t != null) {
                     clanTiles.add(t);
                 }
-            }
+            }*/
             //List<Tile> clanTiles = en.getValue();
 
             int numVertices = 0;
@@ -1008,25 +1008,25 @@ public class WorldHandler {
             previousTileScience = new HashMap<>();
             previousTileGold = new HashMap<>();
             for (Tile tile: world.getAllValidTiles()) {
-                previousTileFood.put(tile, tile.food);
-                previousTileProduction.put(tile, tile.production);
-                previousTileScience.put(tile, tile.science);
-                previousTileGold.put(tile, tile.capital);
+                previousTileFood.put(tile, tile.food());
+                previousTileProduction.put(tile, tile.production());
+                previousTileScience.put(tile, tile.science());
+                previousTileGold.put(tile, tile.capital());
             }
             updateTileYieldRep(world.getAllValidTiles());
         }
         else {
             List<Tile> tilesToUpdate = new ArrayList<>();
             for (Tile tile: world.getAllValidTiles()) {
-                if (previousTileFood.get(tile) != tile.food ||
-                        previousTileProduction.get(tile) != tile.production ||
-                        previousTileScience.get(tile) != tile.science ||
-                        previousTileGold.get(tile) != tile.capital) {
+                if (previousTileFood.get(tile) != tile.food() ||
+                        previousTileProduction.get(tile) != tile.production() ||
+                        previousTileScience.get(tile) != tile.science() ||
+                        previousTileGold.get(tile) != tile.capital()) {
                     tilesToUpdate.add(tile);
-                    previousTileFood.put(tile, tile.food);
-                    previousTileProduction.put(tile, tile.production);
-                    previousTileScience.put(tile, tile.science);
-                    previousTileGold.put(tile, tile.capital);
+                    previousTileFood.put(tile, tile.food());
+                    previousTileProduction.put(tile, tile.production());
+                    previousTileScience.put(tile, tile.science());
+                    previousTileGold.put(tile, tile.capital());
                 }
             }
             updateTileYieldRep(tilesToUpdate);
@@ -1065,25 +1065,25 @@ public class WorldHandler {
 
         Condition condition1 = new Condition() {
             public boolean allowedTile(Tile t) {
-                return t.food > 0;
+                return t.food() > 0;
             }
         };
 
         Condition condition2 = new Condition() {
             public boolean allowedTile(Tile t) {
-                return t.production > 0;
+                return t.production() > 0;
             }
         };
 
         Condition condition3 = new Condition() {
             public boolean allowedTile(Tile t) {
-                return t.science > 0;
+                return t.science() > 0;
             }
         };
 
         Condition condition4 = new Condition() {
             public boolean allowedTile(Tile t) {
-                return t.capital > 0;
+                return t.capital() > 0;
             }
         };
 
@@ -1311,13 +1311,13 @@ public class WorldHandler {
                 }
                 public boolean allowedTile(Tile tile) {
                     if (type == 0) {
-                        return tile.food == num;
+                        return tile.food() == num;
                     } else if (type == 1) {
-                        return tile.production == num;
+                        return tile.production() == num;
                     } else if (type == 2) {
-                        return tile.science == num;
+                        return tile.science() == num;
                     } else if (type == 3) {
-                        return tile.capital == num;
+                        return tile.capital() == num;
                     } else if (type == 4) {
                         return tile.improvement != null && tile.improvement.buildingType.name.equals("City") && ((City) tile.improvement).population == num;
                     } else {

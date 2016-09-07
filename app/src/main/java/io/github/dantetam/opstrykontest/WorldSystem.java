@@ -137,14 +137,22 @@ public class WorldSystem {
             Inventory inventory = (Inventory) objects[1];
 
             int workingPopulation = city.population - city.freeWorkingPopulation;
-            city.foodStoredForGrowth += yield[0] - workingPopulation;
+            city.foodStoredForGrowth += yield[0] - workingPopulation * 2 - city.freeWorkingPopulation * 1;
             if (city.foodStoredForGrowth >= city.foodNeededForGrowth) {
                 city.foodStoredForGrowth -= city.foodNeededForGrowth;
 
                 city.population++; city.freeWorkingPopulation++;
-                city.foodNeededForGrowth = City.generateCityFoodData()[city.population];
+                city.foodNeededForGrowth = City.cityFoodData()[city.population];
             }
 
+            city.cultureStoredForExpansion += yield[6];
+            if (city.cultureStoredForExpansion >= city.cultureNeededForExpansion) {
+                city.cultureStoredForExpansion -= city.cultureNeededForExpansion;
+
+                city.tilesExpanded++;
+                city.expandToBestTile();
+                city.cultureStoredForExpansion = City.cityFoodData()[city.tilesExpanded];
+            }
             if (city.actionsQueue.size() > 0) {
                 Action action = city.actionsQueue.get(0);
                 int production = yield[1];
@@ -179,6 +187,7 @@ public class WorldSystem {
             }
 
             clan.totalGold += yield[3];
+            clan.totalCulture += yield[6];
 
             totalResources.addAnotherInventory(inventory);
         }
