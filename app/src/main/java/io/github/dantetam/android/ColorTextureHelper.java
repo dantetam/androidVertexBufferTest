@@ -89,4 +89,8 @@ public class ColorTextureHelper {
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
+    public static int intFromColorVector(Vector4f v) {
+        return intFromColor((int) (v.x * 255f), (int) (v.y * 255f), (int) (v.z * 255f), 255);
+    }
+
 }

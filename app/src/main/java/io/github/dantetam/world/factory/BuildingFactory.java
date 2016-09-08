@@ -23,6 +23,7 @@ public class BuildingFactory {
         System.out.println(clan.buildingTree.buildingTypes.get("City"));*/
 
         String cityName;
+        //System.out.println(clan.cities.size() + "<>" + clan.cityNames.size());
         if (clan.cities.size() < clan.cityNames.size()) {
             cityName = clan.cityNames.get(clan.cities.size());
         }

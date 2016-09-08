@@ -174,7 +174,6 @@
 
     <clan name="Settlers" ruler="Austin" adjective="Settler">
         <citynames>
-            <cityname name="Colony"></cityname>
             <cityname name="New Destiny"></cityname>
             <cityname name="Horizon"></cityname>
             <cityname name="Brave New World"></cityname>

@@ -113,7 +113,7 @@ public class WorldGenerator {
 
     private List<Clan> makeClans() {
         List<Clan> clans = new ArrayList<>();
-        int num = world.getAllValidTiles().size() / 20;
+        int num = world.getAllValidTiles().size() / 35;
         for (int i = 0; i < num; i++) {
             Clan clan;
             if (i == 0) {

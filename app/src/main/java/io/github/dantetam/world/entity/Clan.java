@@ -88,7 +88,7 @@ public class Clan {
     public boolean equals(Object obj) {
         if (!(obj instanceof Clan)) return false;
         Clan clan = (Clan) obj;
-        return name.equals(clan.name) && color.equals(clan.color) ;
+        return name.equals(clan.name) && color.equals(clan.color);
     }
 
     /*public int hashCode() {

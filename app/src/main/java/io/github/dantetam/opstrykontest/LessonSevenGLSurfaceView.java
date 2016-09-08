@@ -1,35 +1,45 @@
 package io.github.dantetam.opstrykontest;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.opengl.GLSurfaceView;
-import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
 
+import io.github.dantetam.android.ColorTextureHelper;
 import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.utilmath.Vector3f;
+import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.Building;
+import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.action.CombatAction;
 import io.github.dantetam.world.entity.CombatWorld;
 import io.github.dantetam.world.entity.Entity;
+import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.Person;
+import io.github.dantetam.world.entity.PersonType;
+import io.github.dantetam.world.entity.Tech;
 import io.github.dantetam.world.entity.Tile;
 
 public class LessonSevenGLSurfaceView extends GLSurfaceView
 {
     private LessonSevenActivity mActivity;
 	private LessonSevenRenderer mRenderer;
-	
+    private GuiHandler guiHandler;
+
 	// Offsets for touch events	 
     private float mPreviousX = -1;
     private float mPreviousY = -1;
@@ -52,10 +62,11 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 		super(context, attrs);
 	}
 
-    public void init(LessonSevenActivity activity, MousePicker mousePicker, Clan playerClan) {
+    public void init(LessonSevenActivity activity, MousePicker mousePicker, GuiHandler handler, Clan playerClan) {
         mActivity = activity;
         this.mousePicker = mousePicker;
         this.playerClan = playerClan;
+        guiHandler = handler;
         mRenderer = mActivity.mRenderer;
         //playerClan = mRenderer.worldSystem.playerClan;
     }
@@ -163,7 +174,8 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     }
                 }
 
-                updateGui();
+                guiHandler.updateGui(mousePicker);
+
             }
         }
     }
@@ -430,41 +442,6 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         "which lists the tech you can research.",
                         "This uses your total science output."
                 });
-            }
-        }
-    }
-
-    public HashMap<City, TextView> cityGui = new HashMap<>();
-
-    public void updateGui() {
-        //System.out.println(storedCityPosition.toString() + " " + guiPosition.toString());
-        for (Clan clan: mRenderer.worldHandler.world.getClans()) {
-            for (City city: clan.cities) {
-                View cityView = cityGui.get(city);
-
-                Vector3f storedCityPosition = mRenderer.worldHandler.storedTileVertexPositions.get(city.location());
-                Vector2f guiPosition = mousePicker.calculateGraphicsScreenPos(storedCityPosition.x, storedCityPosition.z);
-                if (cityView != null) {
-                    cityView.setX(guiPosition.x - cityView.getWidth() / 2);
-                    cityView.setY(guiPosition.y - cityView.getHeight() / 2);
-                } else {
-                    TextView view = new TextView(mActivity);
-
-                    //PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) view.getLayoutParams();
-                    // This will currently return null, if it was not constructed from XML.
-                    PercentLayoutHelper.PercentLayoutInfo info = new PercentLayoutHelper.PercentLayoutInfo();
-                    info.widthPercent = 0.15f;
-                    info.heightPercent = 0.10f;
-                    view.requestLayout();
-
-                    view.setText(city.name);
-                    cityGui.put(city, view);
-
-                    view.setX(guiPosition.x - cityView.getWidth() / 2);
-                    view.setY(guiPosition.y - cityView.getHeight() / 2);
-
-                    System.out.println(view.getWidth() + " " + view.getHeight());
-                }
             }
         }
     }

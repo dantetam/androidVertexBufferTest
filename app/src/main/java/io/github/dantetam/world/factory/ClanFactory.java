@@ -137,6 +137,7 @@ public class ClanFactory {
         clan.reducedSecondaryColor = secondaryColor.scaled(0.7f);
         clan.clanType = clanType;
         clan.clanFaction = clanFaction;
+        clan.cityNames = aiType.cityNames;
         return clan;
     }
 

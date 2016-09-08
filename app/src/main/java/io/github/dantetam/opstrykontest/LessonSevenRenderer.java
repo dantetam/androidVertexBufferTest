@@ -150,6 +150,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     public static final int WORLD_LENGTH = 10;
 
     public ChunkHelper chunkHelper;
+    public GuiHandler guiHandler;
 
     private int WIDTH = 0, HEIGHT = 0;
 
@@ -195,12 +196,13 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         worldHandler = new WorldHandler(mLessonSevenActivity, this, mousePicker, assetHelper, chunkHelper, WORLD_LENGTH, WORLD_LENGTH);
 
         chunkHelper.init(worldHandler.world);
+        guiHandler = new GuiHandler(mLessonSevenActivity, this);
 
         ColorTextureHelper.init(mLessonSevenActivity);
 
         worldSystem = new WorldSystem(worldHandler);
 
-        mGlSurfaceView.init(mLessonSevenActivity, mousePicker, worldSystem.playerClan);
+        mGlSurfaceView.init(mLessonSevenActivity, mousePicker, guiHandler, worldSystem.playerClan);
 
         InfoHelper.init(mLessonSevenActivity);
 
