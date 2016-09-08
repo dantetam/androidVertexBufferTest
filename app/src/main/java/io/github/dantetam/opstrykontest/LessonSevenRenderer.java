@@ -518,7 +518,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
             solid.mTextureCoordinateHandle = GLES20.glGetAttribLocation(activeShaderProgram, "a_TexCoordinate0");
 
             for (int i = 0; i < emt.twentyFourArray.length / 3; i++) {
-                GLES20.glUniform1f(handles[i*3 + 1], emt.twentyFourArray[i*3 + 1]);
+                GLES20.glUniform1f(handles[i * 3 + 1], emt.twentyFourArray[i*3 + 1]);
                 GLES20.glUniform2f(handles[i * 3 + 2],
                         Texture.getTextureOffsetX(emt.twentyFourArray[i * 3 + 2], emt.twentyFourArray[i * 3 + 1]),
                         Texture.getTextureOffsetY(emt.twentyFourArray[i * 3 + 2], emt.twentyFourArray[i * 3 + 1]));

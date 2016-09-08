@@ -50,11 +50,12 @@ public class BuildingFactory {
 
         //city.inventorySpace = 10;
 
-        int[] cityGrowthData = City.generateCityFoodData();
         city.population = 1;
         city.freeWorkingPopulation = 1;
-        city.foodNeededForGrowth = cityGrowthData[city.population];
+        city.foodNeededForGrowth = City.cityFoodData()[city.population];
         city.foodStoredForGrowth = 0;
+        city.cultureNeededForExpansion = City.cultureExpansionData()[city.tilesExpanded];
+        city.cultureStoredForExpansion = 0;
 
         city.move(tile);
         return city;

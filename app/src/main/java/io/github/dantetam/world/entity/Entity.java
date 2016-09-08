@@ -175,4 +175,8 @@ public abstract class Entity {
         return true;
     }*/
 
+    public int hashCode() {
+        return id;
+    }
+
 }

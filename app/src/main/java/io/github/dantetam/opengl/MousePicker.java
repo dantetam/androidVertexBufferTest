@@ -217,16 +217,20 @@ public class MousePicker {
     //so I guess this is the "normal" forward directed transformation?
     public Vector2f calculateGraphicsScreenPos(float posX, float posZ)
     {
-        float[] viewProj = new float[16];
-        Matrix.multiplyMM(viewProj, 0, projMatrix, 0, viewMatrix, 0);
         //transform world to clipping coordinates
         float[] point = new float[4];
-        Matrix.multiplyMV(point, 0, viewProj, 0, new float[]{posX, 0, posZ, 1}, 0);
+        Matrix.multiplyMV(point, 0, viewMatrix, 0, new float[]{posX, 0, posZ, 1}, 0);
+
+        Matrix.multiplyMV(point, 0, projMatrix, 0, point, 0);
+
+        point[0] /= point[3];
+        point[1] /= point[3];
+        point[2] /= point[3];
 
         int winX = (int) Math.round(((point[0] + 1.0) / 2.0) * width);
         //we calculate -point3D.getY() because the screen Y axis is
         //oriented top->down
-        int winY = (int) Math.round(((1.0 - point[2]) / 2.0) * height);
+        int winY = (int) Math.round(((1.0 - point[1]) / 2.0) * height);
         return new Vector2f(winX, winY);
     }
 

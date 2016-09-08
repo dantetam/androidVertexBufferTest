@@ -46,8 +46,7 @@ public class City extends Building {
     public static int[] cultureExpansionData() {
         if (cultureExpansionData == null) {
             cultureExpansionData = new int[30];
-            cultureExpansionData[0] = 0;
-            for (int i = 1; i < cultureExpansionData.length; i++) {
+            for (int i = 0; i < cultureExpansionData.length; i++) {
                 cultureExpansionData[i] = 10 + (int)Math.pow(i, 1.1)*5;
             }
         }
@@ -271,6 +270,11 @@ public class City extends Building {
         return false;
     }
 
+    public void freeAllTiles() {
+        workedTiles.clear();
+        freeWorkingPopulation = population;
+    }
+
     public void expandToBestTile() {
         LinkedHashMap<Tile, Double> tilesByScore = new LinkedHashMap<>();
 
@@ -282,7 +286,9 @@ public class City extends Building {
         Map<Tile, Double> sorted = OpstrykonUtil.sortMapByValue(tilesByScore);
         Set<Tile> tilesToPick = sorted.keySet();
 
-        cityTiles.add(tilesToPick.iterator().next());
+        Tile bestTile = tilesToPick.iterator().next();
+        cityTiles.add(bestTile);
+        world.setTileOwner(bestTile, clan);
     }
 
 }

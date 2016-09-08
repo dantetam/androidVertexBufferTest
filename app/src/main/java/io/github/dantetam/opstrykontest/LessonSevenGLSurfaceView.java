@@ -2,17 +2,22 @@ package io.github.dantetam.opstrykontest;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import java.util.HashMap;
 
 import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.Building;
+import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.action.CombatAction;
 import io.github.dantetam.world.entity.CombatWorld;
@@ -123,7 +128,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 }
             }
             else if (mousePicker != null) {
-                mRenderer.camera.moveShift(-deltaX/10, 0, -deltaY/10);
+                mRenderer.camera.moveShift(-deltaX / 10, 0, -deltaY / 10);
                 mRenderer.camera.pointShift(-deltaX/10, 0, -deltaY/10);
 
                 Tile previousSelectedTile = mousePicker.getSelectedTile();
@@ -429,12 +434,39 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         }
     }
 
+    public HashMap<City, TextView> cityGui = new HashMap<>();
+
     public void updateGui() {
-        Vector3f storedCityPosition = mRenderer.worldHandler.storedTileVertexPositions.get(playerClan.cities.get(0).location());
-        Vector2f guiPosition = mousePicker.calculateGraphicsScreenPos(storedCityPosition.x, storedCityPosition.z);
-        mActivity.findViewById(R.id.city_menu).setX(guiPosition.x);
-        mActivity.findViewById(R.id.city_menu).setY(guiPosition.y);
-        System.out.println(guiPosition.toString());
+        //System.out.println(storedCityPosition.toString() + " " + guiPosition.toString());
+        for (Clan clan: mRenderer.worldHandler.world.getClans()) {
+            for (City city: clan.cities) {
+                View cityView = cityGui.get(city);
+
+                Vector3f storedCityPosition = mRenderer.worldHandler.storedTileVertexPositions.get(city.location());
+                Vector2f guiPosition = mousePicker.calculateGraphicsScreenPos(storedCityPosition.x, storedCityPosition.z);
+                if (cityView != null) {
+                    cityView.setX(guiPosition.x - cityView.getWidth() / 2);
+                    cityView.setY(guiPosition.y - cityView.getHeight() / 2);
+                } else {
+                    TextView view = new TextView(mActivity);
+
+                    //PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) view.getLayoutParams();
+                    // This will currently return null, if it was not constructed from XML.
+                    PercentLayoutHelper.PercentLayoutInfo info = new PercentLayoutHelper.PercentLayoutInfo();
+                    info.widthPercent = 0.15f;
+                    info.heightPercent = 0.10f;
+                    view.requestLayout();
+
+                    view.setText(city.name);
+                    cityGui.put(city, view);
+
+                    view.setX(guiPosition.x - cityView.getWidth() / 2);
+                    view.setY(guiPosition.y - cityView.getHeight() / 2);
+
+                    System.out.println(view.getWidth() + " " + view.getHeight());
+                }
+            }
+        }
     }
 
     // Hides superclass method.
