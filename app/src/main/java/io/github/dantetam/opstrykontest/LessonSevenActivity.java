@@ -261,6 +261,8 @@ public class LessonSevenActivity extends Activity implements
 
         //mLessonSevenActivity.setContentView(R.layout.test_custom_gamescreen);
 
+        linearLayout.removeAllViews();
+
         for (final Clan clan : clans) {
             Button clanView = new Button(this);
             clanView.setHeight(120);
@@ -293,16 +295,44 @@ public class LessonSevenActivity extends Activity implements
 
         //((Button) findViewById(R.id.clan_title)).setText(c.ai.leaderName + " of the " + c.name);
 
+        clanMenu.removeAllViews();
+
         Button clanView = new Button(this);
         clanView.setHeight(120);
         clanView.setText(c.ai.leaderName + " of the " + c.name);
         clanMenu.addView(clanView);
 
-        clanView = new Button(this);
-        clanView.setHeight(120);
-        clanView.setText("Hello, what brings you here today?");
-        clanMenu.addView(clanView);
+        if (mRenderer.worldSystem.atWar(playerClan, c)) {
+            clanView = new Button(this);
+            clanView.setHeight(120);
+            clanView.setText("We have no business with bloodthirsty tyrants such as yourself.");
+            clanMenu.addView(clanView);
+        }
+        else {
+            clanView = new Button(this);
+            clanView.setHeight(120);
+            clanView.setText("Hello, what brings you here today?");
+            clanMenu.addView(clanView);
 
+            final Button warButton = new Button(this);
+            warButton.setHeight(120);
+            warButton.setText("< DECLARE WAR. >");
+            warButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    warButton.setText("< CONFIRM WAR. >");
+                    warButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mRenderer.worldSystem.declareWar(playerClan, c);
+                            onClickEndDiplomacyMenu(v);
+                            //onClickDiplomacyMenu(c);
+                        }
+                    });
+                }
+            });
+            clanMenu.addView(warButton);
+        }
         clanView = new Button(this);
         clanView.setHeight(120);
         clanView.setText("< End communication. >");

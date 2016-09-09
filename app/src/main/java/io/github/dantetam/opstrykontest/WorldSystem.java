@@ -1,5 +1,6 @@
 package io.github.dantetam.opstrykontest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,10 +32,37 @@ public class WorldSystem {
     public Clan playerClan;
 
     //public List<RelationModifier>[][] relations;
-    public HashMap<Clan, HashMap<Clan, List<RelationModifier>>> relations;
+    private HashMap<Clan, RelationMap> relations;
     public HashMap<Clan, Integer> clanId;
 
     public HashMap<Clan, Integer> calculatedClanScores;
+
+    public class RelationMap {
+        public Clan subjectClan;
+        private HashMap<Clan, List<RelationModifier>> map;
+        public RelationMap(List<Clan> clans) {
+            map = new HashMap<>();
+            for (Clan c: clans) {
+                map.put(c, new ArrayList<RelationModifier>());
+            }
+        }
+
+        public void addWar(Clan defender) {
+            List<RelationModifier> relations = map.get(defender);
+            relations.add(RelationModifier.AT_WAR);
+        }
+
+        public void removeWar(Clan defender) {
+            List<RelationModifier> relations = map.get(defender);
+            if (relations.size() == 0) return;
+            for (int i = relations.size() - 1; i >= 0; i--) {
+                RelationModifier mod = relations.get(i);
+                if (mod == RelationModifier.AT_WAR) {
+                    relations.remove(i);
+                }
+            }
+        }
+    }
 
     public enum RelationModifier {
         AT_WAR,
@@ -43,7 +71,8 @@ public class WorldSystem {
 
     public WorldSystem(WorldHandler worldHandler) {
         world = worldHandler.world;
-        initClan(world.getClans().get(0));
+        List<Clan> clans = world.getClans();
+        initClan(clans.get(0));
         //artificialIntelligence = new ArtificialIntelligence(world, clan);
         worldPathfinder = new WorldPathfinder(world);
         int len = world.getClans().size();
@@ -52,18 +81,32 @@ public class WorldSystem {
         //relations = (List<RelationModifier>[][]) Array.newInstance(Object.class, len, len);
         clanId = new HashMap<>();
         for (int i = 0; i < len; i++) {
-            clanId.put(world.getClans().get(i), i);
+            clanId.put(clans.get(i), i);
         }
         calculatedClanScores = new HashMap<>();
         for (int i = 0; i < len; i++) {
-            calculatedClanScores.put(world.getClans().get(i), 0);
+            calculatedClanScores.put(clans.get(i), 0);
+        }
+
+        for (Clan c: clans) {
+            relations.put(c, new RelationMap(clans));
         }
     }
 
     public boolean atWar(Clan atk, Clan def) {
-        int atkId = clanId.get(atk), defId = clanId.get(def);
-        List<RelationModifier> relationModifierList = relations.get(atk).get(def);
+        //int atkId = clanId.get(atk), defId = clanId.get(def);
+        List<RelationModifier> relationModifierList = relations.get(atk).map.get(def);
         return relationModifierList != null && relationModifierList.contains(RelationModifier.AT_WAR);
+    }
+
+    public void declareWar(Clan atk, Clan def) {
+        RelationMap map = relations.get(atk);
+        map.addWar(def);
+    }
+
+    public void makePeace(Clan atk, Clan def) {
+        RelationMap map = relations.get(atk);
+        map.removeWar(def);
     }
 
     public void initClan(Clan c) {

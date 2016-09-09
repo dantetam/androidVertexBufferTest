@@ -67,7 +67,7 @@ public class TechTree {
     //Put a specified amount of research into the tree. Return any extra left.
     public int research(int inputScience) {
         if (researchingTechQueue.size() == 0) {
-            throw new RuntimeException("Not researching a technology.");
+            throw new RuntimeException(clan.name + " is not researching a technology.");
             //return;
         }
         Tech researching = researchingTechQueue.get(0);

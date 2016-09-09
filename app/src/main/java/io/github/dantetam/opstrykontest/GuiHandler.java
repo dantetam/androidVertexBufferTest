@@ -15,8 +15,10 @@ import io.github.dantetam.android.ColorTextureHelper;
 import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.utilmath.Vector3f;
+import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
+import io.github.dantetam.world.entity.Entity;
 
 /**
  * Created by Dante on 9/8/2016.
@@ -109,16 +111,35 @@ public class GuiHandler {
     private void createClanCityQueue(Clan clan, City city) {
         PercentRelativeLayout guiLayout = (PercentRelativeLayout) mActivity.findViewById(R.id.gui_display);
 
+        float percent = 0;
+        if (city.actionsQueue.size() > 0) {
+            Action action = city.actionsQueue.get(0);
+            if (action.data instanceof Entity) {
+                percent = (float)((Entity) action.data).completionPercentage();
+            }
+        }
+
         PercentRelativeLayout.LayoutParams param = new PercentRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         //param.getPercentLayoutInfo().startMarginPercent = 0.2f;
         param.getPercentLayoutInfo().widthPercent = 0.025f;
         param.getPercentLayoutInfo().heightPercent = 0.07f;
-
         PercentRelativeLayout percentFrame = new PercentRelativeLayout(mActivity);
-        percentFrame.setBackgroundColor(Color.WHITE);
-
+        percentFrame.setBackgroundColor(Color.BLUE);
         percentFrame.setLayoutParams(param);
         guiLayout.addView(percentFrame);
+
+        TextView textView = new Button(mActivity);
+        PercentRelativeLayout.LayoutParams prodBarParam = new PercentRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        //foodBarParam.getPercentLayoutInfo().widthPercent = param.getPercentLayoutInfo().widthPercent;
+        //foodBarParam.getPercentLayoutInfo().heightPercent = param.getPercentLayoutInfo().heightPercent * 0.5f;
+        prodBarParam.getPercentLayoutInfo().widthPercent = 1f;
+        prodBarParam.getPercentLayoutInfo().heightPercent = percent;
+        prodBarParam.getPercentLayoutInfo().topMarginPercent = 1 - percent;
+        percentFrame.setGravity(Gravity.TOP);
+        textView.setBackgroundColor(Color.RED);
+        textView.setLayoutParams(prodBarParam);
+        percentFrame.addView(textView);
+        textView.bringToFront();
 
         cityQueueGui.put(city, percentFrame);
     }
@@ -130,18 +151,24 @@ public class GuiHandler {
         param.getPercentLayoutInfo().widthPercent = 0.025f;
         param.getPercentLayoutInfo().heightPercent = 0.07f;
         PercentRelativeLayout percentFrame = new PercentRelativeLayout(mActivity);
-        percentFrame.setBackgroundColor(Color.WHITE);
+        percentFrame.setBackgroundColor(Color.BLUE);
         percentFrame.setLayoutParams(param);
         guiLayout.addView(percentFrame);
 
+        float percent = Math.min((float) city.foodStoredForGrowth / (float) city.foodNeededForGrowth, 1);
+
         TextView textView = new Button(mActivity);
         PercentRelativeLayout.LayoutParams foodBarParam = new PercentRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        foodBarParam.getPercentLayoutInfo().widthPercent = param.getPercentLayoutInfo().widthPercent;
-        foodBarParam.getPercentLayoutInfo().heightPercent = param.getPercentLayoutInfo().heightPercent * 0.5f;
+        //foodBarParam.getPercentLayoutInfo().widthPercent = param.getPercentLayoutInfo().widthPercent;
+        //foodBarParam.getPercentLayoutInfo().heightPercent = param.getPercentLayoutInfo().heightPercent * 0.5f;
+        foodBarParam.getPercentLayoutInfo().widthPercent = 1f;
+        foodBarParam.getPercentLayoutInfo().heightPercent = percent;
+        foodBarParam.getPercentLayoutInfo().topMarginPercent = 1 - percent;
         percentFrame.setGravity(Gravity.TOP);
         textView.setBackgroundColor(Color.GREEN);
         textView.setLayoutParams(foodBarParam);
         percentFrame.addView(textView);
+        textView.bringToFront();
 
         cityFoodGui.put(city, percentFrame);
     }
