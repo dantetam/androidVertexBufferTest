@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -254,11 +255,18 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public boolean onClickClanMenu(MenuItem item) {
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.clan_menu);
+        ScrollView clanScrollView = (ScrollView) findViewById(R.id.clan_menu_scroll);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.clan_menu_main);
 
+        clanScrollView.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.VISIBLE);
         linearLayout.setBackgroundColor(Color.TRANSPARENT);
         List<Clan> clans = mRenderer.worldHandler.world.getClans();
+
+        ScrollView diploScrollView = (ScrollView) findViewById(R.id.diplomacy_menu_talk);
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk_main);
+        diploScrollView.setVisibility(View.INVISIBLE);
+        clanMenu.setVisibility(View.INVISIBLE);
 
         //mLessonSevenActivity.setContentView(R.layout.test_custom_gamescreen);
 
@@ -277,7 +285,10 @@ public class LessonSevenActivity extends Activity implements
                 clanView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.clan_menu);
+                        View clanMenu = findViewById(R.id.clan_menu_main);
+                        clanMenu.setVisibility(View.INVISIBLE);
+                        clanMenu.setBackgroundColor(Color.TRANSPARENT);
+                        clanMenu = findViewById(R.id.clan_menu_scroll);
                         clanMenu.setVisibility(View.INVISIBLE);
                         clanMenu.setBackgroundColor(Color.TRANSPARENT);
                         onClickDiplomacyMenu(clan);
@@ -292,7 +303,9 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public void onClickDiplomacyMenu(final Clan c) {
-        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk);
+        ScrollView scrollView = (ScrollView) findViewById(R.id.diplomacy_menu_talk);
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk_main);
+        scrollView.setVisibility(View.VISIBLE);
         clanMenu.setVisibility(View.VISIBLE);
 
         //((Button) findViewById(R.id.clan_title)).setText(c.ai.leaderName + " of the " + c.name);
@@ -317,6 +330,8 @@ public class LessonSevenActivity extends Activity implements
         });
 
         if (mRenderer.worldSystem.atWar(playerClan, c)) {
+            clanView.setText(clanView.getText() + " (WAR!)");
+
             clanView = new Button(this);
             clanView.setHeight(120);
             clanView.setText("We have no business with bloodthirsty tyrants such as yourself.");
@@ -358,7 +373,7 @@ public class LessonSevenActivity extends Activity implements
                     denounceButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mRenderer.worldSystem.addRelationModifier(playerClan, c, WorldSystem.RelationModifier.DENOUNCE);
+                            mRenderer.worldSystem.denounce(playerClan, c);
                             diplomacyMenuMessage(c, "Your lies hold no weight here.", "We're sorry this has caused a divide between us.", true);
                             //onClickEndDiplomacyMenu(v);
                             //onClickDiplomacyMenu(c);
@@ -381,7 +396,9 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public void diplomacyMenuMessage(final Clan c, String message, String response, boolean endComms) {
-        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk);
+        ScrollView scrollView = (ScrollView) findViewById(R.id.diplomacy_menu_talk);
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk_main);
+        scrollView.setVisibility(View.VISIBLE);
         clanMenu.setVisibility(View.VISIBLE);
 
         //((Button) findViewById(R.id.clan_title)).setText(c.ai.leaderName + " of the " + c.name);
@@ -433,7 +450,9 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public void onClickEndDiplomacyMenu(View v) {
-        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk);
+        ScrollView scrollView = (ScrollView) findViewById(R.id.diplomacy_menu_talk);
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk_main);
+        scrollView.setVisibility(View.INVISIBLE);
         clanMenu.setVisibility(View.INVISIBLE);
     }
 

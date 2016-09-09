@@ -347,18 +347,24 @@ public class WorldSystem {
     }
 
     public void declareWar(Clan atk, Clan def) {
-        RelationMap map = relations.get(atk);
-        map.addMod(def, RelationModifier.AT_WAR);
+        relations.get(atk).addMod(def, RelationModifier.AT_WAR);
+        relations.get(def).addMod(atk, RelationModifier.AT_WAR);
+        relations.get(atk).updateOpinions(world.getClans());
+        relations.get(def).updateOpinions(world.getClans());
     }
 
     public void makePeace(Clan atk, Clan def) {
-        RelationMap map = relations.get(atk);
-        map.removeMod(def, RelationModifier.AT_WAR);
+        relations.get(atk).removeMod(def, RelationModifier.AT_WAR);
+        relations.get(def).removeMod(atk, RelationModifier.AT_WAR);
+        relations.get(atk).updateOpinions(world.getClans());
+        relations.get(def).updateOpinions(world.getClans());
     }
 
-    public void addRelationModifier(Clan atk, Clan def, RelationModifier mod) {
-        RelationMap map = relations.get(atk);
-        map.addMod(def, mod);
+    public void denounce(Clan atk, Clan def) {
+        relations.get(atk).removeMod(def, RelationModifier.DENOUNCE);
+        relations.get(def).removeMod(atk, RelationModifier.DENOUNCE);
+        relations.get(atk).updateOpinions(world.getClans());
+        relations.get(def).updateOpinions(world.getClans());
     }
 
     public void initClan(Clan c) {
