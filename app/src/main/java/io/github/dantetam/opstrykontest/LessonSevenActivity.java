@@ -332,6 +332,26 @@ public class LessonSevenActivity extends Activity implements
                 }
             });
             clanMenu.addView(warButton);
+
+            final Button denounceButton = new Button(this);
+            denounceButton.setHeight(120);
+            denounceButton.setText("< DENOUNCE. >");
+            denounceButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    denounceButton.setText("< CONFIRM DENOUNCE. >");
+                    denounceButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mRenderer.worldSystem.addRelationModifier(playerClan, c, WorldSystem.RelationModifier.DENOUNCE);
+                            diplomacyMenuMessage(c, "Your lies hold no weight here.", "We're sorry this has caused a divide between us.", true);
+                            //onClickEndDiplomacyMenu(v);
+                            //onClickDiplomacyMenu(c);
+                        }
+                    });
+                }
+            });
+            clanMenu.addView(denounceButton);
         }
         clanView = new Button(this);
         clanView.setHeight(120);
@@ -342,6 +362,47 @@ public class LessonSevenActivity extends Activity implements
                 onClickEndDiplomacyMenu(v);
             }
         });
+        clanMenu.addView(clanView);
+    }
+
+    public void diplomacyMenuMessage(final Clan c, String message, String response, boolean endComms) {
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk);
+        clanMenu.setVisibility(View.VISIBLE);
+
+        //((Button) findViewById(R.id.clan_title)).setText(c.ai.leaderName + " of the " + c.name);
+
+        clanMenu.removeAllViews();
+
+        Button clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText(c.ai.leaderName + " of the " + c.name);
+        clanMenu.addView(clanView);
+
+        clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText(message);
+        clanMenu.addView(clanView);
+
+        clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText(response);
+        if (endComms) {
+            clanView.setText(clanView.getText() + " < End communication. >");
+            clanView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickEndDiplomacyMenu(v);
+                }
+            });
+        }
+        else {
+            clanView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickDiplomacyMenu(c);
+                }
+            });
+        }
         clanMenu.addView(clanView);
     }
 
