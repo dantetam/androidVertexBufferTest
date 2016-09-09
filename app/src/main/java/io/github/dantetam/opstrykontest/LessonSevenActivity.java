@@ -55,6 +55,7 @@ public class LessonSevenActivity extends Activity implements
     /**
      * Hold a reference to our GLSurfaceView
      */
+    public final LessonSevenActivity mActivity = this; //For use in final classes
     private LessonSevenGLSurfaceView mGLSurfaceView;
     public LessonSevenRenderer mRenderer;
 
@@ -300,8 +301,20 @@ public class LessonSevenActivity extends Activity implements
 
         Button clanView = new Button(this);
         clanView.setHeight(120);
-        clanView.setText(c.ai.leaderName + " of the " + c.name);
+        String opinion = mRenderer.worldSystem.relations.get(c).getOpinionString(playerClan);
+        clanView.setText(c.ai.leaderName + " of the " + c.name + " (" + opinion + ")");
         clanMenu.addView(clanView);
+
+        clanView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu tempMenu = new PopupMenu(mActivity, v);
+                MenuInflater inflater = tempMenu.getMenuInflater();
+                inflater.inflate(R.menu.unit_selection_menu, tempMenu.getMenu());
+                onCreateDiplomacyHistory(tempMenu.getMenu(), mRenderer.worldSystem.relations.get(c).getRelationModsForClan(playerClan));
+                tempMenu.show();
+            }
+        });
 
         if (mRenderer.worldSystem.atWar(playerClan, c)) {
             clanView = new Button(this);
@@ -406,6 +419,17 @@ public class LessonSevenActivity extends Activity implements
             });
         }
         clanMenu.addView(clanView);
+    }
+
+    public boolean onCreateDiplomacyHistory(Menu menu, List<String> modifiers) {
+        if (modifiers.size() == 0) {
+            MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "There is no history between your nations.");
+        }
+        for (String stringy: modifiers) {
+            //WorldSystem.RelationModifier modifier = modifiers.get(i);
+            MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, stringy);
+        }
+        return true;
     }
 
     public void onClickEndDiplomacyMenu(View v) {

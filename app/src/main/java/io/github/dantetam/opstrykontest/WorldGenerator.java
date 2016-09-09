@@ -113,7 +113,7 @@ public class WorldGenerator {
 
     private List<Clan> makeClans() {
         List<Clan> clans = new ArrayList<>();
-        int num = world.getAllValidTiles().size() / 35;
+        int num = world.getAllValidTiles().size() / 20;
         for (int i = 0; i < num; i++) {
             Clan clan;
             if (i == 0) {
@@ -123,6 +123,7 @@ public class WorldGenerator {
             else {
                 clan = ClanFactory.randomAvailableClan();
             }
+
             clans.add(clan);
             UnitXmlParser.parseUnitTree(clan, mActivity, R.raw.unit_tree);
             BuildingXmlParser.parseBuildingTree(clan, mActivity, R.raw.building_tree);

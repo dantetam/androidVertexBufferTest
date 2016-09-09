@@ -23,7 +23,7 @@ public class ClanFactory {
 
     public static ClanXmlParser parser;
 
-    public static HashSet<Clan> usedClans;
+    public static HashSet<String> usedClans;
 
     //public static HashMap<String, Clan> civilizationAi;
 
@@ -99,12 +99,12 @@ public class ClanFactory {
 
     public static Clan randomAvailableClan() {
         Clan clan = null;
-        while (clan == null || usedClans.contains(clan)) {
+        while (clan == null || usedClans.contains(clan.name)) {
             String key = parser.clanKeys[(int)(Math.random()*parser.clanKeys.length)];
             Clan randomAi = parser.clans.get(key);
             clan = newClan(Clan.ClanType.random(), Clan.ClanFaction.random(), randomAi);
         }
-        usedClans.add(clan);
+        usedClans.add(clan.name);
         return clan;
     }
 
