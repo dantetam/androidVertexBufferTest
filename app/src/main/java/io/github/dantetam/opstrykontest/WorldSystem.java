@@ -35,7 +35,7 @@ public class WorldSystem {
     public Clan playerClan;
 
     //public List<RelationModifier>[][] relations;
-    private HashMap<Clan, RelationMap> relations;
+    public HashMap<Clan, RelationMap> relations;
     public HashMap<Clan, Integer> clanId;
 
     public HashMap<Clan, Integer> calculatedClanScores;
@@ -44,6 +44,7 @@ public class WorldSystem {
         public Clan subjectClan;
         private HashMap<Clan, List<RelationModifier>> map;
         public HashMap<Clan, Integer> initialScore = null;
+        public HashMap<Clan, Integer> relationScore = null;
 
         public HashMap<Clan, Integer> trust;
         public HashMap<Clan, RelationOpinion> opinions;
@@ -60,6 +61,7 @@ public class WorldSystem {
 
             trust = new HashMap<>();
             initialScore = new HashMap<>();
+            relationScore = new HashMap<>();
             deceiving = new HashMap<>();
             opinions = new HashMap<>();
 
@@ -70,15 +72,12 @@ public class WorldSystem {
         public void setupInitialOpinions(List<Clan> clans) {
             System.out.println("I am " + subjectClan.name + ", here is how I feel about these clans:");
             for (Clan c: clans) {
-                int trustScore = (subjectClan.ai.personality.get("Cooperative") + subjectClan.ai.personality.get("Loyal")) / 2;
-                double scoreDiff;
-                if (calculatedClanScores.get(subjectClan) == 0) {
-                    scoreDiff = 1.0;
-                } else {
-                    scoreDiff = calculatedClanScores.get(c) / calculatedClanScores.get(subjectClan);
-                }
-                trustScore -= (int)(subjectClan.ai.personality.get("Jealous") * scoreDiff);
-                trust.put(c, Math.max(0, Math.min(10, trustScore)));
+                int trustScore = subjectClan.ai.personality.get("Cooperative") + subjectClan.ai.personality.get("Loyal");
+                double scoreDiff = calculateScoreDiff(c);
+                trustScore -= (int) (subjectClan.ai.personality.get("Jealous") * scoreDiff);
+                trustScore += (int) (Math.random() * 4 - 2);
+                trustScore = Math.max(0, Math.min(10, trustScore));
+                trust.put(c, trustScore);
 
                 int friendly = subjectClan.ai.personality.get("Cooperative") +
                         subjectClan.ai.personality.get("Loyal") +
@@ -90,11 +89,12 @@ public class WorldSystem {
                         subjectClan.ai.personality.get("Vicious");
 
                 int baseScore = (friendly - hostile) * 5;
-                baseScore = Math.max(-60, Math.min(60, baseScore));
 
                 baseScore += (int) (Math.random() * 30.0 - 15.0);
 
                 baseScore += getFirstFlavor();
+
+                baseScore = Math.max(-60, Math.min(60, baseScore));
 
                 initialScore.put(c, baseScore);
 
@@ -108,7 +108,9 @@ public class WorldSystem {
                     deceiving.put(c, false);
                 }
 
-                System.out.println(c.name + ": trust -> " + trustScore + ", opinion -> " + baseScore);
+                relationScore.put(c, baseScore);
+
+                System.out.println(c.name + ": trust -> " + trustScore + ", opinion -> " + baseScore + ", deceptive -> " + deceiving.get(c) + " (" + chanceOfDeception + ")");
             }
         }
 
@@ -125,52 +127,40 @@ public class WorldSystem {
             for (int i = 0; i < modifiers.size(); i++) {
                 score += modifiers.get(i).score;
             }
+
+            relationScore.put(c, score);
+
             int trust = this.trust.get(c);
 
             RelationOpinion opinion;
 
-            double scoreDiff;
-            if (calculatedClanScores.get(subjectClan) == 0) {
-                scoreDiff = 1.0;
-            } else {
-                scoreDiff = calculatedClanScores.get(c) / calculatedClanScores.get(subjectClan);
-            }
+            double scoreDiff = calculateScoreDiff(c);
 
             if (score > 45) {
                 if (trust > 3) {
                     opinion = RelationOpinion.FRIENDLY;
-                }
-                else if (deceiving.get(c)) {
-                    opinion = RelationOpinion.DECEPTIVE;
-                }
-                else {
+                } else {
                     opinion = RelationOpinion.ALLIED;
                 }
-            }
-            else if (score > 15) {
+            } else if (score > 15) {
                 if (scoreDiff > 1.3d) {
                     opinion = RelationOpinion.INTIMIDATED;
-                }
-                else {
+                } else if (trust > 4) {
                     opinion = RelationOpinion.ALLIED;
+                } else {
+                    opinion = RelationOpinion.NEUTRAL;
                 }
-            }
-            else if (scoreDiff > 1.2d) {
+            } else if (scoreDiff > 1.2d) {
                 opinion = RelationOpinion.INTIMIDATED;
-            }
-            else if (scoreDiff < 0.7d) {
+            } else if (scoreDiff < 0.7d) {
                 opinion = RelationOpinion.AGGRESSIVE;
-            }
-            else if (score > -10) {
+            } else if (score > -10) {
                 opinion = RelationOpinion.NEUTRAL;
-            }
-            else if (score > -45) {
+            } else if (score > -45) {
                 opinion = RelationOpinion.ANGRY;
-            }
-            else {
+            } else {
                 opinion = RelationOpinion.HOSTILE;
             }
-
             opinions.put(c, opinion);
         }
 
@@ -205,8 +195,8 @@ public class WorldSystem {
             double rand = Math.random();
             String chosenFlavor = null;
             for (int j = 0; j < flavors.length; j++) {
-                if (rand <= flavors[i] / sumPersonFlavors) {
-                    chosenFlavor = flavorNames[i];
+                if (rand <= flavors[j] / sumPersonFlavors) {
+                    chosenFlavor = flavorNames[j];
                     break;
                 }
             }
@@ -223,26 +213,71 @@ public class WorldSystem {
 
             switch (chosenFlavor) {
                 case "Cooperative":
-                    return 15;
+                    return 30;
                 case "Jealous":
-                    return -20;
+                    return -40;
                 case "Friendly":
-                    return 25;
+                    return 50;
                 case "Hostile":
-                    return -25;
+                    return -50;
                 case "Loyal":
-                    return 10;
-                case "Deceptive":
-                    return -20;
-                case "Diplomatic":
                     return 20;
+                case "Deceptive":
+                    return -40;
+                case "Diplomatic":
+                    return 40;
                 case "Vicious":
-                    return -15;
+                    return -30;
                 default:
                     System.out.println("Error, could not find first flavor");
                     return 0;
             }
         }
+
+        public String getOpinionString(Clan c) {
+            if (!deceiving.get(c)) {
+                return opinions.get(c).toString();
+            }
+            else {
+                RelationOpinion opinion;
+                int score = relationScore.get(c), trust = this.trust.get(c);
+                double scoreDiff;
+                if (calculatedClanScores.get(subjectClan) == 0) {
+                    scoreDiff = 1.0;
+                } else {
+                    scoreDiff = calculateScoreDiff(c);
+                }
+                if (scoreDiff > 1.2d) {
+                    opinion = RelationOpinion.INTIMIDATED;
+                } else if (score > 45) {
+                    if (trust > 2) {
+                        opinion = RelationOpinion.FRIENDLY;
+                    } else {
+                        opinion = RelationOpinion.ALLIED;
+                    }
+                } else if (score > 15) {
+                    if (trust > 3) {
+                        opinion = RelationOpinion.ALLIED;
+                    } else {
+                        opinion = RelationOpinion.NEUTRAL;
+                    }
+                } else {
+                    opinion = RelationOpinion.NEUTRAL;
+                }
+                return opinion.toString();
+            }
+        }
+
+        public double calculateScoreDiff(Clan clan) {
+            double scoreDiff;
+            if (calculatedClanScores.get(subjectClan) == 0) {
+                scoreDiff = 1.0;
+            } else {
+                scoreDiff = calculatedClanScores.get(clan) / calculatedClanScores.get(subjectClan);
+            }
+            return scoreDiff;
+        }
+
     }
 
     public enum RelationModifier {

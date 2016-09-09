@@ -271,7 +271,8 @@ public class LessonSevenActivity extends Activity implements
                 clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (You)");
             }
             else {
-                clanView.setText(clan.ai.leaderName + " of the " + clan.name);
+                String opinion = mRenderer.worldSystem.relations.get(clan).getOpinionString(playerClan);
+                clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (" + opinion + ")");
                 clanView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -325,6 +326,7 @@ public class LessonSevenActivity extends Activity implements
                         @Override
                         public void onClick(View v) {
                             mRenderer.worldSystem.declareWar(playerClan, c);
+                            mRenderer.worldSystem.declareWar(c, playerClan);
                             onClickEndDiplomacyMenu(v);
                             //onClickDiplomacyMenu(c);
                         }
