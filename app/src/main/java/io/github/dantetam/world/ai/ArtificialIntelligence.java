@@ -1,4 +1,4 @@
-package io.github.dantetam.world.entity;
+package io.github.dantetam.world.ai;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -6,13 +6,17 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.dantetam.utilmath.OpstrykonUtil;
+import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.CombatPlan;
+import io.github.dantetam.world.entity.Inventory;
 import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.PersonType;
 import io.github.dantetam.world.entity.Tech;
+import io.github.dantetam.world.entity.Tile;
+import io.github.dantetam.world.entity.World;
 
 /**
  * Created by Dante on 7/13/2016.

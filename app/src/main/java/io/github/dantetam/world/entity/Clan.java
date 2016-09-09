@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.dantetam.utilmath.Vector4f;
+import io.github.dantetam.world.ai.ArtificialIntelligence;
 
 /**
  * Created by Dante on 6/13/2016.
