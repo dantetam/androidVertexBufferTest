@@ -1,4 +1,4 @@
-package io.github.dantetam.world.entity;
+package io.github.dantetam.world.ai;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.dantetam.world.action.CombatAction;
+import io.github.dantetam.world.entity.Clan;
+import io.github.dantetam.world.entity.Entity;
+import io.github.dantetam.world.entity.Person;
+import io.github.dantetam.world.entity.Tile;
+import io.github.dantetam.world.entity.World;
 import io.github.dantetam.world.factory.PersonFactory;
 
 /**
@@ -63,7 +68,7 @@ public class CombatWorld {
         }
         for (Tile tile: allTiles) {
             for (Entity entity: tile.occupants) {
-                originalPositions.put(entity, entity.location);
+                originalPositions.put(entity, entity.location());
                 Tile random = allTiles.get((int)(Math.random()*allTiles.size()));
                 entity.move(random);
             }

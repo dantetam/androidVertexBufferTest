@@ -34,6 +34,7 @@ import java.util.Set;
 import io.github.dantetam.android.MultiTextureHelper;
 import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
+import io.github.dantetam.world.ai.RelationModifier;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.action.BuildingAction;
 import io.github.dantetam.world.entity.ItemType;
@@ -282,6 +283,9 @@ public class LessonSevenActivity extends Activity implements
             else {
                 String opinion = mRenderer.worldSystem.relations.get(clan).getOpinionString(playerClan);
                 clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (" + opinion + ")");
+                if (mRenderer.worldSystem.atWar(playerClan, clan)) {
+                    clanView.setText(clanView.getText() + " (WAR!)");
+                }
                 clanView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -354,8 +358,9 @@ public class LessonSevenActivity extends Activity implements
                         @Override
                         public void onClick(View v) {
                             mRenderer.worldSystem.declareWar(playerClan, c);
-                            mRenderer.worldSystem.declareWar(c, playerClan);
-                            onClickEndDiplomacyMenu(v);
+                            //mRenderer.worldSystem.declareWar(c, playerClan);
+                            diplomacyMenuMessage(c, "I hope your people can forgive such a terrible mistake.", "We're sorry this has caused a divide between us.", true);
+                            //onClickEndDiplomacyMenu(v);
                             //onClickDiplomacyMenu(c);
                         }
                     });
@@ -369,16 +374,18 @@ public class LessonSevenActivity extends Activity implements
             denounceButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    denounceButton.setText("< CONFIRM DENOUNCE. >");
-                    denounceButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mRenderer.worldSystem.denounce(playerClan, c);
-                            diplomacyMenuMessage(c, "Your lies hold no weight here.", "We're sorry this has caused a divide between us.", true);
-                            //onClickEndDiplomacyMenu(v);
-                            //onClickDiplomacyMenu(c);
-                        }
-                    });
+                    if (!mRenderer.worldSystem.containsMod(playerClan, c, RelationModifier.DENOUNCE)) {
+                        denounceButton.setText("< CONFIRM DENOUNCE. >");
+                        denounceButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mRenderer.worldSystem.denounce(playerClan, c);
+                                diplomacyMenuMessage(c, "Your lies hold no weight here.", "We're sorry this has caused a divide between us.", true);
+                                //onClickEndDiplomacyMenu(v);
+                                //onClickDiplomacyMenu(c);
+                            }
+                        });
+                    }
                 }
             });
             clanMenu.addView(denounceButton);
@@ -407,8 +414,23 @@ public class LessonSevenActivity extends Activity implements
 
         Button clanView = new Button(this);
         clanView.setHeight(120);
-        clanView.setText(c.ai.leaderName + " of the " + c.name);
+        String opinion = mRenderer.worldSystem.relations.get(c).getOpinionString(playerClan);
+        clanView.setText(c.ai.leaderName + " of the " + c.name + " (" + opinion + ")");
+        if (mRenderer.worldSystem.atWar(playerClan, c)) {
+            clanView.setText(clanView.getText() + " (WAR!)");
+        }
         clanMenu.addView(clanView);
+
+        clanView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu tempMenu = new PopupMenu(mActivity, v);
+                MenuInflater inflater = tempMenu.getMenuInflater();
+                inflater.inflate(R.menu.unit_selection_menu, tempMenu.getMenu());
+                onCreateDiplomacyHistory(tempMenu.getMenu(), mRenderer.worldSystem.relations.get(c).getRelationModsForClan(playerClan));
+                tempMenu.show();
+            }
+        });
 
         clanView = new Button(this);
         clanView.setHeight(120);
@@ -568,17 +590,30 @@ public class LessonSevenActivity extends Activity implements
                     int[] yield = buildingType.getYield();
                     String yieldString = "";
                     if (yield[0] > 0) {
-                        yieldString += "+" + yield[0] + "Food";
+                        yieldString += "+" + yield[0] + "F";
                     }
                     if (yield[1] > 0) {
-                        yieldString += ", +" + yield[1] + "Prod.";
+                        yieldString += ", +" + yield[1] + "P";
                     }
                     if (yield[2] > 0) {
-                        yieldString += ", +" + yield[2] + "Sci.";
+                        yieldString += ", +" + yield[2] + "S";
                     }
                     if (yield[3] > 0) {
-                        yieldString += ", +" + yield[3] + "Cap.";
+                        yieldString += ", +" + yield[3] + "C";
                     }
+                    if (yield[4] > 0) {
+                        yieldString += ", +" + yield[0] + " :)";
+                    }
+                    if (yield[5] > 0) {
+                        yieldString += ", +" + yield[1] + "H";
+                    }
+                    if (yield[6] > 0) {
+                        yieldString += ", +" + yield[2] + "Cul";
+                    }
+
+                    int[] cityYield = (int[]) (city.gameYield()[0]);
+                    int turnsCalculated = (int) Math.ceil((double) buildingType.workNeeded / (double) cityYield[1]);
+                    yieldString += " " + turnsCalculated + " turns";
 
                     String displayName = buildingType.name + " " + yieldString;
                     MenuItem menuItem = improvementSubMenu.add(Menu.NONE, i + 1, Menu.NONE, displayName);
@@ -653,10 +688,31 @@ public class LessonSevenActivity extends Activity implements
                 Set<PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
                 for (final PersonType personType : allowedPeople) {
                     //System.out.println(personType.name + " " + allowedPeople.size());
-                    String stringy = personType.name;
+                    String yieldString = personType.name;
+
+                    if (personType.atk > 0) {
+                        yieldString += " " + personType.atk + "A";
+                    }
+                    if (personType.def > 0) {
+                        yieldString += ", " + personType.def + "D";
+                    }
+                    if (personType.maneuver > 0) {
+                        yieldString += ", " + personType.maneuver + "M";
+                    }
+                    if (personType.fire > 0) {
+                        yieldString += ", " + personType.fire + "F";
+                    }
+                    if (personType.shock > 0) {
+                        yieldString += ", " + personType.shock + "S";
+                    }
+                    if (personType.maxH > 0) {
+                        yieldString += ", " + personType.maxH + "HP";
+                    }
+
                     int turnsCalculated = (int) Math.ceil((double) personType.workNeeded / (double) yield[1]);
-                    stringy += " " + turnsCalculated + " turns";
-                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, stringy);
+                    yieldString += " " + turnsCalculated + " turns";
+
+                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, yieldString);
                     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             //Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
@@ -812,7 +868,16 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public boolean onCreateQueueSelectionMenu(Menu menu) {
-        final Entity selectedEntity = mRenderer.mousePicker.getSelectedEntity();
+        Entity entity = mRenderer.mousePicker.getSelectedEntity();
+        City city = null;
+        Tile selectedTile = mRenderer.mousePicker.getSelectedTile();
+        if (selectedTile != null) {
+            if (selectedTile.improvement instanceof City) {
+                city = (City) selectedTile.improvement;
+            }
+        }
+
+        final Entity selectedEntity = entity != null ? entity : city;
         if (selectedEntity != null) {
             if (selectedEntity.actionsQueue.size() == 0) {
                 menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Nothing in queue");

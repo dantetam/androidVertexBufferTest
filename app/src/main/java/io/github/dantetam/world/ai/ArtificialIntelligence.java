@@ -10,7 +10,6 @@ import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
-import io.github.dantetam.world.entity.CombatPlan;
 import io.github.dantetam.world.entity.Inventory;
 import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.PersonType;
@@ -56,7 +55,7 @@ public class ArtificialIntelligence {
     public void computerClanCombat(CombatPlan combatPlan) {
         for (Person person: clan.people) {
             while (person.actionPoints > 0) {
-                person.gameMove(person.world.randomNeighbor(person.location));
+                person.gameMove(person.world.randomNeighbor(person.location()));
             }
         }
     }

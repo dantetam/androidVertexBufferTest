@@ -13,8 +13,10 @@ import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
+import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.Inventory;
 import io.github.dantetam.world.entity.Person;
+import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
 
 /**
@@ -63,6 +65,12 @@ public class WorldSystem {
         }
     }
 
+    public boolean containsMod(Clan atk, Clan def, RelationModifier mod) {
+        //int atkId = clanId.get(atk), defId = clanId.get(def);
+        List<RelationModifier> relationModifierList = relations.get(atk).getRelations(def);
+        return relationModifierList != null && relationModifierList.contains(mod);
+    }
+
     public boolean atWar(Clan atk, Clan def) {
         //int atkId = clanId.get(atk), defId = clanId.get(def);
         List<RelationModifier> relationModifierList = relations.get(atk).getRelations(def);
@@ -72,6 +80,7 @@ public class WorldSystem {
     public void declareWar(Clan atk, Clan def) {
         relations.get(atk).addMod(def, RelationModifier.AT_WAR);
         relations.get(def).addMod(atk, RelationModifier.AT_WAR);
+        relations.get(def).addMod(atk, RelationModifier.AGGRESSIVE_WAR);
         relations.get(atk).updateOpinions(world.getClans());
         relations.get(def).updateOpinions(world.getClans());
     }
@@ -79,13 +88,15 @@ public class WorldSystem {
     public void makePeace(Clan atk, Clan def) {
         relations.get(atk).removeMod(def, RelationModifier.AT_WAR);
         relations.get(def).removeMod(atk, RelationModifier.AT_WAR);
+        relations.get(atk).addMod(def, RelationModifier.WAS_AT_WAR);
+        relations.get(def).addMod(atk, RelationModifier.WAS_AT_WAR);
         relations.get(atk).updateOpinions(world.getClans());
         relations.get(def).updateOpinions(world.getClans());
     }
 
     public void denounce(Clan atk, Clan def) {
-        relations.get(atk).removeMod(def, RelationModifier.DENOUNCE);
-        relations.get(def).removeMod(atk, RelationModifier.DENOUNCE);
+        relations.get(atk).addMod(def, RelationModifier.DENOUNCE);
+        relations.get(def).addMod(atk, RelationModifier.DENOUNCED);
         relations.get(atk).updateOpinions(world.getClans());
         relations.get(def).updateOpinions(world.getClans());
     }
@@ -214,6 +225,20 @@ public class WorldSystem {
             clan.totalCulture += yield[6];
 
             totalResources.addAnotherInventory(inventory);
+        }
+    }
+
+    public boolean allowedToAccessTile(Entity en, Tile t) {
+        if (t.biome == Tile.Biome.SEA) {
+            return false;
+        }
+        Clan owner = world.getTileOwner(t);
+        if (owner == null) {
+            return true;
+        } else {
+            boolean openBorders = this.containsMod(owner, en.clan, RelationModifier.OPEN_BORDERS);
+            boolean war = this.atWar(owner, en.clan);
+            return openBorders || war;
         }
     }
 

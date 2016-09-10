@@ -1,37 +1,21 @@
 package io.github.dantetam.opstrykontest;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.support.percent.PercentRelativeLayout;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridLayout;
-import android.widget.TextView;
 
-import java.util.HashMap;
-
-import io.github.dantetam.android.ColorTextureHelper;
 import io.github.dantetam.opengl.MousePicker;
-import io.github.dantetam.utilmath.Vector2f;
-import io.github.dantetam.utilmath.Vector3f;
-import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.Building;
-import io.github.dantetam.world.entity.BuildingType;
-import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.action.CombatAction;
-import io.github.dantetam.world.entity.CombatWorld;
+import io.github.dantetam.world.ai.CombatWorld;
 import io.github.dantetam.world.entity.Entity;
-import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.Person;
-import io.github.dantetam.world.entity.PersonType;
-import io.github.dantetam.world.entity.Tech;
 import io.github.dantetam.world.entity.Tile;
 
 public class LessonSevenGLSurfaceView extends GLSurfaceView
@@ -233,13 +217,16 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     mousePicker.changeSelectedAction("");
                     return;
                 }
-                if (mousePicker.getSelectedTile() == null) {
+                Tile selected = mousePicker.getSelectedTile();
+                if (selected == null) {
 
                 } else {
                     if (previousSelectedEntity instanceof Person) {
                         Person personSelected = (Person) previousSelectedEntity;
-                        if (!personSelected.location().equals(mousePicker.getSelectedTile())) {
-                            personSelected.gameMovePath(mousePicker.getSelectedTile());
+                        if (!personSelected.location().equals(selected)) {
+                            if (mRenderer.worldSystem.allowedToAccessTile(personSelected, selected)) {
+                                personSelected.gameMovePath(selected);
+                            }
                         }
                     }
                     //previousSelectedEntity.move(mousePicker.getSelectedTile());

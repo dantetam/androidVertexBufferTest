@@ -64,9 +64,10 @@ public class RelationMap {
 
             baseScore += (int) (Math.random() * 30.0 - 15.0);
 
-            baseScore += getFirstFlavor();
+            //baseScore += getFirstFlavor();
+            map.get(c).add(getFirstFlavor());
 
-            baseScore = Math.max(-60, Math.min(60, baseScore));
+            baseScore = Math.max(-40, Math.min(40, baseScore));
 
             initialScore.put(c, baseScore);
 
@@ -109,10 +110,12 @@ public class RelationMap {
         double scoreDiff = calculateScoreDiff(c);
 
         if (score > 45) {
-            if (trust > 3) {
+            if (trust > 4) {
                 opinion = RelationOpinion.FRIENDLY;
-            } else {
+            } else if (trust > 2){
                 opinion = RelationOpinion.ALLIED;
+            } else {
+                opinion = RelationOpinion.INTIMIDATED;
             }
         } else if (score > 15) {
             if (scoreDiff > 1.3d) {
@@ -152,7 +155,7 @@ public class RelationMap {
         }
     }
 
-    private int getFirstFlavor() {
+    private RelationModifier getFirstFlavor() {
         double sumPersonFlavors = 0;
         String[] flavorNames = new String[subjectClan.ai.personality.size()];
         double[] flavors = new double[subjectClan.ai.personality.size()];
@@ -167,7 +170,7 @@ public class RelationMap {
         double rand = Math.random();
         String chosenFlavor = null;
         for (int j = 0; j < flavors.length; j++) {
-            if (rand <= flavors[j] / sumPersonFlavors) {
+            if (rand <= flavors[j] / runSum) {
                 chosenFlavor = flavorNames[j];
                 break;
             }
@@ -185,24 +188,24 @@ public class RelationMap {
 
         switch (chosenFlavor) {
             case "Cooperative":
-                return 30;
+                return RelationModifier.COOPERATIVE;
             case "Jealous":
-                return -40;
+                return RelationModifier.LACK_OF_TRUST;
             case "Friendly":
-                return 50;
+                return RelationModifier.COOPERATIVE;
             case "Hostile":
-                return -50;
+                return RelationModifier.HOSTILE;
             case "Loyal":
-                return 20;
+                return RelationModifier.COOPERATIVE;
             case "Deceptive":
-                return -40;
+                return RelationModifier.LACK_OF_TRUST;
             case "Diplomatic":
-                return 40;
+                return RelationModifier.COOPERATIVE;
             case "Vicious":
-                return -30;
+                return RelationModifier.HOSTILE;
             default:
                 System.out.println("Error, could not find first flavor");
-                return 0;
+                return null;
         }
     }
 

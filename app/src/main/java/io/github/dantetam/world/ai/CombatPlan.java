@@ -1,4 +1,4 @@
-package io.github.dantetam.world.entity;
+package io.github.dantetam.world.ai;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

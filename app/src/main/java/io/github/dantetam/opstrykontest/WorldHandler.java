@@ -1,6 +1,5 @@
 package io.github.dantetam.opstrykontest;
 
-import android.content.res.Resources;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -11,7 +10,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import io.github.dantetam.android.AssetHelper;
 import io.github.dantetam.android.ColorTextureHelper;
@@ -33,7 +31,7 @@ import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
-import io.github.dantetam.world.entity.CombatWorld;
+import io.github.dantetam.world.ai.CombatWorld;
 import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.Person;
