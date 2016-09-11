@@ -28,6 +28,8 @@ public class ArtificialIntelligence {
     public String abilityTwo = null;
     public HashMap<String, Integer> personality, strategy, tactics;
 
+    public HashMap<String, List<String>> friendlyText = new HashMap<>();
+
     public ArtificialIntelligence(Clan c) {
         clan = c;
         personality = new HashMap<>();

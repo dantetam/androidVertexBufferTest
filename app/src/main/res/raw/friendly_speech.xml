@@ -7,7 +7,7 @@
     <text type="Welcome" text="Friend of my people, we welcome you." />
 
     <text type="Trade" text="What is your offer, friend?" />
-    <text type="Trade" text="Ah. My people have been waiting for your's empire goods and trade." />
+    <text type="Trade" text="Ah. My people have been waiting for your empire's goods and trade." />
     <text type="Trade" text="My merchants have recommended me to buy from your productive lands." />
     <text type="Trade" text="Let us all hear your trade." />
 
@@ -20,6 +20,11 @@
     <text type="TradeFailure" text="My people cannot accept that. Take it up with them." />
     <text type="TradeFailure" text="Please offer a fair and friendly trade." />
     <text type="TradeFailure" text="Possibly another time, friend." />
+
+    <text type="TradePropose" text="" />
+    <text type="TradePropose" text="" />
+    <text type="TradePropose" text="" />
+    <text type="TradePropose" text="" />
 
     <text type="Declare War" text="What? What have I done wrong? I am sorry." />
     <text type="Declare War" text="It is now clear to me whether or not you are a friend." />
@@ -41,13 +46,13 @@
     <text type="Denouncing" text="It pains me to say that I have befriended a reckless monster." />
     <text type="Denouncing" text="It is nothing personal between us. I warn others of your bloodthirsty nature for their sake." />
 
-    <text type="AllySuccess" text="I am sorry to hear that. Perhaps we could negotiate again?" />
-    <text type="AllySuccess" text="So be it. I'm sorry about the divide between our two nations." />
-    <text type="AllyFailure" text="That is unfortunate to hear. " />
-    <text type="AllyFailure" text="I am sorry that our relationship has come to this." />
+    <text type="AllySuccess" text="We are friends, as always." />
+    <text type="AllySuccess" text="It is good that we already have each other's backs." />
+    <text type="AllyFailure" text="It pains me to say that I cannot befriend you formally at this time." />
+    <text type="AllyFailure" text="I am sorry. I need to sort out my own empire first." />
 
-    <text type="AllyPropose" text="That is unfortunate to hear. " />
-    <text type="AllyPropose" text="I am sorry that our relationship has come to this." />
+    <text type="AllyPropose" text="Perhaps we could continue to be friends?" />
+    <text type="AllyPropose" text="This pact is more of a formality." />
 
     <text type="Denouncing" text="Hello, past friend. It is clear you are a danger to the world." />
     <text type="Denouncing" text="As time goes on and we grow up, I have learned, much like a childhood friend, that you are dangerous and not to be trusted." />
