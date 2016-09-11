@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <text type="Welcome" text="Hello, friend." />
+    <text type="Welcome" text="What brings you here today?" />
+    <text type="Welcome" text="Your welcome has been noted by my cheering crowds of citizens." />
+    <text type="Welcome" text="What is it that we have to discuss today, friend?" />
+    <text type="Welcome" text="Friend of my people, we welcome you." />
+
+    <text type="Trade" text="What is your offer, friend?" />
+    <text type="Trade" text="Ah. My people have been waiting for your's empire goods and trade." />
+    <text type="Trade" text="My merchants have recommended me to buy from your productive lands." />
+    <text type="Trade" text="Let us all hear your trade." />
+
+    <text type="TradeSuccess" text="That is a most excellent and just trade." />
+    <text type="TradeSuccess" text="May both our nations prosper." />
+    <text type="TradeSuccess" text="Another successful trade for us and our people." />
+    <text type="TradeSuccess" text="Thank you, friend." />
+
+    <text type="TradeFailure" text="I am sorry, friend, I cannot accept that." />
+    <text type="TradeFailure" text="My people cannot accept that. Take it up with them." />
+    <text type="TradeFailure" text="Please offer a fair and friendly trade." />
+    <text type="TradeFailure" text="Possibly another time, friend." />
+
+    <text type="Declare War" text="What? What have I done wrong? I am sorry." />
+    <text type="Declare War" text="It is now clear to me whether or not you are a friend." />
+    <text type="Declare War" text="The world is full of snakes and wolves. So be it." />
+    <text type="Declare War" text="I see it has come to this. I will see you on the battlefield." />
+
+    <text type="Declaring War" text="You are a danger to this world. I am sorry." />
+    <text type="Declaring War" text="I do what is right for my people and my world." />
+    <text type="Declaring War" text="It seems that you only understand force." />
+    <text type="Declaring War" text="I have tolerated your actions for long enough." />
+
+    <text type="Denounced" text="I am sorry to hear that. Perhaps we could negotiate again?" />
+    <text type="Denounced" text="So be it. I'm sorry about the divide between our two nations." />
+    <text type="Denounced" text="That is unfortunate to hear. " />
+    <text type="Denounced" text="I am sorry that our relationship has come to this." />
+
+    <text type="Denouncing" text="Hello, past friend. It is clear you are a danger to the world." />
+    <text type="Denouncing" text="As time goes on and we grow up, I have learned, much like a childhood friend, that you are dangerous and not to be trusted." />
+    <text type="Denouncing" text="It pains me to say that I have befriended a reckless monster." />
+    <text type="Denouncing" text="It is nothing personal between us. I warn others of your bloodthirsty nature for their sake." />
+
+    <text type="AllySuccess" text="I am sorry to hear that. Perhaps we could negotiate again?" />
+    <text type="AllySuccess" text="So be it. I'm sorry about the divide between our two nations." />
+    <text type="AllyFailure" text="That is unfortunate to hear. " />
+    <text type="AllyFailure" text="I am sorry that our relationship has come to this." />
+
+    <text type="AllyPropose" text="That is unfortunate to hear. " />
+    <text type="AllyPropose" text="I am sorry that our relationship has come to this." />
+
+    <text type="Denouncing" text="Hello, past friend. It is clear you are a danger to the world." />
+    <text type="Denouncing" text="As time goes on and we grow up, I have learned, much like a childhood friend, that you are dangerous and not to be trusted." />
+    <text type="Denouncing" text="It pains me to say that I have befriended a reckless monster." />
+    <text type="Denouncing" text="It is nothing personal between us. I warn others of your bloodthirsty nature for their sake." />
+
+    <text type="Warning" text="Hello, friend. I suggest that you update your military." />
+    <text type="Warning" text="The others are bloodthirsty for your lands. Watch your back." />
+    <text type="Warning" text="I would be careful, friend. Nothing is certain in this age." />
+    <text type="Warning" text="Your people have flourished. I would suggest investing in your military to maintain your greatness." />
+
+    <text type="Demand" text="Hello, friend. Unfortunately it is not going so well for me. Perhaps you could share?" />
+    <text type="Demand" text="It pains me to ask of you a favor at this time." />
+    <text type="Demand" text="Hello. Others eye my empire and my lands constantly. Could you spare some help?" />
+    <text type="Demand" text="Friendship is a trade, a relationship. I am in need of an investment." />
+
+    <text type="DontSettleNearUsSuccess" text="I suppose it is for the best. Fair enough." />
+    <text type="DontSettleNearUsSuccess" text="Close borders may hurt our friendship. I will move away." />
+
+    <text type="DontSettleNearUsFailure" text="I am sorry, friend. My people cannot breathe in our own lands." />
+    <text type="DontSettleNearUsFailure" text="Hello, I hope that we can more reasonable neighbors." />
+
+    <text type="DontSettleNearUsPropose" text="Hello, it appears that your people are too anxious to be next to us." />
+    <text type="DontSettleNearUsPropose" text="Our close borders may spark tensions between less diplomatic individuals." />
+    <text type="DontSettleNearUsPropose" text="My people need land as much as your people have settled it." />
+    <text type="DontSettleNearUsPropose" text="Hello, I hope that we can more reasonable and diplomatic neighbors." />
+</resources>
