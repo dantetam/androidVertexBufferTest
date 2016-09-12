@@ -165,14 +165,26 @@ public class WorldSystem {
         }
         //int totalScience = 0, totalGold = 0;
         Inventory totalResources = new Inventory();
+
+        clan.lastHappiness = 4;
+
         for (City city: clan.cities) {
             //Determine yield here? Don't separate process.
             Object[] objects = city.gameYield();
             int[] yield = (int[]) objects[0];
             Inventory inventory = (Inventory) objects[1];
 
+            city.lastHealth = yield[5];
+
             int workingPopulation = city.population - city.freeWorkingPopulation;
-            city.foodStoredForGrowth += yield[0] - workingPopulation * 2 - city.freeWorkingPopulation * 1;
+            double foodGain = yield[0] - workingPopulation * 2 - city.freeWorkingPopulation * 1;
+            if (clan.lastHappiness < 0) {
+                foodGain *= 0.5;
+            }
+            if (city.lastHealth < 0) {
+                foodGain += city.lastHealth * 2;
+            }
+            city.foodStoredForGrowth += (int) foodGain;
             if (city.foodStoredForGrowth >= city.foodNeededForGrowth) {
                 city.foodStoredForGrowth -= city.foodNeededForGrowth;
 
@@ -222,6 +234,7 @@ public class WorldSystem {
             }
 
             clan.totalGold += yield[3];
+            clan.lastHappiness += yield[4];
             clan.totalCulture += yield[6];
 
             totalResources.addAnotherInventory(inventory);

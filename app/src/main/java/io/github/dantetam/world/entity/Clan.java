@@ -32,6 +32,7 @@ public class Clan {
     public Inventory resources;
 
     public int totalGold, totalCulture;
+    public int lastHappiness = 4;
 
     public Clan(String n) {
         name = n;

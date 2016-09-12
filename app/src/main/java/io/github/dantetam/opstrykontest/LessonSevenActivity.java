@@ -421,21 +421,43 @@ public class LessonSevenActivity extends Activity implements
         diploMainDialogue.setVisibility(View.INVISIBLE);
 
         final LinearLayout mainTrade = (LinearLayout) findViewById(R.id.diplomacy_menu_trade);
-        final LinearLayout theirOffer = (LinearLayout) findViewById(R.id.diplomacy_menu_trade_enemy_offer);
-        final LinearLayout yourOffer = (LinearLayout) findViewById(R.id.diplomacy_menu_trade_your_offer);
+        final LinearLayout theirProposals = (LinearLayout) findViewById(R.id.diplomacy_menu_trade_enemy_proposal);
+        final LinearLayout yourProposals = (LinearLayout) findViewById(R.id.diplomacy_menu_trade_your_proposal);
+
+        final LinearLayout theirOffer = (LinearLayout) findViewById(R.id.diplomacy_menu_trade_their_current_offer);
+        final LinearLayout yourOffer = (LinearLayout) findViewById(R.id.diplomacy_menu_trade_your_current_offer);
 
         mainTrade.removeAllViews();
-        theirOffer.removeAllViews();
-        yourOffer.removeAllViews();
+        theirProposals.removeAllViews();
+        yourProposals.removeAllViews();
 
         mainTrade.setVisibility(View.VISIBLE);
+        theirProposals.setVisibility(View.VISIBLE);
+        yourProposals.setVisibility(View.VISIBLE);
+
         theirOffer.setVisibility(View.VISIBLE);
         yourOffer.setVisibility(View.VISIBLE);
 
-        findOffers(c, playerClan, theirOffer);
-        findOffers(playerClan, c, yourOffer);
+        findOffers(c, playerClan, theirProposals);
+        findOffers(playerClan, c, yourProposals);
 
         Button clanView = new Button(this);
+        clanView.setHeight(120);
+        String opinion = mRenderer.worldSystem.relations.get(c).getOpinionString(playerClan);
+        clanView.setText(c.ai.leaderName + " of the " + c.name + " (" + opinion + ")");
+        clanView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu tempMenu = new PopupMenu(mActivity, v);
+                MenuInflater inflater = tempMenu.getMenuInflater();
+                inflater.inflate(R.menu.unit_selection_menu, tempMenu.getMenu());
+                onCreateDiplomacyHistory(tempMenu.getMenu(), mRenderer.worldSystem.relations.get(c).getRelationModsForClan(playerClan));
+                tempMenu.show();
+            }
+        });
+        mainTrade.addView(clanView);
+
+        clanView = new Button(this);
         clanView.setHeight(120);
         clanView.setText(tradeMessage);
         mainTrade.addView(clanView);
@@ -447,6 +469,8 @@ public class LessonSevenActivity extends Activity implements
             @Override
             public void onClick(View v) {
                 mainTrade.setVisibility(View.INVISIBLE);
+                theirProposals.setVisibility(View.INVISIBLE);
+                yourProposals.setVisibility(View.INVISIBLE);
                 theirOffer.setVisibility(View.INVISIBLE);
                 yourOffer.setVisibility(View.INVISIBLE);
                 onClickDiplomacyMenu(c);
