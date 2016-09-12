@@ -218,6 +218,42 @@
                     android:onClick="onClickEndDiplomacyMenu" />-->
             </LinearLayout>
         </ScrollView>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:id="@+id/diplomacy_menu_trade"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:paddingLeft="16dp"
+                      android:paddingRight="16dp"
+                      android:orientation="vertical"
+                      app:layout_widthPercent="50%"
+                      app:layout_heightPercent="60%"
+                      app:layout_marginTopPercent="20%"
+                      app:layout_marginLeftPercent="25%"
+                      android:visibility="invisible" />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:id="@+id/diplomacy_menu_trade_enemy_offer"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:paddingLeft="16dp"
+                      android:paddingRight="16dp"
+                      android:orientation="vertical"
+                      app:layout_widthPercent="20%"
+                      app:layout_heightPercent="60%"
+                      app:layout_marginTopPercent="20%"
+                      app:layout_marginLeftPercent="5%"
+                      android:visibility="invisible" />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:id="@+id/diplomacy_menu_trade_your_offer"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:paddingLeft="16dp"
+                      android:paddingRight="16dp"
+                      android:orientation="vertical"
+                      app:layout_widthPercent="20%"
+                      app:layout_heightPercent="60%"
+                      app:layout_marginTopPercent="20%"
+                      app:layout_marginLeftPercent="75%"
+                      android:visibility="invisible" />
         <Button
             android:id="@+id/main_menu"
             android:text="@string/main_menu"

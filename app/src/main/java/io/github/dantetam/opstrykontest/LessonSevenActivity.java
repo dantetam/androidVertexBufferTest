@@ -389,6 +389,17 @@ public class LessonSevenActivity extends Activity implements
                 }
             });
             clanMenu.addView(denounceButton);
+
+            Button tradeButton = new Button(this);
+            tradeButton.setHeight(120);
+            tradeButton.setText("< Trade >");
+            tradeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tradeMenuMessage(c, "What is your offer?");
+                }
+            });
+            clanMenu.addView(tradeButton);
         }
         clanView = new Button(this);
         clanView.setHeight(120);
@@ -400,6 +411,79 @@ public class LessonSevenActivity extends Activity implements
             }
         });
         clanMenu.addView(clanView);
+    }
+
+    public void tradeMenuMessage(final Clan c, String tradeMessage) {
+        ScrollView clanMenu = (ScrollView) findViewById(R.id.diplomacy_menu_talk);
+        LinearLayout diploMainDialogue = (LinearLayout) findViewById(R.id.diplomacy_menu_talk_main);
+
+        clanMenu.setVisibility(View.INVISIBLE);
+        diploMainDialogue.setVisibility(View.INVISIBLE);
+
+        final LinearLayout mainTrade = (LinearLayout) findViewById(R.id.diplomacy_menu_trade);
+        final LinearLayout theirOffer = (LinearLayout) findViewById(R.id.diplomacy_menu_trade_enemy_offer);
+        final LinearLayout yourOffer = (LinearLayout) findViewById(R.id.diplomacy_menu_trade_your_offer);
+
+        mainTrade.removeAllViews();
+        theirOffer.removeAllViews();
+        yourOffer.removeAllViews();
+
+        mainTrade.setVisibility(View.VISIBLE);
+        theirOffer.setVisibility(View.VISIBLE);
+        yourOffer.setVisibility(View.VISIBLE);
+
+        findOffers(c, playerClan, theirOffer);
+        findOffers(playerClan, c, yourOffer);
+
+        Button clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText(tradeMessage);
+        mainTrade.addView(clanView);
+
+        clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText("Never mind.");
+        clanView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainTrade.setVisibility(View.INVISIBLE);
+                theirOffer.setVisibility(View.INVISIBLE);
+                yourOffer.setVisibility(View.INVISIBLE);
+                onClickDiplomacyMenu(c);
+            }
+        });
+        mainTrade.addView(clanView);
+    }
+
+    public void findOffers(Clan clan, Clan offering, LinearLayout layout) {
+        Button clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText(clan.totalGold + " gold");
+        layout.addView(clanView);
+
+        for (City city: clan.cities) {
+            clanView = new Button(this);
+            clanView.setHeight(120);
+            clanView.setText(city.name + " " + city.population + " " + city.cityTiles.size());
+            layout.addView(clanView);
+        }
+
+        for (Clan otherClan: mRenderer.worldSystem.world.getClans()) {
+            if (!otherClan.equals(offering) && !otherClan.equals(clan)) {
+                if (!mRenderer.worldSystem.atWar(clan, otherClan)) {
+                    clanView = new Button(this);
+                    clanView.setHeight(120);
+                    clanView.setText("Declare WAR on " + otherClan.name);
+                    layout.addView(clanView);
+                }
+                else {
+                    clanView = new Button(this);
+                    clanView.setHeight(120);
+                    clanView.setText("Make PEACE with " + otherClan.name);
+                    layout.addView(clanView);
+                }
+            }
+        }
     }
 
     public void diplomacyMenuMessage(final Clan c, String message, String response, boolean endComms) {
