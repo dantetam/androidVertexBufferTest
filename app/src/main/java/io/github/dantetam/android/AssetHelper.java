@@ -2,6 +2,7 @@ package io.github.dantetam.android;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -393,6 +394,26 @@ public class AssetHelper {
             textures = c;
             faces = d;
         }
+    }
+
+    public static Drawable getDrawableFromAssets(Context context, String path) {
+        Drawable drawable = null;
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getAssets().open(path);
+            drawable = Drawable.createFromStream(inputStream, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return drawable;
     }
 
 }
