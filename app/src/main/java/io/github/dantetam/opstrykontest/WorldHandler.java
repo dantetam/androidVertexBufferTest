@@ -1398,7 +1398,7 @@ public class WorldHandler {
                         Entity en = tile.occupants.get(i);
                         float[][] finalData = new float[3][];
                         if (en instanceof Person) {
-                            if (((Person) en).personType.modelName != null) {
+                            if (((Person) en).personType.modelName != null && ((Person) en).completionPercentage() >= 1.0) {
                                 PersonType personType = ((Person) en).personType;
                                 float[][] unitData = assetHelper.loadVertexFromAssets(personType.modelName + ".obj");
                                 float[] scaledData = scaleData(unitData[0], personType.modelScale, personType.modelScale, personType.modelScale);

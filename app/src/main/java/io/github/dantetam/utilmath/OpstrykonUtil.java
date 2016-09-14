@@ -15,6 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import io.github.dantetam.android.TextureHelper;
+
 /**
  * Created by Dante on 8/20/2016.
  */
@@ -48,19 +50,28 @@ public class OpstrykonUtil {
     public static void processImageSpan(Context context, TextView textView) {
         SpannableString ss = new SpannableString(textView.getText());
         for (int i = 0; i < textView.getText().length() - 1; i++) {
-            if (textView.getText().charAt(i) == '<' && textView.getText().charAt(i + 1) == '{') {
+            boolean tagBeginFirstType = textView.getText().charAt(i) == '<' && textView.getText().charAt(i + 1) == '{';
+            boolean tagBeginSecondType = textView.getText().charAt(i) == '-' && textView.getText().charAt(i + 1) == '{';
+            if (tagBeginFirstType || tagBeginSecondType) {
                 boolean foundTag = false;
                 int j = i;
                 for (; j < textView.getText().length() - 1; j++) {
-                    if (textView.getText().charAt(j) == '}' && textView.getText().charAt(j + 1) == '>') {
+                    boolean tagEndFirstType = textView.getText().charAt(j) == '}' && textView.getText().charAt(j + 1) == '>';
+                    boolean tagEndSecondType = textView.getText().charAt(j) == '}' && textView.getText().charAt(j + 1) == '-';
+                    if (tagEndFirstType || tagEndSecondType) {
                         foundTag = true;
                         break;
                     }
                 }
                 if (foundTag) {
                     String drawableName = textView.getText().toString().substring(i + 2, j);
-                    int resId = context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName());
-                    Drawable drawable = context.getResources().getDrawable(resId);
+
+                    Drawable drawable = TextureHelper.drawablesById.get(drawableName);
+                    if (drawable == null) {
+                        int resId = context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName());
+                        drawable = context.getResources().getDrawable(resId);
+                        TextureHelper.drawablesById.put(drawableName, drawable);
+                    }
 
                     Rect bounds = new Rect();
                     textView.getPaint().getTextBounds(textView.getText().toString(), 0, textView.getText().length(), bounds);
@@ -75,7 +86,9 @@ public class OpstrykonUtil {
                 }
             }
         }
-        textView.setText(ss);
+        //textView.setText(ss);
     }
 
 }
+
+

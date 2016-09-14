@@ -293,7 +293,7 @@
             android:longClickable="true" />
         <Button
             android:id="@+id/tech_menu"
-            android:text="@string/tech_menu"
+            android:text="Technology -{science}-"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_widthPercent="20%"

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import io.github.dantetam.opengl.MousePicker;
+import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.Clan;
@@ -274,17 +275,26 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
         }
     }
 
-    public void update() {
+    public void forceUpdate() {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                updateMenu();
+                updateMenu(true);
             }
         });
     }
 
-    private void updateMenu() {
-        if (mRenderer.getCombatMode()) {
+    public void update() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateMenu(false);
+            }
+        });
+    }
+
+    private void updateMenu(boolean forceUpdate) {
+        if (mRenderer.getCombatMode() || forceUpdate) {
             Button quickSummaryMenu = (Button) mActivity.findViewById(R.id.quick_summary_view);
             quickSummaryMenu.setVisibility(View.INVISIBLE);
 
@@ -316,7 +326,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             Button exitCombatMenu = (Button) mActivity.findViewById(R.id.combat_exit_menu);
             exitCombatMenu.setVisibility(View.INVISIBLE);
 
-            if (mousePicker.selectedNeedsUpdating()) {
+            if (mousePicker.selectedNeedsUpdating() || forceUpdate) {
                 mousePicker.nextFrameSelectedNeedsUpdating = false;
 
                 Tile selectedTile = mousePicker.getSelectedTile();
@@ -337,25 +347,26 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     Clan owner = selectedTile.world.getTileOwner(selectedTile), influence = selectedTile.world.getTileInfluence(selectedTile);
                     String affiliation = "";
                     if (owner != null) {
-                        affiliation = owner.name;
+                        affiliation = owner.name + " <{culture}>";
                     } else if (influence != null) {
-                        affiliation = "(" + influence.name + ")";
+                        affiliation = "(" + influence.name + ") <{forest}>";
                     } else {
-                        affiliation = "Free";
+                        affiliation = "Free <{forest}>";
                     }
                     stringy += affiliation;
                     stringy += " " + Tile.Biome.nameFromInt(selectedTile.biome.type) + ", " + Tile.Terrain.nameFromInt(selectedTile.terrain.type);
+                    stringy += " <{" + Tile.Terrain.imageName(selectedTile.terrain) + "}>";
                     if (selectedTile.improvement != null) {
-                        stringy += " " + selectedTile.improvement.name;
+                        stringy += " " + selectedTile.improvement.name + " <{building}>";
                     }
                 } else if (selectedEntityExists) {
                     stringy += selectedEntity.name;
                     Clan owner = selectedEntity.clan;
                     String affiliation = "";
                     if (owner != null) {
-                        affiliation = owner.name;
+                        affiliation = owner.name + " <{culture}>";
                     } else {
-                        affiliation = "Free";
+                        affiliation = "Free <{forest}>";
                     }
                     stringy += " " + affiliation;
                     if (selectedEntity instanceof Person) {
@@ -365,6 +376,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     stringy += " " + selectedEntity.location();
                 }
                 quickSummaryMenu.setText(stringy);
+                //OpstrykonUtil.processImageSpan(mActivity, quickSummaryMenu);
 
                 mActivity.findViewById(R.id.build_menu).setVisibility(selectedImprovementExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
                 InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.build_menu), new String[]{
@@ -429,6 +441,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         "which lists the tech you can research.",
                         "This uses your total science output."
                 });
+                //OpstrykonUtil.processImageSpan(mActivity, (Button) mActivity.findViewById(R.id.tech_menu));
             }
         }
     }

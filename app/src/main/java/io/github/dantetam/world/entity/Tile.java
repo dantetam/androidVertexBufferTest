@@ -102,6 +102,10 @@ public class Tile implements Traversable<Tile> {
         }
         public static final int numTerrains = types.length;
         public static final int numSeaTerrains = 2;
+        private static String[] terrainIconNames = {"shallow_sea", "deep_sea", "islands", "plains", "hills", "cliffs", "mountains"};
+        public static String imageName(Terrain terrain) {
+            return terrainIconNames[terrain.type];
+        }
     }
 
     public enum Feature {

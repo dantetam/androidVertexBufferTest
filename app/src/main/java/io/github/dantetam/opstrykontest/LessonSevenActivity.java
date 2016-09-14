@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ConfigurationInfo;
 import android.graphics.Color;
+import android.opengl.EGLConfig;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
@@ -602,6 +603,7 @@ public class LessonSevenActivity extends Activity implements
             ((Button) v).setText("CHOOSE RESEARCH");
             if (findViewById(R.id.tech_tree_screen).getVisibility() == View.INVISIBLE)
                 onClickTechMenu(findViewById(R.id.tech_menu));
+            mGLSurfaceView.forceUpdate();
         } else {
             ((Button) v).setText("NEXT TURN");
             //((MenuItem) findViewById(R.id.next_turn_button)).setTitle("NEXT TURN");
@@ -650,6 +652,9 @@ public class LessonSevenActivity extends Activity implements
     public boolean onCreateUnitSelectionMenu(Menu menu) {
         Tile selected = mRenderer.mousePicker.getSelectedTile();
         if (selected == null) {
+            if (mRenderer.mousePicker.getSelectedEntity() == null) {
+                return true;
+            }
             selected = mRenderer.mousePicker.getSelectedEntity().location();
         }
         if (selected != null) {
@@ -1137,7 +1142,7 @@ public class LessonSevenActivity extends Activity implements
             playerGlobalScience = 1;
 
         TechTree tree = playerClan.techTree;
-        for (Map.Entry<String, Tech> entry : playerClan.techTree.techMap.entrySet()) {
+        for (Map.Entry<String, Tech> entry : tree.techMap.entrySet()) {
             final Tech tech = entry.getValue();
 
             int minX = (int) tree.screenCenterX - tree.sightX;

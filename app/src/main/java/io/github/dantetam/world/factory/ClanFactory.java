@@ -102,15 +102,17 @@ public class ClanFactory {
         while (clan == null || usedClans.contains(clan.name)) {
             String key = parser.clanKeys[(int)(Math.random()*parser.clanKeys.length)];
             Clan randomAi = parser.clans.get(key);
-            clan = newClan(Clan.ClanType.random(), Clan.ClanFaction.random(), randomAi);
+
+            clan = newClan(randomAi);
+            System.out.println(">>>>" + clan.ai.strategy);
         }
         usedClans.add(clan.name);
         return clan;
     }
 
-    public static Clan newClan(Clan.ClanType clanType, Clan.ClanFaction clanFaction, Clan aiType) {
-        /*Clan.ClanType clanType;
-        Clan.ClanFaction clanFaction;*/
+    public static Clan newClan(Clan aiType) {
+        Clan.ClanType clanType = Clan.ClanType.random();
+        Clan.ClanFaction clanFaction  = Clan.ClanFaction.random();
         List<Vector4f> colors = clanTypeColorSchemes.get(clanType);
         List<Vector4f> secondaryColors = clanFactionColorSchemes.get(clanFaction);
         Vector4f primaryColor, secondaryColor;
@@ -129,7 +131,36 @@ public class ClanFactory {
                 System.err.println("Invalid clan type: " + type);
                 return null;
         }*/
+        aiType.color = primaryColor;
+        aiType.reducedColor = primaryColor.scaled(0.7f);
+        aiType.secondaryColor = secondaryColor;
+        aiType.reducedSecondaryColor = secondaryColor.scaled(0.7f);
+        return aiType;
+    }
+
+    /*public static Clan newClan(Clan.ClanType clanType, Clan.ClanFaction clanFaction, Clan aiType) {
+        *//*Clan.ClanType clanType;
+        Clan.ClanFaction clanFaction;*//*
+        List<Vector4f> colors = clanTypeColorSchemes.get(clanType);
+        List<Vector4f> secondaryColors = clanFactionColorSchemes.get(clanFaction);
+        Vector4f primaryColor, secondaryColor;
+        if (colors.size() == 0 || secondaryColors.size() == 0) {
+            return null;
+        }
+        else {
+            primaryColor = colors.get((int)(Math.random()*colors.size())).scaled(255f);
+            secondaryColor = secondaryColors.get((int)(Math.random()*secondaryColors.size())).scaled(255f);
+        }
+        *//*switch (type) {
+            case 0:
+                clanType.
+                break;
+            default:
+                System.err.println("Invalid clan type: " + type);
+                return null;
+        }*//*
         Clan clan = new Clan(aiType.name);
+        clan.techTree = aiType.techTree;
         clan.ai = aiType.ai;
         clan.color = primaryColor;
         clan.reducedColor = primaryColor.scaled(0.7f);
@@ -139,6 +170,6 @@ public class ClanFactory {
         clan.clanFaction = clanFaction;
         clan.cityNames = aiType.cityNames;
         return clan;
-    }
+    }*/
 
 }

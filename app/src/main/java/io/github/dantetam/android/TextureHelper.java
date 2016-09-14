@@ -3,6 +3,7 @@ package io.github.dantetam.android;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
@@ -18,6 +19,7 @@ public class TextureHelper
 {
     //Stores name of texture and its respective OpenGL handle
     public static HashMap<String, Integer> texturesByName = new HashMap<>();
+    public static HashMap<String, Drawable> drawablesById = new HashMap<>();
 
     /*
     Load a texture and look it up solely by name.

@@ -249,9 +249,10 @@ public class WorldSystem {
         if (owner == null) {
             return true;
         } else {
+            boolean sameClan = en.clan.equals(owner);
             boolean openBorders = this.containsMod(owner, en.clan, RelationModifier.OPEN_BORDERS);
             boolean war = this.atWar(owner, en.clan);
-            return openBorders || war;
+            return sameClan || openBorders || war;
         }
     }
 

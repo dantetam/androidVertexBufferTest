@@ -52,6 +52,11 @@ public class ArtificialIntelligence {
                 }
             }
         }
+        System.out.println(clan + ">>>" + clan.techTree);
+        if (clan.techTree.researchingTechQueue.size() == 0) {
+            Tech tech = computeBestTech();
+            clan.techTree.researchingTechQueue.add(tech);
+        }
     }
 
     public void computerClanCombat(CombatPlan combatPlan) {
@@ -96,6 +101,7 @@ public class ArtificialIntelligence {
     }
 
     public Tech computeBestTech() {
+        System.out.println(clan.techTree + "<<<<");
         List<Tech> researchableTech = clan.techTree.getResearchableTech();
         Map<Tech, Integer> techByScore = new LinkedHashMap<>();
         for (Tech tech: researchableTech) {
@@ -206,18 +212,20 @@ public class ArtificialIntelligence {
             int capPerTurn = buildingType.capital();
             score += foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn;
         }
-        for (Tile tile: world.getAllValidTiles()) {
-            if (tile.improvement == null) {
-                if (world.getTileOwner(tile).equals(clan) || world.getTileInfluence(tile).equals(clan)) {
-                    BuildingType buildingType = tile.improvement.buildingType;
-                    int foodPerTurn = buildingType.food();
-                    int prodPerTurn = buildingType.production();
-                    int sciPerTurn = buildingType.science();
-                    int capPerTurn = buildingType.capital();
-                    score += foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn;
+        /*for (Tile tile: world.getAllValidTiles()) {
+            if (tile.improvement != null) {
+                if (world.getTileOwner(tile) != null) {
+                    if (world.getTileOwner(tile).equals(clan)) {
+                        BuildingType buildingType = tile.improvement.buildingType;
+                        int foodPerTurn = buildingType.food();
+                        int prodPerTurn = buildingType.production();
+                        int sciPerTurn = buildingType.science();
+                        int capPerTurn = buildingType.capital();
+                        score += foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn;
+                    }
                 }
             }
-        }
+        }*/
 
         //Diplomacy score? Number of friends?
         //TODO:

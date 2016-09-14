@@ -46,15 +46,16 @@ public class TechXmlParser {
                 resourceId);
         final InputStream techLocationStream = context.getResources().openRawResource(
                 secondResourceId);
+        TechTree result = null;
         try {
-            TechTree result = parseTechTree(tree, techStream);
+            result = parseTechTree(tree, techStream);
             parseTechLocationTree(result, techLocationStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
     /*
