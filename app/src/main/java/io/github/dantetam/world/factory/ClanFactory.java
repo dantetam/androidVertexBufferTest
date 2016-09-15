@@ -104,7 +104,6 @@ public class ClanFactory {
             Clan randomAi = parser.clans.get(key);
 
             clan = newClan(randomAi);
-            System.out.println(">>>>" + clan.ai.strategy);
         }
         usedClans.add(clan.name);
         return clan;

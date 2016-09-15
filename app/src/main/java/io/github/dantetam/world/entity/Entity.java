@@ -27,6 +27,8 @@ public abstract class Entity {
     public List<Action> actionsQueue; //Do actions at position 0 first
     public int actionPoints, maxActionPoints;
 
+    public boolean fortify = false;
+
     public int atk, def, maneuver, fire, shock;
     public List<String> combatAbilities;
     public int exp;

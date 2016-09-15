@@ -23,22 +23,38 @@ public class City extends Building {
 
     public Clan isCapital;
 
-    public int population, freeWorkingPopulation;
+    private int population, freeWorkingPopulation;
+    public int population() {return population;}
+    public int freeWorkingPopulation() {return freeWorkingPopulation;}
     public int foodStoredForGrowth, foodNeededForGrowth;
 
-    public int lastHealth = 4;
+    public int lastYieldHealth = 4;
 
     //where generateCityFoodData[n] represents the needed food to go from n-1 to n
     private static int[] cityFoodData = null;
     public static int[] cityFoodData() {
+        return cityFoodData;
+    }
+
+    public static void initCityData() {
         if (cityFoodData == null) {
-            cityFoodData = new int[30];
+            cityHealthData = new int[100];
+            cityHealthData[0] = 0;
+            cityFoodData = new int[100];
             cityFoodData[0] = 0;
             for (int i = 1; i < cityFoodData.length; i++) {
+                cityHealthData[i] = 50 + i*5;
                 cityFoodData[i] = 10 + i*5;
             }
         }
-        return cityFoodData;
+    }
+
+    private static int[] cityHealthData = null;
+    public static int[] cityHealthData() {
+        if (cityHealthData == null) {
+            initCityData();
+        }
+        return cityHealthData;
     }
 
     public int tilesExpanded = 0;
@@ -277,6 +293,12 @@ public class City extends Building {
         freeWorkingPopulation = population;
     }
 
+    public void increasePopulation() {
+        population++; freeWorkingPopulation++;
+        foodNeededForGrowth = City.cityFoodData()[population];
+        maxHealth = City.cityFoodData()[population];
+    }
+
     public void expandToBestTile() {
         LinkedHashMap<Tile, Double> tilesByScore = new LinkedHashMap<>();
 
@@ -289,7 +311,8 @@ public class City extends Building {
         Set<Tile> tilesToPick = sorted.keySet();
 
         Tile bestTile = tilesToPick.iterator().next();
-        cityTiles.add(bestTile);
+        addTileToTerritory(bestTile);
+        //cityTiles.add(bestTile);
         world.setTileOwner(bestTile, clan);
     }
 

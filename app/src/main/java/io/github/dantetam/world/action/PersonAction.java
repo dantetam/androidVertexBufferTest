@@ -20,6 +20,8 @@ public class PersonAction extends Action {
                 return person.gameBuild((Building) data);*/
             case MOVE:
                 return person.gameMove((Tile) data);
+            case FORTIFY: <---TODO
+                return person.gameFortify();
             default:
                 System.out.println("Invalid action type: " + type);
                 return ActionStatus.IMPOSSIBLE;
@@ -32,6 +34,8 @@ public class PersonAction extends Action {
                 return "Build: " + ((Building) super.data).name;*/
             case MOVE:
                 return "Move: " + ((Tile) super.data).toString();
+            case FORTIFY:
+                return "Fortify";
             default:
                 System.out.println("Invalid action type: " + type);
                 return null;

@@ -42,6 +42,10 @@ public class BuildingFactory {
         city.workNeeded = 1;
         city.workCompleted = 1;
 
+        int startingHealth = city.cityHealthData()[1];
+        city.health = startingHealth;
+        city.maxHealth = startingHealth;
+
         int atk = 0, def = 0, fire = 0, shock = 0;
         int exp = 0;
 

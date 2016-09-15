@@ -74,6 +74,18 @@ public class Person extends Entity {
         return moved;
     }
 
+    public ActionStatus gameFortify() {
+        if (fortify) {
+            return ActionStatus.ALREADY_COMPLETED;
+        }
+        if (actionPoints > 0) {
+            actionPoints--;
+            fortify = true;
+            return ActionStatus.EXECUTED;
+        }
+        return ActionStatus.OUT_OF_ENERGY;
+    }
+
     public ActionStatus gameBuild(Building b) {
         if (b.location() == null) {
             b.move(location);
@@ -99,12 +111,12 @@ public class Person extends Entity {
         return 3;
     }
 
-    private ActionStatus gameHealHealth() {
+    /*private ActionStatus gameHealHealth() {
         if (health < maxHealth) {
             if (actionPoints <= 0) {
                 return ActionStatus.OUT_OF_ENERGY;
             }
-            health += (int) (0.1d * maxHealth);
+            health += (int) (0.05d * maxHealth);
             if (health > maxHealth) {
                 health = maxHealth;
             }
@@ -112,7 +124,7 @@ public class Person extends Entity {
             return ActionStatus.EXECUTED;
         }
         return ActionStatus.ALREADY_COMPLETED;
-    }
+    }*/
 
     public ActionStatus gameMovePath(Tile destination) {
         List<Tile> path = WorldSystem.worldPathfinder.findPath(location, destination);

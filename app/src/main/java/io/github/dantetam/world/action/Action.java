@@ -24,6 +24,7 @@ public abstract class Action {
         //BUILD, //The unit (person) moves to a location and builds
         MOVE, //Move to a tile, one tile at a time
         PROCESS, //The unit (building) converts both generic yield and named resources into other resources
+        FORTIFY, //For combat units, the unit holds its place, and gains a 15% defensive bonus
         //FIGHT, //Fight another unit
         QUEUE_BUILD_MODULE, //The unit (building) makes an improvement for itself
         QUEUE_BUILD_UNIT, //The unit (building) creates a unit

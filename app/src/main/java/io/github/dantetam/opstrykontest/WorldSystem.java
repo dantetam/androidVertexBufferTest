@@ -1,9 +1,7 @@
 package io.github.dantetam.opstrykontest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.ai.ArtificialIntelligence;
@@ -174,22 +172,20 @@ public class WorldSystem {
             int[] yield = (int[]) objects[0];
             Inventory inventory = (Inventory) objects[1];
 
-            city.lastHealth = yield[5];
+            city.lastYieldHealth = yield[5];
 
-            int workingPopulation = city.population - city.freeWorkingPopulation;
-            double foodGain = yield[0] - workingPopulation * 2 - city.freeWorkingPopulation * 1;
+            int workingPopulation = city.population() - city.freeWorkingPopulation();
+            double foodGain = yield[0] - workingPopulation * 2 - city.freeWorkingPopulation() * 1;
             if (clan.lastHappiness < 0) {
                 foodGain *= 0.5;
             }
-            if (city.lastHealth < 0) {
-                foodGain += city.lastHealth * 2;
+            if (city.lastYieldHealth < 0) {
+                foodGain += city.lastYieldHealth * 2;
             }
             city.foodStoredForGrowth += (int) foodGain;
             if (city.foodStoredForGrowth >= city.foodNeededForGrowth) {
                 city.foodStoredForGrowth -= city.foodNeededForGrowth;
-
-                city.population++; city.freeWorkingPopulation++;
-                city.foodNeededForGrowth = City.cityFoodData()[city.population];
+                city.increasePopulation();
             }
 
             city.cultureStoredForExpansion += yield[6];
@@ -238,6 +234,26 @@ public class WorldSystem {
             clan.totalCulture += yield[6];
 
             totalResources.addAnotherInventory(inventory);
+        }
+
+        for (Person person: clan.people) {
+            if (person.fortify || (person.location() != null && person.location().improvement instanceof City)) {
+                if (person.health < person.maxHealth) {
+                    person.health += person.maxHealth * 0.1f;
+                    if (person.health > person.maxHealth) {
+                        person.health = person.maxHealth;
+                    }
+                }
+            }
+        }
+
+        for (City city: clan.cities) {
+            if (city.health < city.maxHealth) {
+                city.health += city.maxHealth * 0.1f;
+                if (city.health > city.maxHealth) {
+                    city.health = city.maxHealth;
+                }
+            }
         }
     }
 

@@ -102,7 +102,7 @@ public class GuiHandler {
                     //System.out.println((guiPosition.x + cityQueue.getWidth() / 2) + " ");
                 } else {
                     //System.out.println("<<<<>>>>");
-                    createEntityHealthBar(+entity);
+                    createEntityHealthBar(entity);
                 }
             }
         }
