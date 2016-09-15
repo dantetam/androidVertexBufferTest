@@ -215,11 +215,15 @@ public class MousePicker {
 
     //Reverse of the transformation in the previous function. Although that was the reverse,
     //so I guess this is the "normal" forward directed transformation?
-    public Vector2f calculateGraphicsScreenPos(float posX, float posZ)
-    {
+    //Convert a 2D point on the xy plane into screen coordinates.
+    public Vector2f calcScrPos(float posX, float posZ) {
+        return calcScrPos(posX, 0, posZ);
+    }
+    //Convert a 3D point in world coordinates to screen coordinates.
+    public Vector2f calcScrPos(float posX, float posY, float posZ) {
         //transform world to clipping coordinates
         float[] point = new float[4];
-        Matrix.multiplyMV(point, 0, viewMatrix, 0, new float[]{posX, 0, posZ, 1}, 0);
+        Matrix.multiplyMV(point, 0, viewMatrix, 0, new float[]{posX, posY, posZ, 1}, 0);
 
         Matrix.multiplyMV(point, 0, projMatrix, 0, point, 0);
 

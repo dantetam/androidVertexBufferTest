@@ -19,6 +19,7 @@ import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.Entity;
+import io.github.dantetam.world.entity.Tile;
 
 /**
  * Created by Dante on 9/8/2016.
@@ -31,6 +32,7 @@ public class GuiHandler {
     public HashMap<City, TextView> cityTitleGui = new HashMap<>();
     public HashMap<City, PercentRelativeLayout> cityQueueGui = new HashMap<>();
     public HashMap<City, PercentRelativeLayout> cityFoodGui = new HashMap<>();
+    public HashMap<Entity, PercentRelativeLayout> entityHealthGui = new HashMap<>();
 
     public GuiHandler(LessonSevenActivity activity, LessonSevenRenderer renderer) {
         mActivity = activity;
@@ -41,15 +43,22 @@ public class GuiHandler {
         cityFoodGui = new HashMap<>();
     }
 
+    /*public class ChainPositionView {
+        public TextView view;
+        public Object chain;
+        public Vector2f offset;
+    }*/
+
     public void updateGui(MousePicker mousePicker) {
         //System.out.println(storedCityPosition.toString() + " " + guiPosition.toString());
         PercentRelativeLayout guiLayout = (PercentRelativeLayout) mActivity.findViewById(R.id.gui_display);
+        HashMap<Tile, Vector3f> wPos = mRenderer.worldHandler.storedTileVertexPositions;
         for (Clan clan: mRenderer.worldHandler.world.getClans()) {
             for (City city: clan.cities) {
                 View cityView = cityTitleGui.get(city);
                 if (cityView != null) {
-                    Vector3f storedCityPosition = mRenderer.worldHandler.storedTileVertexPositions.get(city.location());
-                    Vector2f guiPosition = mousePicker.calculateGraphicsScreenPos(storedCityPosition.x, storedCityPosition.z);
+                    Vector3f storedCityPosition = wPos.get(city.location());
+                    Vector2f guiPosition = mousePicker.calcScrPos(storedCityPosition.x, storedCityPosition.z);
                     cityView.setX(guiPosition.x - cityView.getWidth() / 2);
                     cityView.setY(guiPosition.y - cityView.getHeight() / 2);
                 } else {
@@ -60,7 +69,7 @@ public class GuiHandler {
                 PercentRelativeLayout cityQueue = cityQueueGui.get(city);
                 if (cityView != null && cityQueue != null) {
                     Vector3f storedCityPosition = mRenderer.worldHandler.storedTileVertexPositions.get(city.location());
-                    Vector2f guiPosition = mousePicker.calculateGraphicsScreenPos(storedCityPosition.x, storedCityPosition.z);
+                    Vector2f guiPosition = mousePicker.calcScrPos(storedCityPosition.x, storedCityPosition.z);
                     cityQueue.setX(guiPosition.x + cityView.getWidth() / 2);
                     cityQueue.setY(guiPosition.y - cityView.getHeight() / 2);
                     //System.out.println((guiPosition.x + cityQueue.getWidth() / 2) + " ");
@@ -72,7 +81,7 @@ public class GuiHandler {
                 PercentRelativeLayout cityFood = cityFoodGui.get(city);
                 if (cityView != null && cityFood != null) {
                     Vector3f storedCityPosition = mRenderer.worldHandler.storedTileVertexPositions.get(city.location());
-                    Vector2f guiPosition = mousePicker.calculateGraphicsScreenPos(storedCityPosition.x, storedCityPosition.z);
+                    Vector2f guiPosition = mousePicker.calcScrPos(storedCityPosition.x, storedCityPosition.z);
                     cityFood.setX(guiPosition.x - cityView.getWidth() / 2 - cityFood.getWidth());
                     cityFood.setY(guiPosition.y - cityView.getHeight() / 2);
                     //System.out.println((guiPosition.x + cityQueue.getWidth() / 2) + " ");
@@ -81,8 +90,27 @@ public class GuiHandler {
                     createClanCityFood(clan, city);
                 }
             }
+            for (Entity entity: clan.people) {
+                PercentRelativeLayout entityHealth = entityHealthGui.get(entity);
+                if (entityHealth != null) {
+                    Vector3f storedCityPosition = mRenderer.worldHandler.storedTileVertexPositions.get(entity.location());
+                    Vector2f guiPosition = mousePicker.calcScrPos(storedCityPosition.x, storedCityPosition.z);
+                    entityHealth.setX(guiPosition.x);
+                    entityHealth.setY(guiPosition.y);
+                    //entityHealth.setX(guiPosition.x - cityView.getWidth() / 2 - cityFood.getWidth());
+                    //entityHealth.setY(guiPosition.y - cityView.getHeight() / 2);
+                    //System.out.println((guiPosition.x + cityQueue.getWidth() / 2) + " ");
+                } else {
+                    //System.out.println("<<<<>>>>");
+                    createEntityHealthBar(+entity);
+                }
+            }
         }
     }
+
+    /*public void validateGui(HashMap map, ) {
+
+    }*/
 
     private void createClanCityTitle(Clan clan, City city) {
         PercentRelativeLayout guiLayout = (PercentRelativeLayout) mActivity.findViewById(R.id.gui_display);
@@ -128,18 +156,9 @@ public class GuiHandler {
         percentFrame.setLayoutParams(param);
         guiLayout.addView(percentFrame);
 
-        TextView textView = new Button(mActivity);
-        PercentRelativeLayout.LayoutParams prodBarParam = new PercentRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        //foodBarParam.getPercentLayoutInfo().widthPercent = param.getPercentLayoutInfo().widthPercent;
-        //foodBarParam.getPercentLayoutInfo().heightPercent = param.getPercentLayoutInfo().heightPercent * 0.5f;
-        prodBarParam.getPercentLayoutInfo().widthPercent = 1f;
-        prodBarParam.getPercentLayoutInfo().heightPercent = percent;
-        prodBarParam.getPercentLayoutInfo().topMarginPercent = 1 - percent;
         percentFrame.setGravity(Gravity.TOP);
-        textView.setBackgroundColor(Color.RED);
-        textView.setLayoutParams(prodBarParam);
+        TextView textView = percentBarColorAndText(percent, Color.RED, "");
         percentFrame.addView(textView);
-        textView.bringToFront();
 
         cityQueueGui.put(city, percentFrame);
     }
@@ -157,6 +176,32 @@ public class GuiHandler {
 
         float percent = Math.min((float) city.foodStoredForGrowth / (float) city.foodNeededForGrowth, 1);
 
+        TextView textView = percentBarColorAndText(percent, Color.GREEN, "");
+        percentFrame.addView(textView);
+
+        cityFoodGui.put(city, percentFrame);
+    }
+
+    private void createEntityHealthBar(Entity entity) {
+        PercentRelativeLayout guiLayout = (PercentRelativeLayout) mActivity.findViewById(R.id.gui_display);
+
+        PercentRelativeLayout.LayoutParams param = new PercentRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        param.getPercentLayoutInfo().widthPercent = 0.025f;
+        param.getPercentLayoutInfo().heightPercent = 0.07f;
+        PercentRelativeLayout percentFrame = new PercentRelativeLayout(mActivity);
+        percentFrame.setBackgroundColor(Color.BLUE);
+        percentFrame.setLayoutParams(param);
+        guiLayout.addView(percentFrame);
+
+        float percent = Math.min((float) entity.health / (float) entity.maxHealth, 1);
+
+        TextView textView = percentBarColorAndText(percent, Color.GREEN, "");
+        percentFrame.addView(textView);
+
+        entityHealthGui.put(entity, percentFrame);
+    }
+
+    private TextView percentBarColorAndText(float percent, int color, String text) {
         TextView textView = new Button(mActivity);
         PercentRelativeLayout.LayoutParams foodBarParam = new PercentRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         //foodBarParam.getPercentLayoutInfo().widthPercent = param.getPercentLayoutInfo().widthPercent;
@@ -164,13 +209,14 @@ public class GuiHandler {
         foodBarParam.getPercentLayoutInfo().widthPercent = 1f;
         foodBarParam.getPercentLayoutInfo().heightPercent = percent;
         foodBarParam.getPercentLayoutInfo().topMarginPercent = 1 - percent;
-        percentFrame.setGravity(Gravity.TOP);
-        textView.setBackgroundColor(Color.GREEN);
+
+        textView.setBackgroundColor(color);
         textView.setLayoutParams(foodBarParam);
-        percentFrame.addView(textView);
         textView.bringToFront();
 
-        cityFoodGui.put(city, percentFrame);
+        textView.setText(text);
+
+        return textView;
     }
 
 }

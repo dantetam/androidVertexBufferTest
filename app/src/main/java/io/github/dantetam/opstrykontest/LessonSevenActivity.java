@@ -603,7 +603,7 @@ public class LessonSevenActivity extends Activity implements
             ((Button) v).setText("CHOOSE RESEARCH");
             if (findViewById(R.id.tech_tree_screen).getVisibility() == View.INVISIBLE)
                 onClickTechMenu(findViewById(R.id.tech_menu));
-            mGLSurfaceView.forceUpdate();
+            mGLSurfaceView.update();
         } else {
             ((Button) v).setText("NEXT TURN");
             //((MenuItem) findViewById(R.id.next_turn_button)).setTitle("NEXT TURN");

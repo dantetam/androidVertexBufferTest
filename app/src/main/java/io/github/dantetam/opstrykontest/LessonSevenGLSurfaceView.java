@@ -294,7 +294,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
     }
 
     private void updateMenu(boolean forceUpdate) {
-        if (mRenderer.getCombatMode() || forceUpdate) {
+        if (mRenderer.getCombatMode()) {
             Button quickSummaryMenu = (Button) mActivity.findViewById(R.id.quick_summary_view);
             quickSummaryMenu.setVisibility(View.INVISIBLE);
 
@@ -435,7 +435,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         selectedTileExists || selectedEntityExists ? View.VISIBLE : View.INVISIBLE
                 );
 
-                mActivity.findViewById(R.id.tech_menu).setVisibility(!(selectedTileExists || selectedEntityExists) ? View.VISIBLE : View.INVISIBLE);
+                mActivity.findViewById(R.id.tech_menu).setVisibility(View.VISIBLE);
                 InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.tech_menu), new String[]{
                         "This opens the technology tree",
                         "which lists the tech you can research.",
