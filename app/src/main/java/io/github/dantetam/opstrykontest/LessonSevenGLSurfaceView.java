@@ -236,6 +236,28 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
             }
+            else if (action.equals("Fortify")) {
+                if (previousSelectedEntity == null) {
+                    System.err.println("Invalid 'Fortify' action, no selected entity before click");
+                    mousePicker.changeSelectedAction("");
+                    return;
+                }
+                Tile selected = mousePicker.getSelectedTile();
+                if (selected == null) {
+
+                } else {
+                    if (previousSelectedEntity instanceof Person) {
+                        Person personSelected = (Person) previousSelectedEntity;
+                        if (!personSelected.location().equals(selected)) {
+                            personSelected.gameFortify();
+                        }
+                    }
+                    //previousSelectedEntity.move(mousePicker.getSelectedTile());
+                }
+                LessonSevenRenderer.debounceFrames = 10;
+                mousePicker.changeSelectedTile(null);
+                mousePicker.changeSelectedAction("");
+            }
             /*else if (action.startsWith("Build/")) {
                 if (previousSelectedEntity == null) {
                     System.err.println("Invalid 'Build' action, no selected entity before click");

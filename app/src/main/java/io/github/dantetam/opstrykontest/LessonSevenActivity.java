@@ -489,7 +489,7 @@ public class LessonSevenActivity extends Activity implements
         for (City city: clan.cities) {
             clanView = new Button(this);
             clanView.setHeight(120);
-            clanView.setText(city.name + " " + city.population + " " + city.cityTiles.size());
+            clanView.setText(city.name + " " + city.population() + " " + city.cityTiles.size());
             layout.addView(clanView);
         }
 
@@ -1060,13 +1060,24 @@ public class LessonSevenActivity extends Activity implements
                 }
             });
 
-            MenuItem menuItem3 = menu.add(Menu.NONE, 3, Menu.NONE, "Fight");
+            MenuItem menuItem4 = menu.add(Menu.NONE, 1, Menu.NONE, "Fortify");
+            menuItem4.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    mRenderer.mousePicker.changeSelectedAction("Fortify");
+                    Button button = (Button) chainView;
+                    button.setText("Fortify");
+                    return false;
+                }
+            });
+
+            /*MenuItem menuItem3 = menu.add(Menu.NONE, 3, Menu.NONE, "Fight");
             menuItem3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     mRenderer.mousePicker.changeSelectedAction("InitiateCombat");
                     return false;
                 }
-            });
+            });*/
+
         }
         return true;
     }
