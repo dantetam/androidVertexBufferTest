@@ -371,7 +371,19 @@
         <tacticsflavor name="Ranged" value="1"></tacticsflavor>
     </clan>
 
-    <citystate name="">
+    <citystate name="Grand Junction" ruler="Mercanos" adjective="Grand">
+
+    </citystate>
+    <citystate name="Serenity" ruler="Paxos" adjective="Serene">
+
+    </citystate>
+    <citystate name="Vainstation" ruler="Pernascia" adjective="Station">
+
+    </citystate>
+    <citystate name="Star Travellers" ruler="Reiter">
+
+    </citystate>
+    <citystate name="Rough Raiders" ruler="Wolf" adjective="Raider">
 
     </citystate>
 </root>

@@ -35,6 +35,7 @@ public class WorldSystem {
 
     //public List<RelationModifier>[][] relations;
     public HashMap<Clan, RelationMap> relations;
+
     public HashMap<Clan, Integer> clanId;
 
     public static HashMap<Clan, Integer> calculatedClanScores;

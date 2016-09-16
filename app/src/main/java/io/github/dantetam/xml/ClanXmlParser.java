@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.Tech;
 
@@ -37,7 +38,9 @@ public class ClanXmlParser {
     private static final String ns = null;
 
     public HashMap<String, Clan> clans;
+    public HashMap<String, CityState> cityStates;
     public String[] clanKeys;
+    public String[] cityStateKeys;
 
     public void parseAllClans(Context context, int resourceId) {
         final InputStream clanStream = context.getResources().openRawResource(
@@ -54,6 +57,7 @@ public class ClanXmlParser {
     public void parseAllClans(InputStream inputStream)
             throws XmlPullParserException, IOException {
         clans = new HashMap<>();
+        cityStates = new HashMap<>();
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
@@ -93,6 +97,20 @@ public class ClanXmlParser {
                     String name = xpp.getAttributeValue(null, "name");
                     inspect.cityNames.add(name);
                 }
+                else if (startTag.equals("citystate")) {
+                    String clanName = xpp.getAttributeValue(null, "name");
+                    inspect = new CityState(clanName);
+                    clans.put(clanName, inspect);
+
+                    String adjective = xpp.getAttributeValue(null, "adjective");
+                    inspect.adjective = adjective;
+
+                    String leaderName = xpp.getAttributeValue(null, "ruler");
+                    inspect.ai.leaderName = leaderName;
+
+                    inspect.cityNames = new ArrayList<>();
+                    inspect.cityNames.add(clanName);
+                }
                 else if (startTag.equals("ability")) {
                     if (inspect.ai.abilityOne == null) {
                         inspect.ai.abilityOne = xpp.getAttributeValue(null, "name");
@@ -123,6 +141,9 @@ public class ClanXmlParser {
 
         clanKeys = new String[clans.keySet().size()];
         clanKeys = clans.keySet().toArray(clanKeys);
+
+        cityStateKeys = new String[clans.keySet().size()];
+        cityStateKeys = cityStates.keySet().toArray(cityStateKeys);
     }
 
 }

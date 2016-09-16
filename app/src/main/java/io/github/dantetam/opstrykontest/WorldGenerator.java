@@ -9,6 +9,7 @@ import io.github.dantetam.android.FileParser;
 import io.github.dantetam.android.RawResourceReader;
 import io.github.dantetam.utilmath.DiamondSquare;
 import io.github.dantetam.utilmath.Vector2f;
+import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.factory.BuildingFactory;
 import io.github.dantetam.world.entity.City;
@@ -113,7 +114,7 @@ public class WorldGenerator {
 
     private List<Clan> makeClans() {
         List<Clan> clans = new ArrayList<>();
-        int num = world.getAllValidTiles().size() / 20;
+        int num = world.getAllValidTiles().size() / 40;
         for (int i = 0; i < num; i++) {
             Clan clan;
             if (i == 0) {
@@ -137,6 +138,22 @@ public class WorldGenerator {
             clan.techTree.unlock("Landing");
 
             System.out.println(clan + ">>>" + clan.techTree);
+        }
+        for (int i = 0; i < 2*num; i++) {
+            CityState cityState = ClanFactory.randomAvailableCityState();
+            clans.add(cityState);
+            UnitXmlParser.parseUnitTree(cityState, mActivity, R.raw.unit_tree);
+            BuildingXmlParser.parseBuildingTree(cityState, mActivity, R.raw.building_tree);
+            cityState.techTree = new TechTree(cityState);
+
+            if (TechTree.itemTypes == null) {
+                ResourceXmlParser.parseResourceTree(cityState.techTree, mActivity, R.raw.resource_tree);
+            }
+
+            TechXmlParser.parseTechTree(cityState.techTree, mActivity, R.raw.tech_tree, R.raw.tech_tree_layout);
+            clan.techTree.unlock("Landing");
+
+            System.out.println(cityState + ">>>" + cityState.techTree);
         }
         return clans;
     }

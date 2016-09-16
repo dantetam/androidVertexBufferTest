@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import io.github.dantetam.world.entity.City;
+import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.xml.ClanXmlParser;
 import io.github.dantetam.opstrykontest.LessonSevenActivity;
@@ -23,7 +25,7 @@ public class ClanFactory {
 
     public static ClanXmlParser parser;
 
-    public static HashSet<String> usedClans;
+    public static HashSet<String> usedClans, usedCityStates;
 
     //public static HashMap<String, Clan> civilizationAi;
 
@@ -104,6 +106,9 @@ public class ClanFactory {
             Clan randomAi = parser.clans.get(key);
 
             clan = newClan(randomAi);
+            if (usedClans.size() >= parser.clanKeys.length) {
+                return clan;
+            }
         }
         usedClans.add(clan.name);
         return clan;
@@ -134,6 +139,49 @@ public class ClanFactory {
         aiType.reducedColor = primaryColor.scaled(0.7f);
         aiType.secondaryColor = secondaryColor;
         aiType.reducedSecondaryColor = secondaryColor.scaled(0.7f);
+        return aiType;
+    }
+
+    public static CityState randomAvailableCityState() {
+        CityState clan = null;
+        while (clan == null || usedClans.contains(clan.name)) {
+            String key = parser.cityStateKeys[(int)(Math.random()*parser.clanKeys.length)];
+            CityState randomAi = parser.cityStates.get(key);
+
+            clan = newCityState(randomAi);
+            if (usedCityStates.size() >= parser.cityStateKeys.length) {
+                return clan;
+            }
+        }
+        usedCityStates.add(clan.name);
+        return clan;
+    }
+
+    public static CityState newCityState(CityState aiType) {
+        Clan.ClanType clanType = Clan.ClanType.random();
+        Clan.ClanFaction clanFaction  = Clan.ClanFaction.random();
+        List<Vector4f> colors = clanTypeColorSchemes.get(clanType);
+        List<Vector4f> secondaryColors = clanFactionColorSchemes.get(clanFaction);
+        Vector4f primaryColor, secondaryColor;
+        if (colors.size() == 0 || secondaryColors.size() == 0) {
+            return null;
+        }
+        else {
+            primaryColor = colors.get((int)(Math.random()*colors.size())).scaled(255f);
+            secondaryColor = secondaryColors.get((int)(Math.random()*secondaryColors.size())).scaled(255f);
+        }
+        /*switch (type) {
+            case 0:
+                clanType.
+                break;
+            default:
+                System.err.println("Invalid clan type: " + type);
+                return null;
+        }*/
+        aiType.color = primaryColor;
+        aiType.reducedColor = primaryColor.scaled(0f);
+        aiType.secondaryColor = secondaryColor;
+        aiType.reducedSecondaryColor = secondaryColor.scaled(0f);
         return aiType;
     }
 

@@ -28,6 +28,7 @@ public class World {
     private List<Tile> validTiles;
 
     private List<Clan> clans;
+
     private HashMap<Tile, Clan> tileOwnerHashMap;
     private HashMap<Tile, Influence> tileInfluenceHashMap;
 
