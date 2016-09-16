@@ -170,6 +170,9 @@ public class ClanFactory {
             primaryColor = colors.get((int)(Math.random()*colors.size())).scaled(255f);
             secondaryColor = secondaryColors.get((int)(Math.random()*secondaryColors.size())).scaled(255f);
         }
+
+        aiType.clanType = clanType;
+        aiType.clanFaction = clanFaction;
         /*switch (type) {
             case 0:
                 clanType.

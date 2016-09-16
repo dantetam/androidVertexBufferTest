@@ -38,6 +38,7 @@ import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.ai.RelationModifier;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.action.BuildingAction;
+import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.factory.BuildingFactory;
 import io.github.dantetam.world.entity.BuildingType;
@@ -274,32 +275,74 @@ public class LessonSevenActivity extends Activity implements
 
         linearLayout.removeAllViews();
 
-        for (final Clan clan : clans) {
-            Button clanView = new Button(this);
-            clanView.setHeight(120);
+        TextView clanTitle = new TextView(this);
+        clanTitle.setHeight(120);
+        clanTitle.setText("Civilizations");
+        linearLayout.addView(clanTitle);
+        int i = 0;
+        for (; i < clans.size(); i++) {
+            final Clan clan = clans.get(i);
+            if (!(clan instanceof CityState)) {
+                Button clanView = new Button(this);
+                clanView.setHeight(120);
 
-            if (clan.equals(playerClan)) {
-                clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (You)");
+                if (clan.equals(playerClan)) {
+                    clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (You)");
+                } else {
+                    String opinion = mRenderer.worldSystem.relations.get(clan).getOpinionString(playerClan);
+                    clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (" + opinion + ")");
+                    if (mRenderer.worldSystem.atWar(playerClan, clan)) {
+                        clanView.setText(clanView.getText() + " (WAR!)");
+                    }
+                    clanView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            View clanMenu = findViewById(R.id.clan_menu_main);
+                            clanMenu.setVisibility(View.INVISIBLE);
+                            clanMenu.setBackgroundColor(Color.TRANSPARENT);
+                            clanMenu = findViewById(R.id.clan_menu_scroll);
+                            clanMenu.setVisibility(View.INVISIBLE);
+                            clanMenu.setBackgroundColor(Color.TRANSPARENT);
+                            onClickDiplomacyMenu(clan);
+                        }
+                    });
+                }
+
+                linearLayout.addView(clanView);
             }
             else {
-                String opinion = mRenderer.worldSystem.relations.get(clan).getOpinionString(playerClan);
-                clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (" + opinion + ")");
-                if (mRenderer.worldSystem.atWar(playerClan, clan)) {
-                    clanView.setText(clanView.getText() + " (WAR!)");
-                }
-                clanView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        View clanMenu = findViewById(R.id.clan_menu_main);
-                        clanMenu.setVisibility(View.INVISIBLE);
-                        clanMenu.setBackgroundColor(Color.TRANSPARENT);
-                        clanMenu = findViewById(R.id.clan_menu_scroll);
-                        clanMenu.setVisibility(View.INVISIBLE);
-                        clanMenu.setBackgroundColor(Color.TRANSPARENT);
-                        onClickDiplomacyMenu(clan);
-                    }
-                });
+                break;
             }
+            else {
+
+            }
+        }
+        TextView cityStateTitle = new TextView(this);
+        cityStateTitle.setHeight(120);
+        cityStateTitle.setText("City States");
+        linearLayout.addView(clanTitle);
+        for (; i < clans.size(); i++) {
+            CityState clan = (CityState) clans.get(i);
+            TextView clanView = new TextView(this);
+            clanView.setHeight(120);
+
+            String opinion = mRenderer.worldSystem.relations.get(clan).getOpinionString(playerClan);
+            clanView.setText(clan.ai.leaderName + " of " + clan.name + " (" + opinion + ")");
+            if (mRenderer.worldSystem.atWar(playerClan, clan)) {
+                clanView.setText(clanView.getText() + " (WAR!)");
+            }
+            clanView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    View clanMenu = findViewById(R.id.clan_menu_main);
+                    clanMenu.setVisibility(View.INVISIBLE);
+                    clanMenu.setBackgroundColor(Color.TRANSPARENT);
+                    clanMenu = findViewById(R.id.clan_menu_scroll);
+                    clanMenu.setVisibility(View.INVISIBLE);
+                    clanMenu.setBackgroundColor(Color.TRANSPARENT);
+                    onClickDiplomacyMenu(clan);
+                }
+            });
 
             linearLayout.addView(clanView);
         }

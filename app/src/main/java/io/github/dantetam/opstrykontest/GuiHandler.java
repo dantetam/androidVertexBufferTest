@@ -125,7 +125,7 @@ public class GuiHandler {
         if (city.isCapital != null) {
             stringy += "*";
         }
-        stringy += " " + city.population;
+        stringy += " " + city.population();
         textView.setText(stringy);
 
         textView.setTextColor(ColorTextureHelper.intFromColorVector(clan.color));

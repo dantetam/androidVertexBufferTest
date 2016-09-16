@@ -189,7 +189,7 @@ public class ArtificialIntelligence {
 
         //City population score and number of cities + food output
         for (City city: clan.cities) {
-            score += city.population;
+            score += city.population();
         }
         score += yield[0];
 

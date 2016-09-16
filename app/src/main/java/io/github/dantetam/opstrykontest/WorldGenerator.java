@@ -151,7 +151,7 @@ public class WorldGenerator {
             }
 
             TechXmlParser.parseTechTree(cityState.techTree, mActivity, R.raw.tech_tree, R.raw.tech_tree_layout);
-            clan.techTree.unlock("Landing");
+            //cityState.techTree.unlock("Landing");
 
             System.out.println(cityState + ">>>" + cityState.techTree);
         }

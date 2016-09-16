@@ -54,11 +54,7 @@ public class BuildingFactory {
         city.exp = exp;
 
         //city.inventorySpace = 10;
-
-        city.population = 1;
-        city.freeWorkingPopulation = 1;
-        city.foodNeededForGrowth = City.cityFoodData()[city.population];
-        city.foodStoredForGrowth = 0;
+        city.updateCityData();
         city.cultureNeededForExpansion = City.cultureExpansionData()[city.tilesExpanded];
         city.cultureStoredForExpansion = 0;
 

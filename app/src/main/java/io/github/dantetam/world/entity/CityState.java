@@ -7,8 +7,8 @@ public class CityState extends Clan {
 
     //public String cityName;
 
-    public CityStateType clanType;
-    public CityStateFaction clanFaction;
+    public ClanType clanType;
+    public ClanFaction clanFaction;
 
     public CityState(String name) {
         super(name);

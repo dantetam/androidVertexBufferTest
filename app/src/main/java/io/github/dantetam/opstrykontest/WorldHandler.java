@@ -1087,7 +1087,7 @@ public class WorldHandler {
 
         Condition condition5 = new Condition() {
             public boolean allowedTile(Tile t) {
-                return t.improvement != null && t.improvement.buildingType.name.equals("City") && ((City) t.improvement).population > 0;
+                return t.improvement != null && t.improvement.buildingType.name.equals("City") && ((City) t.improvement).population() > 0;
             }
         };
 
@@ -1317,7 +1317,7 @@ public class WorldHandler {
                     } else if (type == 3) {
                         return tile.capital() == num;
                     } else if (type == 4) {
-                        return tile.improvement != null && tile.improvement.buildingType.name.equals("City") && ((City) tile.improvement).population == num;
+                        return tile.improvement != null && tile.improvement.buildingType.name.equals("City") && ((City) tile.improvement).population() == num;
                     } else {
                         throw new IllegalArgumentException("Invalid type in variable condition");
                     }

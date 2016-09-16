@@ -33,6 +33,9 @@ public class City extends Building {
     //where generateCityFoodData[n] represents the needed food to go from n-1 to n
     private static int[] cityFoodData = null;
     public static int[] cityFoodData() {
+        if (cityFoodData == null) {
+            initCityData();
+        }
         return cityFoodData;
     }
 
@@ -57,6 +60,11 @@ public class City extends Building {
         return cityHealthData;
     }
 
+    public void updateCityData() {
+        foodNeededForGrowth = City.cityFoodData()[population];
+        //cultureNeededForExpansion = City.cityHealthData()[population];
+    }
+
     public int tilesExpanded = 0;
     public int cultureStoredForExpansion, cultureNeededForExpansion;
 
@@ -79,6 +87,9 @@ public class City extends Building {
         this.name = name;
         workedTiles = new HashMap<>();
         cityTiles = tiles;
+
+        population = 1;
+        freeWorkingPopulation = 1;
     }
 
     public void queueActionBuildModule(BuildingType buildingType) {
