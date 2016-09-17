@@ -107,9 +107,9 @@ public class ClanFactory {
             Clan randomAi = parser.clans.get(key);
 
             clan = newClan(randomAi);
-            /*if (usedClans.size() >= parser.clanKeys.length) {
+            if (usedClans.size() >= parser.clanKeys.length) {
                 return clan;
-            }*/
+            }
         }
         usedClans.add(clan.name);
         return clan;

@@ -38,17 +38,23 @@ public class RelationMap {
         deceiving = new HashMap<>();
         opinions = new HashMap<>();
 
-        setupInitialOpinions(clans);
-        updateOpinions(clans);
+        if (subjectClan instanceof CityState) {
+            setupInitialOpinionsCityState(clans);
+            updateOpinionsCityState(clans);
+        }
+        else {
+            setupInitialOpinions(clans);
+            updateOpinions(clans);
+        }
     }
 
     public void setupInitialOpinions(List<Clan> clans) {
         //System.out.println("I am " + subjectClan.name + ", here is how I feel about these clans:");
         for (Clan c: clans) {
-            if (c instanceof CityState) {
+            /*if (c instanceof CityState) {
                 continue;
             }
-            System.out.println(c.name);
+            System.out.println(c.name);*/
             int trustScore = subjectClan.ai.personality.get("Cooperative") + subjectClan.ai.personality.get("Loyal");
             double scoreDiff = calculateScoreDiff(c);
             trustScore -= (int) (subjectClan.ai.personality.get("Jealous") * scoreDiff);
@@ -94,7 +100,6 @@ public class RelationMap {
 
     public void updateOpinions(List<Clan> clans) {
         for (Clan c: clans) {
-            if (c instanceof CityState) continue;
             updateOpinionClan(c);
         }
     }
@@ -110,6 +115,102 @@ public class RelationMap {
         relationScore.put(c, score);
 
         int trust = this.trust.get(c);
+
+        RelationOpinion opinion;
+
+        double scoreDiff = calculateScoreDiff(c);
+
+        if (score > 45) {
+            if (trust > 4) {
+                opinion = RelationOpinion.FRIENDLY;
+            } else if (trust > 2){
+                opinion = RelationOpinion.ALLIED;
+            } else {
+                opinion = RelationOpinion.INTIMIDATED;
+            }
+        } else if (score > 15) {
+            if (scoreDiff > 1.3d) {
+                opinion = RelationOpinion.INTIMIDATED;
+            } else if (trust > 4) {
+                opinion = RelationOpinion.ALLIED;
+            } else {
+                opinion = RelationOpinion.NEUTRAL;
+            }
+        } else if (scoreDiff > 1.2d) {
+            opinion = RelationOpinion.INTIMIDATED;
+        } else if (scoreDiff < 0.7d) {
+            opinion = RelationOpinion.AGGRESSIVE;
+        } else if (score > -10) {
+            opinion = RelationOpinion.NEUTRAL;
+        } else if (score > -45) {
+            opinion = RelationOpinion.ANGRY;
+        } else {
+            opinion = RelationOpinion.HOSTILE;
+        }
+        opinions.put(c, opinion);
+    }
+
+    public void setupInitialOpinionsCityState(List<Clan> clans) {
+        //System.out.println("I am " + subjectClan.name + ", here is how I feel about these clans:");
+        for (Clan c: clans) {
+            /*if (c instanceof CityState) {
+                continue;
+            }
+            System.out.println(c.name);*/
+            int trustScore = 8;
+            double scoreDiff = calculateScoreDiff(c);
+            trustScore -= (int) (1 * scoreDiff);
+            trustScore += (int) (Math.random() * 4 - 2);
+            trustScore = Math.max(0, Math.min(10, trustScore));
+            trust.put(c, trustScore);
+
+            int friendly = 5;
+            int hostile = 2;
+
+            int baseScore = (friendly - hostile) * 5;
+
+            baseScore += (int) (Math.random() * 30.0 - 15.0);
+
+            //baseScore += getFirstFlavor();
+            map.get(c).add(getFirstFlavor());
+
+            baseScore = Math.max(-40, Math.min(40, baseScore));
+
+            initialScore.put(c, baseScore);
+
+            double chanceOfDeception = Math.pow(0.8, trustScore + 4) * ((double) subjectClan.ai.personality.get("Deceptive") / 10d);
+            //y = (0.8)^((x + 60)/16) + 0.2
+            chanceOfDeception *= Math.pow(0.8, ((double) baseScore + 60.0) / 16) + 0.2;
+            if (Math.random() < chanceOfDeception) {
+                deceiving.put(c, true);
+            }
+            else {
+                deceiving.put(c, false);
+            }
+
+            relationScore.put(c, baseScore);
+
+            //System.out.println(c.name + ": trust -> " + trustScore + ", opinion -> " + baseScore + ", deceptive -> " + deceiving.get(c) + " (" + chanceOfDeception + ")");
+        }
+    }
+
+    public void updateOpinionsCityState(List<Clan> clans) {
+        for (Clan c: clans) {
+            updateOpinionClan(c);
+        }
+    }
+
+    public void updateOpinionClanCityState(Clan c) {
+        List<RelationModifier> modifiers = map.get(c);
+        int initial = initialScore.get(c);
+        int score = initial;
+        for (int i = 0; i < modifiers.size(); i++) {
+            score += modifiers.get(i).score;
+        }
+
+        relationScore.put(c, score);
+
+        int trust = 5;
 
         RelationOpinion opinion;
 
