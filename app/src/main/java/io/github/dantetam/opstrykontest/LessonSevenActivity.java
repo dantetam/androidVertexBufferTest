@@ -303,7 +303,7 @@ public class LessonSevenActivity extends Activity implements
                             clanMenu = findViewById(R.id.clan_menu_scroll);
                             clanMenu.setVisibility(View.INVISIBLE);
                             clanMenu.setBackgroundColor(Color.TRANSPARENT);
-                            onClickDiplomacyMenu(clan);
+                            onClickDiplomacyMenuCivilization(clan);
                         }
                     });
                 }
@@ -313,17 +313,14 @@ public class LessonSevenActivity extends Activity implements
             else {
                 break;
             }
-            else {
-
-            }
         }
         TextView cityStateTitle = new TextView(this);
         cityStateTitle.setHeight(120);
         cityStateTitle.setText("City States");
-        linearLayout.addView(clanTitle);
+        linearLayout.addView(cityStateTitle);
         for (; i < clans.size(); i++) {
-            CityState clan = (CityState) clans.get(i);
-            TextView clanView = new TextView(this);
+            final CityState clan = (CityState) clans.get(i);
+            Button clanView = new Button(this);
             clanView.setHeight(120);
 
             String opinion = mRenderer.worldSystem.relations.get(clan).getOpinionString(playerClan);
@@ -340,7 +337,7 @@ public class LessonSevenActivity extends Activity implements
                     clanMenu = findViewById(R.id.clan_menu_scroll);
                     clanMenu.setVisibility(View.INVISIBLE);
                     clanMenu.setBackgroundColor(Color.TRANSPARENT);
-                    onClickDiplomacyMenu(clan);
+                    onClickDiplomacyMenuCityState(clan);
                 }
             });
 
@@ -350,7 +347,7 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
-    public void onClickDiplomacyMenu(final Clan c) {
+    public void onClickDiplomacyMenuCivilization(final Clan c) {
         ScrollView scrollView = (ScrollView) findViewById(R.id.diplomacy_menu_talk);
         LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk_main);
         scrollView.setVisibility(View.VISIBLE);
@@ -457,6 +454,80 @@ public class LessonSevenActivity extends Activity implements
         clanMenu.addView(clanView);
     }
 
+    public void onClickDiplomacyMenuCityState(final CityState c) {
+        ScrollView scrollView = (ScrollView) findViewById(R.id.diplomacy_menu_talk);
+        LinearLayout clanMenu = (LinearLayout) findViewById(R.id.diplomacy_menu_talk_main);
+        scrollView.setVisibility(View.VISIBLE);
+        clanMenu.setVisibility(View.VISIBLE);
+
+        //((Button) findViewById(R.id.clan_title)).setText(c.ai.leaderName + " of the " + c.name);
+
+        clanMenu.removeAllViews();
+
+        Button clanView = new Button(this);
+        clanView.setHeight(120);
+        String opinion = mRenderer.worldSystem.relations.get(c).getOpinionString(playerClan);
+        clanView.setText(c.ai.leaderName + " of " + c.name + " (" + opinion + ")");
+        clanMenu.addView(clanView);
+
+        clanView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu tempMenu = new PopupMenu(mActivity, v);
+                MenuInflater inflater = tempMenu.getMenuInflater();
+                inflater.inflate(R.menu.unit_selection_menu, tempMenu.getMenu());
+                onCreateDiplomacyHistory(tempMenu.getMenu(), mRenderer.worldSystem.relations.get(c).getRelationModsForClan(playerClan));
+                tempMenu.show();
+            }
+        });
+
+        if (mRenderer.worldSystem.atWar(playerClan, c)) {
+            clanView.setText(clanView.getText() + " (WAR!)");
+
+            clanView = new Button(this);
+            clanView.setHeight(120);
+            clanView.setText("We have no business with bloodthirsty tyrants such as yourself.");
+            clanMenu.addView(clanView);
+        }
+        else {
+            clanView = new Button(this);
+            clanView.setHeight(120);
+            clanView.setText("Hello, what brings you here today?");
+            clanMenu.addView(clanView);
+
+            final Button warButton = new Button(this);
+            warButton.setHeight(120);
+            warButton.setText("< DECLARE WAR. >");
+            warButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    warButton.setText("< CONFIRM WAR. >");
+                    warButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mRenderer.worldSystem.declareWar(playerClan, c);
+                            //mRenderer.worldSystem.declareWar(c, playerClan);
+                            diplomacyMenuMessage(c, "I hope your people can forgive such a terrible mistake.", "We're sorry this has caused a divide between us.", true);
+                            //onClickEndDiplomacyMenu(v);
+                            //onClickDiplomacyMenu(c);
+                        }
+                    });
+                }
+            });
+            clanMenu.addView(warButton);
+        }
+        clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText("< End communication. >");
+        clanView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickEndDiplomacyMenu(v);
+            }
+        });
+        clanMenu.addView(clanView);
+    }
+
     public void tradeMenuMessage(final Clan c, String tradeMessage) {
         ScrollView clanMenu = (ScrollView) findViewById(R.id.diplomacy_menu_talk);
         LinearLayout diploMainDialogue = (LinearLayout) findViewById(R.id.diplomacy_menu_talk_main);
@@ -517,7 +588,13 @@ public class LessonSevenActivity extends Activity implements
                 yourProposals.setVisibility(View.INVISIBLE);
                 theirOffer.setVisibility(View.INVISIBLE);
                 yourOffer.setVisibility(View.INVISIBLE);
-                onClickDiplomacyMenu(c);
+                /*if (c instanceof CityState) {
+                    onClickDiplomacyMenuCityState((CityState) c);
+                }
+                else {
+                    onClickDiplomacyMenuCivilization(c);
+                }*/
+                onClickDiplomacyMenuCivilization(c);
             }
         });
         mainTrade.addView(clanView);
@@ -605,7 +682,12 @@ public class LessonSevenActivity extends Activity implements
             clanView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onClickDiplomacyMenu(c);
+                    if (c instanceof CityState) {
+                        onClickDiplomacyMenuCityState((CityState) c);
+                    }
+                    else {
+                        onClickDiplomacyMenuCivilization(c);
+                    }
                 }
             });
         }

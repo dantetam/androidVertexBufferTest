@@ -372,7 +372,28 @@
     </clan>
 
     <citystate name="Grand Junction" ruler="Mercanos" adjective="Grand">
+        <personalityflavor name="Cooperative" value="7"></personalityflavor>
+        <personalityflavor name="Jealous" value="5"></personalityflavor>
+        <personalityflavor name="Friendly" value="5"></personalityflavor>
+        <personalityflavor name="Hostile" value="5"></personalityflavor>
+        <personalityflavor name="Loyal" value="3"></personalityflavor>
+        <personalityflavor name="Deceptive" value="9"></personalityflavor>
+        <personalityflavor name="Diplomatic" value="10"></personalityflavor>
+        <personalityflavor name="Vicious" value="3"></personalityflavor>
 
+        <strategyflavor name="Diplomacy" value="1"></strategyflavor>
+        <strategyflavor name="Expansion" value="1"></strategyflavor>
+        <strategyflavor name="Gold" value="1"></strategyflavor>
+        <strategyflavor name="Growth" value="9"></strategyflavor>
+        <strategyflavor name="Raid" value="1"></strategyflavor>
+        <strategyflavor name="Science" value="1"></strategyflavor>
+        <strategyflavor name="War" value="1"></strategyflavor>
+
+        <tacticsflavor name="Naval" value="1"></tacticsflavor>
+        <tacticsflavor name="Land" value="1"></tacticsflavor>
+        <tacticsflavor name="Air" value="1"></tacticsflavor>
+        <tacticsflavor name="Melee" value="1"></tacticsflavor>
+        <tacticsflavor name="Ranged" value="1"></tacticsflavor>
     </citystate>
     <citystate name="Serenity" ruler="Paxos" adjective="Serene">
 

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.dantetam.opstrykontest.WorldSystem;
+import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.Clan;
 
 /**
@@ -42,8 +43,12 @@ public class RelationMap {
     }
 
     public void setupInitialOpinions(List<Clan> clans) {
-        System.out.println("I am " + subjectClan.name + ", here is how I feel about these clans:");
+        //System.out.println("I am " + subjectClan.name + ", here is how I feel about these clans:");
         for (Clan c: clans) {
+            if (c instanceof CityState) {
+                continue;
+            }
+            System.out.println(c.name);
             int trustScore = subjectClan.ai.personality.get("Cooperative") + subjectClan.ai.personality.get("Loyal");
             double scoreDiff = calculateScoreDiff(c);
             trustScore -= (int) (subjectClan.ai.personality.get("Jealous") * scoreDiff);
@@ -83,17 +88,18 @@ public class RelationMap {
 
             relationScore.put(c, baseScore);
 
-            System.out.println(c.name + ": trust -> " + trustScore + ", opinion -> " + baseScore + ", deceptive -> " + deceiving.get(c) + " (" + chanceOfDeception + ")");
+            //System.out.println(c.name + ": trust -> " + trustScore + ", opinion -> " + baseScore + ", deceptive -> " + deceiving.get(c) + " (" + chanceOfDeception + ")");
         }
     }
 
     public void updateOpinions(List<Clan> clans) {
         for (Clan c: clans) {
-            updateOpinion(c);
+            if (c instanceof CityState) continue;
+            updateOpinionClan(c);
         }
     }
 
-    public void updateOpinion(Clan c) {
+    public void updateOpinionClan(Clan c) {
         List<RelationModifier> modifiers = map.get(c);
         int initial = initialScore.get(c);
         int score = initial;

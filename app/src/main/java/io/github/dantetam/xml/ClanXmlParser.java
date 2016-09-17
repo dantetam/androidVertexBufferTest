@@ -100,7 +100,7 @@ public class ClanXmlParser {
                 else if (startTag.equals("citystate")) {
                     String clanName = xpp.getAttributeValue(null, "name");
                     inspect = new CityState(clanName);
-                    clans.put(clanName, inspect);
+                    cityStates.put(clanName, (CityState) inspect);
 
                     String adjective = xpp.getAttributeValue(null, "adjective");
                     inspect.adjective = adjective;
@@ -142,7 +142,7 @@ public class ClanXmlParser {
         clanKeys = new String[clans.keySet().size()];
         clanKeys = clans.keySet().toArray(clanKeys);
 
-        cityStateKeys = new String[clans.keySet().size()];
+        cityStateKeys = new String[cityStates.keySet().size()];
         cityStateKeys = cityStates.keySet().toArray(cityStateKeys);
     }
 

@@ -97,6 +97,7 @@ public class ClanFactory {
         parser.parseAllClans(mActivity, R.raw.clan_flavors);
 
         usedClans = new HashSet<>();
+        usedCityStates = new HashSet<>();
     }
 
     public static Clan randomAvailableClan() {
@@ -106,9 +107,9 @@ public class ClanFactory {
             Clan randomAi = parser.clans.get(key);
 
             clan = newClan(randomAi);
-            if (usedClans.size() >= parser.clanKeys.length) {
+            /*if (usedClans.size() >= parser.clanKeys.length) {
                 return clan;
-            }
+            }*/
         }
         usedClans.add(clan.name);
         return clan;
@@ -144,8 +145,10 @@ public class ClanFactory {
 
     public static CityState randomAvailableCityState() {
         CityState clan = null;
-        while (clan == null || usedClans.contains(clan.name)) {
-            String key = parser.cityStateKeys[(int)(Math.random()*parser.clanKeys.length)];
+        while (clan == null || usedCityStates.contains(clan.name)) {
+            System.out.println(parser.cityStateKeys.length);
+
+            String key = parser.cityStateKeys[(int)(Math.random()*parser.cityStateKeys.length)];
             CityState randomAi = parser.cityStates.get(key);
 
             clan = newCityState(randomAi);
@@ -158,6 +161,10 @@ public class ClanFactory {
     }
 
     public static CityState newCityState(CityState aiType) {
+        if (aiType == null) {
+            return null;
+        }
+
         Clan.ClanType clanType = Clan.ClanType.random();
         Clan.ClanFaction clanFaction  = Clan.ClanFaction.random();
         List<Vector4f> colors = clanTypeColorSchemes.get(clanType);
