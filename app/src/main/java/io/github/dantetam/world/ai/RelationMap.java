@@ -172,13 +172,13 @@ public class RelationMap {
             baseScore += (int) (Math.random() * 30.0 - 15.0);
 
             //baseScore += getFirstFlavor();
-            map.get(c).add(getFirstFlavor());
+            //map.get(c).add(getFirstFlavor());
 
             baseScore = Math.max(-40, Math.min(40, baseScore));
 
             initialScore.put(c, baseScore);
 
-            double chanceOfDeception = Math.pow(0.8, trustScore + 4) * ((double) subjectClan.ai.personality.get("Deceptive") / 10d);
+            /*double chanceOfDeception = Math.pow(0.8, trustScore + 4) * ((double) subjectClan.ai.personality.get("Deceptive") / 10d);
             //y = (0.8)^((x + 60)/16) + 0.2
             chanceOfDeception *= Math.pow(0.8, ((double) baseScore + 60.0) / 16) + 0.2;
             if (Math.random() < chanceOfDeception) {
@@ -186,7 +186,7 @@ public class RelationMap {
             }
             else {
                 deceiving.put(c, false);
-            }
+            }*/
 
             relationScore.put(c, baseScore);
 
@@ -268,7 +268,7 @@ public class RelationMap {
         double[] flavors = new double[subjectClan.ai.personality.size()];
         int i = 0;
         double runSum = 0;
-        for (Map.Entry<String, Integer> entry: subjectClan.ai.personality.entrySet()) {
+        for (Map.Entry<String, Integer> entry : subjectClan.ai.personality.entrySet()) {
             flavorNames[i] = entry.getKey();
             runSum += entry.getValue();
             flavors[i] = runSum;
@@ -317,7 +317,7 @@ public class RelationMap {
     }
 
     public String getOpinionString(Clan c) {
-        if (!deceiving.get(c)) {
+        if (deceiving.get(c) != null && !deceiving.get(c)) {
             return opinions.get(c).toString();
         }
         else {

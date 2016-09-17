@@ -72,32 +72,43 @@ public class ArtificialIntelligence {
     //of layered expectimax/multimax structure.
     public Object computeBestOfOptions(City city, List<BuildingType> buildingTypes, List<PersonType> personTypes) {
         Map<BuildingType, Integer> buildingOptionsScore = new LinkedHashMap<>();
+        Map<PersonType, Integer> personOptionsScore = new LinkedHashMap<>();
         for (BuildingType buildingType: buildingTypes) {
             int finalScore = computeBuildingTypeScore(city, buildingType);
             buildingOptionsScore.put(buildingType, finalScore);
         }
         for (PersonType personType: personTypes) {
-            /*double workNeeded = personType.workNeeded;
-            int turnsNeeded = (int) Math.ceil(workNeeded / (double)yields[1]);
-
-            double foodPerTurn = (strategy.get("Growth") / 10d + 0.5d) * personType.;
-            double prodPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * personType.food;
+            /*double foodPerTurn = (strategy.get("Growth") / 10d + 0.5d) * personType.food;
+            double prodPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * personType;
             double sciPerTurn = (strategy.get("Science") / 10d + 0.5d) * personType.food;
-            double capPerTurn = (strategy.get("Gold") / 10d + 0.5d) * personType.food;
-            int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn) * 10d);
+            double capPerTurn = (strategy.get("Gold") / 10d + 0.5d) * personType.food;*//*
+            int scorePerTenTurns = (int)((personType.atk) / 10d);
 
             double roiTurns = workNeeded / scorePerTenTurns;
             double snowball = Math.pow(0.8d, (roiTurns + turnsNeeded) / 2);
 
-            int finalScore = (int) (snowball * scorePerTenTurns);
-            buildingOptionsScore.put(buildingType, finalScore);*/
+            int finalScore = (int) (snowball * scorePerTenTurns);*/
+            int finalScore = computeUnitTypeScore(city, personType);
+            personOptionsScore.put(personType, finalScore);
         }
-        Map<BuildingType, Integer> sortedByScore = OpstrykonUtil.sortMapByValue(buildingOptionsScore);
-        return sortedByScore.entrySet().iterator().next().getKey();
+        Map<BuildingType, Integer> sortedByScoreBuilding = OpstrykonUtil.sortMapByValue(buildingOptionsScore);
+        Map<PersonType, Integer> sortedByScorePerson = OpstrykonUtil.sortMapByValue(personOptionsScore);
+        Map.Entry<BuildingType, Integer> entryBuilding = sortedByScoreBuilding.entrySet().iterator().next();
+        Map.Entry<PersonType, Integer> entryPerson = sortedByScorePerson.entrySet().iterator().next();
         /*for (Map.Entry<BuildingType, Integer> entry: sortedByScore.entrySet()) {
 
             break;
         }*/
+        if (entryBuilding == null) {
+            return entryPerson.getKey();
+        }
+        else if (entryPerson == null) {
+            return entryBuilding.getKey();
+        }
+        else {
+            boolean greater = entryBuilding.getValue() > entryPerson.getValue();
+            return greater ? entryBuilding : entryPerson;
+        }
     }
 
     public Tech computeBestTech() {

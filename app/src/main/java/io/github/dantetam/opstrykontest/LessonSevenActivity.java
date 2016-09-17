@@ -261,9 +261,18 @@ public class LessonSevenActivity extends Activity implements
         ScrollView clanScrollView = (ScrollView) findViewById(R.id.clan_menu_scroll);
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.clan_menu_main);
 
-        clanScrollView.setVisibility(View.VISIBLE);
-        linearLayout.setVisibility(View.VISIBLE);
-        linearLayout.setBackgroundColor(Color.TRANSPARENT);
+        if (clanScrollView.getVisibility() == View.INVISIBLE) {
+            clanScrollView.setVisibility(View.VISIBLE);
+            linearLayout.setVisibility(View.VISIBLE);
+            linearLayout.setBackgroundColor(Color.TRANSPARENT);
+        }
+        else {
+            clanScrollView.setVisibility(View.INVISIBLE);
+            linearLayout.setVisibility(View.INVISIBLE);
+            linearLayout.setBackgroundColor(Color.TRANSPARENT);
+            return true;
+        }
+
         List<Clan> clans = mRenderer.worldHandler.world.getClans();
 
         ScrollView diploScrollView = (ScrollView) findViewById(R.id.diplomacy_menu_talk);
