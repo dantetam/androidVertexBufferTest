@@ -168,7 +168,7 @@ public class WorldGenerator {
         clanStartingLocations.add(start);
         for (int i = 0; i < clans.size() - 1; i++) {
             //Find the averaged arithmetic center of the existing conditions
-            float centerQ = 0, centerR = 0;
+            /*float centerQ = 0, centerR = 0;
             for (Tile t: clanStartingLocations) {
                 centerQ += t.q;
                 centerR += t.r;
@@ -191,7 +191,21 @@ public class WorldGenerator {
                     break;
                 }
             }
-            clanStartingLocations.add(furthest);
+            clanStartingLocations.add(furthest);*/
+            while (true) {
+                Tile candidate = validTiles.get((int) (Math.random() * validTiles.size()));
+                //if (clanStartingLocations.size() == 0) break;
+                boolean allowed = true;
+                for (Tile startTile : clanStartingLocations) {
+                    if (startTile.dist(candidate) < 3) {
+                        allowed = false;
+                    }
+                }
+                if (allowed) {
+                    clanStartingLocations.add(candidate);
+                    break;
+                }
+            }
         }
 
         for (int i = 0; i < clans.size(); i++) {

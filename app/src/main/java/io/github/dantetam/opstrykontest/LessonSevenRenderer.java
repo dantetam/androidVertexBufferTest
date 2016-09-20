@@ -466,12 +466,28 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         else if (solid.texture instanceof MultiTexture) {
             MultiTexture mt = (MultiTexture) solid.texture;
 
-            int[] multiTexHandles = {mt.textureHandle, mt.textureHandle1, mt.textureHandle2, mt.textureHandle3, mt.blendMap};
+            /*int[] multiTexHandles = {mt.textureHandle, mt.textureHandle1, mt.textureHandle2, mt.textureHandle3, mt.blendMap};
             for (int i = 0; i < texUnits.length; i++) {
                 GLES20.glActiveTexture(texUnits[i]);
                 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, multiTexHandles[i]);
                 GLES20.glUniform1i(multiTexShaderHandles[i * 3], i);
-            }
+            }*/
+
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle);
+            GLES20.glUniform1i(multiTexShaderHandles[0 * 3], 0);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle1);
+            GLES20.glUniform1i(multiTexShaderHandles[1 * 3], 1);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE2);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle2);
+            GLES20.glUniform1i(multiTexShaderHandles[2 * 3], 2);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.textureHandle3);
+            GLES20.glUniform1i(multiTexShaderHandles[3 * 3], 3);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE4);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mt.blendMap);
+            GLES20.glUniform1i(multiTexShaderHandles[4 * 3], 4);
 
             activeShaderProgram = mMultiTextureShader;
             GLES20.glUseProgram(activeShaderProgram);

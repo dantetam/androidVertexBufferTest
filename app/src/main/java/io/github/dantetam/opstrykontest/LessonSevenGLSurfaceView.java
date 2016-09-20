@@ -398,7 +398,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     stringy += " " + selectedEntity.location();
                 }
                 quickSummaryMenu.setText(stringy);
-                //OpstrykonUtil.processImageSpan(mActivity, quickSummaryMenu);
+                OpstrykonUtil.processImageSpan(mActivity, quickSummaryMenu);
 
                 mActivity.findViewById(R.id.build_menu).setVisibility(selectedImprovementExists && playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) ? View.VISIBLE : View.INVISIBLE);
                 InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.build_menu), new String[]{
@@ -463,7 +463,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         "which lists the tech you can research.",
                         "This uses your total science output."
                 });
-                //OpstrykonUtil.processImageSpan(mActivity, (Button) mActivity.findViewById(R.id.tech_menu));
+                OpstrykonUtil.processImageSpan(mActivity, (Button) mActivity.findViewById(R.id.tech_menu));
             }
         }
     }
