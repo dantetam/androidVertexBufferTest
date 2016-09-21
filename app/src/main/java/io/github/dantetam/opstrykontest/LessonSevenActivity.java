@@ -854,7 +854,8 @@ public class LessonSevenActivity extends Activity implements
                 Set<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildings.keySet();
 
                 TextView cityTitle = new TextView(this);
-                cityTitle.setText(city.name + " " + cityYield[0] + "<{food}>, " + cityYield[1] + "<{production}>, " + cityYield[2] + "<{science}>, " + cityYield[3] + "<{gold}>" + "\n" +
+                cityTitle.setText(city.name + " " + city.population() + "<{population}>" + "\n"
+                        + cityYield[0] + "<{food}>, " + cityYield[1] + "<{production}>, " + cityYield[2] + "<{science}>, " + cityYield[3] + "<{gold}>" + "\n" +
                         cityYield[4] + "<{wonder}>, " + cityYield[5] + "<{health}>, " + cityYield[6] + "<{culture}>");
                 linearLayout.addView(cityTitle);
                 OpstrykonUtil.processImageSpan(mActivity, cityTitle);
@@ -863,31 +864,31 @@ public class LessonSevenActivity extends Activity implements
                     int[] yield = buildingType.getYield();
                     String yieldString = "";
                     if (yield[0] > 0) {
-                        yieldString += "+" + yield[0] + "<{food}>";
+                        yieldString += "+" + yield[0] + "<{food}> ";
                     }
                     if (yield[1] > 0) {
-                        yieldString += ", +" + yield[1] + "<{production}>";
+                        yieldString += "+" + yield[1] + "<{production}> ";
                     }
                     if (yield[2] > 0) {
-                        yieldString += ", +" + yield[2] + "<{science}>";
+                        yieldString += "+" + yield[2] + "<{science}> ";
                     }
                     if (yield[3] > 0) {
-                        yieldString += ", +" + yield[3] + "<{gold}>";
+                        yieldString += "+" + yield[3] + "<{gold}> ";
                     }
                     if (yield[4] > 0) {
-                        yieldString += ", +" + yield[4] + "<{wonder}>";
+                        yieldString += "+" + yield[4] + "<{wonder}> ";
                     }
                     if (yield[5] > 0) {
-                        yieldString += ", +" + yield[5] + "<{health}>";
+                        yieldString += "+" + yield[5] + "<{health}> ";
                     }
                     if (yield[6] > 0) {
-                        yieldString += ", +" + yield[6] + "<{culture}>";
+                        yieldString += "+" + yield[6] + "<{culture}> ";
                     }
 
                     int turnsCalculated = (int) Math.ceil((double) buildingType.workNeeded / (double) cityYield[1]);
                     yieldString += "\n" + turnsCalculated + " turns";
 
-                    String displayName = buildingType.name + " " + yieldString;
+                    String displayName = buildingType.name + "\n" + yieldString;
                     TextView textView = new TextView(this);
                     textView.setText(displayName);
                     textView.setOnClickListener(new View.OnClickListener() {
@@ -911,25 +912,25 @@ public class LessonSevenActivity extends Activity implements
                 Set<PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
                 for (final PersonType personType : allowedPeople) {
                     //System.out.println(personType.name + " " + allowedPeople.size());
-                    String yieldString = personType.name;
+                    String yieldString = personType.name + "\n";
 
                     if (personType.atk > 0) {
-                        yieldString += " " + personType.atk + "<{atk}>";
+                        yieldString += personType.atk + "<{atk}> ";
                     }
                     if (personType.def > 0) {
-                        yieldString += ", " + personType.def + "<{def}>";
+                        yieldString += personType.def + "<{def}> ";
                     }
                     if (personType.maneuver > 0) {
-                        yieldString += ", " + personType.maneuver + "<{maneuver}>";
+                        yieldString += personType.maneuver + "<{maneuver}> ";
                     }
                     if (personType.fire > 0) {
-                        yieldString += ", " + personType.fire + "<{fire}>";
+                        yieldString += personType.fire + "<{fire}> ";
                     }
                     if (personType.shock > 0) {
-                        yieldString += ", " + personType.shock + "<{shock}>";
+                        yieldString += personType.shock + "<{shock}> ";
                     }
                     if (personType.maxH > 0) {
-                        yieldString += ", " + personType.maxH + "<{health}>";
+                        yieldString += personType.maxH + "<{health}> ";
                     }
 
                     int turnsCalculated = (int) Math.ceil((double) personType.workNeeded / (double) yield[1]);
