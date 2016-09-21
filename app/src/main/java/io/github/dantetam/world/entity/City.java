@@ -219,10 +219,12 @@ public class City extends Building {
 
     public static int[] evalTile(Tile tile) {
         int[] calcYield = tile.yield();
+        int[] temp = new int[calcYield.length];
+        System.arraycopy(calcYield, 0, temp, 0, calcYield.length);
         if (tile.improvement != null) {
             int[] imprYield = tile.improvement.getYieldWithModules();
             for (int i = 0; i < imprYield.length; i++) {
-                calcYield[i] += imprYield[i];
+                temp[i] += imprYield[i];
             }
             /*for (Recipe recipe: tile.improvement.recipes) {
                 for (Item item: recipe.output) {
@@ -232,7 +234,7 @@ public class City extends Building {
                 }
             }*/
         }
-        return calcYield;
+        return temp;
     }
 
     public void addTileToTerritory(Tile t) {

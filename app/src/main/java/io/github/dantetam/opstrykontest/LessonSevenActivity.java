@@ -847,10 +847,18 @@ public class LessonSevenActivity extends Activity implements
             if (selectedImprovement instanceof City) {
                 final City city = (City) selectedImprovement;
 
+                int[] cityYield = (int[]) (city.gameYield()[0]);
+
                 //SubMenu improvementSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build improvement");
 
                 Set<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildings.keySet();
-                int i = 0;
+
+                TextView cityTitle = new TextView(this);
+                cityTitle.setText(city.name + " " + cityYield[0] + "<{food}>, " + cityYield[1] + "<{production}>, " + cityYield[2] + "<{science}>, " + cityYield[3] + "<{gold}>" + "\n" +
+                        cityYield[4] + "<{wonder}>, " + cityYield[5] + "<{health}>, " + cityYield[6] + "<{culture}>");
+                linearLayout.addView(cityTitle);
+                OpstrykonUtil.processImageSpan(mActivity, cityTitle);
+
                 for (final BuildingType buildingType : allowedBuildings) {
                     int[] yield = buildingType.getYield();
                     String yieldString = "";
@@ -867,18 +875,17 @@ public class LessonSevenActivity extends Activity implements
                         yieldString += ", +" + yield[3] + "<{gold}>";
                     }
                     if (yield[4] > 0) {
-                        yieldString += ", +" + yield[0] + "<{wonder}>";
+                        yieldString += ", +" + yield[4] + "<{wonder}>";
                     }
                     if (yield[5] > 0) {
-                        yieldString += ", +" + yield[1] + "<{health}>";
+                        yieldString += ", +" + yield[5] + "<{health}>";
                     }
                     if (yield[6] > 0) {
-                        yieldString += ", +" + yield[2] + "<{culture}>";
+                        yieldString += ", +" + yield[6] + "<{culture}>";
                     }
 
-                    int[] cityYield = (int[]) (city.gameYield()[0]);
                     int turnsCalculated = (int) Math.ceil((double) buildingType.workNeeded / (double) cityYield[1]);
-                    yieldString += " " + turnsCalculated + " turns";
+                    yieldString += "\n" + turnsCalculated + " turns";
 
                     String displayName = buildingType.name + " " + yieldString;
                     TextView textView = new TextView(this);
@@ -897,62 +904,7 @@ public class LessonSevenActivity extends Activity implements
                     linearLayout.addView(textView);
 
                     OpstrykonUtil.processImageSpan(mActivity, textView);
-
-                    i++;
                 }
-            /*for (int i = 0; i < selectedImprovement.modules.size(); i++) {
-                Building module = selectedImprovement.modules.get(i);
-                String stringy;
-                if (module == null) {
-                    stringy = "Build improvement";
-                    SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
-
-                    List<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildingsAndModules.get(selectedImprovement.buildingType); //Well, that's all she wrote
-                    for (final BuildingType buildingType: allowedBuildings) {
-                        MenuItem menuItem = moduleSubMenu.add(Menu.NONE, i+1, Menu.NONE, buildingType.name);
-                        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                            public boolean onMenuItemClick(MenuItem item) {
-                                Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
-                                newBuilding.actionsQueue.clear();
-                                newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
-                                return false;
-                            }
-                        });
-                    }
-                }
-                else {
-                    stringy = module.name;
-
-                    if (module.completionPercentage() < 1) {
-                        stringy += " (" + (int) (module.completionPercentage() * 100) + "% Completed)";
-                        //SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
-                    }
-                    SubMenu moduleSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, i, stringy);
-                    List<String> strings = new ArrayList<>();
-                    int[] yield = module.getYieldWithModules();
-                    String yieldString = "";
-                    if (yield[0] > 0) {
-                        yieldString += "+" + yield[0] + "Food";
-                    }
-                    if (yield[1] > 0) {
-                        yieldString += ", +" + yield[1] + "Prod.";
-                    }
-                    if (yield[2] > 0) {
-                        yieldString += ", +" + yield[2] + "Sci.";
-                    }
-                    if (yield[3] > 0) {
-                        yieldString += ", +" + yield[3] + "Cap.";
-                    }
-                    if (!yieldString.equals(""))
-                        strings.add(yieldString);
-                    for (Recipe recipe: module.recipes) {
-                        strings.add(recipe.toString());
-                    }
-                    for (String texty: strings) {
-                        MenuItem menuItem = moduleSubMenu.add(Menu.NONE, 0, Menu.NONE, texty);
-                    }
-                }
-            }*/
 
                 int[] yield = (int[]) (city.gameYield()[0]);
 
@@ -981,7 +933,7 @@ public class LessonSevenActivity extends Activity implements
                     }
 
                     int turnsCalculated = (int) Math.ceil((double) personType.workNeeded / (double) yield[1]);
-                    yieldString += " " + turnsCalculated + " turns";
+                    yieldString += "\n" + turnsCalculated + " turns";
 
                     TextView textView = new TextView(this);
                     textView.setText(yieldString);
@@ -1060,8 +1012,32 @@ public class LessonSevenActivity extends Activity implements
                 tooltips.put("text5", items);
             }*/
             int[] yieldData = City.evalTile(selected);
-            String yield = "Yield: " + yieldData[0] + "F, " + yieldData[1] + "P, " + yieldData[2] + "S, " + yieldData[3] + "C";
-            tooltips.put("text6", yield);
+            //String yield = "Yield: " + yieldData[0] + "<{food}>, " + yieldData[1] + "<{production}>, " + yieldData[2] + "<{science}>, " + yieldData[3] + "<{gold}>";
+
+            String yieldString = "";
+            if (yieldData[0] > 0) {
+                yieldString += "+" + yieldData[0] + "<{food}>";
+            }
+            if (yieldData[1] > 0) {
+                yieldString += ", +" + yieldData[1] + "<{production}>";
+            }
+            if (yieldData[2] > 0) {
+                yieldString += ", +" + yieldData[2] + "<{science}>";
+            }
+            if (yieldData[3] > 0) {
+                yieldString += ", +" + yieldData[3] + "<{gold}>";
+            }
+            if (yieldData[4] > 0) {
+                yieldString += ", +" + yieldData[4] + "<{wonder}>";
+            }
+            if (yieldData[5] > 0) {
+                yieldString += ", +" + yieldData[5] + "<{health}>";
+            }
+            if (yieldData[6] > 0) {
+                yieldString += ", +" + yieldData[6] + "<{culture}>";
+            }
+
+            tooltips.put("text6", yieldString);
         } else if (selectedEntityExists) {
             Entity entity = mRenderer.mousePicker.getSelectedEntity();
             String stringy = entity.name + " (";
@@ -1072,7 +1048,7 @@ public class LessonSevenActivity extends Activity implements
             }
             if (entity instanceof Person) {
                 Person person = (Person) entity;
-                stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP";
+                stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP <{action_points}>";
             }
             tooltips.put("text1", stringy);
 
@@ -1084,9 +1060,22 @@ public class LessonSevenActivity extends Activity implements
 
         int i = 0;
         for (Map.Entry<String, String> en : tooltips.entrySet()) {
-            SubMenu subMenu = menu.addSubMenu(Menu.NONE, i, Menu.NONE, en.getValue());
+            MenuItem subMenu = menu.add(Menu.NONE, i, Menu.NONE, en.getValue());
+
+            OpstrykonUtil.processImageSpan(mActivity, subMenu);
+            i++;
+        }
+
+        /*int i = 0;
+        for (Map.Entry<String, String> en : tooltips.entrySet()) {
+            MenuItem subMenu = menu.add(Menu.NONE, i, Menu.NONE, en.getValue());
+
+            OpstrykonUtil.processImageSpan(mActivity, subMenu);
+
             final String finalAffiliation = affiliation;
-            MenuItem title = subMenu.add(Menu.NONE, i, Menu.NONE, en.getValue());
+            //MenuItem title = subMenu.add(Menu.NONE, i, Menu.NONE, en.getValue());
+
+            MenuItem newMenuItem = null;
             if (en.getKey().equals("text1")) {
                 String clanStringy = "";
                 if (selectedTileExists || selectedEntityExists) {
@@ -1098,15 +1087,15 @@ public class LessonSevenActivity extends Activity implements
                         clanStringy = "The current owner.";
                     }
                 }
-                MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, clanStringy);
+                newMenuItem = subMenu.add(Menu.NONE, i, Menu.NONE, clanStringy);
             } else if (en.getKey().equals("text2")) {
-                MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "The biome (climate) and terrain type (shape).");
+                newMenuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "The biome (climate) and terrain type (shape).");
             } else if (en.getKey().equals("text3")) {
-                MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "Buildings to increase yields, craft, etc.");
+                newMenuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "Buildings to increase yields, craft, etc.");
             } else if (en.getKey().equals("text4")) {
-                MenuItem menuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "Used for buildings and items to equip units.");
+                newMenuItem = subMenu.add(Menu.NONE, i, Menu.NONE, "Used for buildings and items to equip units.");
             }
-            /*else if (en.getKey().equals("text5")) {
+            *//*else if (en.getKey().equals("text5")) {
                 Entity entity = mRenderer.mousePicker.getSelectedEntity();
                 if (entity == null) {
                     entity = mRenderer.mousePicker.getSelectedTile().improvement;
@@ -1116,7 +1105,7 @@ public class LessonSevenActivity extends Activity implements
                 for (int j = 0; j < inventory.size(); j++) {
                     MenuItem menuItem = subMenu.add(Menu.NONE, j+1, Menu.NONE, inventory.get(j).toString());
                 }
-            }*/
+            }*//*
             else if (en.getKey().equals("text6")) {
                 Building improvement = mRenderer.mousePicker.getSelectedTile().improvement;
                 if (improvement != null) {
@@ -1126,8 +1115,11 @@ public class LessonSevenActivity extends Activity implements
                 }
             }
             //selectedStatMenu.addView(bt);
+
+            //OpstrykonUtil.processImageSpan(mActivity, newMenuItem);
+
             i++;
-        }
+        }*/
         return true;
     }
 

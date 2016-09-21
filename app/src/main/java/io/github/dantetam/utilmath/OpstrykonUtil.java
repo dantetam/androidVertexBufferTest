@@ -10,6 +10,8 @@ import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -96,17 +98,39 @@ public class OpstrykonUtil {
     }*/
 
     private static HashMap<String, ImageSpan> imageSpansById = new HashMap<>();
+
     public static void processImageSpan(Context context, TextView textView) {
+        if (textView == null) {
+            return;
+        }
         String text = textView.getText().toString();
+
+        Rect bounds = new Rect();
+        textView.getPaint().getTextBounds(textView.getText().toString(), 0, textView.getText().length(), bounds);
+
+        SpannableString ss = getSpannableStringFromText(context, text, bounds.height());
+        textView.setText(ss);
+    }
+
+    public static void processImageSpan(Context context, MenuItem menuItem) {
+        if (menuItem == null) {
+            return;
+        }
+        String text = menuItem.getTitle().toString();
+        SpannableString ss = getSpannableStringFromText(context, text, 64);
+        menuItem.setTitle(ss);
+    }
+
+    private static SpannableString getSpannableStringFromText(Context context, String text, int size) {
         SpannableString ss = new SpannableString(text);
-        for (int i = 0; i < textView.getText().length() - 1; i++) {
-            if ((textView.getText().charAt(i) == '<' && text.charAt(i + 1) == '{') ||
-                    (textView.getText().charAt(i) == '-' && text.charAt(i + 1) == '{')) {
+        for (int i = 0; i < text.length() - 1; i++) {
+            if ((text.charAt(i) == '<' && text.charAt(i + 1) == '{') ||
+                    (text.charAt(i) == '-' && text.charAt(i + 1) == '{')) {
                 boolean foundTag = false;
                 int j = i;
-                for (; j < textView.getText().length() - 1; j++) {
-                    if ((textView.getText().charAt(j) == '}' && text.charAt(j + 1) == '>') ||
-                            (textView.getText().charAt(j) == '}' && text.charAt(j + 1) == '-')) {
+                for (; j < text.length() - 1; j++) {
+                    if ((text.charAt(j) == '}' && text.charAt(j + 1) == '>') ||
+                            (text.charAt(j) == '}' && text.charAt(j + 1) == '-')) {
                         foundTag = true;
                         break;
                     }
@@ -122,10 +146,10 @@ public class OpstrykonUtil {
                         Bitmap bitmap = decodeSampledBitmapFromResource(context.getResources(), resId, 64, 64);
                         Drawable drawable = new BitmapDrawable(context.getResources(), bitmap);
 
-                        Rect bounds = new Rect();
-                        textView.getPaint().getTextBounds(textView.getText().toString(), 0, textView.getText().length(), bounds);
+                        //Rect bounds = new Rect();
+                        //textView.getPaint().getTextBounds(textView.getText().toString(), 0, textView.getText().length(), bounds);
 
-                        drawable.setBounds(0, 0, bounds.height(), bounds.height());
+                        drawable.setBounds(0, 0, size, size);
                         span = new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE);
 
                         imageSpansById.put(drawableName, span);
@@ -142,7 +166,7 @@ public class OpstrykonUtil {
                 }
             }
         }
-        textView.setText(ss);
+        return ss;
     }
 
     public static int calculateInSampleSize(

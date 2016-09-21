@@ -108,17 +108,19 @@ public class Building extends Entity {
     }
     public int[] getYieldWithModules() {
         int[] yields = buildingType.getYield();
+        int[] temp = new int[yields.length];
+        System.arraycopy(yields, 0, temp, 0, yields.length);
         if (modules != null) {
             for (Building module : modules) {
                 if (module != null) {
                     int[] moduleYield = module.getYieldWithModules();
                     for (int i = 0; i < yields.length; i++) {
-                        yields[i] += moduleYield[i];
+                        temp[i] += moduleYield[i];
                     }
                 }
             }
         }
-        return yields;
+        return temp;
     }
 
     //TODO: //The sum of all modules' yields and storage space is added to the main building in which it is located

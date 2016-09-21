@@ -81,4 +81,18 @@ public class InfoHelper {
         return true;
     }
 
+/*    public static void addInfoOnLongClick(MenuItem item, final String[] info) {
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                PopupMenu tempMenu = new PopupMenu(mActivity, (View)item);
+                MenuInflater inflater = tempMenu.getMenuInflater();
+                inflater.inflate(R.menu.build_module_menu, tempMenu.getMenu());
+                createInfoForView(tempMenu.getMenu(), info);
+                tempMenu.show();
+                return true;
+            }
+        });
+    }*/
+
 }
