@@ -855,25 +855,25 @@ public class LessonSevenActivity extends Activity implements
                     int[] yield = buildingType.getYield();
                     String yieldString = "";
                     if (yield[0] > 0) {
-                        yieldString += "+" + yield[0] + "F";
+                        yieldString += "+" + yield[0] + "<{food}>";
                     }
                     if (yield[1] > 0) {
-                        yieldString += ", +" + yield[1] + "P";
+                        yieldString += ", +" + yield[1] + "<{production}>";
                     }
                     if (yield[2] > 0) {
-                        yieldString += ", +" + yield[2] + "S";
+                        yieldString += ", +" + yield[2] + "<{science}>";
                     }
                     if (yield[3] > 0) {
-                        yieldString += ", +" + yield[3] + "C";
+                        yieldString += ", +" + yield[3] + "<{gold}>";
                     }
                     if (yield[4] > 0) {
-                        yieldString += ", +" + yield[0] + " :)";
+                        yieldString += ", +" + yield[0] + "<{wonder}>";
                     }
                     if (yield[5] > 0) {
-                        yieldString += ", +" + yield[1] + "H";
+                        yieldString += ", +" + yield[1] + "<{health}>";
                     }
                     if (yield[6] > 0) {
-                        yieldString += ", +" + yield[2] + "Cul";
+                        yieldString += ", +" + yield[2] + "<{culture}>";
                     }
 
                     int[] cityYield = (int[]) (city.gameYield()[0]);
@@ -885,15 +885,18 @@ public class LessonSevenActivity extends Activity implements
                     textView.setText(displayName);
                     textView.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View view) {
-                            Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
+                            /*Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
                             city.actionsQueue.clear();
-                            city.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
+                            city.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));*/
+                            city.queueActionBuildModule(buildingType);
                             findViewById(R.id.city_queue_menu_scroll).setVisibility(View.INVISIBLE);
                             findViewById(R.id.city_queue_menu).setVisibility(View.INVISIBLE);
                         }
                     });
 
                     linearLayout.addView(textView);
+
+                    OpstrykonUtil.processImageSpan(mActivity, textView);
 
                     i++;
                 }
@@ -953,46 +956,51 @@ public class LessonSevenActivity extends Activity implements
 
                 int[] yield = (int[]) (city.gameYield()[0]);
 
-                SubMenu unitSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build unit");
                 Set<PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
                 for (final PersonType personType : allowedPeople) {
                     //System.out.println(personType.name + " " + allowedPeople.size());
                     String yieldString = personType.name;
 
                     if (personType.atk > 0) {
-                        yieldString += " " + personType.atk + "A";
+                        yieldString += " " + personType.atk + "<{atk}>";
                     }
                     if (personType.def > 0) {
-                        yieldString += ", " + personType.def + "D";
+                        yieldString += ", " + personType.def + "<{def}>";
                     }
                     if (personType.maneuver > 0) {
-                        yieldString += ", " + personType.maneuver + "M";
+                        yieldString += ", " + personType.maneuver + "<{maneuver}>";
                     }
                     if (personType.fire > 0) {
-                        yieldString += ", " + personType.fire + "F";
+                        yieldString += ", " + personType.fire + "<{fire}>";
                     }
                     if (personType.shock > 0) {
-                        yieldString += ", " + personType.shock + "S";
+                        yieldString += ", " + personType.shock + "<{shock}>";
                     }
                     if (personType.maxH > 0) {
-                        yieldString += ", " + personType.maxH + "HP";
+                        yieldString += ", " + personType.maxH + "<{health}>";
                     }
 
                     int turnsCalculated = (int) Math.ceil((double) personType.workNeeded / (double) yield[1]);
                     yieldString += " " + turnsCalculated + " turns";
 
-                    MenuItem menuItem = unitSubMenu.add(Menu.NONE, 0, Menu.NONE, yieldString);
-                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
+                    TextView textView = new TextView(this);
+                    textView.setText(yieldString);
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
                             //Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
                             //newBuilding.actionsQueue.clear();
                             //newBuilding.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
                             //Person newPerson = PersonFactory.newPerson(personType, selectedImprovement.world, selectedImprovement.clan, 0.0);
                             //TODO: Use city method (subtract resources) selectedImprovement.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, newPerson));
                             city.queueActionBuildUnit(personType);
-                            return false;
+                            findViewById(R.id.city_queue_menu_scroll).setVisibility(View.INVISIBLE);
+                            findViewById(R.id.city_queue_menu).setVisibility(View.INVISIBLE);
                         }
                     });
+
+                    linearLayout.addView(textView);
+
+                    OpstrykonUtil.processImageSpan(mActivity, textView);
                 }
             }
         }
