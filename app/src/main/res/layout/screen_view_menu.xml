@@ -134,6 +134,33 @@
             app:layout_heightPercent="40%"
             app:layout_marginTopPercent="50%"
             app:layout_marginLeftPercent="50%" />-->
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/city_queue_menu_scroll"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:fillViewport="true"
+                    android:fadeScrollbars="false"
+                    app:layout_widthPercent="50%"
+                    app:layout_heightPercent="60%"
+                    app:layout_marginTopPercent="20%"
+                    app:layout_marginLeftPercent="25%"
+                    android:visibility="invisible">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:id="@+id/city_queue_menu"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:paddingLeft="16dp"
+                          android:paddingRight="16dp"
+                          android:orientation="vertical"
+                          app:layout_widthPercent="50%"
+                          app:layout_heightPercent="60%"
+                          app:layout_marginTopPercent="20%"
+                          app:layout_marginLeftPercent="25%"
+                          android:visibility="invisible">
+            </LinearLayout>
+        </ScrollView>
+
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/clan_menu_scroll"
             android:layout_width="fill_parent"

@@ -100,11 +100,13 @@ public class OpstrykonUtil {
         String text = textView.getText().toString();
         SpannableString ss = new SpannableString(text);
         for (int i = 0; i < textView.getText().length() - 1; i++) {
-            if (textView.getText().charAt(i) == '<' && text.charAt(i + 1) == '{') {
+            if ((textView.getText().charAt(i) == '<' && text.charAt(i + 1) == '{') ||
+                    (textView.getText().charAt(i) == '-' && text.charAt(i + 1) == '{')) {
                 boolean foundTag = false;
                 int j = i;
                 for (; j < textView.getText().length() - 1; j++) {
-                    if (textView.getText().charAt(j) == '}' && text.charAt(j + 1) == '>') {
+                    if ((textView.getText().charAt(j) == '}' && text.charAt(j + 1) == '>') ||
+                            (textView.getText().charAt(j) == '}' && text.charAt(j + 1) == '-')) {
                         foundTag = true;
                         break;
                     }

@@ -326,12 +326,12 @@ public class ObjLoader {
                 System.arraycopy(stored[i], 0, data[i], 0, stored[i].length);
             }
 
-            System.out.println("Loaded from memory obj model: " + solidName);
+            //System.out.println("Loaded from memory obj model: " + solidName);
         }
         else {
             data = readFloatDataByVertex(bufferedReader);
             solidData.put(solidName, data);
-            System.out.println("Not loaded, created obj model: " + solidName);
+            //System.out.println("Not loaded, created obj model: " + solidName);
         }
         return data;
     }

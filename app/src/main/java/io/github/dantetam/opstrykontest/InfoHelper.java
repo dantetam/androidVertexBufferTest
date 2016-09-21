@@ -11,6 +11,7 @@ import android.widget.PopupMenu;
 import java.util.List;
 import java.util.Set;
 
+import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.action.BuildingAction;
 import io.github.dantetam.world.entity.Building;
@@ -57,8 +58,8 @@ public class InfoHelper {
 
     public static void addInfoOnLongClick(Button button, final String[] info) {
         //System.out.println(button.getText());
-        if (!button.getText().toString().contains("(i)")) {
-            button.setText(button.getText() + " (i)");
+        if (!button.getText().toString().contains("<{info}>")) {
+            button.setText(button.getText() + " <{info}>");
             button.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -70,6 +71,7 @@ public class InfoHelper {
                     return true;
                 }
             });
+            OpstrykonUtil.processImageSpan(mActivity, button);
         }
     }
 

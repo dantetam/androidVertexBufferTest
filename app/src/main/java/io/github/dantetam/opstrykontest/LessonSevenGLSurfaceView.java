@@ -393,7 +393,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     stringy += " " + affiliation;
                     if (selectedEntity instanceof Person) {
                         Person person = (Person) selectedEntity;
-                        stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP";
+                        stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP <{action_points}>";
                     }
                     stringy += " " + selectedEntity.location();
                 }
@@ -413,7 +413,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     selectedEntityMenu.setText("Actions");
                 }
                 InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.selected_unit_menu), new String[]{
-                        "Units have action points, or AP,",
+                        "Units have action points, or AP <{action_points}>,",
                         "which can be used each turn."
                 });
 
@@ -461,7 +461,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 InfoHelper.addInfoOnLongClick((Button) mActivity.findViewById(R.id.tech_menu), new String[]{
                         "This opens the technology tree",
                         "which lists the tech you can research.",
-                        "This uses your total science output."
+                        "This uses your total science <{science}> output."
                 });
                 OpstrykonUtil.processImageSpan(mActivity, (Button) mActivity.findViewById(R.id.tech_menu));
             }

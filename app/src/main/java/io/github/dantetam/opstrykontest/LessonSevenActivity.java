@@ -26,6 +26,8 @@ import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.github.dantetam.android.MultiTextureHelper;
+import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.ai.RelationModifier;
@@ -399,11 +402,11 @@ public class LessonSevenActivity extends Activity implements
 
             final Button warButton = new Button(this);
             warButton.setHeight(120);
-            warButton.setText("< DECLARE WAR. >");
+            warButton.setText("< DECLARE WAR. <{war}> >");
             warButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    warButton.setText("< CONFIRM WAR. >");
+                    warButton.setText("< CONFIRM WAR. <{war}> >");
                     warButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -506,11 +509,11 @@ public class LessonSevenActivity extends Activity implements
 
             final Button warButton = new Button(this);
             warButton.setHeight(120);
-            warButton.setText("< DECLARE WAR. >");
+            warButton.setText("< DECLARE WAR. <{war}> >");
             warButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    warButton.setText("< CONFIRM WAR. >");
+                    warButton.setText("< CONFIRM WAR. <{war}> >");
                     warButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -521,8 +524,10 @@ public class LessonSevenActivity extends Activity implements
                             //onClickDiplomacyMenu(c);
                         }
                     });
+                    OpstrykonUtil.processImageSpan(mActivity, warButton);
                 }
             });
+            OpstrykonUtil.processImageSpan(mActivity, warButton);
             clanMenu.addView(warButton);
         }
         clanView = new Button(this);
@@ -612,7 +617,8 @@ public class LessonSevenActivity extends Activity implements
     public void findOffers(Clan clan, Clan offering, LinearLayout layout) {
         Button clanView = new Button(this);
         clanView.setHeight(120);
-        clanView.setText(clan.totalGold + " gold");
+        clanView.setText(clan.totalGold + " gold <{gold}>");
+        OpstrykonUtil.processImageSpan(mActivity, clanView);
         layout.addView(clanView);
 
         for (City city: clan.cities) {
@@ -627,13 +633,15 @@ public class LessonSevenActivity extends Activity implements
                 if (!mRenderer.worldSystem.atWar(clan, otherClan)) {
                     clanView = new Button(this);
                     clanView.setHeight(120);
-                    clanView.setText("Declare WAR on " + otherClan.name);
+                    clanView.setText("Declare WAR on " + otherClan.name + " <{war}>");
+                    OpstrykonUtil.processImageSpan(mActivity, clanView);
                     layout.addView(clanView);
                 }
                 else {
                     clanView = new Button(this);
                     clanView.setHeight(120);
-                    clanView.setText("Make PEACE with " + otherClan.name);
+                    clanView.setText("Make PEACE with " + otherClan.name + " <{peace}>");
+                    OpstrykonUtil.processImageSpan(mActivity, clanView);
                     layout.addView(clanView);
                 }
             }
@@ -724,7 +732,8 @@ public class LessonSevenActivity extends Activity implements
     public void onClickNextTurnMenu(View v) {
         Entity en = mRenderer.findNextUnit();
         if (en != null) {
-            ((Button) v).setText("UNIT NEEDS ORDERS");
+            ((Button) v).setText("UNIT NEEDS ORDERS <{action_points}>");
+            OpstrykonUtil.processImageSpan(mActivity, (Button) v);
             //((MenuItem) findViewById(R.id.next_turn_button)).setTitle("UNIT NEEDS ORDERS");
 
             mRenderer.debounceFrames = 10;
@@ -734,7 +743,8 @@ public class LessonSevenActivity extends Activity implements
         } else if (playerClan.techTree.researchingTechQueue.size() == 0) {
             mRenderer.mousePicker.changeSelectedTile(null);
             mRenderer.mousePicker.changeSelectedUnit(null);
-            ((Button) v).setText("CHOOSE RESEARCH");
+            ((Button) v).setText("CHOOSE RESEARCH <{science}>");
+            OpstrykonUtil.processImageSpan(mActivity, (Button) v);
             if (findViewById(R.id.tech_tree_screen).getVisibility() == View.INVISIBLE)
                 onClickTechMenu(findViewById(R.id.tech_menu));
             mGLSurfaceView.update();
@@ -814,22 +824,30 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public void onClickModuleMenu(View v) {
-        moduleSelectionMenu = new PopupMenu(this, v);
+        findViewById(R.id.city_queue_menu_scroll).setVisibility(View.VISIBLE);
+        findViewById(R.id.city_queue_menu).setVisibility(View.VISIBLE);
+        onCreateBuildModuleMenu();
+        /*moduleSelectionMenu = new PopupMenu(this, v);
         MenuInflater inflater = moduleSelectionMenu.getMenuInflater();
         inflater.inflate(R.menu.build_module_menu, moduleSelectionMenu.getMenu());
-        onCreateBuildModuleMenu(moduleSelectionMenu.getMenu());
-        moduleSelectionMenu.show();
+        onCreateBuildModuleMenu();
+        moduleSelectionMenu.show();*/
     }
 
-    public boolean onCreateBuildModuleMenu(Menu menu) {
+    public void onCreateBuildModuleMenu() {
         final Tile selected = mRenderer.mousePicker.getSelectedTile();
         final Building selectedImprovement = selected != null ? selected.improvement : null;
+
+        ScrollView scrollView = (ScrollView) findViewById(R.id.city_queue_menu_scroll);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.city_queue_menu);
+
+        linearLayout.removeAllViews();
 
         if (selectedImprovement != null) {
             if (selectedImprovement instanceof City) {
                 final City city = (City) selectedImprovement;
 
-                SubMenu improvementSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build improvement");
+                //SubMenu improvementSubMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 0, "Build improvement");
 
                 Set<BuildingType> allowedBuildings = selectedImprovement.clan.techTree.allowedBuildings.keySet();
                 int i = 0;
@@ -863,15 +881,19 @@ public class LessonSevenActivity extends Activity implements
                     yieldString += " " + turnsCalculated + " turns";
 
                     String displayName = buildingType.name + " " + yieldString;
-                    MenuItem menuItem = improvementSubMenu.add(Menu.NONE, i + 1, Menu.NONE, displayName);
-                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
+                    TextView textView = new TextView(this);
+                    textView.setText(displayName);
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View view) {
                             Building newBuilding = BuildingFactory.newModule(selectedImprovement.world, selectedImprovement.clan, buildingType, selected, 0, selectedImprovement);
                             city.actionsQueue.clear();
                             city.actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, newBuilding));
-                            return false;
+                            findViewById(R.id.city_queue_menu_scroll).setVisibility(View.INVISIBLE);
+                            findViewById(R.id.city_queue_menu).setVisibility(View.INVISIBLE);
                         }
                     });
+
+                    linearLayout.addView(textView);
 
                     i++;
                 }
@@ -974,7 +996,6 @@ public class LessonSevenActivity extends Activity implements
                 }
             }
         }
-        return true;
     }
 
     public void onClickInfoMenu(View v) {
