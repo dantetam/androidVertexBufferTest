@@ -82,14 +82,22 @@ public class ResourceXmlParser {
                         normalStats[i] = Integer.parseInt(splitNormalStats[i]);
                     }
 
+                    String imprStatsStringy = xpp.getAttributeValue(null, "impryield");
+                    String[] splitImprStats = imprStatsStringy.split("/");
+                    int[] imprStats = new int[splitImprStats.length];
+                    for (int i = 0; i < splitImprStats.length; i++) {
+                        imprStats[i] = Integer.parseInt(splitImprStats[i]);
+                    }
+
                     ItemType itemType = new ItemType(resourceName,
-                            normalStats[0], normalStats[1], normalStats[2], normalStats[3], normalStats[4], normalStats[5]);
+                            normalStats, imprStats);
 
                     String modelName = xpp.getAttributeValue(null, "model");
                     if (modelName != null) {
                         //TODO: Fix this so it randomly splits models
                         if (modelName.contains("/")) {
-                            modelName = modelName.split("/")[0];
+                            String[] modelNames = modelName.split("/");
+                            modelName = modelNames[(int)(Math.random()*modelNames.length)];
                         }
                         itemType.modelName = modelName;
                     }
@@ -97,7 +105,8 @@ public class ResourceXmlParser {
                     if (textureName != null) {
                         //TODO: Fix this so it randomly splits textures
                         if (textureName.contains("/")) {
-                            textureName = textureName.split("/")[0];
+                            String[] modelNames = modelName.split("/");
+                            textureName = modelNames[(int)(Math.random()*modelNames.length)];
                         }
                         itemType.textureName = textureName;
                     }

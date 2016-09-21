@@ -24,6 +24,8 @@ public class TechTree {
     public HashMap<String, Tech> techMap;
     public HashMap<Tech, Boolean> researchedTech;
 
+    public static HashMap<Tech, Boolean> cityStateTech;
+
     public static HashMap<String, ItemType> itemTypes;
 
     public List<Tech> researchingTechQueue;
@@ -50,6 +52,8 @@ public class TechTree {
         techMap = new HashMap<>();
         researchedTech = new HashMap<>();
 
+        cityStateTech = new HashMap<>();
+
         researchingTechQueue = new ArrayList<>();
 
         allowedBuildings = new HashMap<>();
@@ -66,6 +70,9 @@ public class TechTree {
 
     //Put a specified amount of research into the tree. Return any extra left.
     public int research(int inputScience) {
+        if (clan instanceof CityState) {
+            return 0;
+        }
         if (researchingTechQueue.size() == 0) {
             throw new RuntimeException(clan.name + " is not researching a technology.");
             //return;
@@ -89,7 +96,9 @@ public class TechTree {
         researchedTech.put(tech, true);
 
         for (BuildingType buildingType: tech.unlockedBuildings) {
-            allowedBuildings.put(buildingType, true);
+            if (!(clan instanceof CityState) || (!buildingType.wonder && clan instanceof CityState)) {
+                allowedBuildings.put(buildingType, true);
+            }
         }
         for (BuildingType buildingType: tech.unlockedDistricts) {
             allowedDistricts.put(buildingType, true);

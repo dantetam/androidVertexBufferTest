@@ -153,7 +153,8 @@ public class WorldGenerator {
             TechXmlParser.parseTechTree(cityState.techTree, mActivity, R.raw.tech_tree, R.raw.tech_tree_layout);
             //cityState.techTree.unlock("Landing");
 
-            System.out.println(cityState + ">>>" + cityState.techTree);
+            cityState.techTree.unlock("Landing");
+            cityState.techTree.allowedUnits.remove("Settler");
         }
         return clans;
     }

@@ -12,12 +12,14 @@ public class ItemType {
 
     public String name;
     public String modelName, textureName;
-    public int food, production, science, capital, happiness, health;
+    //public int food, production, science, capital, happiness, health;
 
-    public ItemType(String n, int f, int p, int s, int c, int ha, int he) {
+    public int[] noImprYield, imprYield;
+
+    public ItemType(String n, int[] noImpr, int[] impr) {
         name = n;
-        food = f; production = p; science = s; capital = c;
-        happiness = ha; health = he;
+        noImprYield = noImpr;
+        imprYield = impr;
     }
 
     public boolean equals(Object other) {

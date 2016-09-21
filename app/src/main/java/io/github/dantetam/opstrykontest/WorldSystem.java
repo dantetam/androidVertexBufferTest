@@ -113,6 +113,8 @@ public class WorldSystem {
             processClan(clan);
         }
 
+        dealWithCityStateTech();
+
         for (Clan c: world.getClans()) {
             for (Person person: c.people) {
                 person.actionPoints = person.maxActionPoints;
@@ -328,6 +330,10 @@ public class WorldSystem {
                 }
             }
         }
+    }
+
+    private void dealWithCityStateTech() {
+
     }
 
 }
