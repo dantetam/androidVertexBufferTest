@@ -9,6 +9,7 @@ import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
+import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.Inventory;
 import io.github.dantetam.world.entity.Person;
@@ -74,7 +75,7 @@ public class ArtificialIntelligence {
         Map<BuildingType, Integer> buildingOptionsScore = new LinkedHashMap<>();
         Map<PersonType, Integer> personOptionsScore = new LinkedHashMap<>();
         for (BuildingType buildingType: buildingTypes) {
-            int finalScore = computeBuildingTypeScore(city, buildingType);
+            int finalScore = computeBuildingTypeScore(clan, city, buildingType);
             buildingOptionsScore.put(buildingType, finalScore);
         }
         for (PersonType personType: personTypes) {
@@ -93,13 +94,23 @@ public class ArtificialIntelligence {
         }
         Map<BuildingType, Integer> sortedByScoreBuilding = OpstrykonUtil.sortMapByValue(buildingOptionsScore);
         Map<PersonType, Integer> sortedByScorePerson = OpstrykonUtil.sortMapByValue(personOptionsScore);
-        Map.Entry<BuildingType, Integer> entryBuilding = sortedByScoreBuilding.entrySet().iterator().next();
-        Map.Entry<PersonType, Integer> entryPerson = sortedByScorePerson.entrySet().iterator().next();
+        Map.Entry<BuildingType, Integer> entryBuilding = null;
+        Map.Entry<PersonType, Integer> entryPerson = null;
+        if (sortedByScoreBuilding.size() != 0) {
+            entryBuilding = sortedByScoreBuilding.entrySet().iterator().next();
+        }
+        if (sortedByScorePerson.size() != 0) {
+            entryPerson = sortedByScorePerson.entrySet().iterator().next();
+        }
         /*for (Map.Entry<BuildingType, Integer> entry: sortedByScore.entrySet()) {
 
             break;
         }*/
-        if (entryBuilding == null) {
+        if (entryBuilding == null && entryPerson == null) {
+            System.err.println("No options to choose from!");
+            return null;
+        }
+        else if (entryBuilding == null) {
             return entryPerson.getKey();
         }
         else if (entryPerson == null) {
@@ -120,7 +131,7 @@ public class ArtificialIntelligence {
             for (BuildingType buildingType: tech.unlockedBuildings) {
                 int averagedBuildingScore = 0;
                 for (City city: clan.cities) {
-                    averagedBuildingScore += computeBuildingTypeScore(city, buildingType);
+                    averagedBuildingScore += computeBuildingTypeScore(clan, city, buildingType);
                 }
                 //averagedBuildingScore /= clan.cities.size();
                 techScore += averagedBuildingScore;
@@ -139,7 +150,7 @@ public class ArtificialIntelligence {
         return sortedByScore.entrySet().iterator().next().getKey();
     }
 
-    private int computeBuildingTypeScore(City city, BuildingType buildingType) {
+    private int computeBuildingTypeScore(Clan clan, City city, BuildingType buildingType) {
         double workNeeded = buildingType.workNeeded;
         int turnsNeeded;
         if (city != null) {
@@ -151,10 +162,21 @@ public class ArtificialIntelligence {
             turnsNeeded = (int) Math.ceil(workNeeded / 8d);
         }
 
-        double foodPerTurn = (strategy.get("Growth") / 10d + 0.5d) * buildingType.food();
-        double prodPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * buildingType.production();
-        double sciPerTurn = (strategy.get("Science") / 10d + 0.5d) * buildingType.science();
-        double capPerTurn = (strategy.get("Gold") / 10d + 0.5d) * buildingType.capital();
+        double foodPerTurn = 0;
+        double prodPerTurn = 0;
+        double sciPerTurn = 0;
+        double capPerTurn = 0;
+        if (clan instanceof CityState) {
+            foodPerTurn = 2 * buildingType.food();
+            prodPerTurn = 2 * buildingType.production();
+            sciPerTurn = buildingType.science();
+            capPerTurn = buildingType.capital();
+        } else {
+            foodPerTurn = (strategy.get("Growth") / 10d + 0.5d) * buildingType.food();
+            prodPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * buildingType.production();
+            sciPerTurn = (strategy.get("Science") / 10d + 0.5d) * buildingType.science();
+            capPerTurn = (strategy.get("Gold") / 10d + 0.5d) * buildingType.capital();
+        }
         int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn) * 10d);
 
         double roiTurns = workNeeded / scorePerTenTurns;

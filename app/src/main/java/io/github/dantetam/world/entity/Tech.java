@@ -26,10 +26,12 @@ public class Tech {
 
     public int researchCompleted, researchNeeded;
 
+    public String iconName;
     public int treeOffsetX, treeOffsetY;
 
     public Tech(String n, int researchCompleted, int researchNeeded) {
         name = n;
+        iconName = "science";
         this.researchCompleted = researchCompleted;
         this.researchNeeded = researchNeeded;
 

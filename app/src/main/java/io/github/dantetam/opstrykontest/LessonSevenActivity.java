@@ -888,7 +888,7 @@ public class LessonSevenActivity extends Activity implements
                     int turnsCalculated = (int) Math.ceil((double) buildingType.workNeeded / (double) cityYield[1]);
                     yieldString += "\n" + turnsCalculated + " turns";
 
-                    String displayName = buildingType.name + "\n" + yieldString;
+                    String displayName = buildingType.name + "<{" + buildingType.iconName + "}>\n" + yieldString;
                     TextView textView = new TextView(this);
                     textView.setText(displayName);
                     textView.setOnClickListener(new View.OnClickListener() {
@@ -912,7 +912,7 @@ public class LessonSevenActivity extends Activity implements
                 Set<PersonType> allowedPeople = selectedImprovement.clan.techTree.allowedUnits.keySet();
                 for (final PersonType personType : allowedPeople) {
                     //System.out.println(personType.name + " " + allowedPeople.size());
-                    String yieldString = personType.name + "\n";
+                    String yieldString = personType.name + " <{" + personType.iconName + "}> \n";
 
                     if (personType.atk > 0) {
                         yieldString += personType.atk + "<{atk}> ";
@@ -1358,19 +1358,19 @@ public class LessonSevenActivity extends Activity implements
 
             String unlocked = "";
             for (PersonType personType : tech.unlockedUnits) {
-                unlocked += personType.name + " ";
+                unlocked += "<{" + personType.iconName + "}>";
             }
             for (BuildingType buildingType : tech.unlockedBuildings) {
-                unlocked += buildingType.name + " ";
+                unlocked += "<{" + buildingType.iconName + "}>";
             }
             for (ItemType itemType: tech.revealResources) {
-                unlocked += itemType.name + " ";
+                unlocked += "<{" + itemType.iconName + "}>";
             }
             for (ItemType itemType: tech.harvestableResources) {
-                unlocked += itemType.name + " ";
+                unlocked += "<{" + itemType.iconName + "}>";
             }
             for (Ability ability: tech.unlockedSpecialAbilities) {
-                unlocked += ability.name + " ";
+                unlocked += "<{star}>";
             }
             stringy += "\n" + unlocked;
 
@@ -1448,6 +1448,7 @@ public class LessonSevenActivity extends Activity implements
             }
 
             InfoHelper.addInfoOnLongClick(textView, techInfo);
+            OpstrykonUtil.processImageSpan(mActivity, textView);
         }
     }
 

@@ -24,6 +24,7 @@ public class BuildingType {
 
     public String resourceNeeded;
 
+    public String iconName;
     public String modelName, textureName;
 
     public boolean created = false;
@@ -40,6 +41,7 @@ public class BuildingType {
     }*/
     public BuildingType(String n, int[] data) {
         name = n;
+        iconName = "building";
         yield = data;
     }
 

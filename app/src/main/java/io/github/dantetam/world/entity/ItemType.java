@@ -11,6 +11,7 @@ import java.util.List;
 public class ItemType {
 
     public String name;
+    public String iconName;
     public String modelName, textureName;
     //public int food, production, science, capital, happiness, health;
 
@@ -18,6 +19,7 @@ public class ItemType {
 
     public ItemType(String n, int[] noImpr, int[] impr) {
         name = n;
+        iconName = "rock";
         noImprYield = noImpr;
         imprYield = impr;
     }

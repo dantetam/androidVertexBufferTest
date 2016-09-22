@@ -7,87 +7,87 @@ yields are in the form "food/production/science/capital/happiness/health"
 -->
 
 <imprroot>
-    <impr name="City" workNeeded="1" yield="1/1/1/1/1/1/1" tech="Landing" model="palace1">
+    <impr name="City" workNeeded="1" yield="1/1/1/1/1/1/1" tech="Landing" icon="building" model="palace1">
 
     </impr>
-    <impr name="Ruins" workNeeded="1" yield="1/1/1/1/0/1/0" tech="Landing" model="ruins1/ruins2/ruins3/ruins4">
+    <impr name="Ruins" workNeeded="1" yield="1/1/1/1/0/1/0" tech="Landing" icon="building" model="ruins1/ruins2/ruins3/ruins4">
 
     </impr>
-    <impr name="Farm" workNeeded="15" resourceGroup="Farm" yield="2/0/0/0/0/0/0" tech="Agriculture" texture="preset_farm">
-        <impr name="Greenhouse" workNeeded="30" resourceGroup="Farm" yield="3/0/0/0/0/0/0" tech="Env. Control">
-            <impr name="Biodome" workNeeded="45" resourceGroup="Farm" yield="4/1/0/0/0/0/0" tech="*">
+    <impr name="Farm" workNeeded="15" resourceGroup="Farm" yield="2/0/0/0/0/0/0" tech="Agriculture" icon="building" texture="preset_farm">
+        <impr name="Greenhouse" workNeeded="30" resourceGroup="Farm" yield="3/0/0/0/0/0/0" tech="Env. Control" icon="building">
+            <impr name="Biodome" workNeeded="45" resourceGroup="Farm" yield="4/1/0/0/0/0/0" tech="*" icon="building">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Hunting Camp" workNeeded="15" yield="0/2/0/2/0/0/0" tech="Xenoscience">
-        <impr name="Slaughterhouse" workNeeded="30" yield="0/2/0/4/0/0/0" tech="Env. Control">
-            <impr name="Cell Culture" workNeeded="45" yield="2/2/2/2/0/0/0" tech="*">
+    <impr name="Hunting Camp" workNeeded="15" yield="0/2/0/2/0/0/0" tech="Xenoscience" icon="building">
+        <impr name="Slaughterhouse" workNeeded="30" yield="0/2/0/4/0/0/0" tech="Env. Control" icon="building">
+            <impr name="Cell Culture" workNeeded="45" yield="2/2/2/2/0/0/0" tech="*" icon="building">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Workshop" workNeeded="15" resourceGroup="Workshop" yield="0/1/0/1/0/0/0" tech="Workshops">
-        <impr name="Factory" workNeeded="30" resourceGroup="Workshop" yield="0/2/0/1/0/0/0" tech="Factorization">
-            <impr name="Automata" workNeeded="45" resourceGroup="Workshop" yield="0/3/0/2/0/0/0" tech="*">
+    <impr name="Workshop" workNeeded="15" resourceGroup="Workshop" yield="0/1/0/1/0/0/0" tech="Workshops" icon="building">
+        <impr name="Factory" workNeeded="30" resourceGroup="Workshop" yield="0/2/0/1/0/0/0" tech="Factorization" icon="building">
+            <impr name="Automata" workNeeded="45" resourceGroup="Workshop" yield="0/3/0/2/0/0/0" tech="*" icon="building">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Mine" workNeeded="15" resourceGroup="Mine" yield="0/2/0/0/0/0/0" tech="Mining">
-        <impr name="Quarry" workNeeded="30" resourceGroup="Mine" yield="0/3/0/0/0/0/0" tech="Deep Mining">
-            <impr name="Drill" workNeeded="45" resourceGroup="Mine" yield="0/4/0/0/0/0/0" tech="*">
+    <impr name="Mine" workNeeded="15" resourceGroup="Mine" yield="0/2/0/0/0/0/0" tech="Mining" icon="building">
+        <impr name="Quarry" workNeeded="30" resourceGroup="Mine" yield="0/3/0/0/0/0/0" tech="Deep Mining" icon="building">
+            <impr name="Drill" workNeeded="45" resourceGroup="Mine" yield="0/4/0/0/0/0/0" tech="*" icon="building">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Field" workNeeded="15" resourceGroup="Lab" yield="0/0/2/0/0/0/0" tech="Field Science">
-        <impr name="Lab" workNeeded="30" resourceGroup="Lab" yield="0/1/4/0/0/0/0" tech="Lab">
-            <impr name="Advancement AI" workNeeded="45" resourceGroup="Lab" yield="0/1/5/0/0/0/0" tech="*">
+    <impr name="Field" workNeeded="15" resourceGroup="Lab" yield="0/0/2/0/0/0/0" tech="Field Science" icon="building">
+        <impr name="Lab" workNeeded="30" resourceGroup="Lab" yield="0/1/4/0/0/0/0" tech="Lab" icon="building">
+            <impr name="Advancement AI" workNeeded="45" resourceGroup="Lab" yield="0/1/5/0/0/0/0" tech="*" icon="building">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Trade Post" workNeeded="15" yield="0/0/0/2/0/0/0" tech="Data Mining">
-        <impr name="Exchange" workNeeded="30" yield="0/1/0/3/0/0/0" tech="Machine Learning">
-            <impr name="Examiner" workNeeded="45" yield="0/1/0/5/0/0/0" tech="*">
+    <impr name="Trade Post" workNeeded="15" yield="0/0/0/2/0/0/0" tech="Data Mining" icon="building">
+        <impr name="Exchange" workNeeded="30" yield="0/1/0/3/0/0/0" tech="Machine Learning" icon="building">
+            <impr name="Examiner" workNeeded="45" yield="0/1/0/5/0/0/0" tech="*" icon="building">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Deployed Boats" workNeeded="15" yield="2/1/0/0/0/0/0" tech="Seafaring">
-        <impr name="Platform" workNeeded="30" yield="1/2/0/2/0/0/0" tech="Deep Sea">
-            <impr name="Terraformed Sea" workNeeded="45" yield="2/2/2/2/0/0/0" tech="*">
+    <impr name="Deployed Boats" workNeeded="15" yield="2/1/0/0/0/0/0" tech="Seafaring" icon="building">
+        <impr name="Platform" workNeeded="30" yield="1/2/0/2/0/0/0" tech="Deep Sea" icon="building">
+            <impr name="Terraformed Sea" workNeeded="45" yield="2/2/2/2/0/0/0" tech="*" icon="building">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Monument" workNeeded="15" yield="0/0/1/0/1/0/0" tech="Socialization">
-        <impr name="Temple" workNeeded="30" yield="0/0/2/0/2/0/0" tech="Social Belief">
+    <impr name="Monument" workNeeded="15" yield="0/0/1/0/1/0/0" tech="Socialization" icon="building">
+        <impr name="Temple" workNeeded="30" yield="0/0/2/0/2/0/0" tech="Social Belief" icon="building">
 
         </impr>
     </impr>
-    <impr name="Clinic" workNeeded="15" yield="0/0/0/0/0/2/0" tech="Healthcare">
-        <impr name="Mind Arcade" workNeeded="30" yield="0/-1/0/0/2/3/0" tech="Mind Arcade">
-            <impr name="Mind Nexus" workNeeded="60" yield="0/1/0/0/2/5/0" tech="Mind Nexus">
+    <impr name="Clinic" workNeeded="15" yield="0/0/0/0/0/2/0" tech="Healthcare" icon="building">
+        <impr name="Mind Arcade" workNeeded="30" yield="0/-1/0/0/2/3/0" tech="Mind Arcade" icon="building">
+            <impr name="Mind Nexus" workNeeded="60" yield="0/1/0/0/2/5/0" tech="Mind Nexus" icon="building">
 
             </impr>
         </impr>
-        <impr name="Genetic Database" workNeeded="30" yield="0/0/0/0/-1/5/0" tech="Genetics">
-            <impr name="Genetic Assembler" workNeeded="100" yield="0/0/0/0/-1/8/0" tech="Primordial Assembly" wonder="true">
+        <impr name="Genetic Database" workNeeded="30" yield="0/0/0/0/-1/5/0" tech="Genetics" icon="building">
+            <impr name="Genetic Assembler" workNeeded="100" yield="0/0/0/0/-1/8/0" tech="Primordial Assembly" icon="building" wonder="true">
 
             </impr>
         </impr>
     </impr>
-    <impr name="Park" workNeeded="15" yield="0/0/0/0/1/1/0" tech="Socialization">
-        <impr name="Xenolands" workNeeded="30" yield="0/0/2/0/3/1/0" tech="Xenoterra">
+    <impr name="Park" workNeeded="15" yield="0/0/0/0/1/1/0" tech="Socialization" icon="building">
+        <impr name="Xenolands" workNeeded="30" yield="0/0/2/0/3/1/0" tech="Xenoterra" icon="building">
 
         </impr>
-        <impr name="Tech Plaza" workNeeded="30" yield="0/2/0/0/3/1/0" tech="Urban Forest">
+        <impr name="Tech Plaza" workNeeded="30" yield="0/2/0/0/3/1/0" tech="Urban Forest" icon="building">
 
         </impr>
     </impr>
-    <impr name="Ancients" workNeeded="100" yield="0/2/0/0/3/3/0" tech="Landing" model="ruins1" wonder="true">
+    <impr name="Ancients" workNeeded="100" yield="0/2/0/0/3/3/0" tech="Landing" icon="building" model="ruins1" wonder="true">
 
     </impr>
 </imprroot>

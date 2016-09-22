@@ -24,6 +24,7 @@ public class TechTree {
     public HashMap<String, Tech> techMap;
     public HashMap<Tech, Boolean> researchedTech;
 
+    //public static HashMap<String, Tech> cityStateTechMap;
     public static HashMap<Tech, Boolean> cityStateTech;
 
     public static HashMap<String, ItemType> itemTypes;
@@ -52,6 +53,7 @@ public class TechTree {
         techMap = new HashMap<>();
         researchedTech = new HashMap<>();
 
+        //cityStateTechMap = new HashMap<>();
         cityStateTech = new HashMap<>();
 
         researchingTechQueue = new ArrayList<>();

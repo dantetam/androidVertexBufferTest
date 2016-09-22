@@ -2,6 +2,7 @@ package io.github.dantetam.opstrykontest;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.ai.ArtificialIntelligence;
@@ -10,10 +11,13 @@ import io.github.dantetam.world.ai.RelationModifier;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
+import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.Inventory;
 import io.github.dantetam.world.entity.Person;
+import io.github.dantetam.world.entity.Tech;
+import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
 
@@ -333,7 +337,34 @@ public class WorldSystem {
     }
 
     private void dealWithCityStateTech() {
+        TechTree playerTechTree = playerClan.techTree;
+        HashMap<Tech, Boolean> cityStateTree = TechTree.cityStateTech;
+        for (Map.Entry<String, Tech> entry: playerTechTree.techMap.entrySet()) {
+            Tech tech = entry.getValue();
+            if (cityStateTree.get(tech) != null) {
 
+            }
+            else {
+                float numResearched = 0, numClans = 0;
+                for (Clan clan: world.getClans()) {
+                    if (!(clan instanceof CityState)) {
+                        numClans++;
+                        if (clan.techTree.researchedTech.get(tech) != null) {
+                            numResearched++;
+                        }
+                    }
+                }
+                numResearched /= numClans;
+                if (numResearched >= 0.5) {
+                    cityStateTree.put(tech, true);
+                    for (Clan clan: world.getClans()) {
+                        if (clan instanceof CityState) {
+                            ((CityState) clan).techTree.forceUnlock(tech);
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

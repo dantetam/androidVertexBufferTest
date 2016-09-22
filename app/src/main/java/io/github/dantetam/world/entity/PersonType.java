@@ -13,6 +13,7 @@ public class PersonType {
 
     public String resourceNeeded;
 
+    public String iconName;
     public String modelName, textureName;
     public float modelScale = 1;
 
@@ -30,6 +31,7 @@ public class PersonType {
     }*/
     public PersonType(String n, int h, int mh, int p, int mp, int a, int d, int m, int f, int s) {
         name = n;
+        iconName = "science";
         health = h; maxH = mh;
         actionPoints = p; maxP = mp;
         atk = a; def = d;
