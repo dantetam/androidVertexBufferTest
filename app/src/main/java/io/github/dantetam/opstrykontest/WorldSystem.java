@@ -1,9 +1,11 @@
 package io.github.dantetam.opstrykontest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.ai.ArtificialIntelligence;
 import io.github.dantetam.world.ai.RelationMap;
@@ -173,6 +175,12 @@ public class WorldSystem {
 
         clan.lastHappiness = 4;
 
+        ArrayList<Ability> abilities = new ArrayList<>();
+
+        for (Ability ability : clan.techTree.specialAbilities.keySet()) {
+            abilities.add(ability);
+        }
+
         for (City city: clan.cities) {
             //Determine yield here? Don't separate process.
             Object[] objects = city.gameYield();
@@ -236,12 +244,25 @@ public class WorldSystem {
                 //TODO: Do something with this?
             }
 
+            for (Building building: city.modules) {
+                if (building.buildingType.abilities != null) {
+                    for (Ability ability: building.buildingType.abilities) {
+                        abilities.add(ability);
+                    }
+                }
+            }
+
+            parseAllCityAbilities(abilities, yield);
+
             clan.totalGold += yield[3];
             clan.lastHappiness += yield[4];
+            clan.lastHappiness -= city.population();
             clan.totalCulture += yield[6];
 
             totalResources.addAnotherInventory(inventory);
         }
+
+        parseAllGlobalAbilities(abilities, yield);
 
         for (Person person: clan.people) {
             if (person.fortify || (person.location() != null && person.location().improvement instanceof City)) {

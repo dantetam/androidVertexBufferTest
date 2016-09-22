@@ -2,6 +2,8 @@ package io.github.dantetam.world.entity;
 
 import java.util.HashMap;
 
+import io.github.dantetam.world.action.Ability;
+
 /**
  * Created by Dante on 7/21/2016.
  */
@@ -19,6 +21,8 @@ public class BuildingType {
     public int happiness() {return yield[4];}
     public int health() {return yield[5];}
     public int culture() {return yield[6];}
+
+    public Ability[] abilities;
 
     public boolean wonder = false;
 
