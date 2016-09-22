@@ -252,7 +252,7 @@ public class WorldSystem {
                 }
             }
 
-            parseAllCityAbilities(abilities, yield);
+            parseAllCityAbilities(abilities, city, yield);
 
             clan.totalGold += yield[3];
             clan.lastHappiness += yield[4];
@@ -262,7 +262,7 @@ public class WorldSystem {
             totalResources.addAnotherInventory(inventory);
         }
 
-        parseAllGlobalAbilities(abilities, yield);
+        parseAllGlobalAbilities(abilities, clan);
 
         for (Person person: clan.people) {
             if (person.fortify || (person.location() != null && person.location().improvement instanceof City)) {
@@ -283,6 +283,14 @@ public class WorldSystem {
                 }
             }
         }
+    }
+
+    public void parseAllCityAbilities(List<Ability> abilities, City city, int[] yield) {
+
+    }
+
+    public void parseAllGlobalAbilities(List<Ability> abilities, Clan clan) {
+
     }
 
     public boolean allowedToAccessTile(Entity en, Tile t) {
