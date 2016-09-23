@@ -68,6 +68,24 @@ public class ArtificialIntelligence {
         }
     }
 
+    public Object[] defineStrategy() {
+        HashMap<BuildingType, Float> buildingFlavors = new HashMap<>();
+        HashMap<PersonType, Float> unitFlavors = new HashMap<>();
+        TODO:
+        //Calculate a multi-dimensional voronoi-ish diagram where each point is manually defined
+        //Define dimensions to be different extremes of situations (e.g. too few cities vs too many cities)
+        //then adjust for a civ's weights according to their strategy and personality flavors
+        //as well as extra environmental factors, both natural features and other civilizations
+        //as well as a civ's preferred style of play, which should adjust a bit every game.
+        //Definitely the civ should use a rough expectimax and a civ-unique heuristic
+        //to define the optimal strategy.
+
+        //The idea behind random personalities is that now civ is like a game of poker,
+        //where both players and AI civs make an attempt to 'read' other civs' qualities,
+        //such as trustworthiness, expansion, war, grand strategy, etc. Much like a poker game,
+        //the world should escalate in tension, and snowballing should be part of the 4X experience.
+    }
+
     //This is just a simple naive maximization of immediate ROI + score.
     //Possibly used for lower difficulties. Harder difficulties should use some sort
     //of layered expectimax/multimax structure.
@@ -162,22 +180,26 @@ public class ArtificialIntelligence {
             turnsNeeded = (int) Math.ceil(workNeeded / 8d);
         }
 
-        double foodPerTurn = 0;
-        double prodPerTurn = 0;
-        double sciPerTurn = 0;
-        double capPerTurn = 0;
+        double foodPerTurn, prodPerTurn, sciPerTurn, capPerTurn;
+        double hapPerTurn, healthPerTurn, culPerTurn;
         if (clan instanceof CityState) {
             foodPerTurn = 2 * buildingType.food();
             prodPerTurn = 2 * buildingType.production();
             sciPerTurn = buildingType.science();
             capPerTurn = buildingType.capital();
+            hapPerTurn = buildingType.happiness();
+            healthPerTurn = buildingType.health();
+            culPerTurn = buildingType.culture();
         } else {
             foodPerTurn = (strategy.get("Growth") / 10d + 0.5d) * buildingType.food();
             prodPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * buildingType.production();
             sciPerTurn = (strategy.get("Science") / 10d + 0.5d) * buildingType.science();
             capPerTurn = (strategy.get("Gold") / 10d + 0.5d) * buildingType.capital();
+            hapPerTurn = (strategy.get("Growth") / 10d + 0.5d) * buildingType.happiness();
+            healthPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * buildingType.health();
+            culPerTurn = (strategy.get("Culture") / 10d + 0.5d) * buildingType.culture();
         }
-        int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn) * 10d);
+        int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn + hapPerTurn + healthPerTurn + culPerTurn) * 10d);
 
         double roiTurns = workNeeded / scorePerTenTurns;
         double snowball = Math.pow(0.8d, (roiTurns + turnsNeeded) / 2);

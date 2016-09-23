@@ -112,6 +112,12 @@
         <strategyflavor name="Science" value="5"></strategyflavor>
         <strategyflavor name="War" value="4"></strategyflavor>
 
+        <strategyflavor name="Food" value="8"></strategyflavor>
+        <strategyflavor name="Production" value="6"></strategyflavor>
+        <strategyflavor name="Science" value="5"></strategyflavor>
+        <strategyflavor name="Capital" value="3"></strategyflavor>
+        <strategyflavor name="Culture" value="2"></strategyflavor>
+
         <tacticsflavor name="Naval" value="4"></tacticsflavor>
         <tacticsflavor name="Land" value="8"></tacticsflavor>
         <tacticsflavor name="Air" value="6"></tacticsflavor>

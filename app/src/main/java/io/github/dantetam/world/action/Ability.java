@@ -9,7 +9,6 @@ import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Entity;
-import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.Tile;
 
 /**
@@ -23,14 +22,20 @@ public class Ability {
     public boolean chain = false;
 
     public static void init() {
-        yieldAbbr = new HashMap<>();
-        yieldAbbr.put("F", 0);
-        yieldAbbr.put("P", 1);
-        yieldAbbr.put("S", 2);
-        yieldAbbr.put("F", 0);
-        yieldAbbr.put("P", 1);
-        yieldAbbr.put("S", 2);
-        yieldAbbr.put("S", 2);
+        yieldAbbrev = new HashMap<>();
+        yieldAbbrev.put("F", 0);
+        yieldAbbrev.put("P", 1);
+        yieldAbbrev.put("S", 2);
+        yieldAbbrev.put("C", 3);
+        yieldAbbrev.put("HA", 4);
+        yieldAbbrev.put("HE", 5);
+        yieldAbbrev.put("CU", 6);
+
+        combatAbbrev.put("ATK", 0);
+        combatAbbrev.put("DEF", 1);
+        combatAbbrev.put("MAN", 2);
+        combatAbbrev.put("FIRE", 3);
+        combatAbbrev.put("SHOCK", 4);
     }
 
     public Ability(String n, String d, String c) {
@@ -45,6 +50,7 @@ public class Ability {
     }
 
     public void parseCode(String stringy) {
+        stringy = stringy.replaceAll("\\s+", "");
         String[] splitStringy = stringy.split("/");
         String[] benefitsString = splitStringy[0].split(",");
         for (String benefit: benefitsString) {
@@ -64,11 +70,55 @@ public class Ability {
     }
 
     //+1 F/P/...
-    //15% F/{/...
+    //%15 F/P/...
     //+5 CF/CS..
-    public static HashMap<String, Integer> yieldAbbr;
-    public Benefit parseBenefit(String benefit) {
+    public static HashMap<String, Integer> yieldAbbrev, combatAbbrev;
 
+    public Benefit parseBenefit(String benefit) {
+        if (benefit.startsWith("+") || benefit.startsWith("-") || benefit.startsWith("%") || benefit.startsWith("-%")) {
+            if (benefit.startsWith("-%")) {
+                benefit = benefit.substring(2);
+            } else {
+                benefit = benefit.substring(1);
+            }
+            int i = 0;
+            for (; i < benefit.length(); i++) {
+                if (Character.isDigit(benefit.charAt(i)) || benefit.charAt(i) == '.') {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            float value = Float.parseFloat(benefit.substring(0, i));
+            if (benefit.contains("-")) {
+                value *= -1;
+            }
+
+            Integer indexYield = yieldAbbrev.get(benefit.substring(i).toUpperCase());
+            Integer indexCombat = combatAbbrev.get(benefit.substring(i).toUpperCase());
+
+            Benefit newBenefit = new Benefit();
+
+            if (benefit.contains("%")) {
+                if (indexYield != null) {
+                    newBenefit.yields[indexYield] = (int)value;
+                } else {
+                    newBenefit.combat[indexCombat] = (int)value;
+                }
+            }
+            else {
+                if (indexYield != null) {
+                    newBenefit.yieldFlatImpr[indexYield] = value;
+                } else {
+                    newBenefit.combatFlatImpr[indexCombat] = value;
+                }
+            }
+            return newBenefit;
+        } else {
+            throw new IllegalArgumentException("Requires +, -, or % in parsed benefit string");
+        }
+        //return null;
     }
 
     public Condition parseCondition(String condition) {
