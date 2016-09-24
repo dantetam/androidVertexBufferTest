@@ -15,7 +15,7 @@ public class DiamondSquare extends BaseTerrain {
 	}
 
     public DiamondSquare() {
-
+        seed(System.currentTimeMillis());
     }
 
     public DiamondSquare(double[][] start) {

@@ -71,7 +71,7 @@ public class ArtificialIntelligence {
     public Object[] defineStrategy() {
         HashMap<BuildingType, Float> buildingFlavors = new HashMap<>();
         HashMap<PersonType, Float> unitFlavors = new HashMap<>();
-        TODO:
+        //TODO:
         //Calculate a multi-dimensional voronoi-ish diagram where each point is manually defined
         //Define dimensions to be different extremes of situations (e.g. too few cities vs too many cities)
         //then adjust for a civ's weights according to their strategy and personality flavors
@@ -80,10 +80,14 @@ public class ArtificialIntelligence {
         //Definitely the civ should use a rough expectimax and a civ-unique heuristic
         //to define the optimal strategy.
 
+
+
         //The idea behind random personalities is that now civ is like a game of poker,
         //where both players and AI civs make an attempt to 'read' other civs' qualities,
         //such as trustworthiness, expansion, war, grand strategy, etc. Much like a poker game,
         //the world should escalate in tension, and snowballing should be part of the 4X experience.
+
+        return new Object[]{buildingFlavors, unitFlavors};
     }
 
     //This is just a simple naive maximization of immediate ROI + score.
@@ -107,7 +111,7 @@ public class ArtificialIntelligence {
             double snowball = Math.pow(0.8d, (roiTurns + turnsNeeded) / 2);
 
             int finalScore = (int) (snowball * scorePerTenTurns);*/
-            int finalScore = computeUnitTypeScore(city, personType);
+            int finalScore = computeUnitTypeScore(clan, city, personType);
             personOptionsScore.put(personType, finalScore);
         }
         Map<BuildingType, Integer> sortedByScoreBuilding = OpstrykonUtil.sortMapByValue(buildingOptionsScore);
@@ -157,7 +161,7 @@ public class ArtificialIntelligence {
             for (PersonType personType: tech.unlockedUnits) {
                 int averagedPersonScore = 0;
                 for (City city: clan.cities) {
-                    averagedPersonScore += computeUnitTypeScore(city, personType);
+                    averagedPersonScore += computeUnitTypeScore(clan, city, personType);
                 }
                 //averagedBuildingScore /= clan.cities.size();
                 techScore += averagedPersonScore;
@@ -208,8 +212,39 @@ public class ArtificialIntelligence {
         return finalScore;
     }
 
-    private static int computeUnitTypeScore(City city, PersonType type) {
-        return 0;
+    private int computeUnitTypeScore(Clan clan, City city, PersonType personType) {
+        double workNeeded = personType.workNeeded;
+        int turnsNeeded;
+        if (city != null) {
+            Object[] cityData = city.gameYield();
+            int[] yields = (int[]) cityData[0];
+            turnsNeeded = (int) Math.ceil(workNeeded / (double)yields[1]);
+        }
+        else {
+            turnsNeeded = (int) Math.ceil(workNeeded / 8d);
+        }
+
+        double foodPerTurn, prodPerTurn, sciPerTurn, capPerTurn, hapPerTurn;
+        if (clan instanceof CityState) {
+            foodPerTurn = 2 * personType.atk;
+            prodPerTurn = 2 * personType.def;
+            sciPerTurn = personType.maneuver;
+            capPerTurn = personType.fire;
+            hapPerTurn = personType.shock;
+        } else {
+            foodPerTurn = (tactics.get("Offense") / 10d + 0.5d) * personType.atk;
+            prodPerTurn = (tactics.get("Defense") / 10d + 0.5d) * personType.def;
+            sciPerTurn = (tactics.get("Mobile") / 10d + 0.5d) * personType.maneuver;
+            capPerTurn = ((tactics.get("Ranged") + tactics.get("Defense")) / 2 / 10d + 0.5d) * personType.fire;
+            hapPerTurn = ((tactics.get("Melee") + tactics.get("Offense")) / 2 / 10d + 0.5d) * personType.shock;
+        }
+        int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn + hapPerTurn) * 10d / 5d);
+
+        double roiTurns = workNeeded / scorePerTenTurns;
+        double snowball = Math.pow(0.8d, (roiTurns + turnsNeeded) / 2);
+
+        int finalScore = (int) (snowball * scorePerTenTurns);
+        return finalScore;
     }
     /*public ArtificialIntelligence(World world) {
         this.world = world;

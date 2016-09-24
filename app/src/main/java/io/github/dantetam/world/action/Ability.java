@@ -121,8 +121,31 @@ public class Ability {
         //return null;
     }
 
+    //impr ...
+    //biome ...
+    //terrain ...
+    //citymodule ...
     public Condition parseCondition(String condition) {
-
+        if (condition.contains("impr")) {
+            condition = condition.replaceAll("impr", "");
+            return new BuildingImprCondition(condition);
+        }
+        else if (condition.contains("biome")) {
+            condition = condition.replaceAll("biome", "");
+            return new TileCondition(condition);
+        }
+        else if (condition.contains("terrain")) {
+            condition = condition.replaceAll("terrain", "");
+            return new TileCondition(condition);
+        }
+        else if (condition.contains("citymodule")) {
+            condition = condition.replaceAll("citymodule", "");
+            return new ContainsModuleCondition(condition);
+        }
+        else {
+            System.err.println("Invalid parsed condition: " + condition);
+            return null;
+        }
     }
 
     public Action.ActionStatus gameExecuteAbility(Entity person) {
@@ -130,13 +153,16 @@ public class Ability {
     }
 
     public class ContainsModuleCondition extends Condition {
-        public BuildingType target;
-        public void init(Object obj) {target = (BuildingType) obj;}
+        public String target;
+        public ContainsModuleCondition(Object obj) {
+            init(obj);
+        }
+        public void init(Object obj) {target = (String) obj;}
         public boolean allowed(Object obj) {
             if (!(obj instanceof City)) return false;
             City city = (City) obj;
             for (Building module: city.modules) {
-                if (module.buildingType.equals(target)) {
+                if (module.buildingType.name.equals(target)) {
                     return true;
                 }
             }
@@ -144,22 +170,34 @@ public class Ability {
         }
     }
 
-    public class BuildingCondition extends Condition {
-        public BuildingType target;
-        public void init(Object obj) {target = (BuildingType) obj;}
+    public class BuildingImprCondition extends Condition {
+        public String target;
+        public BuildingImprCondition(Object obj) {
+            init(obj);
+        }
+        public void init(Object obj) {target = (String) obj;}
         public boolean allowed(Object obj) {
-            return target.equals((BuildingType) obj);
+            if (!(obj instanceof Tile)) return false;
+            Tile tile = (Tile) obj;
+            if (tile.improvement == null) return false;
+            return target.equals(tile.improvement.buildingType.name);
         }
     }
 
     public class TileCondition extends Condition {
-        public Tile.Biome biome;
-        public Tile.Terrain terrain;
+        public String biome;
+        public String terrain;
+        public TileCondition(Object obj1) {
+            init(obj1);
+        }
+        public TileCondition(Object obj1, Object obj2) {
+            init(obj1, obj2);
+        }
         public void init(Object obj) {
             if (obj instanceof Tile.Biome) {
-                biome = (Tile.Biome) obj;
+                biome = ((Tile.Biome) obj).name();
             } else if (obj instanceof Tile.Terrain) {
-                terrain = (Tile.Terrain) obj;
+                terrain = ((Tile.Terrain) obj).name();
             }
         }
         public void init(Object obj1, Object obj2) {
@@ -169,10 +207,10 @@ public class Ability {
         public boolean allowed(Object obj) {
             boolean cond = false;
             if (biome != null) {
-                cond = cond || biome.equals((Tile.Biome) obj);
+                cond = cond || biome.equals(((Tile.Biome) obj).name());
             }
             if (terrain != null) {
-                cond = cond || terrain.equals((Tile.Terrain) obj);
+                cond = cond || terrain.equals(((Tile.Terrain) obj).name());
             }
             return cond;
         }

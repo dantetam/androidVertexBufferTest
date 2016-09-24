@@ -123,6 +123,9 @@
         <tacticsflavor name="Air" value="6"></tacticsflavor>
         <tacticsflavor name="Melee" value="5"></tacticsflavor>
         <tacticsflavor name="Ranged" value="5"></tacticsflavor>
+        <tacticsflavor name="Offense" value="2"></tacticsflavor>
+        <tacticsflavor name="Defense" value="7"></tacticsflavor>
+        <tacticsflavor name="Mobile" value="5"></tacticsflavor>
     </clan>
 
     <clan name="Celestial Empire" ruler="Caesar" adjective="Imperial">

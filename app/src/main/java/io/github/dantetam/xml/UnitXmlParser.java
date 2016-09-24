@@ -86,8 +86,13 @@ public class UnitXmlParser {
                     }
 
                     int workNeeded = Integer.parseInt(xpp.getAttributeValue(null, "workNeeded"));
+
+                    String fieldType = xpp.getAttributeValue(null, "fieldType");
+                    if (fieldType == null) {
+                        fieldType = "land";
+                    }
                     //System.out.println(techName + " " + workNeeded);
-                    PersonType personType = new PersonType(unitName,
+                    PersonType personType = new PersonType(unitName, PersonType.FieldType.fromString(fieldType),
                             normalStats[0], normalStats[0], normalStats[1], normalStats[1], //normalStats[2], normalStats[3],
                             combatStats[0], combatStats[1], combatStats[2], combatStats[3], combatStats[4]);
                     personType.workNeeded = workNeeded;

@@ -15,10 +15,13 @@ public class SquareToHex {
         double[][] temp = DiamondSquare.makeTable(50,50,50,50,17);
         DiamondSquare ds = new DiamondSquare(temp);
         //ds.diamond(0, 0, 4);
+        ds.seed(System.currentTimeMillis());
         double[][] squareArray = ds.dS(0, 0, 16, 15, 0.5, true);
 
         double[][] worldHexArray = new double[16][16];
-        mutateHexArray(squareArray, worldHexArray, 12, 12);
+        mutateHexArray(squareArray, worldHexArray, 8, 8);
+
+        DiamondSquare.printTable(worldHexArray);
     }
 
     public static void mutateHexArray(double[][] squareArray, double[][] worldHexArray, int totalX, int totalZ) {

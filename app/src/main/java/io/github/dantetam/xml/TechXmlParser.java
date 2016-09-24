@@ -155,7 +155,7 @@ public class TechXmlParser {
                         }
                     }
                     if (unlockSpecialAbility != null) {
-                        newTech.unlockedSpecialAbilities.add(new Ability(unlockSpecialAbility, ""));
+                        newTech.unlockedSpecialAbilities.add(new Ability(unlockSpecialAbility, "", "")); //TODO: <---
                     }
 
                     tree.techMap.put(techName, newTech);

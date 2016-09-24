@@ -1,5 +1,6 @@
 package io.github.dantetam.world.entity;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 
 /**
@@ -8,6 +9,7 @@ import java.util.HashMap;
 public class PersonType {
     public String name;
     public int workNeeded;
+    public FieldType fieldType;
     public int health, maxH, actionPoints, maxP;
     public int atk, def, maneuver, fire, shock;
 
@@ -29,13 +31,39 @@ public class PersonType {
         newType.PersonType(a, d, m, f, s);
         types.put(name, newType);
     }*/
-    public PersonType(String n, int h, int mh, int p, int mp, int a, int d, int m, int f, int s) {
+    public PersonType(String n, FieldType ft, int h, int mh, int p, int mp, int a, int d, int m, int f, int s) {
         name = n;
+        fieldType = ft;
         iconName = "science";
         health = h; maxH = mh;
         actionPoints = p; maxP = mp;
         atk = a; def = d;
         maneuver = m; fire = f; shock = s;
+    }
+
+    public enum FieldType {
+        LAND,
+        SEA,
+        AIR,
+        UNDERGROUND;
+        public static FieldType fromString(String string) {
+            if (string.equalsIgnoreCase("land")) {
+                return LAND;
+            }
+            else if (string.equalsIgnoreCase("sea")) {
+                return SEA;
+            }
+            else if (string.equalsIgnoreCase("air")) {
+                return AIR;
+            }
+            else if (string.equalsIgnoreCase("underground")) {
+                return UNDERGROUND;
+            }
+            else {
+                //System.err.println("Invalid type of unit fieldType: " + string);
+                return null;
+            }
+        }
     }
 
 }
