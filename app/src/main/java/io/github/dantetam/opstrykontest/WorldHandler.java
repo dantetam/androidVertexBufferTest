@@ -1834,11 +1834,11 @@ public class WorldHandler {
                 storedTileVertexPositions.put(tile, vertices);
 
                 if (condition.allowed(tile) && tiles.contains(tile)) {
-                    tile.elevation = 0;
+                    //tile.elevation = 0;
 
                     final float[] scaledData = scaleData(oldHexData[0], 1, 0, 1);
 
-                    final float[] thisCubePositionData = translateData(scaledData, vertices.x, 0, vertices.z);
+                    final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y, vertices.z);
 
                     //Interleave all the new vtn data, per hex.
                     System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);

@@ -69,8 +69,10 @@ public class ArtificialIntelligence {
     }
 
     public Object[] defineStrategy() {
-        HashMap<BuildingType, Float> buildingFlavors = new HashMap<>();
-        HashMap<PersonType, Float> unitFlavors = new HashMap<>();
+        HashMap<String, Float> buildingFlavors = new HashMap<>();
+        HashMap<String, Float> unitFlavors = new HashMap<>();
+        String queueFocusType = null;
+        float[] yieldFlavors = {1,1,1,1,1,1,1};
         //TODO:
         //Calculate a multi-dimensional voronoi-ish diagram where each point is manually defined
         //Define dimensions to be different extremes of situations (e.g. too few cities vs too many cities)
@@ -80,7 +82,31 @@ public class ArtificialIntelligence {
         //Definitely the civ should use a rough expectimax and a civ-unique heuristic
         //to define the optimal strategy.
 
+        String point = "Settler";
 
+        if (point.equals("Expansion")) {
+            unitFlavors.put("Settler", 2f);
+            yieldFlavors = new float[]{1,3,1,1,1,1,1};
+        }
+        else if (point.equals("Growth")) {
+            unitFlavors.put("Worker", 2f);
+            yieldFlavors = new float[]{3,2,1,1,2,2,1};
+        }
+        else if (point.equals("Diplomacy")) {
+            yieldFlavors = new float[]{2,2,1,2.5f,1,1,1};
+        }
+        else if (point.equals("War")) {
+            queueFocusType = "combat";
+            yieldFlavors = new float[]{1,2,1,1,1,1,1};
+        }
+        else if (point.equals("Science")) {
+            queueFocusType = "building";
+            yieldFlavors = new float[]{1,1,3,2,1,1,1};
+        }
+        else if (point.equals("Culture")) {
+            queueFocusType = "building";
+            yieldFlavors = new float[]{2,1,1,1,1,1,3};
+        }
 
         //The idea behind random personalities is that now civ is like a game of poker,
         //where both players and AI civs make an attempt to 'read' other civs' qualities,

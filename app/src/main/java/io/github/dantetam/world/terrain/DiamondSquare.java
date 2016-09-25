@@ -49,15 +49,6 @@ public class DiamondSquare extends BaseTerrain {
         return temp;
     }
 
-    public static void printTable(double[][] a) {
-        for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < a[0].length; j++) {
-                System.out.print((int) a[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
-
     public static double[][] boundMax(double[][] t, double maxHeight) {
         double[][] temp = new double[t.length][t[0].length];
         for (int r = 0; r < temp.length; r++) {

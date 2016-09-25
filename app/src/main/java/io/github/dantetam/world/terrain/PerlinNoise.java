@@ -28,7 +28,7 @@ public class PerlinNoise extends BaseTerrain {
         }
         double[][] b = averageTables(persistence, averageLater);
         //double[][] b = expandInterpolate(a,3);
-        b = positiveTable(b);
+        b = TerrainUtil.positiveTable(b);
 		/*for (int i = 0; i < b.length; i++)
 		{
 			for (int j = 0; j < b[0].length; j++)
@@ -40,61 +40,9 @@ public class PerlinNoise extends BaseTerrain {
         return b;
     }
 
-    public double[][] cutoff(double[][] t, double cutoff) {
-        double[][] temp = new double[t.length][t[0].length];
-        for (int r = 0; r < t.length; r++) {
-            for (int c = 0; c < t[0].length; c++) {
-                temp[r][c] = t[r][c] - cutoff;
-            }
-        }
-        return temp;
-    }
-
-    public static double[][] recurInter(double[][] source, int times, double nDiv) {
-        if (times < 0) {
-            return source;
-        }
-        return recurInter(expand(source, nDiv), times - 1, nDiv);
-    }
-
-    public static double[][] expand(double[][] a, double nDiv) {
-        BicubicInterpolator bi = new BicubicInterpolator();
-        double[][] returnThis = new double[(int) nDiv][(int) nDiv];
-        for (int i = 0; i < nDiv; i++) {
-            for (int j = 0; j < nDiv; j++) {
-                double idx = (double) (a.length * i) / nDiv;
-                double idy = (double) (a[0].length * j) / nDiv;
-                //System.out.println("L: " + idx + "," + idy + ": " + bi.getValue(source,idx,idx));
-                double zeroCheck = bi.getValue(a, idx, idy);
-                returnThis[i][j] = zeroCheck >= 0 ? zeroCheck : 0;
-            }
-        }
-        return returnThis;
-    }
-
-    public double[][] positiveTable(double[][] a) {
-        double[][] b = new double[a.length][a[0].length];
-        for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < a[0].length; j++) {
-                b[i][j] = Math.abs(a[i][j]);
-            }
-        }
-        return b;
-    }
-
-    public double[][] scalar(double ratio, double[][] a) {
-        for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < a[0].length; j++) {
-                a[i][j] *= ratio;
-            }
-        }
-        return a;
-    }
-
     public double[][] averageTables(double ratio, double[][][] a) {
         double[][] returnThis = new double[a[0].length][a[0][0].length];
         for (int tNum = 0; tNum < a.length; tNum++) {
-            //System.out.println("kek");
             for (int i = 0; i < a[0].length; i++) {
                 for (int j = 0; j < a[0][0].length; j++) {
                     returnThis[i][j] += a[tNum][i][j] * (1 / Math.pow(ratio, tNum - 1));
@@ -172,9 +120,9 @@ public class PerlinNoise extends BaseTerrain {
         //System.out.println(a[i]);
         double[][] source = makePerlinNoise((int) a[0], (int) a[1], a[2], a[3], a[4], a[5], (int) a[6]);
         //double[][] newSource = PerlinNoise.recurInter(source,2,nDiv/4);
-        source = PerlinNoise.expand(PerlinNoise.expand(source, a[7] / 2), a[7]);
+        source = TerrainUtil.expand(TerrainUtil.expand(source, a[7] / 2), a[7]);
         if (a.length == 9) {
-            source = cutoff(source, a[8]);
+            source = TerrainUtil.cutoff(source, a[8]);
         }
         return source;
     }

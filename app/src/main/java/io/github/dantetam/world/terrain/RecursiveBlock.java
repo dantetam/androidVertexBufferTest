@@ -279,20 +279,6 @@ public class RecursiveBlock extends BaseTerrain {
         terrain(start, n);
     }
 
-    public void printTable(double[][] t) {
-        for (int r = 0; r < t.length; r++) {
-            for (int c = 0; c < terrain[0].length; c++) {
-                int height = (int) terrain[r][c];
-                if (height < 10) {
-                    //Attempt to program the equivalent of C/C++'s "%02d" to align the data correctly
-                    System.out.print("0" + height + " ");
-                } else
-                    System.out.print(height + " ");
-            }
-            System.out.println();
-        }
-    }
-
     public ArrayList<Entity> getNear(double r, double c, double slack) {
         ArrayList<Entity> temp = new ArrayList<Entity>();
         for (int i = 0; i < entities.size(); i++) {

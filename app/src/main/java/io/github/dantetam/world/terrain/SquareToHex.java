@@ -21,7 +21,7 @@ public class SquareToHex {
         double[][] worldHexArray = new double[16][16];
         mutateHexArray(squareArray, worldHexArray, 8, 8);
 
-        DiamondSquare.printTable(worldHexArray);
+        TerrainUtil.printTable(worldHexArray);
     }
 
     public static void mutateHexArray(double[][] squareArray, double[][] worldHexArray, int totalX, int totalZ) {

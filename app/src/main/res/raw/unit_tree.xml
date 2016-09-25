@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Combat stats are atk/def/manu/fire/shock respectively -->
 <unitroot name="Soldier" workNeeded="15" normalStats="100/2" combatStats="20/20/10/10/40" tech="Landing" model="basic_box_char:0.5">
-    <unit name="Settler" workNeeded="40" normalStats="50/2" combatStats="0/0/0/0/0" tech="Landing">
+    <unit name="Settler" workNeeded="40" normalStats="50/2" combatStats="0/0/0/0/0" tech="Landing" category="peaceful">
 
     </unit>
-    <unit name="Worker" workNeeded="30" normalStats="50/2" combatStats="0/0/0/0/0" tech="Landing">
+    <unit name="Worker" workNeeded="30" normalStats="50/2" combatStats="0/0/0/0/0" tech="Landing" category="peaceful">
 
     </unit>
     <unit name="Xenotactical" workNeeded="45" normalStats="150/2" combatStats="20/35/30/35/27" tech="Env. Control">
@@ -37,7 +37,7 @@
     <unit name="Assimilated Tribes" workNeeded="100" normalStats="1/0" combatStats="0/0/0/0/0" tech="Discipline" resource="Tribes">
 
     </unit>
-    <unit name="Boats" workNeeded="15" normalStats="50/2" combatStats="0/0/0/0/0" tech="Seafaring" sea="true">
+    <unit name="Boats" workNeeded="15" normalStats="50/2" combatStats="0/0/0/0/0" tech="Seafaring" category="peaceful" fieldType="sea">
 
     </unit>
 </unitroot>

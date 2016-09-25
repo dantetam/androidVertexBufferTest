@@ -104,6 +104,7 @@
         <personalityflavor name="Diplomatic" value="8"></personalityflavor>
         <personalityflavor name="Vicious" value="5"></personalityflavor>
 
+        <strategyflavor name="Culture" value="5"></strategyflavor>
         <strategyflavor name="Diplomacy" value="5"></strategyflavor>
         <strategyflavor name="Expansion" value="9"></strategyflavor>
         <strategyflavor name="Gold" value="4"></strategyflavor>

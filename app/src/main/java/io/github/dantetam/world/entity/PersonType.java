@@ -10,6 +10,7 @@ public class PersonType {
     public String name;
     public int workNeeded;
     public FieldType fieldType;
+    public String category;
     public int health, maxH, actionPoints, maxP;
     public int atk, def, maneuver, fire, shock;
 
@@ -31,9 +32,10 @@ public class PersonType {
         newType.PersonType(a, d, m, f, s);
         types.put(name, newType);
     }*/
-    public PersonType(String n, FieldType ft, int h, int mh, int p, int mp, int a, int d, int m, int f, int s) {
+    public PersonType(String n, FieldType ft, String ca, int h, int mh, int p, int mp, int a, int d, int m, int f, int s) {
         name = n;
         fieldType = ft;
+        category = ca;
         iconName = "science";
         health = h; maxH = mh;
         actionPoints = p; maxP = mp;
