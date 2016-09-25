@@ -46,7 +46,7 @@ public class Ability {
         benefits = new ArrayList<>();
         abilityOnConditions = new ArrayList<>();
 
-        parseCode(code);
+        //parseCode(code);
     }
 
     public void parseCode(String stringy) {
@@ -116,7 +116,8 @@ public class Ability {
             }
             return newBenefit;
         } else {
-            throw new IllegalArgumentException("Requires +, -, or % in parsed benefit string");
+            System.err.println("Requires +, -, or % in parsed benefit string");
+            return null;
         }
         //return null;
     }

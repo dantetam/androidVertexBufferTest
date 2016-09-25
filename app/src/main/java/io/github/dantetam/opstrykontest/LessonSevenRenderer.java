@@ -628,7 +628,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
                 return person;
             }
         }
-        for (Building building: worldSystem.playerClan.buildings) {
+        for (Building building: worldSystem.playerClan.cities) {
             if (building.actionsQueue.size() == 0) {
                 return building;
             }

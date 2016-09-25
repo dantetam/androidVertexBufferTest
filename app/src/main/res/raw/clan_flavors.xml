@@ -104,7 +104,7 @@
         <personalityflavor name="Diplomatic" value="8"></personalityflavor>
         <personalityflavor name="Vicious" value="5"></personalityflavor>
 
-        <strategyflavor name="Culture" value="5"></strategyflavor>
+        <strategyflavor name="Cultural" value="5"></strategyflavor>
         <strategyflavor name="Diplomacy" value="5"></strategyflavor>
         <strategyflavor name="Expansion" value="9"></strategyflavor>
         <strategyflavor name="Gold" value="4"></strategyflavor>
@@ -151,6 +151,7 @@
         <personalityflavor name="Diplomatic" value="3"></personalityflavor>
         <personalityflavor name="Vicious" value="9"></personalityflavor>
 
+        <strategyflavor name="Cultural" value="1"></strategyflavor>
         <strategyflavor name="Diplomacy" value="1"></strategyflavor>
         <strategyflavor name="Expansion" value="1"></strategyflavor>
         <strategyflavor name="Gold" value="1"></strategyflavor>
@@ -159,11 +160,20 @@
         <strategyflavor name="Science" value="1"></strategyflavor>
         <strategyflavor name="War" value="1"></strategyflavor>
 
+        <strategyflavor name="Food" value="9"></strategyflavor>
+        <strategyflavor name="Production" value="5"></strategyflavor>
+        <strategyflavor name="Science" value="1"></strategyflavor>
+        <strategyflavor name="Capital" value="1"></strategyflavor>
+        <strategyflavor name="Culture" value="1"></strategyflavor>
+
         <tacticsflavor name="Naval" value="1"></tacticsflavor>
         <tacticsflavor name="Land" value="1"></tacticsflavor>
         <tacticsflavor name="Air" value="1"></tacticsflavor>
         <tacticsflavor name="Melee" value="1"></tacticsflavor>
         <tacticsflavor name="Ranged" value="1"></tacticsflavor>
+        <tacticsflavor name="Offense" value="1"></tacticsflavor>
+        <tacticsflavor name="Defense" value="1"></tacticsflavor>
+        <tacticsflavor name="Mobile" value="1"></tacticsflavor>
     </clan>
 
     <clan name="Star Federation" ruler="Synth" adjective="Star-Federal">
@@ -187,6 +197,7 @@
         <personalityflavor name="Diplomatic" value="7"></personalityflavor>
         <personalityflavor name="Vicious" value="3"></personalityflavor>
 
+        <strategyflavor name="Cultural" value="1"></strategyflavor>
         <strategyflavor name="Diplomacy" value="1"></strategyflavor>
         <strategyflavor name="Expansion" value="1"></strategyflavor>
         <strategyflavor name="Gold" value="1"></strategyflavor>
@@ -195,11 +206,20 @@
         <strategyflavor name="Science" value="1"></strategyflavor>
         <strategyflavor name="War" value="1"></strategyflavor>
 
+        <strategyflavor name="Food" value="9"></strategyflavor>
+        <strategyflavor name="Production" value="5"></strategyflavor>
+        <strategyflavor name="Science" value="1"></strategyflavor>
+        <strategyflavor name="Capital" value="1"></strategyflavor>
+        <strategyflavor name="Culture" value="1"></strategyflavor>
+
         <tacticsflavor name="Naval" value="1"></tacticsflavor>
         <tacticsflavor name="Land" value="1"></tacticsflavor>
         <tacticsflavor name="Air" value="1"></tacticsflavor>
         <tacticsflavor name="Melee" value="1"></tacticsflavor>
         <tacticsflavor name="Ranged" value="1"></tacticsflavor>
+        <tacticsflavor name="Offense" value="1"></tacticsflavor>
+        <tacticsflavor name="Defense" value="1"></tacticsflavor>
+        <tacticsflavor name="Mobile" value="1"></tacticsflavor>
     </clan>
 
     <clan name="Stellar Kingdom" ruler="John" adjective="Stellar-Royal">
@@ -223,6 +243,7 @@
         <personalityflavor name="Diplomatic" value="5"></personalityflavor>
         <personalityflavor name="Vicious" value="8"></personalityflavor>
 
+        <strategyflavor name="Cultural" value="1"></strategyflavor>
         <strategyflavor name="Diplomacy" value="1"></strategyflavor>
         <strategyflavor name="Expansion" value="1"></strategyflavor>
         <strategyflavor name="Gold" value="1"></strategyflavor>
@@ -231,11 +252,20 @@
         <strategyflavor name="Science" value="1"></strategyflavor>
         <strategyflavor name="War" value="1"></strategyflavor>
 
+        <strategyflavor name="Food" value="9"></strategyflavor>
+        <strategyflavor name="Production" value="5"></strategyflavor>
+        <strategyflavor name="Science" value="1"></strategyflavor>
+        <strategyflavor name="Capital" value="1"></strategyflavor>
+        <strategyflavor name="Culture" value="1"></strategyflavor>
+
         <tacticsflavor name="Naval" value="1"></tacticsflavor>
         <tacticsflavor name="Land" value="1"></tacticsflavor>
         <tacticsflavor name="Air" value="1"></tacticsflavor>
         <tacticsflavor name="Melee" value="1"></tacticsflavor>
         <tacticsflavor name="Ranged" value="1"></tacticsflavor>
+        <tacticsflavor name="Offense" value="1"></tacticsflavor>
+        <tacticsflavor name="Defense" value="1"></tacticsflavor>
+        <tacticsflavor name="Mobile" value="1"></tacticsflavor>
     </clan>
 
     <clan name="Sky Raiders" ruler="Lukas" adjective="Raider">
@@ -259,6 +289,7 @@
         <personalityflavor name="Diplomatic" value="3"></personalityflavor>
         <personalityflavor name="Vicious" value="10"></personalityflavor>
 
+        <strategyflavor name="Cultural" value="1"></strategyflavor>
         <strategyflavor name="Diplomacy" value="1"></strategyflavor>
         <strategyflavor name="Expansion" value="1"></strategyflavor>
         <strategyflavor name="Gold" value="1"></strategyflavor>
@@ -267,11 +298,20 @@
         <strategyflavor name="Science" value="1"></strategyflavor>
         <strategyflavor name="War" value="1"></strategyflavor>
 
+        <strategyflavor name="Food" value="9"></strategyflavor>
+        <strategyflavor name="Production" value="5"></strategyflavor>
+        <strategyflavor name="Science" value="1"></strategyflavor>
+        <strategyflavor name="Capital" value="1"></strategyflavor>
+        <strategyflavor name="Culture" value="1"></strategyflavor>
+
         <tacticsflavor name="Naval" value="1"></tacticsflavor>
         <tacticsflavor name="Land" value="1"></tacticsflavor>
         <tacticsflavor name="Air" value="1"></tacticsflavor>
         <tacticsflavor name="Melee" value="1"></tacticsflavor>
         <tacticsflavor name="Ranged" value="1"></tacticsflavor>
+        <tacticsflavor name="Offense" value="1"></tacticsflavor>
+        <tacticsflavor name="Defense" value="1"></tacticsflavor>
+        <tacticsflavor name="Mobile" value="1"></tacticsflavor>
     </clan>
 
     <clan name="Settlers" ruler="Austin" adjective="Settler">
@@ -294,6 +334,7 @@
         <personalityflavor name="Diplomatic" value="8"></personalityflavor>
         <personalityflavor name="Vicious" value="2"></personalityflavor>
 
+        <strategyflavor name="Cultural" value="1"></strategyflavor>
         <strategyflavor name="Diplomacy" value="1"></strategyflavor>
         <strategyflavor name="Expansion" value="1"></strategyflavor>
         <strategyflavor name="Gold" value="1"></strategyflavor>
@@ -302,11 +343,20 @@
         <strategyflavor name="Science" value="1"></strategyflavor>
         <strategyflavor name="War" value="1"></strategyflavor>
 
+        <strategyflavor name="Food" value="9"></strategyflavor>
+        <strategyflavor name="Production" value="5"></strategyflavor>
+        <strategyflavor name="Science" value="1"></strategyflavor>
+        <strategyflavor name="Capital" value="1"></strategyflavor>
+        <strategyflavor name="Culture" value="1"></strategyflavor>
+
         <tacticsflavor name="Naval" value="1"></tacticsflavor>
         <tacticsflavor name="Land" value="1"></tacticsflavor>
         <tacticsflavor name="Air" value="1"></tacticsflavor>
         <tacticsflavor name="Melee" value="1"></tacticsflavor>
         <tacticsflavor name="Ranged" value="1"></tacticsflavor>
+        <tacticsflavor name="Offense" value="1"></tacticsflavor>
+        <tacticsflavor name="Defense" value="1"></tacticsflavor>
+        <tacticsflavor name="Mobile" value="1"></tacticsflavor>
     </clan>
 
     <clan name="Ecologists" ruler="Sakharov" adjective="Ecologist">
@@ -330,6 +380,7 @@
         <personalityflavor name="Diplomatic" value="10"></personalityflavor>
         <personalityflavor name="Vicious" value="3"></personalityflavor>
 
+        <strategyflavor name="Cultural" value="1"></strategyflavor>
         <strategyflavor name="Diplomacy" value="1"></strategyflavor>
         <strategyflavor name="Expansion" value="1"></strategyflavor>
         <strategyflavor name="Gold" value="1"></strategyflavor>
@@ -338,11 +389,20 @@
         <strategyflavor name="Science" value="1"></strategyflavor>
         <strategyflavor name="War" value="1"></strategyflavor>
 
+        <strategyflavor name="Food" value="9"></strategyflavor>
+        <strategyflavor name="Production" value="5"></strategyflavor>
+        <strategyflavor name="Science" value="1"></strategyflavor>
+        <strategyflavor name="Capital" value="1"></strategyflavor>
+        <strategyflavor name="Culture" value="1"></strategyflavor>
+
         <tacticsflavor name="Naval" value="1"></tacticsflavor>
         <tacticsflavor name="Land" value="1"></tacticsflavor>
         <tacticsflavor name="Air" value="1"></tacticsflavor>
         <tacticsflavor name="Melee" value="1"></tacticsflavor>
         <tacticsflavor name="Ranged" value="1"></tacticsflavor>
+        <tacticsflavor name="Offense" value="1"></tacticsflavor>
+        <tacticsflavor name="Defense" value="1"></tacticsflavor>
+        <tacticsflavor name="Mobile" value="1"></tacticsflavor>
     </clan>
 
     <clan name="Xenocolonists" ruler="Xenia" adjective="Xeno">
@@ -366,6 +426,7 @@
         <personalityflavor name="Diplomatic" value="5"></personalityflavor>
         <personalityflavor name="Vicious" value="10"></personalityflavor>
 
+        <strategyflavor name="Cultural" value="1"></strategyflavor>
         <strategyflavor name="Diplomacy" value="1"></strategyflavor>
         <strategyflavor name="Expansion" value="1"></strategyflavor>
         <strategyflavor name="Gold" value="1"></strategyflavor>
@@ -374,11 +435,20 @@
         <strategyflavor name="Science" value="1"></strategyflavor>
         <strategyflavor name="War" value="1"></strategyflavor>
 
+        <strategyflavor name="Food" value="9"></strategyflavor>
+        <strategyflavor name="Production" value="5"></strategyflavor>
+        <strategyflavor name="Science" value="1"></strategyflavor>
+        <strategyflavor name="Capital" value="1"></strategyflavor>
+        <strategyflavor name="Culture" value="1"></strategyflavor>
+
         <tacticsflavor name="Naval" value="1"></tacticsflavor>
         <tacticsflavor name="Land" value="1"></tacticsflavor>
         <tacticsflavor name="Air" value="1"></tacticsflavor>
         <tacticsflavor name="Melee" value="1"></tacticsflavor>
         <tacticsflavor name="Ranged" value="1"></tacticsflavor>
+        <tacticsflavor name="Offense" value="1"></tacticsflavor>
+        <tacticsflavor name="Defense" value="1"></tacticsflavor>
+        <tacticsflavor name="Mobile" value="1"></tacticsflavor>
     </clan>
 
     <citystate name="Grand Junction" ruler="Mercanos" adjective="Grand">

@@ -31,6 +31,8 @@ public class ArtificialIntelligence {
 
     public HashMap<String, List<String>> friendlyText = new HashMap<>();
 
+    public Object[] currentStrategy;
+
     public ArtificialIntelligence(Clan c) {
         clan = c;
         personality = new HashMap<>();
@@ -39,6 +41,7 @@ public class ArtificialIntelligence {
     }
 
     public void allComputerClanActions() {
+        currentStrategy = defineStrategy();
         for (City city: clan.cities) {
             if (city.actionsQueue.size() == 0) {
                 city.pickBestTiles();
@@ -71,8 +74,8 @@ public class ArtificialIntelligence {
     public Object[] defineStrategy() {
         HashMap<String, Float> buildingFlavors = new HashMap<>();
         HashMap<String, Float> unitFlavors = new HashMap<>();
-        String queueFocusType = null;
         float[] yieldFlavors = {1,1,1,1,1,1,1};
+        String queueFocusType = null;
         //TODO:
         //Calculate a multi-dimensional voronoi-ish diagram where each point is manually defined
         //Define dimensions to be different extremes of situations (e.g. too few cities vs too many cities)
@@ -82,7 +85,7 @@ public class ArtificialIntelligence {
         //Definitely the civ should use a rough expectimax and a civ-unique heuristic
         //to define the optimal strategy.
 
-        String point = "Settler";
+        String point = "Growth";
 
         if (point.equals("Expansion")) {
             unitFlavors.put("Settler", 2f);
@@ -113,7 +116,7 @@ public class ArtificialIntelligence {
         //such as trustworthiness, expansion, war, grand strategy, etc. Much like a poker game,
         //the world should escalate in tension, and snowballing should be part of the 4X experience.
 
-        return new Object[]{buildingFlavors, unitFlavors};
+        return new Object[]{buildingFlavors, unitFlavors, yieldFlavors, queueFocusType};
     }
 
     //This is just a simple naive maximization of immediate ROI + score.
@@ -122,8 +125,20 @@ public class ArtificialIntelligence {
     public Object computeBestOfOptions(City city, List<BuildingType> buildingTypes, List<PersonType> personTypes) {
         Map<BuildingType, Integer> buildingOptionsScore = new LinkedHashMap<>();
         Map<PersonType, Integer> personOptionsScore = new LinkedHashMap<>();
+
+        /*HashMap<String, Float> buildingFlavors = new HashMap<>();
+        HashMap<String, Float> unitFlavors = new HashMap<>();
+        float[] yieldFlavors = {1,1,1,1,1,1,1};
+        String queueFocusType = null;*/
+
         for (BuildingType buildingType: buildingTypes) {
             int finalScore = computeBuildingTypeScore(clan, city, buildingType);
+            if (currentStrategy != null) {
+                HashMap<String, Float> unitFlavors = (HashMap) currentStrategy[0];
+                if (unitFlavors.containsKey(buildingType.name)) {
+                    finalScore = (int) (finalScore * unitFlavors.get(buildingType.name));
+                }
+            }
             buildingOptionsScore.put(buildingType, finalScore);
         }
         for (PersonType personType: personTypes) {
@@ -138,6 +153,19 @@ public class ArtificialIntelligence {
 
             int finalScore = (int) (snowball * scorePerTenTurns);*/
             int finalScore = computeUnitTypeScore(clan, city, personType);
+            if (currentStrategy != null) {
+                HashMap<String, Float> unitFlavors = (HashMap) currentStrategy[1];
+                if (unitFlavors.containsKey(personType.name)) {
+                    finalScore = (int) (finalScore * unitFlavors.get(personType.name));
+                }
+
+                String queueFocusType = (String) currentStrategy[3];
+                if (queueFocusType != null) {
+                    if (personType.category.equals(queueFocusType)) {
+                        finalScore *= 2;
+                    }
+                }
+            }
             personOptionsScore.put(personType, finalScore);
         }
         Map<BuildingType, Integer> sortedByScoreBuilding = OpstrykonUtil.sortMapByValue(buildingOptionsScore);
@@ -154,6 +182,10 @@ public class ArtificialIntelligence {
 
             break;
         }*/
+
+        OpstrykonUtil.printMap(sortedByScoreBuilding);
+        OpstrykonUtil.printMap(sortedByScorePerson);
+
         if (entryBuilding == null && entryPerson == null) {
             System.err.println("No options to choose from!");
             return null;
@@ -171,7 +203,6 @@ public class ArtificialIntelligence {
     }
 
     public Tech computeBestTech() {
-        System.out.println(clan.techTree + "<<<<");
         List<Tech> researchableTech = clan.techTree.getResearchableTech();
         Map<Tech, Integer> techByScore = new LinkedHashMap<>();
         for (Tech tech: researchableTech) {
@@ -195,6 +226,9 @@ public class ArtificialIntelligence {
             techByScore.put(tech, techScore);
         }
         Map<Tech, Integer> sortedByScore = OpstrykonUtil.sortMapByValue(techByScore);
+
+        OpstrykonUtil.printMap(sortedByScore);
+
         return sortedByScore.entrySet().iterator().next().getKey();
     }
 
@@ -228,6 +262,16 @@ public class ArtificialIntelligence {
             hapPerTurn = (strategy.get("Growth") / 10d + 0.5d) * buildingType.happiness();
             healthPerTurn = (strategy.get("Expansion") / 10d + 0.5d) * buildingType.health();
             culPerTurn = (strategy.get("Culture") / 10d + 0.5d) * buildingType.culture();
+            if (currentStrategy != null) {
+                float[] yieldFlavors = (float[]) currentStrategy[2];
+                foodPerTurn *= yieldFlavors[0];
+                prodPerTurn *= yieldFlavors[1];
+                sciPerTurn *= yieldFlavors[2];
+                capPerTurn *= yieldFlavors[3];
+                hapPerTurn *= yieldFlavors[4];
+                healthPerTurn *= yieldFlavors[5];
+                culPerTurn *= yieldFlavors[6];
+            }
         }
         int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn + hapPerTurn + healthPerTurn + culPerTurn) * 10d);
 
@@ -298,7 +342,7 @@ public class ArtificialIntelligence {
         for (City city: clan.cities) {
             Object[] yieldData = city.gameYield();
             int[] cityYield = (int[]) yieldData[0];
-            Inventory inventory = (Inventory) yieldData[1];
+            //Inventory inventory = (Inventory) yieldData[1];
             for (int i = 0; i <= 3; i++)
                 yield[i] += cityYield[i];
         }
@@ -306,6 +350,7 @@ public class ArtificialIntelligence {
         //City population score and number of cities + food output
         for (City city: clan.cities) {
             score += city.population();
+            score += city.cityTiles.size() / 3;
         }
         score += yield[0];
 
@@ -326,7 +371,8 @@ public class ArtificialIntelligence {
             int prodPerTurn = buildingType.production();
             int sciPerTurn = buildingType.science();
             int capPerTurn = buildingType.capital();
-            score += foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn;
+            int culPerTurn = buildingType.culture();
+            score += (foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn + culPerTurn) / 3;
         }
         /*for (Tile tile: world.getAllValidTiles()) {
             if (tile.improvement != null) {

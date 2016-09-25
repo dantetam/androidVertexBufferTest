@@ -98,6 +98,7 @@ public class City extends Building {
         }
         Building queueBuilding = BuildingFactory.newBuilding(world, clan, buildingType, location, 0);
         actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_MODULE, queueBuilding));
+        System.out.println("Entered");
     }
 
     public void queueActionBuildUnit(PersonType personType) {
@@ -106,6 +107,7 @@ public class City extends Building {
         }
         Person queuePerson = PersonFactory.newPerson(personType, world, clan, 0);
         actionsQueue.add(new BuildingAction(Action.ActionType.QUEUE_BUILD_UNIT, queuePerson));
+        System.out.println("Entered2");
     }
 
     public List<BuildingType> computePossibleBuildingsForCity() {

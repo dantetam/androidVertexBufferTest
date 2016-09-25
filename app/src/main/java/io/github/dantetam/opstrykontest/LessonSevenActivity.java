@@ -731,6 +731,7 @@ public class LessonSevenActivity extends Activity implements
 
     public void onClickNextTurnMenu(View v) {
         Entity en = mRenderer.findNextUnit();
+        System.out.println("1");
         if (en != null) {
             ((Button) v).setText("UNIT NEEDS ORDERS <{action_points}>");
             OpstrykonUtil.processImageSpan(mActivity, (Button) v);
@@ -740,6 +741,7 @@ public class LessonSevenActivity extends Activity implements
 
             mRenderer.moveCameraInFramesAfter = 1;
             mRenderer.nextUnit = en;
+            System.out.println("2");
         } else if (playerClan.techTree.researchingTechQueue.size() == 0) {
             mRenderer.mousePicker.changeSelectedTile(null);
             mRenderer.mousePicker.changeSelectedUnit(null);
@@ -748,6 +750,7 @@ public class LessonSevenActivity extends Activity implements
             if (findViewById(R.id.tech_tree_screen).getVisibility() == View.INVISIBLE)
                 onClickTechMenu(findViewById(R.id.tech_menu));
             mGLSurfaceView.update();
+            System.out.println("3");
         } else {
             ((Button) v).setText("NEXT TURN");
             //((MenuItem) findViewById(R.id.next_turn_button)).setTitle("NEXT TURN");
@@ -755,6 +758,7 @@ public class LessonSevenActivity extends Activity implements
             MenuInflater inflater = tempMenu.getMenuInflater();
             inflater.inflate(R.menu.next_turn_menu, tempMenu.getMenu());
             tempMenu.show();
+            System.out.println("4");
         }
     }
 

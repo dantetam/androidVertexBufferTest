@@ -92,4 +92,8 @@ public class Tech {
         return name.equals(tech.name);
     }
 
+    public String toString() {
+        return name;
+    }
+
 }

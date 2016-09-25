@@ -68,4 +68,8 @@ public class PersonType {
         }
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

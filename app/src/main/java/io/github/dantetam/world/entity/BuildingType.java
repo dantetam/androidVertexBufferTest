@@ -61,6 +61,10 @@ public class BuildingType {
         return name.equals(type.name);
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
 
 /*public enum BuildingType {

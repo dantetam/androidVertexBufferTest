@@ -47,6 +47,14 @@ public class OpstrykonUtil {
         return result;
     }
 
+    public static <K, V> void printMap(Map<K, V> map)
+    {
+        System.out.println("Print map of size: " + map.size());
+        for (Map.Entry<K, V> entry: map.entrySet()) {
+            System.out.println("(" + entry.getKey().toString() + " : " + entry.getValue().toString() + ")");
+        }
+    }
+
     //Add a template for an inline image where imageName is a single name (no R or raw/drawable/etc.)
     /*public static void addImageSpan(Context context, TextView textView, String imageName) {
         String stringy = textView.getText() + "<{" + imageName + "}>";
