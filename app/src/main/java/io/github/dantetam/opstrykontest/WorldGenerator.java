@@ -8,6 +8,7 @@ import java.util.List;
 import io.github.dantetam.android.FileParser;
 import io.github.dantetam.android.RawResourceReader;
 import io.github.dantetam.utilmath.DiamondSquare;
+import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.TechTree;
@@ -51,10 +52,10 @@ public class WorldGenerator {
      */
     public void init() {
         int width = Math.max(world.arrayLengthX, world.arrayLengthZ);
-        int[][] biomes = new DiamondSquare(width, 16, 0.4).seed(System.currentTimeMillis()/4).getIntTerrain(0, Tile.Biome.numBiomes - 1);
+        int[][] biomes = new DiamondSquare(width, 16, 0.4).seed(870).getIntTerrain(0, Tile.Biome.numBiomes - 1);
         int[][] terrains = new DiamondSquare(width, 12, 0.4).seed(System.currentTimeMillis()).getIntTerrain(0, Tile.Terrain.numTerrains - 1);
         //Item[][] resources = makeNewResources(width, width);
-        int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(System.currentTimeMillis()/2).getIntTerrain(0, 10);
+        int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(870).getIntTerrain(0, 10);
         TerrainUtil.printIntTable(elevations);
         world.init(biomes, terrains, elevations);
 
@@ -70,27 +71,26 @@ public class WorldGenerator {
      * @return a Tile.Resource[][]. We specifically work with Tile.Resource and not int, for convenience.
      */
     private void makeNewResources(World world) {
-        /*Tile.Resource[][] temp = new Tile.Resource[rows][cols];
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                Tile.Resource index;
-                if (Math.random() < 0.1) {
-                    index = Tile.Resource.randomResource();
+        /*Tile.Resource[][] temp = new Tile.Resource[rows][cols];*/
+        HashMap<ItemType, Integer> count = new HashMap<>();
+        for (Tile tile: world.getAllValidTiles()) {
+            ItemType itemType = OpstrykonUtil.randomEntryMap(TechTree.itemTypes).getValue();
+            if (Math.random() < 0.04) {
+                int tileCount = 1;
+                while (Math.random() < 0.7) {
+                    tileCount++;
                 }
-                else {
-                    index = Tile.Resource.NO_RESOURCE;
-                }
-                temp[r][c] = index;
+                //tile.resources.add(new Item(itemType, tileCount));
             }
         }
-        return temp;*/
+        /*return temp;
         for (Tile tile: world.getAllValidTiles()) {
             HashMap<ItemType, List<Condition>> conditions = Item.conditionsForTile();
             List<ItemType> resources = Item.evaluateResourceConditions(tile, conditions);
             for (ItemType itemType: resources) {
                 tile.resources.add(new Item(itemType, 1));
             }
-        }
+        }*/
     }
 
     /*
@@ -113,7 +113,7 @@ public class WorldGenerator {
 
     private List<Clan> makeClans() {
         List<Clan> clans = new ArrayList<>();
-        int num = world.getAllValidTiles().size() / 40;
+        int num = world.getAllValidTiles().size() / 80;
         for (int i = 0; i < num; i++) {
             Clan clan;
             if (i == 0) {
@@ -129,7 +129,7 @@ public class WorldGenerator {
             BuildingXmlParser.parseBuildingTree(clan, mActivity, R.raw.building_tree);
             clan.techTree = new TechTree(clan);
 
-            clan.ideologyTree = IdeologyXmlParser.parseIdeologyTree(R.raw.ideology_tree);
+            clan.ideologyTree = IdeologyXmlParser.parseIdeologyTree(mActivity, R.raw.ideology_tree);
 
             if (TechTree.itemTypes == null) {
                 ResourceXmlParser.parseResourceTree(clan.techTree, mActivity, R.raw.resource_tree);
@@ -242,7 +242,7 @@ public class WorldGenerator {
                     }
                 }
                 Clan influencing = clans.get(indexMin);
-                world.addTileInfluence(tile, influencing, 2);
+                //world.addTileInfluence(tile, influencing, 2);
             }
         }
     }

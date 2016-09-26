@@ -28,7 +28,8 @@ public class PoliticalEntity {
     public List<City> cities;
     public Inventory resources;
 
-    public int totalGold, totalCulture;
+    public int totalGold; //, totalCulture;
+    public int totalIdeologyPower;
     public int lastHappiness = 4;
 
     public PoliticalEntity(String n) {

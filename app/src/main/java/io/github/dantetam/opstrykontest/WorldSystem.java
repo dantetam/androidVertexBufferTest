@@ -257,7 +257,7 @@ public class WorldSystem {
             clan.totalGold += yield[3];
             clan.lastHappiness += yield[4];
             clan.lastHappiness -= city.population();
-            clan.totalCulture += yield[6];
+            clan.totalIdeologyPower += yield[6];
 
             totalResources.addAnotherInventory(inventory);
         }

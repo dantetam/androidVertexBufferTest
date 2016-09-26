@@ -147,18 +147,21 @@ public class WorldHandler {
         chunksUpdated = false;
         if (chunkNodes == null) {
             chunkNodes = nodes;
+            chunksUpdated = true;
         }
         else {
             if (nodes.size() != chunkNodes.size()) {
                 chunksUpdated = true;
+                chunkNodes = nodes;
             }
             else {
                 int idSum = 0;
                 for (ChunkHelper.Node node: nodes) {
                     idSum += node.id;
                 }
-                idSum -= oldIdSum;
+                int temp = oldIdSum;
                 oldIdSum = idSum;
+                idSum -= temp;
                 if (idSum != 0) {
                     chunksUpdated = true;
                 }
@@ -169,22 +172,41 @@ public class WorldHandler {
             chunkTiles = new ArrayList<>();
         }
         if (chunksUpdated) {
+            System.out.println("updated");
             chunkTiles.clear();
             for (ChunkHelper.Node node: nodes) {
                 for (Tile tile: node.tiles) {
                     chunkTiles.add(tile);
                 }
             }
+            /*tilesStored = null;
+            storedTerrainBiomeTiles = null;
+
+            improvementsStored = null;
+
+            unitsStored = null;
+
+            tileHighlightOwnerStored = null;
+            tileHighlightInfluenceStored = null;
+
+            tileTerritoryStored = null;
+            tileYieldUiStored = null;
+            tileResourceStored = null;
+
+            highlightedCityTerritory = null;
+
+            improvementResourceProductionUi = null;
+            improvementResourceStatUi = null;*/
         }
         /*chunkTiles = chunkHelper.getChunkTiles(mousePicker.centerTile, 1);
         if (chunkTiles == null) {
             chunkTiles = new ArrayList<>();
         }*/
 
-        /*if (LessonSevenRenderer.frames % 100 == 0) {
+        if (LessonSevenRenderer.frames % 100 == 0) {
             for (int x = 0; x < chunkHelper.alignedTiles.length; x++) {
                 for (int z = 0; z < chunkHelper.alignedTiles[0].length; z++) {
-                    if (chunkHelper.alignedTiles[x][z].equals(mousePicker.getSelectedTile())) {
+                    if (chunkHelper.alignedTiles[x][z].equals(mousePicker.centerTile)) {
                         System.out.print("! ");
                     }
                     else if (chunkTiles.contains(chunkHelper.alignedTiles[x][z])) {
@@ -195,7 +217,7 @@ public class WorldHandler {
                 }
                 System.out.println();
             }
-        }*/
+        }
 
         //mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
 
@@ -307,6 +329,7 @@ public class WorldHandler {
             tilesStored = new ListModel();
 
             storedImprTilesTex = new HashMap<>();
+            storedTerrainBiomeTiles = new HashMap<>();
 
             //storedTerrainBiomeTiles = new HashMap<>();
 
@@ -1637,7 +1660,7 @@ public class WorldHandler {
 
             Vector3f selectedPos = storedTileVertexPositions.get(selected);
 
-            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, 0.06f, selectedPos.z);
+            final float[] thisCubePositionData = translateData(scaledData, selectedPos.x, selectedPos.y + 0.06f, selectedPos.z);
 
             //Interleave all the new vtn data, per hex.
             System.arraycopy(thisCubePositionData, 0, totalCubePositionData, cubePositionDataOffset, thisCubePositionData.length);
@@ -1793,8 +1816,8 @@ public class WorldHandler {
     private static final float TRANSLATE_FACTORZ = 4f;
     private float[][] generateHexes(World world, Collection<Tile> tiles, Condition condition) {
         //Load the vtn data of one hex obj
-        float[][] oldHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
-        float[][] newHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.newflathexagon);
+        float[][] newHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+        float[][] oldHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.newflathexagon);
 
         //int mRequestedCubeFactor = WORLD_LENGTH;
 
@@ -1836,7 +1859,7 @@ public class WorldHandler {
                 if (condition.allowed(tile) && tiles.contains(tile)) {
                     //tile.elevation = 0;
 
-                    final float[] scaledData = scaleData(oldHexData[0], 1, tile.elevation / 16f, 1);
+                    final float[] scaledData = scaleData(oldHexData[0], 1, 0, 1);
 
                     final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y, vertices.z);
 

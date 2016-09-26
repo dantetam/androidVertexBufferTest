@@ -366,12 +366,10 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 quickSummaryMenu.setVisibility(selectedEntityExists || selectedTileExists ? View.VISIBLE : View.INVISIBLE);
                 String stringy = "";
                 if (selectedTileExists) {
-                    Clan owner = selectedTile.world.getTileOwner(selectedTile), influence = selectedTile.world.getTileInfluence(selectedTile);
+                    Clan owner = selectedTile.world.getTileOwner(selectedTile); //, influence = selectedTile.world.getTileInfluence(selectedTile);
                     String affiliation = "";
                     if (owner != null) {
                         affiliation = owner.name + " <{culture}>";
-                    } else if (influence != null) {
-                        affiliation = "(" + influence.name + ") <{forest}>";
                     } else {
                         affiliation = "Free <{forest}>";
                     }

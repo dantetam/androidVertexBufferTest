@@ -980,11 +980,9 @@ public class LessonSevenActivity extends Activity implements
         String affiliation = "";
         if (selectedTileExists) {
             Tile selected = mRenderer.mousePicker.getSelectedTile();
-            Clan owner = selected.world.getTileOwner(selected), influence = selected.world.getTileInfluence(selected);
+            Clan owner = selected.world.getTileOwner(selected); //, influence = selected.world.getTileInfluence(selected);
             if (owner != null) {
                 affiliation = owner.name;
-            } else if (influence != null) {
-                affiliation = "(" + influence.name + ")";
             } else {
                 affiliation = "Free";
             }

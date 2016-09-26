@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.github.dantetam.android.TextureHelper;
 
@@ -45,6 +46,21 @@ public class OpstrykonUtil {
             result.put(entry.getKey(), entry.getValue());
         }
         return result;
+    }
+
+    public static <K, V> Map.Entry<K, V> randomEntryMap(Map<K, V> map)
+    {
+        if (map.keySet().size() == 0) return null;
+        Set<Map.Entry<K, V>> entries = map.entrySet();
+        int i = 0;
+        int index = (int) (Math.random() * entries.size());
+        for (Map.Entry<K, V> entry: entries) {
+            if (i == index) {
+                return entry;
+            }
+            i++;
+        }
+        return null;
     }
 
     public static <K, V> void printMap(Map<K, V> map)

@@ -38,7 +38,7 @@ import io.github.dantetam.world.entity.Tech;
 public class IdeologyXmlParser {
     private static final String ns = null;
 
-    public static IdeologyTree parseAllClans(Context context, int resourceId) {
+    public static IdeologyTree parseIdeologyTree(Context context, int resourceId) {
         final InputStream clanStream = context.getResources().openRawResource(
                 resourceId);
         try {

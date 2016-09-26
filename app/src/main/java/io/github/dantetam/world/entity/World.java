@@ -30,7 +30,7 @@ public class World {
     private List<Clan> clans;
 
     private HashMap<Tile, Clan> tileOwnerHashMap;
-    private HashMap<Tile, Influence> tileInfluenceHashMap;
+    //private HashMap<Tile, Influence> tileInfluenceHashMap;
 
     public List<Tile> clanTerritoriesUpdate;
 
@@ -95,10 +95,10 @@ public class World {
     public void initClans(List<Clan> c) {
         clans = c;
         tileOwnerHashMap = new HashMap<>();
-        tileInfluenceHashMap = new HashMap<>();
+        /*tileInfluenceHashMap = new HashMap<>();
         for (Tile t: getAllValidTiles()) {
             tileInfluenceHashMap.put(t, new Influence(clans));
-        }
+        }*/
     }
 
     public void setTileOwner(Tile t, Clan c) {
@@ -108,7 +108,7 @@ public class World {
     public Clan getTileOwner(Tile t) {
         return tileOwnerHashMap.get(t);
     }
-    public void addTileInfluence(Tile t, Clan c, int influenceNum) {
+    /*public void addTileInfluence(Tile t, Clan c, int influenceNum) {
         Influence influence = tileInfluenceHashMap.get(t);
         influence.addClanInfluence(c, influenceNum);
         if (!clanTerritoriesUpdate.contains(t)) clanTerritoriesUpdate.add(t);
@@ -116,7 +116,7 @@ public class World {
     public Clan getTileInfluence(Tile tile) {
         Clan owner = tileOwnerHashMap.get(tile);
         return owner != null ? owner : tileInfluenceHashMap.get(tile).influencingClan();
-    }
+    }*/
 
     public Object[] aggregateOwners(List<Tile> src) {
         List<Tile> tiles = new ArrayList<>();
@@ -131,15 +131,15 @@ public class World {
         for (int i = tiles.size() - 1; i >= 0; i--) {
             Tile t = tiles.get(i);
             Clan owner = getTileOwner(t);
-            Clan influence = getTileInfluence(t);
+            //Clan influence = getTileInfluence(t);
             if (owner != null) {
                 owners.get(owner).add(t);
                 tiles.remove(i);
             }
-            else if (influence != null) {
+            /*else if (influence != null) {
                 influencers.get(influence).add(t);
                 tiles.remove(i);
-            }
+            }*/
         }
         /*System.out.println("Tiles total: " + getAllValidTiles().size());
         for (Clan c: clans) {
@@ -176,7 +176,7 @@ public class World {
         if (builder.equals(tileOwnerHashMap.get(tile))) {
             return 0.7f;
         }
-        else if (builder.equals(tileInfluenceHashMap.get(tile).influencingClan())) {
+        /*else if (builder.equals(tileInfluenceHashMap.get(tile).influencingClan())) {
             return 0.85f;
         }
         else {
@@ -184,8 +184,8 @@ public class World {
             //clanInfluencePercentage /= 0.5f;
             //float extraTime = 0.5f - clanInfluencePercentage;
             return 1.5f - clanInfluencePercentage;
-        }
-        //return 1f;
+        }*/
+        return 1f;
     }
 
     public Tile getTile(int r, int c) {
@@ -293,10 +293,10 @@ public class World {
                 //neighbors[i] = neighborTile == null || !getTileOwner(t).equals(getTileOwner(neighborTile));
                 if (getTileOwner(t) != null) {
                     neighbors[i] = !getTileOwner(t).equals(getTileOwner(neighborTile));
-                    neighbors[i] = neighbors[i] || !getTileOwner(t).equals(getTileInfluence(neighborTile));
+                    //neighbors[i] = neighbors[i] || !getTileOwner(t).equals(getTileInfluence(neighborTile));
                 }
                 else {
-                    if (getTileInfluence(t) != null) {
+                    /*if (getTileInfluence(t) != null) {
                         if (getTileOwner(neighborTile) == null && getTileInfluence(neighborTile) == null) {
                             neighbors[i] = true;
                         }
@@ -309,7 +309,7 @@ public class World {
                     }
                     else {
                         //Do nothing
-                    }
+                    }*/
                 }
             }
             else {
