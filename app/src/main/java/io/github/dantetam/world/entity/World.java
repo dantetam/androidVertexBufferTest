@@ -57,6 +57,8 @@ public class World {
                     //Normalize to values 0 and 1, shallow_sea and deep_sea
                     int typeOfSea = Math.round(biome.type / Tile.Biome.numBiomes);
                     terrain = Tile.Terrain.fromInt(typeOfSea);
+
+                    elevations[x][z] = 0;
                 } else {
                     if (terrains[x][z] <= 1) {
                         terrains[x][z] = (int)(Math.random() * (Tile.Terrain.numTerrains - Tile.Terrain.numSeaTerrains)) + 2;

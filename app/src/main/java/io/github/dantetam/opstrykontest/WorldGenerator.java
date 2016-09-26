@@ -21,7 +21,9 @@ import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.factory.PersonFactory;
 import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
+import io.github.dantetam.world.terrain.TerrainUtil;
 import io.github.dantetam.xml.BuildingXmlParser;
+import io.github.dantetam.xml.IdeologyXmlParser;
 import io.github.dantetam.xml.ResourceXmlParser;
 import io.github.dantetam.xml.TechXmlParser;
 import io.github.dantetam.xml.UnitXmlParser;
@@ -49,17 +51,14 @@ public class WorldGenerator {
      */
     public void init() {
         int width = Math.max(world.arrayLengthX, world.arrayLengthZ);
-        int[][] biomes = new DiamondSquare(width, 16, 0.4).seed(870).getIntTerrain(0, Tile.Biome.numBiomes - 1);
-        for (int r = 0; r < biomes.length; r++) {
-            for (int c = 0; c < biomes[0].length; c++) {
-                System.out.print(biomes[r][c] + " ");
-            }
-            System.out.println();
-        }
+        int[][] biomes = new DiamondSquare(width, 16, 0.4).seed(System.currentTimeMillis()/4).getIntTerrain(0, Tile.Biome.numBiomes - 1);
         int[][] terrains = new DiamondSquare(width, 12, 0.4).seed(System.currentTimeMillis()).getIntTerrain(0, Tile.Terrain.numTerrains - 1);
         //Item[][] resources = makeNewResources(width, width);
-        int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(System.currentTimeMillis()/2).getIntTerrain(1, 10);
+        int[][] elevations = new DiamondSquare(width, 10, 0.5).seed(System.currentTimeMillis()/2).getIntTerrain(0, 10);
+        TerrainUtil.printIntTable(elevations);
         world.init(biomes, terrains, elevations);
+
+        TerrainUtil.printIntTable(elevations);
         //makeRandomBuildings();
         world.initClans(makeClans());
         makeNewResources(world);
@@ -129,6 +128,8 @@ public class WorldGenerator {
             UnitXmlParser.parseUnitTree(clan, mActivity, R.raw.unit_tree);
             BuildingXmlParser.parseBuildingTree(clan, mActivity, R.raw.building_tree);
             clan.techTree = new TechTree(clan);
+
+            clan.ideologyTree = IdeologyXmlParser.parseIdeologyTree(R.raw.ideology_tree);
 
             if (TechTree.itemTypes == null) {
                 ResourceXmlParser.parseResourceTree(clan.techTree, mActivity, R.raw.resource_tree);

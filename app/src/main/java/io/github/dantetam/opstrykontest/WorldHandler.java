@@ -1793,8 +1793,8 @@ public class WorldHandler {
     private static final float TRANSLATE_FACTORZ = 4f;
     private float[][] generateHexes(World world, Collection<Tile> tiles, Condition condition) {
         //Load the vtn data of one hex obj
-        float[][] newHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
-        float[][] oldHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.newflathexagon);
+        float[][] oldHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+        float[][] newHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.newflathexagon);
 
         //int mRequestedCubeFactor = WORLD_LENGTH;
 
@@ -1830,13 +1830,13 @@ public class WorldHandler {
                 float extra = x % 2 == 1 ? TRANSLATE_FACTORZ * -0.5f : 0;
 
                 //Store these positions for later use when we place tile improvements and such
-                Vector3f vertices = new Vector3f(xx * TRANSLATE_FACTORX, tile.elevation / 5f, - zz * TRANSLATE_FACTORZ + extra);
+                Vector3f vertices = new Vector3f(xx * TRANSLATE_FACTORX, tile.elevation / 16f, - zz * TRANSLATE_FACTORZ + extra);
                 storedTileVertexPositions.put(tile, vertices);
 
                 if (condition.allowed(tile) && tiles.contains(tile)) {
                     //tile.elevation = 0;
 
-                    final float[] scaledData = scaleData(oldHexData[0], 1, 0, 1);
+                    final float[] scaledData = scaleData(oldHexData[0], 1, tile.elevation / 16f, 1);
 
                     final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y, vertices.z);
 

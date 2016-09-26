@@ -56,7 +56,6 @@ public class ArtificialIntelligence {
                 }
             }
         }
-        System.out.println(clan + ">>>" + clan.techTree);
         if (clan.techTree.researchingTechQueue.size() == 0) {
             Tech tech = computeBestTech();
             clan.techTree.researchingTechQueue.add(tech);
@@ -69,6 +68,10 @@ public class ArtificialIntelligence {
                 person.gameMove(person.world.randomNeighbor(person.location()));
             }
         }
+    }
+
+    public void computeDiplomaticOptions() {
+
     }
 
     public Object[] defineStrategy() {
@@ -212,7 +215,6 @@ public class ArtificialIntelligence {
                 for (City city: clan.cities) {
                     averagedBuildingScore += computeBuildingTypeScore(clan, city, buildingType);
                 }
-                //averagedBuildingScore /= clan.cities.size();
                 techScore += averagedBuildingScore;
             }
             for (PersonType personType: tech.unlockedUnits) {
@@ -220,8 +222,13 @@ public class ArtificialIntelligence {
                 for (City city: clan.cities) {
                     averagedPersonScore += computeUnitTypeScore(clan, city, personType);
                 }
-                //averagedBuildingScore /= clan.cities.size();
                 techScore += averagedPersonScore;
+            }
+            if (tech.unlockedBuildings.size() + tech.unlockedUnits.size() == 0) {
+                techScore = 0;
+            }
+            else {
+                techScore /= tech.unlockedBuildings.size() + tech.unlockedUnits.size();
             }
             techByScore.put(tech, techScore);
         }
@@ -308,7 +315,7 @@ public class ArtificialIntelligence {
             capPerTurn = ((tactics.get("Ranged") + tactics.get("Defense")) / 2 / 10d + 0.5d) * personType.fire;
             hapPerTurn = ((tactics.get("Melee") + tactics.get("Offense")) / 2 / 10d + 0.5d) * personType.shock;
         }
-        int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn + hapPerTurn) * 10d / 5d);
+        int scorePerTenTurns = (int)((foodPerTurn + prodPerTurn + sciPerTurn + capPerTurn + hapPerTurn) * 10d / 30d);
 
         double roiTurns = workNeeded / scorePerTenTurns;
         double snowball = Math.pow(0.8d, (roiTurns + turnsNeeded) / 2);

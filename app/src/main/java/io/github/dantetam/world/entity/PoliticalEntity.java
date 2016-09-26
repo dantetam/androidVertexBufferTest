@@ -22,6 +22,7 @@ public class PoliticalEntity {
     public TechTree techTree;
     public UnitTree unitTree;
     public BuildingTree buildingTree;
+    public IdeologyTree ideologyTree;
 
     public List<Building> buildings;
     public List<City> cities;

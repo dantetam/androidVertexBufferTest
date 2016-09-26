@@ -86,7 +86,7 @@ public class MultiTextureHelper {
                     baseColorTextures = new int[]{dryforest, ice, forest, shallowSea};
                     break;
                 case DESERT:
-                    baseColorTextures = new int[]{desert, desert, desert, desert};
+                    baseColorTextures = new int[]{desert, desert, desert, shallowSea};
                     break;
                 case STEPPE:
                     baseColorTextures = new int[]{dryforest, dryforest, forest, shallowSea};
@@ -107,10 +107,10 @@ public class MultiTextureHelper {
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.HILLS, biome), tex);
 
             List<Texture> tex1 = new ArrayList<>();
-            tex1.add(new MultiTexture("island1", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
-            tex1.add(new MultiTexture("island2", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
-            tex1.add(new MultiTexture("island3", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
-            tex1.add(new MultiTexture("island4", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island1", baseColorTextures[3], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island2", baseColorTextures[3], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island3", baseColorTextures[3], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island4", baseColorTextures[3], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.ISLANDS, biome), tex1);
 
             List<Texture> tex2 = new ArrayList<>();
