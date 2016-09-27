@@ -1,3 +1,4 @@
+/*
 package io.github.dantetam.world.ai;
 
 import java.util.ArrayList;
@@ -14,9 +15,11 @@ import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.factory.BuildingFactory;
 import io.github.dantetam.world.factory.PersonFactory;
 
+*/
 /**
  * Created by Dante on 8/1/2016.
- */
+ *//*
+
 public class CombatPlan {
 
     private LinkedHashMap<Entity, List<CombatAction>> planMap;
@@ -48,9 +51,11 @@ public class CombatPlan {
         for (Map.Entry<Entity, List<CombatAction>> entry: planMap.entrySet()) {
             Entity entity = entry.getKey();
             List<CombatAction> actions = entry.getValue();
-            /*for (CombatAction action: actions) {
+            */
+/*for (CombatAction action: actions) {
                 action.execute();
-            }*/
+            }*//*
+
             executeQueue(entity, actions);
         }
     }
@@ -95,3 +100,4 @@ public class CombatPlan {
     }
 
 }
+*/

@@ -5,6 +5,7 @@ import java.util.List;
 
 import io.github.dantetam.opstrykontest.WorldSystem;
 import io.github.dantetam.world.action.Action;
+import io.github.dantetam.world.action.Combat;
 import io.github.dantetam.world.action.PersonAction;
 import io.github.dantetam.world.factory.PersonFactory;
 
@@ -66,12 +67,71 @@ public class Person extends Entity {
     Move a person within the game by one tile and if the unit has action points.
     Return true if the game move was successful.
      */
-    public ActionStatus gameMove(Tile t) {
+    /*public ActionStatus gameMove(Tile t) {
         ActionStatus moved = super.gameMove(t);
         if (moved == ActionStatus.EXECUTED) {
             actionPoints--;
         }
         return moved;
+    }*/
+
+    public ActionStatus gameMove(Tile t) {
+        Tile location = location();
+        if (location != null) {
+            float dist = location.dist(t);
+            if (actionPoints <= 0) {
+                return ActionStatus.OUT_OF_ENERGY;
+            }
+            if (dist == 1) {
+                for (Entity en: t.occupants) {
+                    if (en instanceof Person) {
+                        Person unit = (Person) en;
+                        if (personType.category.equals("peaceful")) {
+                            return ActionStatus.IMPOSSIBLE;
+                        }
+                        if (world.worldSystem.atWar(clan, unit.clan)) {
+                            return gameAttack(unit);
+                        } else {
+                            return ActionStatus.IMPOSSIBLE;
+                        }
+                    }
+                    else if (en instanceof City) {
+                        City city = (City) en;
+                        
+                    }
+                }
+                actionPoints--;
+                move(t);
+                return ActionStatus.EXECUTED;
+            }
+            else if (dist == 0) {
+                return ActionStatus.ALREADY_COMPLETED;
+            }
+        }
+        System.err.println("Invalid game move: ");
+        System.err.println(location + "; " + location.dist(t) + "; " + actionPoints);
+        return ActionStatus.IMPOSSIBLE;
+    }
+
+    public ActionStatus gameAttack(Person defender) {
+        if (personType.range > 0) {
+            Combat.attackRanged(this, defender);
+        }
+        else {
+            Combat.attackMelee(this, defender);
+        }
+        if (defender.health <= 0) {
+            defender.actionsQueue.clear();
+            defender.actionsQueue.add(new PersonAction(ActionType.COMBAT_DEATH, defender));
+            defender.executeQueue();
+        }
+        if (this.health <= 0) {
+            //actionsQueue.clear();
+            //actionsQueue.add(new PersonAction(ActionType.COMBAT_DEATH, defender));
+            return ActionStatus.CONSUME_UNIT;
+        }
+        actionPoints = 0;
+        return ActionStatus.EXECUTED;
     }
 
     public ActionStatus gameFortify() {
@@ -133,6 +193,19 @@ public class Person extends Entity {
         }
         path.remove(0);
         while (true) {
+            for (Entity en: destination.occupants) {
+                if (en instanceof Person) {
+                    Person unit = (Person) en;
+                    if (world.worldSystem.atWar(clan, unit.clan)) {
+                        return gameAttack(unit);
+                    } else {
+                        return ActionStatus.IMPOSSIBLE;
+                    }
+                }
+                else if (en instanceof City) {
+                    City city = (City) en;
+                }
+            }
             if (path.size() == 0) {
                 return ActionStatus.ALREADY_COMPLETED;
             }
@@ -175,6 +248,10 @@ public class Person extends Entity {
                 path.remove(0);
             }
         }
+    }
+
+    public ActionStatus consumeUnit() {
+        return ActionStatus.CONSUME_UNIT;
     }
 
     /*public enum PersonType {

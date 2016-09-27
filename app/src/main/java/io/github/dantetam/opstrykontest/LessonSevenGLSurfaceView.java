@@ -14,7 +14,6 @@ import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.action.CombatAction;
-import io.github.dantetam.world.ai.CombatWorld;
 import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.Tile;
@@ -132,7 +131,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 mousePicker.update(x, y, mRenderer.getCombatMode());
                         /*Vector3f v = mousePicker.rayCastHit;
                         mousePicker.getTileClickedOn();*/
-                if (mRenderer.getCombatMode()) {
+                /*if (mRenderer.getCombatMode()) {
                     if (!mRenderer.worldHandler.world.combatWorld.checkTileWithinZone(mousePicker.getSelectedTile())) {
                         mousePicker.changeSelectedTile(null);
                         mousePicker.changeSelectedUnit(null);
@@ -140,7 +139,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     if (previousSelectedEntity != null) {
                         mousePicker.changeSelectedAction("CombatMove");
                     }
-                }
+                }*/
 
                 if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
                     //Force update here
@@ -171,7 +170,6 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
             return; //Default, select the unit and only display its stats.
         }
         if (mRenderer.getCombatMode()) {
-            CombatWorld combatWorld = mRenderer.worldHandler.world.combatWorld;
             if (action.equals("CombatMove")) {
                 if (previousSelectedEntity == null) {
                     System.err.println("Invalid 'CombatMove' action, no selected entity before click");
@@ -192,10 +190,12 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                             }*/
                             actionType = Action.ActionType.COMBAT_CHASE;
                         }
-                        combatWorld.addAction(personSelected, new CombatAction(actionType, entityToChase));
+                        personSelected.actionsQueue.add(new CombatAction(actionType, entityToChase));
+                        personSelected.executeQueue();
                     }
                     else if (locationToMove != null) {
-                        combatWorld.addAction(personSelected, new CombatAction(Action.ActionType.COMBAT_MOVE, locationToMove));
+                        personSelected.actionsQueue.add(new CombatAction(Action.ActionType.COMBAT_MOVE, locationToMove));
+                        personSelected.executeQueue();
                     }
                 }
                 LessonSevenRenderer.debounceFrames = 10;

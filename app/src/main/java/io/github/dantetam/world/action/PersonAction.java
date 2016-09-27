@@ -22,6 +22,8 @@ public class PersonAction extends Action {
                 return person.gameMove((Tile) data);
             case FORTIFY: //<---TODO
                 return person.gameFortify();
+            case COMBAT_DEATH:
+                return person.consumeUnit();
             default:
                 System.out.println("Invalid action type: " + type);
                 return ActionStatus.IMPOSSIBLE;

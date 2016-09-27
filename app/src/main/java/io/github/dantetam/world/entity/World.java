@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.github.dantetam.world.ai.CombatWorld;
+import io.github.dantetam.opstrykontest.WorldSystem;
 import io.github.dantetam.world.factory.TileFactory;
 
 /**
@@ -18,7 +18,7 @@ public class World {
     //private QuadTree<Tile, int[]> tiles;
     //private WorldTree tree;
 
-    public CombatWorld combatWorld;
+    public WorldSystem worldSystem;
 
     protected Tile[][] hexes;
     public int arrayLengthX, arrayLengthZ;

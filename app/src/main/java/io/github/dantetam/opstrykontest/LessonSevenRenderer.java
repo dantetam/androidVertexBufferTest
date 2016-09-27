@@ -163,7 +163,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     public void setCombatMode(boolean c) {
         combatMode = c;
         mGlSurfaceView.update();
-        worldHandler.updateCombatWorld(combatMode);
+        //worldHandler.updateCombatWorld(combatMode);
     }
 
 	/**

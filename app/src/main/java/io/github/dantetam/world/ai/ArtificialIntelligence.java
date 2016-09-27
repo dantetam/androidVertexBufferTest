@@ -62,7 +62,7 @@ public class ArtificialIntelligence {
         }
     }
 
-    public void computerClanCombat(CombatPlan combatPlan) {
+    public void computerClanCombat() {
         for (Person person: clan.people) {
             while (person.actionPoints > 0) {
                 person.gameMove(person.world.randomNeighbor(person.location()));

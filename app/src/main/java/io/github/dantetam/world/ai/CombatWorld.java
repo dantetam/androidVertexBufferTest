@@ -1,3 +1,4 @@
+/*
 package io.github.dantetam.world.ai;
 
 import java.util.ArrayList;
@@ -14,9 +15,11 @@ import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
 import io.github.dantetam.world.factory.PersonFactory;
 
+*/
 /**
  * Created by Dante on 8/2/2016.
- */
+ *//*
+
 public class CombatWorld {
 
     public World linkedWorld;
@@ -75,10 +78,12 @@ public class CombatWorld {
         }
     }
 
-    /*
+    */
+/*
     Return to the normal game state, keeping the results of combat.
     Remove killed entities if necessary.
-     */
+     *//*
+
     public void pauseCombatWorld() {
         for (Map.Entry<Entity, Tile> entry: originalPositions.entrySet()) {
             Entity entity = entry.getKey();
@@ -112,3 +117,4 @@ public class CombatWorld {
     }
 
 }
+*/

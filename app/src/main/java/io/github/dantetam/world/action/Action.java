@@ -32,7 +32,8 @@ public abstract class Action {
 
         COMBAT_MOVE,
         COMBAT_ATTACK,
-        COMBAT_CHASE;
+        COMBAT_CHASE,
+        COMBAT_DEATH;
     }
 
     //The representation of the action itself, which contains the type (which chooses the protocol on which to act),

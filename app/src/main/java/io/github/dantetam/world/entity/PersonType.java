@@ -13,6 +13,7 @@ public class PersonType {
     public String category;
     public int health, maxH, actionPoints, maxP;
     public int atk, def, maneuver, fire, shock;
+    public int range = 0; //Range of 0 represents no ranged ability
 
     public String resourceNeeded;
 

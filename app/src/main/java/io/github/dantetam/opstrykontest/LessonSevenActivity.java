@@ -1286,9 +1286,9 @@ public class LessonSevenActivity extends Activity implements
         mRenderer.setCombatMode(false);
     }
 
-    public void onClickNextCombatTurn(View v) {
+    /*public void onClickNextCombatTurn(View v) {
         mRenderer.worldHandler.world.combatWorld.advanceTurn();
-    }
+    }*/
 
     public void onClickTechMenu(View v) {
         GridLayout techScreen = (GridLayout) findViewById(R.id.tech_tree_screen);

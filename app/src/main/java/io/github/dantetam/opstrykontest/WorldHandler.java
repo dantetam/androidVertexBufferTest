@@ -31,7 +31,6 @@ import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
-import io.github.dantetam.world.ai.CombatWorld;
 import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.ItemType;
 import io.github.dantetam.world.entity.Person;
@@ -122,7 +121,7 @@ public class WorldHandler {
         storedTileUnits = new HashMap<>();
     }
 
-    public void updateCombatWorld(boolean combatMode) {
+    /*public void updateCombatWorld(boolean combatMode) {
         worldRepNeedsUpdate = true;
         if (combatMode) {
             if (world.combatWorld != null) {
@@ -137,7 +136,7 @@ public class WorldHandler {
             world.combatWorld.pauseCombatWorld();
             world.combatWorld = null;
         }
-    }
+    }*/
 
     public Object[] totalWorldRepresentation() {
         List<BaseModel> modelsToRender = new ArrayList<>();
@@ -179,6 +178,9 @@ public class WorldHandler {
                     chunkTiles.add(tile);
                 }
             }
+
+            //new WorldHandlerTask().execute();
+
             /*tilesStored = null;
             storedTerrainBiomeTiles = null;
 
@@ -203,7 +205,7 @@ public class WorldHandler {
             chunkTiles = new ArrayList<>();
         }*/
 
-        if (LessonSevenRenderer.frames % 100 == 0) {
+        /*if (LessonSevenRenderer.frames % 100 == 0) {
             for (int x = 0; x < chunkHelper.alignedTiles.length; x++) {
                 for (int z = 0; z < chunkHelper.alignedTiles[0].length; z++) {
                     if (chunkHelper.alignedTiles[x][z].equals(mousePicker.centerTile)) {
@@ -217,14 +219,14 @@ public class WorldHandler {
                 }
                 System.out.println();
             }
-        }
+        }*/
 
         //mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
 
         mousePicker.passInTileVertices(storedTileVertexPositions);
 
         if (mRenderer.getCombatMode()) {
-            modelsToRender.add(worldRep(world.combatWorld.allTiles));
+            modelsToRender.add(worldRep(world.getAllValidTiles()));
             modelsToRender.add(updateTileUnits());
             modelsToRender.add(tileImprovementRep());
 

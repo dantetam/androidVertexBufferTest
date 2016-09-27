@@ -48,6 +48,7 @@ public class WorldSystem {
 
     public WorldSystem(WorldHandler worldHandler) {
         world = worldHandler.world;
+        world.worldSystem = this;
         List<Clan> clans = world.getClans();
         initClan(clans.get(0));
         //artificialIntelligence = new ArtificialIntelligence(world, clan);
