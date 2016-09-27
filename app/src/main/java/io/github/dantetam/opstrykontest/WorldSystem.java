@@ -193,7 +193,7 @@ public class WorldSystem {
             int workingPopulation = city.population() - city.freeWorkingPopulation();
             double foodGain = yield[0] - workingPopulation * 2 - city.freeWorkingPopulation() * 1;
             if (clan.lastHappiness < 0) {
-                foodGain *= 0.5;
+                foodGain *= 0.333;
             }
             if (city.lastYieldHealth < 0) {
                 foodGain += city.lastYieldHealth * 2;

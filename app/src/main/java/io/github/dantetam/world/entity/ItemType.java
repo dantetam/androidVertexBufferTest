@@ -16,6 +16,7 @@ public class ItemType {
     //public int food, production, science, capital, happiness, health;
 
     public int[] noImprYield, imprYield;
+    public String imprName;
 
     public ItemType(String n, int[] noImpr, int[] impr) {
         name = n;

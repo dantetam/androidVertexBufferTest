@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.widget.TextView;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -61,6 +62,34 @@ public class OpstrykonUtil {
             i++;
         }
         return null;
+    }
+
+    public static int getRank(double subject, Collection<Integer> numbers, int min, int max) {
+        int rank = 0;
+        for (Integer number: numbers) {
+            if (subject > number) {
+                rank--;
+            }
+        }
+        double percent = (double) (-rank) / (double) (numbers.size());
+        return (int) (max - percent * (max - min));
+    }
+
+    public static String findNearestPoint(HashMap<String, int[]> points, int[] subject) {
+        String candidate = null;
+        double minDist = -1;
+        for (Map.Entry<String, int[]> entry: points.entrySet()) {
+            double dist = 0;
+            for (int i = 0; i < subject.length; i++) {
+                dist += (subject[i] - entry.getValue()[i]) * (subject[i] - entry.getValue()[i]);
+            }
+            dist = Math.sqrt(dist);
+            if (dist < minDist || minDist == -1) {
+                minDist = dist;
+                candidate = entry.getKey();
+            }
+        }
+        return candidate;
     }
 
     public static <K, V> void printMap(Map<K, V> map)

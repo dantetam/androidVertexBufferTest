@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.dantetam.utilmath.OpstrykonUtil;
+import io.github.dantetam.utilmath.Vector2f;
+import io.github.dantetam.utilmath.Vector4f;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
@@ -88,7 +90,79 @@ public class ArtificialIntelligence {
         //Definitely the civ should use a rough expectimax and a civ-unique heuristic
         //to define the optimal strategy.
 
-        String point = "Growth";
+        String point = "";
+
+        int landRank, warAndPeaceRank, techRank, devRank;
+        //Scores from 1 to 10 where 5 is average, 1 is first, and 10 is last.
+
+        int landScore = 0, warAndPeaceScore = 0, techScore = 0, devScore = 0;
+        HashMap<Clan, Integer> clanLandScores = new HashMap<>(), clanWarAndPeaceScores = new HashMap<>(),
+                clanTechScores = new HashMap<>(), clanDevScores = new HashMap<>();
+
+        for (Clan otherClan: clan.world.getClans()) {
+            int score0 = 0;
+            int[] yield = new int[4];
+            for (City city : otherClan.cities) {
+                //score += city.population();
+                score0 += city.cityTiles.size() / 3;
+
+                Object[] yieldData = city.gameYield();
+                int[] cityYield = (int[]) yieldData[0];
+                //Inventory inventory = (Inventory) yieldData[1];
+                for (int i = 0; i < 7; i++)
+                    yield[i] += cityYield[i];
+            }
+            for (int i = 0; i < 7; i++) {
+                score0 += yield[i];
+            }
+            if (otherClan.equals(clan)) devScore = score0;
+            else clanDevScores.put(otherClan, score0);
+
+            int score1 = 0;
+            for (City city : otherClan.cities) {
+                //score += city.population();
+                score1 += city.cityTiles.size() / 3;
+            }
+            if (otherClan.equals(clan)) landScore = score0;
+            else clanLandScores.put(otherClan, score1);
+
+            int score2 = 0;
+            for (Person person: otherClan.people) {
+                PersonType personType = person.personType;
+                score2 += (personType.atk + personType.def + personType.maneuver + personType.fire + personType.shock)/25;
+            }
+            if (otherClan.equals(clan)) warAndPeaceScore = score2;
+            else clanWarAndPeaceScores.put(otherClan, score2);
+
+            int score3 = 0;
+            score3 += otherClan.techTree.researchedTech.size();
+            if (otherClan.equals(clan)) techScore = score3;
+            else clanTechScores.put(otherClan, score3);
+        }
+
+        landRank = OpstrykonUtil.getRank(landScore, clanLandScores.values(), 1, 10);
+        warAndPeaceRank = OpstrykonUtil.getRank(warAndPeaceScore, clanWarAndPeaceScores.values(), 1, 10);
+        techRank = OpstrykonUtil.getRank(techScore, clanTechScores.values(), 1, 10);
+        devRank = OpstrykonUtil.getRank(devScore, clanDevScores.values(), 1, 10);
+
+        landRank = (landRank + strategy.get("Expansion")) / 2;
+        warAndPeaceRank = (warAndPeaceRank + strategy.get("Diplomacy") - strategy.get("War"));
+        techRank = (techRank + strategy.get("Science")) / 2;
+        devRank = (devRank + strategy.get("Growth")) / 2;
+
+        landRank += (int) (Math.random() * 5) - 2;
+        warAndPeaceRank += (int) (Math.random() * 5) - 2;
+        techRank += (int) (Math.random() * 5) - 2;
+        devRank += (int) (Math.random() * 5) - 2;
+
+        HashMap<String, int[]> points = new HashMap<>();
+        points.put("Expansion", new int[]{6, 3, 4, 5});
+        points.put("Growth", new int[]{2, 5, 5, 7});
+        points.put("Diplomacy", new int[]{8, 5, 7, 7});
+        points.put("War", new int[]{6, 8, 4, 5});
+        points.put("Tech", new int[]{5, 7, 8, 7});
+        points.put("Culture", new int[]{7, 8, 5, 4});
+        OpstrykonUtil.findNearestPoint(points, new int[]{landRank, warAndPeaceRank, techRank, devRank});
 
         if (point.equals("Expansion")) {
             unitFlavors.put("Settler", 2f);
@@ -350,7 +424,7 @@ public class ArtificialIntelligence {
             Object[] yieldData = city.gameYield();
             int[] cityYield = (int[]) yieldData[0];
             //Inventory inventory = (Inventory) yieldData[1];
-            for (int i = 0; i <= 3; i++)
+            for (int i = 0; i <= 6; i++)
                 yield[i] += cityYield[i];
         }
 

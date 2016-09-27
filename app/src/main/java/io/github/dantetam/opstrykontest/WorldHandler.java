@@ -869,18 +869,18 @@ public class WorldHandler {
     }
 
     final float[][] imprIconInputOffsets = {
-            {-2, -2},
+            {-1, -1},
             {-2, -1},
             {-2, 0},
             {-2, 1},
             {-2, 2}
     };
     final float[][] imprIconOutputOffsets = {
-            {2, -2},
-            {2, -1},
-            {2, 0},
-            {2, 1},
-            {2, 2}
+            {-1, -1},
+            {1, -1},
+            {1, 0},
+            {1, 1},
+            {1, 2}
     };
     public void createImprovementResourceRep() {
         if (improvementResourceStatUi == null) {

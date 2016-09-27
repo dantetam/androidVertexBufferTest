@@ -236,6 +236,19 @@ public class City extends Building {
                 }
             }*/
         }
+        if (tile.resources.size() > 0) {
+            ItemType itemType = tile.resources.get(0).type;
+            int[] src;
+            if (tile.improvement != null && tile.improvement.name.equals(itemType.imprName)) {
+                src = itemType.imprYield;
+            }
+            else {
+                src = itemType.noImprYield;
+            }
+            for (int i = 0; i < src.length; i++) {
+                temp[i] += src[i];
+            }
+        }
         return temp;
     }
 

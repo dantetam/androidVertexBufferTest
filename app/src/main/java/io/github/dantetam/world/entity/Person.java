@@ -97,7 +97,10 @@ public class Person extends Entity {
                     }
                     else if (en instanceof City) {
                         City city = (City) en;
-                        
+                        if (personType.category.equals("peaceful")) {
+                            return ActionStatus.IMPOSSIBLE;
+                        }
+                        return gameAttack(city);
                     }
                 }
                 actionPoints--;
@@ -111,6 +114,30 @@ public class Person extends Entity {
         System.err.println("Invalid game move: ");
         System.err.println(location + "; " + location.dist(t) + "; " + actionPoints);
         return ActionStatus.IMPOSSIBLE;
+    }
+
+    public ActionStatus gameAttack(City defender) {
+        if (personType.range > 0) {
+            Combat.attackRanged(this, defender);
+        }
+        else {
+            Combat.attackMelee(this, defender);
+        }
+        if (defender.health <= 0) {
+            defender.health = defender.maxHealth / 3;
+            defender.clan.cities.remove(defender);
+            defender.clan = clan;
+            clan.cities.add(defender);
+
+            System.out.println("City changed hands");
+        }
+        if (this.health <= 0) {
+            //actionsQueue.clear();
+            //actionsQueue.add(new PersonAction(ActionType.COMBAT_DEATH, defender));
+            return ActionStatus.CONSUME_UNIT;
+        }
+        actionPoints = 0;
+        return ActionStatus.EXECUTED;
     }
 
     public ActionStatus gameAttack(Person defender) {

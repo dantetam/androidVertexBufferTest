@@ -75,12 +75,16 @@ public class WorldGenerator {
         HashMap<ItemType, Integer> count = new HashMap<>();
         for (Tile tile: world.getAllValidTiles()) {
             ItemType itemType = OpstrykonUtil.randomEntryMap(TechTree.itemTypes).getValue();
+            if (!(count.containsKey(itemType))) {
+                count.put(itemType, 0);
+            }
             if (Math.random() < 0.04) {
                 int tileCount = 1;
                 while (Math.random() < 0.7) {
                     tileCount++;
                 }
-                //tile.resources.add(new Item(itemType, tileCount));
+                tile.resources.add(new Item(itemType, tileCount));
+                count.put(itemType, count.get(itemType) + 1);
             }
         }
         /*return temp;
@@ -113,7 +117,7 @@ public class WorldGenerator {
 
     private List<Clan> makeClans() {
         List<Clan> clans = new ArrayList<>();
-        int num = world.getAllValidTiles().size() / 80;
+        int num = (int) Math.ceil(world.getAllValidTiles().size() / 60);
         for (int i = 0; i < num; i++) {
             Clan clan;
             if (i == 0) {

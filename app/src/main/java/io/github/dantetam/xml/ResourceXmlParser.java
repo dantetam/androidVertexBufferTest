@@ -92,6 +92,9 @@ public class ResourceXmlParser {
                     ItemType itemType = new ItemType(resourceName,
                             normalStats, imprStats);
 
+                    String imprName = xpp.getAttributeValue(null, "impr");
+                    itemType.imprName = imprName;
+
                     String modelName = xpp.getAttributeValue(null, "model");
                     if (modelName != null) {
                         //TODO: Fix this so it randomly splits models
