@@ -10,6 +10,7 @@ import io.github.dantetam.opstrykontest.LessonSevenRenderer;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.opstrykontest.WorldSystem;
+import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.Tile;
 
@@ -29,6 +30,8 @@ public class MousePicker {
     private float[] viewMatrix = new float[16];
     private float[] transformMatrix = new float[16];
     public Camera camera;
+
+    public Clan playerClan;
 
     private int width, height;
 
@@ -54,6 +57,7 @@ public class MousePicker {
         //this.renderer = renderer;
         projMatrix = p;
         camera = c;
+
         viewMatrix = createViewMatrix(camera);
         width = w;
         height = h;
@@ -87,16 +91,29 @@ public class MousePicker {
         Entity previousEntity = selectedEntity;
         Tile newSelected = getTileClickedOn(rayCastHit);
 
-        if (combatMode) {
-            if (newSelected.occupants.size() <= 0) {
-                //changeSelectedUnit(null);
+        if (newSelected != null) {
+            if (combatMode) {
+                if (newSelected.occupants.size() <= 0) {
+                    //changeSelectedUnit(null);
+                }
+                else {
+                    changeSelectedUnit(newSelected.occupants.get(0));
+                }
             }
             else {
-                changeSelectedUnit(newSelected.occupants.get(0));
+                if (newSelected.occupants.size() <= 0) {
+                    //changeSelectedUnit(null);
+                    changeSelectedTile(newSelected);
+                } else {
+                    if (newSelected.occupants.get(0).clan.equals(playerClan))
+                        changeSelectedUnit(newSelected.occupants.get(0));
+                    else
+                        changeSelectedTile(newSelected);
+                }
             }
         }
         else {
-            changeSelectedTile(newSelected);
+            changeSelectedTile(null);
         }
         //selectedEntity = null;
 

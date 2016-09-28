@@ -23,10 +23,12 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.PersonType;
+import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.UnitTree;
 
 /**
@@ -52,6 +54,8 @@ public class UnitXmlParser {
     public static UnitTree parseUnitTree(Clan clan, InputStream inputStream)
             throws XmlPullParserException, IOException {
         UnitTree tree = new UnitTree(clan);
+
+        TechTree.personTypes = new HashMap<>();
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(false);
@@ -138,6 +142,9 @@ public class UnitXmlParser {
                     }
 
                     tree.personTypes.put(unitName, personType);
+                    if (!(TechTree.personTypes.containsKey(unitName))) {
+                        TechTree.personTypes.put(unitName, personType);
+                    }
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 //System.out.println("End tag " + xpp.getName());

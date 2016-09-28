@@ -78,7 +78,7 @@ public class WorldGenerator {
             if (!(count.containsKey(itemType))) {
                 count.put(itemType, 0);
             }
-            if (Math.random() < 0.04) {
+            if (Math.random() < 0.2) {
                 int tileCount = 1;
                 while (Math.random() < 0.7) {
                     tileCount++;
@@ -117,7 +117,8 @@ public class WorldGenerator {
 
     private List<Clan> makeClans() {
         List<Clan> clans = new ArrayList<>();
-        int num = (int) Math.ceil(world.getAllValidTiles().size() / 60);
+        int num = (int) Math.ceil((double) world.getAllLandTiles().size() / 60.0);
+        num = Math.max(2, num);
         for (int i = 0; i < num; i++) {
             Clan clan;
             if (i == 0) {
@@ -129,6 +130,7 @@ public class WorldGenerator {
             }
 
             clans.add(clan);
+            clan.world = world;
             UnitXmlParser.parseUnitTree(clan, mActivity, R.raw.unit_tree);
             BuildingXmlParser.parseBuildingTree(clan, mActivity, R.raw.building_tree);
             clan.techTree = new TechTree(clan);

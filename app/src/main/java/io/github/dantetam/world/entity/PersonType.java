@@ -69,6 +69,18 @@ public class PersonType {
         }
     }
 
+    public boolean equals(Object other) {
+        if (!(other instanceof PersonType)) {
+            return false;
+        }
+        PersonType type = (PersonType) other;
+        return name.equals(type.name);
+    }
+
+    public String getAndroidResourceName() {
+        return name.replace(" ", "_").toLowerCase();
+    }
+
     @Override
     public String toString() {
         return name;

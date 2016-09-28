@@ -188,10 +188,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         camera.moveTo(5f, 6f, 7.5f);
         camera.pointTo(5f, 1f, 6f);
 
+        chunkHelper = new ChunkHelper();
+
         mousePicker = new MousePicker(mProjectionMatrix, camera, getWidth(), getHeight());
         updatePerspectiveMatrix(getWidth(), getHeight());
-
-        chunkHelper = new ChunkHelper();
 
         worldHandler = new WorldHandler(mLessonSevenActivity, this, mousePicker, assetHelper, chunkHelper, WORLD_LENGTH, WORLD_LENGTH);
 
@@ -201,6 +201,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         ColorTextureHelper.init(mLessonSevenActivity);
 
         worldSystem = new WorldSystem(worldHandler);
+        mousePicker.playerClan = worldSystem.playerClan;
 
         mGlSurfaceView.init(mLessonSevenActivity, mousePicker, guiHandler, worldSystem.playerClan);
 

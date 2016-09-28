@@ -64,6 +64,14 @@ public class OpstrykonUtil {
         return null;
     }
 
+    public static <K, V> void printMap(Map<K, V> map)
+    {
+        System.out.println("Print map of size: " + map.size());
+        for (Map.Entry<K, V> entry: map.entrySet()) {
+            System.out.println("(" + entry.getKey().toString() + " : " + entry.getValue().toString() + ")");
+        }
+    }
+
     public static int getRank(double subject, Collection<Integer> numbers, int min, int max) {
         int rank = 0;
         for (Integer number: numbers) {
@@ -90,14 +98,6 @@ public class OpstrykonUtil {
             }
         }
         return candidate;
-    }
-
-    public static <K, V> void printMap(Map<K, V> map)
-    {
-        System.out.println("Print map of size: " + map.size());
-        for (Map.Entry<K, V> entry: map.entrySet()) {
-            System.out.println("(" + entry.getKey().toString() + " : " + entry.getValue().toString() + ")");
-        }
     }
 
     //Add a template for an inline image where imageName is a single name (no R or raw/drawable/etc.)

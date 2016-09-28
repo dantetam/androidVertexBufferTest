@@ -365,8 +365,12 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                 Button quickSummaryMenu = (Button) mActivity.findViewById(R.id.quick_summary_view);
                 quickSummaryMenu.setVisibility(selectedEntityExists || selectedTileExists ? View.VISIBLE : View.INVISIBLE);
                 String stringy = "";
-                if (selectedTileExists) {
-                    Clan owner = selectedTile.world.getTileOwner(selectedTile); //, influence = selectedTile.world.getTileInfluence(selectedTile);
+                if (selectedTileExists || selectedEntityExists) {
+                    Tile subjectTile = selectedTile;
+                    if (!selectedTileExists) {
+                        subjectTile = selectedEntity.location();
+                    }
+                    Clan owner = subjectTile.world.getTileOwner(subjectTile); //, influence = selectedTile.world.getTileInfluence(selectedTile);
                     String affiliation = "";
                     if (owner != null) {
                         affiliation = owner.name + " <{culture}>";
@@ -374,26 +378,30 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         affiliation = "Free <{forest}>";
                     }
                     stringy += affiliation;
-                    stringy += " " + Tile.Biome.nameFromInt(selectedTile.biome.type) + ", " + Tile.Terrain.nameFromInt(selectedTile.terrain.type);
-                    stringy += " <{" + Tile.Terrain.imageName(selectedTile.terrain) + "}>";
-                    if (selectedTile.improvement != null) {
-                        stringy += " " + selectedTile.improvement.name + " <{building}>";
+                    stringy += " " + Tile.Biome.nameFromInt(subjectTile.biome.type) + ", " + Tile.Terrain.nameFromInt(subjectTile.terrain.type);
+                    stringy += " <{" + Tile.Terrain.imageName(subjectTile.terrain) + "}>";
+                    if (subjectTile.improvement != null) {
+                        stringy += " " + subjectTile.improvement.name + " <{building}>";
                     }
-                } else if (selectedEntityExists) {
+                }
+                if (selectedEntityExists) {
+                    //if (selectedTileExists) {
+                        stringy += "\n";
+                    //}
                     stringy += selectedEntity.name;
-                    Clan owner = selectedEntity.clan;
+                    /*Clan owner = selectedEntity.clan;
                     String affiliation = "";
                     if (owner != null) {
                         affiliation = owner.name + " <{culture}>";
                     } else {
                         affiliation = "Free <{forest}>";
                     }
-                    stringy += " " + affiliation;
+                    stringy += " " + affiliation;*/
                     if (selectedEntity instanceof Person) {
                         Person person = (Person) selectedEntity;
                         stringy += " " + person.actionPoints + "/" + person.maxActionPoints + " AP <{action_points}>";
                     }
-                    stringy += " " + selectedEntity.location();
+                    //stringy += " " + selectedEntity.location();
                 }
                 quickSummaryMenu.setText(stringy);
                 OpstrykonUtil.processImageSpan(mActivity, quickSummaryMenu);

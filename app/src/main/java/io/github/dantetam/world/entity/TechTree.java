@@ -28,6 +28,7 @@ public class TechTree {
     public static HashMap<Tech, Boolean> cityStateTech;
 
     public static HashMap<String, ItemType> itemTypes;
+    public static HashMap<String, PersonType> personTypes;
 
     public List<Tech> researchingTechQueue;
 

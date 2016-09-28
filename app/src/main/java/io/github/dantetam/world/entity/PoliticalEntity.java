@@ -34,9 +34,8 @@ public class PoliticalEntity {
     public int totalIdeologyPower;
     public int lastHappiness = 4;
 
-    public PoliticalEntity(String n, World w) {
+    public PoliticalEntity(String n) {
         name = n;
-        world = w;
         people = new ArrayList<>();
         buildings = new ArrayList<>();
         cities = new ArrayList<>();

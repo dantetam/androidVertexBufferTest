@@ -1271,13 +1271,13 @@ public class LessonSevenActivity extends Activity implements
                 }
             });
 
-            MenuItem menuItem3 = menu.add(Menu.NONE, 3, Menu.NONE, "Fight");
+            /*MenuItem menuItem3 = menu.add(Menu.NONE, 3, Menu.NONE, "Fight");
             menuItem3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
                     mRenderer.mousePicker.changeSelectedAction("InitiateCombat");
                     return false;
                 }
-            });
+            });*/
         }
         return true;
     }

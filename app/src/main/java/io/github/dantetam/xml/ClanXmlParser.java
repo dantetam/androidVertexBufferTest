@@ -29,6 +29,7 @@ import java.util.List;
 import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.Tech;
+import io.github.dantetam.world.entity.World;
 
 /**
  * Given an InputStream representation of a feed, it returns a List of entries,
