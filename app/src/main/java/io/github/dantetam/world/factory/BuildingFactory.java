@@ -72,7 +72,9 @@ public class BuildingFactory {
 
     private static Building newBuilding(World world, Clan clan, BuildingType type, Tile tile, double completionPercentage, Building parent) {
         Building build = new Building(world, clan, type);
-        clan.buildings.add(build);
+        /*if (completionPercentage >= 1) {
+            clan.buildings.add(build);
+        }*/
         //build.initModules(tile.numSpaces);
 
         //int food = 0, production = 0, science = 0, capital = 0;
@@ -141,7 +143,7 @@ public class BuildingFactory {
         build.maxActionPoints = 0;
 
         build.workNeeded = type.workNeeded;
-        build.workCompleted = type.workNeeded*completionPercentage;
+        build.workCompleted = type.workNeeded * completionPercentage;
 
         //build.inventorySpace = storageSpace;
 

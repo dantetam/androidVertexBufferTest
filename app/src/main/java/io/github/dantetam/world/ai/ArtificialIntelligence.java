@@ -72,8 +72,43 @@ public class ArtificialIntelligence {
         }
     }
 
-    public void computeDiplomaticOptions() {
+    /*
+    Here we compute the possibility of diplomatic options with others.
+    These should happen regularly but not too often.
 
+    The civ's personality as well as its current situation define the possible actions it takes.
+    The rest is up to chance. Possible actions:
+
+    Declare war          ++war, ++military str., ++bad relations, ++hostile, +vicious, +bold, +competitive, -growth, -science
+    Denounce             +bad relations, ++military str., ++hostile, +competitive
+    Insult               +bad relations, +military str., ++hostile, --deceptive, +bold, +competitive
+    Declare war on CS    +war, +raid, +vicious, +rational, --diplomatic, -cooperative, ---diplomacy
+    Make peace if at war ++diplomatic, -military str., +rational, --vicious
+    Settle a new city    ++expansion, --growth, ++competitive, +bold
+
+    (All actions below   +initiative)
+    Make trades          +cooperative, +friendly, +diplomatic, --jealous
+    Ask for cooperation  ++cooperative, +relations with merc., +relations with target
+    Ask for deception    ++jealous, +hostile, +relations with merc., +poor relations with target, +competitive
+
+    Civs should also definitely include and calculate the idea of "justice",
+    that is, be affected the certain contexts of actions, such as:
+
+    Heinous: big lies (grand deception), aggressive DOW, bullying, and total war
+    Disliked: small lies (e.g. refusing to move units from borders)
+    Liked: commitments, help
+    Loved: early (defensive) peace deals, forgiveness, long-term alliances
+     */
+    public void computeDiplomaticOptions() {
+        HashMap<String, Float> optionsByFlavorsScore = new HashMap<>();
+        HashMap<String, String[]> optionsByFlavors = new HashMap<>();
+
+        optionsByFlavors.put("Declare War", new String[]{"++war", "++military str.", "++bad relations", "++hostile", "+vicious", "+bold", "+competitive", "-growth", "-science"});
+        optionsByFlavors.put("Denounce", new String[]{"++military str.", "+bad relations", "++hostile", "+competitive"});
+        optionsByFlavors.put("Insult", new String[]{"++military str.", "+bad relations", "++hostile", "--deceptive", "+bold", "+competitive"});
+        optionsByFlavors.put("Declare War on CS", new String[]{"+war", "+raid", "+vicious", "+rational", "--diplomatic", "-cooperative", "---diplomacy"});
+        optionsByFlavors.put("Make Peace", new String[]{"++diplomatic", "-military str.", "+rational", "--vicious"});
+        optionsByFlavors.put("Settle", new String[]{"++expansion", "--growth", "++competitive", "+bold"});
     }
 
     public Object[] defineStrategy() {
@@ -101,7 +136,7 @@ public class ArtificialIntelligence {
 
         for (Clan otherClan: clan.world.getClans()) {
             int score0 = 0;
-            int[] yield = new int[4];
+            int[] yield = new int[7];
             for (City city : otherClan.cities) {
                 //score += city.population();
                 score0 += city.cityTiles.size() / 3;
@@ -145,10 +180,17 @@ public class ArtificialIntelligence {
         techRank = OpstrykonUtil.getRank(techScore, clanTechScores.values(), 1, 10);
         devRank = OpstrykonUtil.getRank(devScore, clanDevScores.values(), 1, 10);
 
-        landRank = (landRank + strategy.get("Expansion")) / 2;
-        warAndPeaceRank = (warAndPeaceRank + strategy.get("Diplomacy") - strategy.get("War"));
-        techRank = (techRank + strategy.get("Science")) / 2;
-        devRank = (devRank + strategy.get("Growth")) / 2;
+        if (clan instanceof CityState) {
+            landRank = (landRank + 5) / 2;
+            warAndPeaceRank = warAndPeaceRank + 2;
+            techRank = (techRank + 4) / 2;
+            devRank = (devRank + 8) / 2;
+        } else {
+            landRank = (landRank + strategy.get("Expansion")) / 2;
+            warAndPeaceRank = (warAndPeaceRank + strategy.get("Diplomacy") - strategy.get("War"));
+            techRank = (techRank + strategy.get("Science")) / 2;
+            devRank = (devRank + strategy.get("Growth")) / 2;
+        }
 
         landRank += (int) (Math.random() * 5) - 2;
         warAndPeaceRank += (int) (Math.random() * 5) - 2;
@@ -419,7 +461,7 @@ public class ArtificialIntelligence {
     public static int calcClanTotalScore(World world, Clan clan) {
         int score = 0;
 
-        int[] yield = new int[4];
+        int[] yield = new int[7];
         for (City city: clan.cities) {
             Object[] yieldData = city.gameYield();
             int[] cityYield = (int[]) yieldData[0];
@@ -470,8 +512,9 @@ public class ArtificialIntelligence {
             }
         }*/
 
-        //Diplomacy score? Number of friends?
-        //TODO:
+        //Diplomacy score, number of friends
+
+        //Civics score, number of civs/cities with ideology
 
         return score;
     }

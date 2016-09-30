@@ -147,6 +147,7 @@ public class WorldGenerator {
         for (int i = 0; i < 2*num; i++) {
             CityState cityState = ClanFactory.randomAvailableCityState();
             clans.add(cityState);
+            cityState.world = world;
             UnitXmlParser.parseUnitTree(cityState, mActivity, R.raw.unit_tree);
             BuildingXmlParser.parseBuildingTree(cityState, mActivity, R.raw.building_tree);
             cityState.techTree = new TechTree(cityState);

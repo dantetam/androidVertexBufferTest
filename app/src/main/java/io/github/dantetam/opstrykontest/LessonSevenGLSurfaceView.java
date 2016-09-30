@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.utilmath.OpstrykonUtil;
@@ -450,6 +451,11 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         "This is a set of actions",
                         "which are planned for the future."
                 });
+
+                LinearLayout cityQueueMenu = (LinearLayout) mActivity.findViewById(R.id.city_queue_menu);
+                if (cityQueueMenu != null && cityQueueMenu.getVisibility() == View.VISIBLE) {
+                    cityQueueMenu.setVisibility(View.INVISIBLE);
+                }
 
                 PercentRelativeLayout selectedStatMenu = (PercentRelativeLayout) mActivity.findViewById(R.id.selected_stat_menu);
                 selectedStatMenu.setVisibility(

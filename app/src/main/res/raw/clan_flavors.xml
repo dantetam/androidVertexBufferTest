@@ -43,6 +43,19 @@
         //and engage in total war and complete conquest.
         //Also strength of revenge (length is defined in jealousy).
 
+        <personalityflavor name="Bold" value="6"></personalityflavor>
+        //Willingness to pursue actions that are specifically risky,
+        //that involve potential negative risk,
+        //and surprise shock attacks.
+
+        <personalityflavor name="Rational" value="7"></personalityflavor>
+        //Willingness to act completely rationally, using scores and heuristics.
+        //Rational leaders also prefer peace, expansion, and growth,
+        //whereas irrational leaders may extensively pursue violence and destruction.
+
+        <personalityflavor name="Competitive" value="7"></personalityflavor>
+        <personalityflavor name="Initiative" value="7"></personalityflavor>
+
         //How favorably the AI views the different strategies,
         //and how likely the AI will attempt to pursue goals that reach the victory strategy.
 
@@ -103,6 +116,10 @@
         <personalityflavor name="Deceptive" value="2"></personalityflavor>
         <personalityflavor name="Diplomatic" value="8"></personalityflavor>
         <personalityflavor name="Vicious" value="5"></personalityflavor>
+        <personalityflavor name="Bold" value="6"></personalityflavor>
+        <personalityflavor name="Rational" value="7"></personalityflavor>
+        <personalityflavor name="Competitive" value="7"></personalityflavor>
+        <personalityflavor name="Initiative" value="7"></personalityflavor>
 
         <strategyflavor name="Cultural" value="5"></strategyflavor>
         <strategyflavor name="Diplomacy" value="5"></strategyflavor>

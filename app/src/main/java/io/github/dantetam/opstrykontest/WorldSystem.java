@@ -219,7 +219,8 @@ public class WorldSystem {
                 if (action.type == Action.ActionType.QUEUE_BUILD_UNIT) {
                     Person target = (Person) action.data;
                     target.workCompleted += production;
-                    if (target.workCompleted >= target.workNeeded) {
+                    if (target.workCompleted >= target.personType.workNeeded) {
+                        System.out.println("done: " + target.personType.workNeeded + " " + target.workCompleted + " " + production);
                         target.clan = clan;
                         clan.people.add(target);
                         target.move(city.location());
@@ -229,7 +230,8 @@ public class WorldSystem {
                 else if (action.type == Action.ActionType.QUEUE_BUILD_MODULE) {
                     Building target = (Building) action.data;
                     target.workCompleted += production;
-                    if (target.workCompleted >= target.workNeeded) {
+                    if (target.workCompleted >= target.buildingType.workNeeded) {
+                        System.out.println("done2: " + target.buildingType.workNeeded + " " + target.workCompleted + " " + production);
                         city.actionsQueue.remove(0);
                         if (target.buildingType.wonder) {
                             endAllWondersInQueue(target.buildingType);

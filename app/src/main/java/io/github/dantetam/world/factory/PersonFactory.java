@@ -59,7 +59,7 @@ public class PersonFactory {
         //int atk = 0, def = 0, fire = 0, shock = 0, maneuver = 0;
         int exp = 0;
 
-        int workCompleted = 15; //, workNeeded = 0;
+        int workCompleted = (int) (completionPercentage * type.workNeeded); //, workNeeded = 0;
         //int storageSpace = 3;
 
         Ability ability = null;
@@ -104,6 +104,12 @@ public class PersonFactory {
         else {
             person = new Person(world, null, type.name);
         }
+
+        /*if (completionPercentage >= 1) {
+            if (clan != null)
+                clan.people.add(person);
+        }*/
+
         person.personType = type;
         //TODO: Use the raw PersonType data below and adjust accordingly.
         person.health = type.health;
