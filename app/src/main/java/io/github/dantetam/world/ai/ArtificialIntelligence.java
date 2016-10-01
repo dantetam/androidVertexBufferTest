@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.utilmath.Vector2f;
@@ -100,15 +101,39 @@ public class ArtificialIntelligence {
     Loved: early (defensive) peace deals, forgiveness, long-term alliances
      */
     public void computeDiplomaticOptions() {
-        HashMap<String, Float> optionsByFlavorsScore = new HashMap<>();
-        HashMap<String, String[]> optionsByFlavors = new HashMap<>();
+        LinkedHashMap<String, Float> optionsByFlavorsScore = new LinkedHashMap<>();
+        Map<String, String[]> optionsByFlavors = new TreeMap<String, String[]>(String.CASE_INSENSITIVE_ORDER);
 
         optionsByFlavors.put("Declare War", new String[]{"++war", "++military str.", "++bad relations", "++hostile", "+vicious", "+bold", "+competitive", "-growth", "-science"});
         optionsByFlavors.put("Denounce", new String[]{"++military str.", "+bad relations", "++hostile", "+competitive"});
         optionsByFlavors.put("Insult", new String[]{"++military str.", "+bad relations", "++hostile", "--deceptive", "+bold", "+competitive"});
         optionsByFlavors.put("Declare War on CS", new String[]{"+war", "+raid", "+vicious", "+rational", "--diplomatic", "-cooperative", "---diplomacy"});
         optionsByFlavors.put("Make Peace", new String[]{"++diplomatic", "-military str.", "+rational", "--vicious"});
-        optionsByFlavors.put("Settle", new String[]{"++expansion", "--growth", "++competitive", "+bold"});
+        //optionsByFlavors.put("Settle", new String[]{"++expansion", "--growth", "++competitive", "+bold"});
+
+        optionsByFlavors.put("Trade", new String[]{"+initiative", "+cooperative", "+friendly", "+diplomatic", "--jealous"});
+        optionsByFlavors.put("Ask for Cooperation", new String[]{"+initiative", "++cooperative", "+rational", "+diplomatic"});
+        optionsByFlavors.put("Ask for Deception", new String[]{"+initiative", "++jealous", "+hostile", "+competitive"});
+
+        for (Map.Entry<String, String[]> entry: optionsByFlavors.entrySet()) {
+            float flavorScore = 0;
+            for (String flavor: entry.getValue()) {
+                int plusCount = flavor.length() - flavor.replace("+", "").length();
+                int minusCount = flavor.length() - flavor.replace("-", "").length();
+                float quality = findFlavor(flavor.replace("+-", ""));
+                flavorScore += quality / (plusCount - minusCount);
+            }
+            optionsByFlavorsScore.put(entry.getKey(), flavorScore);
+        }
+
+        OpstrykonUtil.sortMapByValue(optionsByFlavorsScore);
+
+        Map.Entry<String, Float> entry = optionsByFlavorsScore.entrySet().iterator().next();
+        if (Math.random() < 1 - 0.1*Math.pow(0.9, entry.getValue())) {
+            if (entry.equals("Declare War")) {
+                
+            }
+        }
     }
 
     public Object[] defineStrategy() {
@@ -517,6 +542,17 @@ public class ArtificialIntelligence {
         //Civics score, number of civs/cities with ideology
 
         return score;
+    }
+
+    public Float findFlavor(String flavor) {
+        if (personality.containsKey(flavor)) {
+            return new Float(personality.get(flavor));
+        } else if (strategy.containsKey(flavor)) {
+            return new Float(strategy.get(flavor));
+        } else if (tactics.containsKey(flavor)) {
+            return new Float(tactics.get(flavor));
+        }
+        return null;
     }
 
 }
