@@ -30,7 +30,8 @@ public class City extends Building {
 
     public int lastYieldHealth = 4;
 
-    public HashMap<>
+    public IdeologyTree.Ideology dominantIdeology;
+    public LinkedHashMap<IdeologyTree.Ideology, Integer> ideologyInfluence;
 
     //where generateCityFoodData[n] represents the needed food to go from n-1 to n
     private static int[] cityFoodData = null;
@@ -92,6 +93,8 @@ public class City extends Building {
 
         population = 1;
         freeWorkingPopulation = 1;
+
+        ideologyInfluence = new LinkedHashMap<>();
     }
 
     public void queueActionBuildModule(BuildingType buildingType) {

@@ -15,6 +15,7 @@ public class IdeologyTree {
     public HashMap<String, Ideology> clanIdeologyMap;
 
     public Clan clan;
+    public Ideology primaryIdeology;
 
     public IdeologyTree(Clan c) {
         clan = c;
@@ -25,7 +26,10 @@ public class IdeologyTree {
         public Tenet root;
         public HashMap<String, Tenet> tenets;
 
-        public Ideology(Tenet r, HashMap<String, Tenet> tenetsMap) {
+        public String name;
+
+        public Ideology(String n, Tenet r, HashMap<String, Tenet> tenetsMap) {
+            name = n;
             root = r;
             tenets = tenetsMap;
         }
@@ -39,6 +43,17 @@ public class IdeologyTree {
                 if (entry.activated) continue; else return;
             }
             unlocked = true;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Ideology)) return false;
+            return name.equals(((Ideology) o).name);
+        }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode();
         }
     }
 

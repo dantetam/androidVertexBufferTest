@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.ai.ArtificialIntelligence;
@@ -16,6 +17,7 @@ import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.Entity;
+import io.github.dantetam.world.entity.IdeologyTree;
 import io.github.dantetam.world.entity.Inventory;
 import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.Tech;
@@ -133,6 +135,17 @@ public class WorldSystem {
             for (City city: c.cities) {
                 city.actionPoints = city.maxActionPoints;
                 //building.executeQueue();
+            }
+            spreadIdeology(c);
+        }
+
+        for (Clan c: world.getClans()) {
+            for (City city: c.cities) {
+                if (city.ideologyInfluence.size() > 0) {
+                    OpstrykonUtil.sortMapByValue(city.ideologyInfluence);
+                    IdeologyTree.Ideology dominant = city.ideologyInfluence.keySet().iterator().next();
+                    city.dominantIdeology = dominant;
+                }
             }
         }
 
@@ -294,6 +307,30 @@ public class WorldSystem {
 
     public void parseAllGlobalAbilities(List<Ability> abilities, Clan clan) {
 
+    }
+
+    public void spreadIdeology(Clan clan) {
+        HashMap<IdeologyTree.Ideology, Integer> pressure = new HashMap<>();
+        for (IdeologyTree.Ideology ideology: IdeologyTree.globalMap.values()) {
+            pressure.put(ideology, 0);
+        }
+        if (clan.ideologyTree.primaryIdeology != null) {
+            pressure.put(clan.ideologyTree.primaryIdeology, 100);
+        }
+        for (City city: clan.cities) {
+            for (Map.Entry<IdeologyTree.Ideology, Integer> entry: city.ideologyInfluence.entrySet()) {
+                int individualPressure = entry.getValue() + pressure.get(entry.getKey());
+                for (Clan otherClan: world.getClans()) {
+                    for (City otherCity: otherClan.cities) {
+                        float dist = city.location().dist(otherCity.location());
+                        if (!otherCity.ideologyInfluence.containsKey(entry.getKey())) {
+                            otherCity.ideologyInfluence.put(entry.getKey(), 0);
+                        }
+                        otherCity.ideologyInfluence.put(entry.getKey(), otherCity.ideologyInfluence.get(entry.getKey()) + (int)((float) individualPressure / dist));
+                    }
+                }
+            }
+        }
     }
 
     public boolean allowedToAccessTile(Entity en, Tile t) {
