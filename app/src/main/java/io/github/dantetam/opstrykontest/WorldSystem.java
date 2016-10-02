@@ -142,8 +142,8 @@ public class WorldSystem {
         for (Clan c: world.getClans()) {
             for (City city: c.cities) {
                 if (city.ideologyInfluence.size() > 0) {
-                    OpstrykonUtil.sortMapByValue(city.ideologyInfluence);
-                    IdeologyTree.Ideology dominant = city.ideologyInfluence.keySet().iterator().next();
+                    Map<IdeologyTree.Ideology, Integer> sorted = OpstrykonUtil.sortMapByValue(city.ideologyInfluence);
+                    IdeologyTree.Ideology dominant = sorted.keySet().iterator().next();
                     city.dominantIdeology = dominant;
                 }
             }

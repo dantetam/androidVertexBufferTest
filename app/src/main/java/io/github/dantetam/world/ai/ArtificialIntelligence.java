@@ -126,9 +126,9 @@ public class ArtificialIntelligence {
             optionsByFlavorsScore.put(entry.getKey(), flavorScore);
         }
 
-        OpstrykonUtil.sortMapByValue(optionsByFlavorsScore);
+        Map<String, Float> sorted = OpstrykonUtil.sortMapByValue(optionsByFlavorsScore);
 
-        Map.Entry<String, Float> entry = optionsByFlavorsScore.entrySet().iterator().next();
+        Map.Entry<String, Float> entry = sorted.entrySet().iterator().next();
         if (Math.random() < 1 - 0.1*Math.pow(0.9, entry.getValue())) {
             if (entry.equals("Declare War")) {
 

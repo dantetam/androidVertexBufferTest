@@ -21,6 +21,8 @@ public class Ability {
     public List<Condition> abilityOnConditions;
     public boolean chain = false;
 
+    public int turns = -1;
+
     public static void init() {
         yieldAbbrev = new HashMap<>();
         yieldAbbrev.put("F", 0);
