@@ -131,7 +131,7 @@ public class ArtificialIntelligence {
         Map.Entry<String, Float> entry = optionsByFlavorsScore.entrySet().iterator().next();
         if (Math.random() < 1 - 0.1*Math.pow(0.9, entry.getValue())) {
             if (entry.equals("Declare War")) {
-                
+
             }
         }
     }

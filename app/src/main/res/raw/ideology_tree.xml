@@ -1,8 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<techroot name="Landing" workNeeded="1" district="Borough" building="Ancients" unit="Settler/Soldier/Worker" resource="Steel">
-    <tech name="Agriculture" workNeeded="15" building="Farm">
-        <tech name="Xenoscience" workNeeded="50" building="Hunting Camp" resource="Extromass">
+<root>
+    <ideology name="Conservation">
+        <header>
+            <name name="Nature's Curiosity" />
+            <benefit type="+1S" />
+            <condbiome type="alien" />
+            <condres type="extromass" />
+        </header>
+        <tenet>
+            <name name="New World Harvest" />
+            <benefit type="+25% food saved" />
+            <condimpr type="city" />
+        </tenet>
+        <tenet>
+            <requirement name="New World Harvest" />
+            <name name="Placeholder1" />
+            <benefit type="+1F" />
+            <condimpr type="city" />
+        </tenet>
+        <tenet>
+            <requirement name="Placeholder1" />
+            <name name="Field Science" />
+            <benefit type="+10% S" />
+            <condimpr type="city" />
+        </tenet>
+        <tenet>
+            <requirement name="Placeholder1" />
+            <name name="Placeholder3" />
+            <benefit type="+15% CUL" />
+            <condimpr type="city" />
+        </tenet>
+        <tenet>
+            <requirement name="Field Science" />
+            <name name="Public Parks" />
+            <benefit type="+1 HA" />
+            <condmodule type="Field" />
+            <condmodule type="Tech Plaza" />
+            <condmodule type="Xenopark" />
+        </tenet>
+        <tenet>
+            <requirement name="Placeholder3" />
+            <requirement name="Public Parks" />
+            <name name="Placeholder5" />
+            <benefit type="NotHostile" />
+            <condfaction type="Alien" />
+        </tenet>
+        <closer>
 
-        </tech>
-    </tech>
-</techroot>
+        </closer>
+    </ideology>
+    <ideology name="Unification">
+        <header>
+            <name name="One Dream" />
+            <benefit type="+3F" />
+            <condimpr type="city" />
+            <and />
+            <condmodule type="capital" />
+        </header>
+    </ideology>
+</root>

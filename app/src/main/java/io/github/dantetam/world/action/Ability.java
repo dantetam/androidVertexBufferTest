@@ -29,7 +29,7 @@ public class Ability {
         yieldAbbrev.put("C", 3);
         yieldAbbrev.put("HA", 4);
         yieldAbbrev.put("HE", 5);
-        yieldAbbrev.put("CU", 6);
+        yieldAbbrev.put("CUL", 6);
 
         combatAbbrev.put("ATK", 0);
         combatAbbrev.put("DEF", 1);
@@ -72,6 +72,8 @@ public class Ability {
     //+1 F/P/...
     //%15 F/P/...
     //+5 CF/CS..
+
+    //e.g. +1 F, +1 P/impr city
     public static HashMap<String, Integer> yieldAbbrev, combatAbbrev;
 
     public Benefit parseBenefit(String benefit) {

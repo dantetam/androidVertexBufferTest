@@ -11,6 +11,16 @@ import io.github.dantetam.world.action.Ability;
  */
 public class IdeologyTree {
 
+    public static HashMap<String, Ideology> globalMap;
+    public HashMap<String, Ideology> clanIdeologyMap;
+
+    public Clan clan;
+
+    public IdeologyTree(Clan c) {
+        clan = c;
+        clanIdeologyMap = new HashMap<>();
+    }
+
     public class Ideology {
         public Tenet root;
         public HashMap<String, Tenet> tenets;

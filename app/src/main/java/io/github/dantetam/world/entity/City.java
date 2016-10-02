@@ -30,6 +30,8 @@ public class City extends Building {
 
     public int lastYieldHealth = 4;
 
+    public HashMap<>
+
     //where generateCityFoodData[n] represents the needed food to go from n-1 to n
     private static int[] cityFoodData = null;
     public static int[] cityFoodData() {

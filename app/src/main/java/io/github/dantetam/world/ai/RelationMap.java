@@ -109,6 +109,7 @@ public class RelationMap {
         int initial = initialScore.get(c);
         int score = initial;
         for (int i = 0; i < modifiers.size(); i++) {
+            System.out.println(modifiers.get(i));
             score += modifiers.get(i).score;
         }
 
