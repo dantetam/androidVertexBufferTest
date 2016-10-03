@@ -38,11 +38,11 @@ import io.github.dantetam.world.entity.Tech;
 public class IdeologyXmlParser {
     private static final String ns = null;
 
-    public static IdeologyTree parseIdeologyTree(Context context, int resourceId) {
+    public static IdeologyTree parseIdeologyTree(Clan clan, Context context, int resourceId) {
         final InputStream clanStream = context.getResources().openRawResource(
                 resourceId);
         try {
-            return parseIdeologyTree(clanStream);
+            return parseIdeologyTree(clan, clanStream);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -51,7 +51,7 @@ public class IdeologyXmlParser {
         return null;
     }
 
-    public static IdeologyTree parseIdeologyTree(InputStream inputStream)
+    public static IdeologyTree parseIdeologyTree(Clan clan, InputStream inputStream)
             throws XmlPullParserException, IOException {
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -63,7 +63,7 @@ public class IdeologyXmlParser {
         int stackCounter = -1;
         List<Tech> stack = new ArrayList<>();
 
-        IdeologyTree tree = new IdeologyTree();
+        IdeologyTree tree = new IdeologyTree(clan);
 
         int eventType = xpp.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {

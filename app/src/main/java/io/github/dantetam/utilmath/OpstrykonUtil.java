@@ -194,6 +194,9 @@ public class OpstrykonUtil {
                     ImageSpan span = imageSpansById.get(drawableName);
                     if (span == null) {
                         int resId = context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName());
+                        if (resId <= 0) {
+                            continue;
+                        }
                         //Drawable drawable = getResources().getDrawable(resId);
 
                         Bitmap bitmap = decodeSampledBitmapFromResource(context.getResources(), resId, 64, 64);

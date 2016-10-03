@@ -139,15 +139,23 @@ public class WorldSystem {
             spreadIdeology(c);
         }
 
+        HashMap<IdeologyTree.Ideology, Integer> ideologyByFollowers = new HashMap<>();
         for (Clan c: world.getClans()) {
             for (City city: c.cities) {
                 if (city.ideologyInfluence.size() > 0) {
                     Map<IdeologyTree.Ideology, Integer> sorted = OpstrykonUtil.sortMapByValue(city.ideologyInfluence);
                     IdeologyTree.Ideology dominant = sorted.keySet().iterator().next();
                     city.dominantIdeology = dominant;
+                    if (!(ideologyByFollowers.containsKey(dominant))) {
+                        ideologyByFollowers.put(dominant, 0);
+                    }
+                    ideologyByFollowers.put(dominant, ideologyByFollowers.get(dominant) + city.population());
                 }
             }
         }
+
+        Check for tech when looking at resources and their impr yield
+        Look at phone notes
 
         //When done processing all actions, calculate new scores.
         Clan maxClan = null;
@@ -275,10 +283,12 @@ public class WorldSystem {
             clan.lastHappiness -= city.population();
             clan.totalIdeologyPower += yield[6] * Math.max(0.5, Math.min(2.0, (1 + (yield[4] / 10))));
 
-            int numIdeologies = clan.ideologyTree.numIdeologiesUnlocked();
-            clan.nextIdeologyCost = (int)(10*Math.pow(1.28, numIdeologies) + 10*numIdeologies);
-            if (clan.totalIdeologyPower >= clan.nextIdeologyCost) {
-                System.out.println("Need ideology update here WorldSystem");
+            if (!(clan instanceof CityState)) {
+                int numIdeologies = clan.ideologyTree.numIdeologiesAndTenetsUnlocked();
+                clan.nextIdeologyCost = (int) (10 * Math.pow(1.28, numIdeologies) + 10 * numIdeologies);
+                if (clan.totalIdeologyPower >= clan.nextIdeologyCost) {
+                    System.out.println("Need ideology update here WorldSystem");
+                }
             }
 
             totalResources.addAnotherInventory(inventory);

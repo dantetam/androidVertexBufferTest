@@ -110,7 +110,8 @@ public class Tile implements Traversable<Tile> {
 
     public enum Feature {
         NO_FEATURE (-1),
-        OASIS (0);
+        OASIS (0),
+        FOREST (1);
         public int id;
         public String renderName;
         Feature(int n) {
@@ -123,7 +124,8 @@ public class Tile implements Traversable<Tile> {
         private static HashMap<Integer, Feature> types;
         private static String[] names = {
                 "No feature",
-                "Oasis"
+                "Oasis",
+                "Forest" <-- Incorporate this into the game
         };
         public static int numItems;
 

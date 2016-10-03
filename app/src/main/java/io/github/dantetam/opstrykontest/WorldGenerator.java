@@ -135,7 +135,7 @@ public class WorldGenerator {
             BuildingXmlParser.parseBuildingTree(clan, mActivity, R.raw.building_tree);
             clan.techTree = new TechTree(clan);
 
-            clan.ideologyTree = IdeologyXmlParser.parseIdeologyTree(mActivity, R.raw.ideology_tree);
+            clan.ideologyTree = IdeologyXmlParser.parseIdeologyTree(clan, mActivity, R.raw.ideology_tree);
 
             if (TechTree.itemTypes == null) {
                 ResourceXmlParser.parseResourceTree(clan.techTree, mActivity, R.raw.resource_tree);

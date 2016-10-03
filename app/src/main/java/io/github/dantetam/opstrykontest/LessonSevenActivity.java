@@ -1331,7 +1331,7 @@ public class LessonSevenActivity extends Activity implements
             }
 
             Button textView = new Button(this);
-            String stringy = tech.name;
+            String stringy = tech.name + " <{" + tech.iconName + "}>";
 
             int estimatedTurns = (tech.researchNeeded - tech.researchCompleted) / playerGlobalScience;
 

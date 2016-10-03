@@ -3,7 +3,9 @@ package io.github.dantetam.world.entity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import io.github.dantetam.android.MultiTextureHelper;
 import io.github.dantetam.opstrykontest.Condition;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.world.action.Ability;
@@ -37,6 +39,7 @@ public class TechTree {
     public HashMap<BuildingType, List<BuildingType>> allowedBuildingsAndModules;
     public HashMap<PersonType, Boolean> allowedUnits;
     public HashMap<ItemType, Boolean> allowedHarvestable;
+    public HashMap<MultiTextureHelper.TerrainBiomePair, List<BuildingType>> allowedImprovements;
     public HashMap<Ability, Boolean> specialAbilities;
 
     public static HashMap<BuildingType, Boolean> wonders = new HashMap<>();
@@ -67,6 +70,8 @@ public class TechTree {
         allowedUnits = new HashMap<>();
         allowedHarvestable = new HashMap<>();
         specialAbilities = new HashMap<>();
+
+        allowedImprovements = new HashMap<>();
 
         //TODO: Define a method for parsing a tech tree from XML using Android utilities
     }
@@ -117,6 +122,9 @@ public class TechTree {
         }
         for (Ability ability: tech.unlockedSpecialAbilities) {
             specialAbilities.put(ability, true);
+        }
+        for (Map.Entry<MultiTextureHelper.TerrainBiomePair, List<BuildingType>> entry: allowedImprovements.entrySet()) {
+            allowedImprovements.put(entry.getKey(), entry.getValue());
         }
         /*for (String stringy: strings) {
             if (stringy.startsWith("AddBuilding")) {

@@ -1,8 +1,10 @@
 package io.github.dantetam.world.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import io.github.dantetam.android.MultiTextureHelper;
 import io.github.dantetam.world.action.Ability;
 
 /**
@@ -23,6 +25,7 @@ public class Tech {
     public List<ItemType> revealResources;
     public List<ItemType> harvestableResources;
     public List<Ability> unlockedSpecialAbilities;
+    public HashMap<MultiTextureHelper.TerrainBiomePair, List<BuildingType>> unlockedImprovements;
 
     public int researchCompleted, researchNeeded;
 
@@ -44,6 +47,7 @@ public class Tech {
         revealResources = new ArrayList<>();
         harvestableResources = new ArrayList<>();
         unlockedSpecialAbilities = new ArrayList<>();
+        unlockedImprovements = new HashMap<>();
         //allowedBuildingsAndModules = new HashMap<>();
     }
 
