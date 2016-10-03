@@ -32,7 +32,7 @@ public class PoliticalEntity {
 
     public int totalGold; //, totalCulture;
     public int totalIdeologyPower;
-    public int nextIdeologyCost; <-- TODO
+    public int nextIdeologyCost;
     public int lastHappiness = 4;
 
     public PoliticalEntity(String n) {

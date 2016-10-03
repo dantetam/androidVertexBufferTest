@@ -3,6 +3,7 @@ package io.github.dantetam.world.entity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.dantetam.world.action.Ability;
 
@@ -16,6 +17,20 @@ public class IdeologyTree {
 
     public Clan clan;
     public Ideology primaryIdeology;
+    public int numIdeologiesAndTenetsUnlocked() {
+        int count = 0;
+        for (Map.Entry<String, Ideology> entry: clanIdeologyMap.entrySet()) {
+            if (entry.getValue().opened) {
+                count++;
+            }
+            for (Tenet tenet: entry.getValue().tenets.values()) {
+                if (tenet.activated) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 
     public IdeologyTree(Clan c) {
         clan = c;
@@ -34,15 +49,22 @@ public class IdeologyTree {
             tenets = tenetsMap;
         }
 
-        public boolean unlocked = false;
+        public boolean opened = false;
+        public boolean fullyUnlocked = false;
+
+        public void openIdeology() {
+            unlock("");
+        }
+
         public void unlock(String tenetName) {
+            opened = true;
             if (tenets.containsKey(tenetName)) {
                 tenets.get(tenetName).activated = true;
             }
             for (Tenet entry: tenets.values()) {
                 if (entry.activated) continue; else return;
             }
-            unlocked = true;
+            fullyUnlocked = true;
         }
 
         @Override

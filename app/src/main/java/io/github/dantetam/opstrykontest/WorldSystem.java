@@ -273,7 +273,13 @@ public class WorldSystem {
             clan.totalGold += yield[3];
             clan.lastHappiness += yield[4];
             clan.lastHappiness -= city.population();
-            clan.totalIdeologyPower += yield[6];
+            clan.totalIdeologyPower += yield[6] * Math.max(0.5, Math.min(2.0, (1 + (yield[4] / 10))));
+
+            int numIdeologies = clan.ideologyTree.numIdeologiesUnlocked();
+            clan.nextIdeologyCost = (int)(10*Math.pow(1.28, numIdeologies) + 10*numIdeologies);
+            if (clan.totalIdeologyPower >= clan.nextIdeologyCost) {
+                System.out.println("Need ideology update here WorldSystem");
+            }
 
             totalResources.addAnotherInventory(inventory);
         }
