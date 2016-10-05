@@ -283,6 +283,8 @@ public class WorldSystem {
             clan.lastHappiness -= city.population();
             clan.totalIdeologyPower += yield[6] * Math.max(0.5, Math.min(2.0, (1 + (yield[4] / 10))));
 
+            clan.lastYield = yield;
+
             if (!(clan instanceof CityState)) {
                 int numIdeologies = clan.ideologyTree.numIdeologiesAndTenetsUnlocked();
                 clan.nextIdeologyCost = (int) (10 * Math.pow(1.28, numIdeologies) + 10 * numIdeologies);
