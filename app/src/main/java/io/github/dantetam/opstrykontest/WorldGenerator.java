@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.dantetam.android.FileParser;
 import io.github.dantetam.android.RawResourceReader;
@@ -136,6 +137,20 @@ public class WorldGenerator {
             clan.techTree = new TechTree(clan);
 
             clan.ideologyTree = IdeologyXmlParser.parseIdeologyTree(clan, mActivity, R.raw.ideology_tree);
+
+            //Randomize personality just a bit
+            for (Map.Entry<String, Integer> entry: clan.ai.personality.entrySet()) {
+                int random = (int) (Math.random() * 5) - 2;
+                clan.ai.personality.put(entry.getKey(), clan.ai.personality.get(entry.getKey()) + random);
+            }
+            for (Map.Entry<String, Integer> entry: clan.ai.strategy.entrySet()) {
+                int random = (int) (Math.random() * 5) - 2;
+                clan.ai.strategy.put(entry.getKey(), clan.ai.strategy.get(entry.getKey()) + random);
+            }
+            for (Map.Entry<String, Integer> entry: clan.ai.tactics.entrySet()) {
+                int random = (int) (Math.random() * 5) - 2;
+                clan.ai.tactics.put(entry.getKey(), clan.ai.tactics.get(entry.getKey()) + random);
+            }
 
             if (TechTree.itemTypes == null) {
                 ResourceXmlParser.parseResourceTree(clan.techTree, mActivity, R.raw.resource_tree);

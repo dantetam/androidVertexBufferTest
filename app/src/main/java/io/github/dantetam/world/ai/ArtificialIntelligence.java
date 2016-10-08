@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import io.github.dantetam.opstrykontest.WorldSystem;
 import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.utilmath.Vector4f;
@@ -30,10 +31,15 @@ public class ArtificialIntelligence {
     public String leaderName;
     public String abilityOne = null;
     public String abilityTwo = null;
+
+    //This contains the flavors, generally 1-10, where 5 is average, and 10 is absolute love.
+    //These are for the civ and define what it does.
     public HashMap<String, Integer> personality, strategy, tactics;
 
+    //Dialogue for now
     public HashMap<String, List<String>> friendlyText = new HashMap<>();
 
+    //Contains already calculated flavors for queuing choies
     public Object[] currentStrategy;
 
     public ArtificialIntelligence(Clan c) {
@@ -100,8 +106,12 @@ public class ArtificialIntelligence {
     Liked: commitments, help
     Loved: early (defensive) peace deals, forgiveness, long-term alliances
      */
+    private class ClanOptionTuple {
+        public Clan clan; public String option;
+        public ClanOptionTuple(Clan c, String op) {clan = c; option = op;}
+    }
     public void computeDiplomaticOptions() {
-        LinkedHashMap<String, Float> optionsByFlavorsScore = new LinkedHashMap<>();
+        LinkedHashMap<ClanOptionTuple, Float> optionsByFlavorsScore = new LinkedHashMap<>();
         Map<String, String[]> optionsByFlavors = new TreeMap<String, String[]>(String.CASE_INSENSITIVE_ORDER);
 
         optionsByFlavors.put("Declare War", new String[]{"++war", "++military str.", "++bad relations", "++hostile", "+vicious", "+bold", "+competitive", "-growth", "-science"});
@@ -115,7 +125,8 @@ public class ArtificialIntelligence {
         optionsByFlavors.put("Ask for Cooperation", new String[]{"+initiative", "++cooperative", "+rational", "+diplomatic"});
         optionsByFlavors.put("Ask for Deception", new String[]{"+initiative", "++jealous", "+hostile", "+competitive"});
 
-        RelationMap relations = clan.world.worldSystem.relations.get(clan);
+        WorldSystem worldSystem = clan.world.worldSystem;
+        RelationMap relations = worldSystem.relations.get(clan);
         for (Clan otherClan: this.clan.world.getClans()) {
             if (this.clan.equals(otherClan)) {
                 continue;
@@ -139,7 +150,7 @@ public class ArtificialIntelligence {
                     if (type.equals("bad relations")) {
                         flavorScore -= relations.relationScore.get(otherClan) / 50 / (plusCount - minusCount);
                     }
-                    else if (type.equals("bad relations")) {
+                    else if (type.equals("good relations")) {
                         flavorScore += relations.relationScore.get(otherClan) / 50 / (plusCount - minusCount);
                     }
                     else if (type.equals("military str.")) {
@@ -150,33 +161,43 @@ public class ArtificialIntelligence {
                         flavorScore += quality / (plusCount - minusCount);
                     }
                 }
-                optionsByFlavorsScore.put(entry.getKey(), flavorScore);
+                optionsByFlavorsScore.put(new ClanOptionTuple(otherClan, entry.getKey()), flavorScore);
             }
         }
 
-        Map<String, Float> sorted = OpstrykonUtil.sortMapByValue(optionsByFlavorsScore);
+        Map<ClanOptionTuple, Float> sorted = OpstrykonUtil.sortMapByValue(optionsByFlavorsScore);
 
-        Map.Entry<String, Float> entry = sorted.entrySet().iterator().next();
+        Map.Entry<ClanOptionTuple, Float> entry = sorted.entrySet().iterator().next();
+        Clan target = entry.getKey().clan;
+        String option = entry.getKey().option;
         if (Math.random() < 1 - 0.1*Math.pow(0.9, entry.getValue())) {
-            if (entry.equals("Declare War")) {
-
+            if (option.equals("Declare War") || option.equals("Declare War on CS")) {
+                worldSystem.declareWar(clan, target);
+            }
+            else if (option.equals("Denounce")) {
+                worldSystem.denounce(clan, target);
+            }
+            else if (option.equals("Insult")) {
+                worldSystem.denounce(clan, target);
+            }
+            else if (option.equals("Make Peace")) {
+                worldSystem.makePeace(clan, target);
             }
         }
     }
 
+    //Calculate a multi-dimensional voronoi-ish diagram where each point is manually defined
+    //Define dimensions to be different extremes of situations (e.g. too few cities vs too many cities)
+    //then adjust for a civ's weights according to their strategy and personality flavors
+    //as well as extra environmental factors, both natural features and other civilizations
+    //as well as a civ's preferred style of play, which should adjust a bit every game.
+    //Definitely the civ should use a rough expectimax and a civ-unique heuristic
+    //to define the optimal strategy.
     public Object[] defineStrategy() {
         HashMap<String, Float> buildingFlavors = new HashMap<>();
         HashMap<String, Float> unitFlavors = new HashMap<>();
         float[] yieldFlavors = {1,1,1,1,1,1,1};
         String queueFocusType = null;
-        //TODO:
-        //Calculate a multi-dimensional voronoi-ish diagram where each point is manually defined
-        //Define dimensions to be different extremes of situations (e.g. too few cities vs too many cities)
-        //then adjust for a civ's weights according to their strategy and personality flavors
-        //as well as extra environmental factors, both natural features and other civilizations
-        //as well as a civ's preferred style of play, which should adjust a bit every game.
-        //Definitely the civ should use a rough expectimax and a civ-unique heuristic
-        //to define the optimal strategy.
 
         String point = "";
 
@@ -374,6 +395,8 @@ public class ArtificialIntelligence {
         }
     }
 
+    //Rank a technology option by its averaged score of possible unlocked building and unit options
+    //Then return the highest tech available.
     public Tech computeBestTech() {
         List<Tech> researchableTech = clan.techTree.getResearchableTech();
         Map<Tech, Integer> techByScore = new LinkedHashMap<>();
