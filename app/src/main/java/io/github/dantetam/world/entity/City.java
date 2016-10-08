@@ -23,6 +23,9 @@ public class City extends Building {
 
     public Clan isCapital;
 
+    public Clan originalOwner;
+    public boolean puppet = false;
+
     private int population, freeWorkingPopulation;
     public int population() {return population;}
     public int freeWorkingPopulation() {return freeWorkingPopulation;}
@@ -87,6 +90,7 @@ public class City extends Building {
 
     public City(World world, Clan clan, String name, BuildingType type, Collection<Tile> tiles) {
         super(world, clan, type);
+        originalOwner = clan;
         this.name = name;
         workedTiles = new HashMap<>();
         cityTiles = tiles;

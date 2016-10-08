@@ -203,6 +203,8 @@ public class WorldSystem {
             abilities.add(ability);
         }
 
+        int baseIdeologyPower = 0, baseScience = 0;
+
         for (City city: clan.cities) {
             //Determine yield here? Don't separate process.
             Object[] objects = city.gameYield();
@@ -262,11 +264,7 @@ public class WorldSystem {
                 }
             }
 
-            int science = yield[2];
-            int possibleExtra = clan.techTree.research(science);
-            if (possibleExtra > 0) {
-                //TODO: Do something with this?
-            }
+            baseScience += yield[2];
 
             for (Building building: city.modules) {
                 if (building.buildingType.abilities != null) {
@@ -280,8 +278,20 @@ public class WorldSystem {
 
             clan.totalGold += yield[3];
             clan.lastHappiness += yield[4];
-            clan.lastHappiness -= city.population();
-            clan.totalIdeologyPower += yield[6] * Math.max(0.5, Math.min(2.0, (1 + (yield[4] / 10))));
+            clan.lastHappiness -= (city.population() + 2);
+            baseIdeologyPower += yield[6];
+
+            if (!city.originalOwner.equals(clan)) {
+                int rebelDiscontent = (int)Math.ceil(city.population() * 1.5f);
+                if (city.puppet) {
+                    yield[0] /= 2;
+                    yield[1] /= 2;
+                    yield[2] /= 4;
+                    yield[3] /= 2;
+                    rebelDiscontent /= 2;
+                }
+                clan.lastHappiness -= rebelDiscontent;
+            }
 
             clan.lastYield = yield;
 
@@ -296,7 +306,22 @@ public class WorldSystem {
             totalResources.addAnotherInventory(inventory);
         }
 
+        for (Clan otherClan: world.getClans()) {
+            if (clan.equals(otherClan)) continue;
+            if (atWar(clan, otherClan)) {
+                clan.lastHappiness--;
+            }
+        }
+
         parseAllGlobalAbilities(abilities, clan);
+
+        clan.totalIdeologyPower = (int)(baseIdeologyPower * Math.max(0.5, Math.min(1.25, 1 + clan.lastHappiness / 10)));
+
+        int adjScience = (int)(baseScience * Math.max(0.5, Math.min(1.25, 1 + clan.lastHappiness / 10)));
+        int possibleExtra = clan.techTree.research(adjScience);
+        if (possibleExtra > 0) {
+            //TODO: Do something with this?
+        }
 
         for (Person person: clan.people) {
             if (person.fortify || (person.location() != null && person.location().improvement instanceof City)) {
