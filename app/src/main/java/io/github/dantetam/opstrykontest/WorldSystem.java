@@ -20,6 +20,7 @@ import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.IdeologyTree;
 import io.github.dantetam.world.entity.Inventory;
 import io.github.dantetam.world.entity.Person;
+import io.github.dantetam.world.entity.PersonType;
 import io.github.dantetam.world.entity.Tech;
 import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.Tile;
@@ -213,20 +214,6 @@ public class WorldSystem {
 
             city.lastYieldHealth = yield[5];
 
-            int workingPopulation = city.population() - city.freeWorkingPopulation();
-            double foodGain = yield[0] - workingPopulation * 2 - city.freeWorkingPopulation() * 1;
-            if (clan.lastHappiness < 0) {
-                foodGain *= 0.333;
-            }
-            if (city.lastYieldHealth < 0) {
-                foodGain += city.lastYieldHealth * 2;
-            }
-            city.foodStoredForGrowth += (int) foodGain;
-            if (city.foodStoredForGrowth >= city.foodNeededForGrowth) {
-                city.foodStoredForGrowth -= city.foodNeededForGrowth;
-                city.increasePopulation();
-            }
-
             city.cultureStoredForExpansion += yield[6];
             if (city.cultureStoredForExpansion >= city.cultureNeededForExpansion) {
                 city.cultureStoredForExpansion -= city.cultureNeededForExpansion;
@@ -234,34 +221,6 @@ public class WorldSystem {
                 city.tilesExpanded++;
                 city.expandToBestTile();
                 city.cultureStoredForExpansion = City.cityFoodData()[city.tilesExpanded];
-            }
-            if (city.actionsQueue.size() > 0) {
-                Action action = city.actionsQueue.get(0);
-                int production = yield[1];
-                //TODO: Differentiate behavior
-                if (action.type == Action.ActionType.QUEUE_BUILD_UNIT) {
-                    Person target = (Person) action.data;
-                    target.workCompleted += production;
-                    if (target.workCompleted >= target.personType.workNeeded) {
-                        System.out.println("done: " + target.personType.workNeeded + " " + target.workCompleted + " " + production);
-                        target.clan = clan;
-                        clan.people.add(target);
-                        target.move(city.location());
-                        city.actionsQueue.remove(0);
-                    }
-                }
-                else if (action.type == Action.ActionType.QUEUE_BUILD_MODULE) {
-                    Building target = (Building) action.data;
-                    target.workCompleted += production;
-                    if (target.workCompleted >= target.buildingType.workNeeded) {
-                        System.out.println("done2: " + target.buildingType.workNeeded + " " + target.workCompleted + " " + production);
-                        city.actionsQueue.remove(0);
-                        if (target.buildingType.wonder) {
-                            endAllWondersInQueue(target.buildingType);
-                            System.err.println(clan.ai.leaderName + " has built the " + target.buildingType.name);
-                        }
-                    }
-                }
             }
 
             baseScience += yield[2];
@@ -288,6 +247,7 @@ public class WorldSystem {
                     yield[1] /= 2;
                     yield[2] /= 4;
                     yield[3] /= 2;
+                    yield[6] /= 4;
                     rebelDiscontent /= 2;
                 }
                 clan.lastHappiness -= rebelDiscontent;
@@ -300,6 +260,55 @@ public class WorldSystem {
                 clan.nextIdeologyCost = (int) (10 * Math.pow(1.28, numIdeologies) + 10 * numIdeologies);
                 if (clan.totalIdeologyPower >= clan.nextIdeologyCost) {
                     System.out.println("Need ideology update here WorldSystem");
+                }
+            }
+
+            if (city.actionsQueue.size() > 0 && city.actionsQueue.get(0).data instanceof PersonType && ((Person)city.actionsQueue.get(0).data).personType.name.equals("Settler")) {
+                yield[1] += yield[0];
+                yield[0] = 0;
+            }
+            else {
+                int workingPopulation = city.population() - city.freeWorkingPopulation();
+                double foodGain = yield[0] - workingPopulation * 2 - city.freeWorkingPopulation() * 1;
+                if (clan.lastHappiness < 0) {
+                    foodGain *= 0.333;
+                }
+                if (city.lastYieldHealth < 0) {
+                    foodGain += city.lastYieldHealth * 2;
+                }
+                city.foodStoredForGrowth += (int) foodGain;
+                if (city.foodStoredForGrowth >= city.foodNeededForGrowth) {
+                    city.foodStoredForGrowth -= city.foodNeededForGrowth;
+                    city.increasePopulation();
+                }
+            }
+
+            if (city.actionsQueue.size() > 0) {
+                Action action = city.actionsQueue.get(0);
+                int production = yield[1];
+                //TODO: Differentiate behavior
+                if (action.type == Action.ActionType.QUEUE_BUILD_UNIT) {
+                    Person target = (Person) action.data;
+                    target.workCompleted += production;
+                    if (target.workCompleted >= target.personType.workNeeded) {
+                        System.out.println("done: " + target.personType.workNeeded + " " + target.workCompleted + " " + production);
+                        target.clan = clan;
+                        clan.people.add(target);
+                        target.move(city.location());
+                        city.actionsQueue.remove(0);
+                    }
+                }
+                else if (action.type == Action.ActionType.QUEUE_BUILD_MODULE) {
+                    Building target = (Building) action.data;
+                    target.workCompleted += production;
+                    if (target.workCompleted >= target.buildingType.workNeeded) {
+                        System.out.println("done2: " + target.buildingType.workNeeded + " " + target.workCompleted + " " + production);
+                        city.actionsQueue.remove(0);
+                        if (target.buildingType.wonder) {
+                            endAllWondersInQueue(target.buildingType);
+                            System.err.println(clan.ai.leaderName + " has built the " + target.buildingType.name);
+                        }
+                    }
                 }
             }
 
