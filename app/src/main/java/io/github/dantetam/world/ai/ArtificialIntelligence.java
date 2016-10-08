@@ -115,15 +115,43 @@ public class ArtificialIntelligence {
         optionsByFlavors.put("Ask for Cooperation", new String[]{"+initiative", "++cooperative", "+rational", "+diplomatic"});
         optionsByFlavors.put("Ask for Deception", new String[]{"+initiative", "++jealous", "+hostile", "+competitive"});
 
-        for (Map.Entry<String, String[]> entry: optionsByFlavors.entrySet()) {
-            float flavorScore = 0;
-            for (String flavor: entry.getValue()) {
-                int plusCount = flavor.length() - flavor.replace("+", "").length();
-                int minusCount = flavor.length() - flavor.replace("-", "").length();
-                float quality = findFlavor(flavor.replace("+-", ""));
-                flavorScore += quality / (plusCount - minusCount);
+        RelationMap relations = clan.world.worldSystem.relations.get(clan);
+        for (Clan otherClan: this.clan.world.getClans()) {
+            if (this.clan.equals(otherClan)) {
+                continue;
             }
-            optionsByFlavorsScore.put(entry.getKey(), flavorScore);
+
+            int clanStrength = 0, otherStrength = 0;
+            for (Person person: clan.people) {
+                clanStrength += computeUnitTypeScore(clan, null, person.personType);
+            }
+            for (Person person: otherClan.people) {
+                otherStrength += computeUnitTypeScore(clan, null, person.personType);
+            }
+
+            for (Map.Entry<String, String[]> entry : optionsByFlavors.entrySet()) {
+                float flavorScore = 0;
+                for (String flavor : entry.getValue()) {
+                    int plusCount = flavor.length() - flavor.replace("+", "").length();
+                    int minusCount = flavor.length() - flavor.replace("-", "").length();
+                    String type = flavor.replace("+-", "");
+
+                    if (type.equals("bad relations")) {
+                        flavorScore -= relations.relationScore.get(otherClan) / 50 / (plusCount - minusCount);
+                    }
+                    else if (type.equals("bad relations")) {
+                        flavorScore += relations.relationScore.get(otherClan) / 50 / (plusCount - minusCount);
+                    }
+                    else if (type.equals("military str.")) {
+                        flavorScore += (clanStrength / otherStrength)*5 / (plusCount - minusCount);
+                    }
+                    else {
+                        float quality = findFlavor(type);
+                        flavorScore += quality / (plusCount - minusCount);
+                    }
+                }
+                optionsByFlavorsScore.put(entry.getKey(), flavorScore);
+            }
         }
 
         Map<String, Float> sorted = OpstrykonUtil.sortMapByValue(optionsByFlavorsScore);
