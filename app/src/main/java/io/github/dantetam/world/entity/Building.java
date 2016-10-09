@@ -30,7 +30,7 @@ public class Building extends Entity {
 
     public Building(World world, Clan clan, BuildingType type) {
         super(world, clan);
-        clan.buildings.add(this);
+        if (clan != null) clan.buildings.add(this);
         buildingType = type;
         name = type.name;
         modules = new ArrayList<>();

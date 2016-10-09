@@ -13,6 +13,7 @@ public enum RelationModifier {
     DENOUNCE ("They denounced you!", -30),
     DENOUNCED ("You denounced them!", -30),
 
+    NEUTRAL ("They do not know you well enough.", 0),
     COOPERATIVE ("They may wish to cooperate with you.", 30),
     JEALOUS ("They desire your lands and power.", -40),
     LACK_OF_TRUST ("They do not completely trust you.", -30),

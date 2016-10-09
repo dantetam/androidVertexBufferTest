@@ -34,7 +34,7 @@ yields are in the form "food/production/science/capital/happiness/health"
     <resource name="Grain" techReveal="Landing" techHarvest="Landing" yield="1/0/0/0/0/0/0" impr="Farm" impryield="3/0/0/0/0/0/0" model="grain">
 
     </resource>
-    <resource name="Ruins" techReveal="Landing" techHarvest="Landing" yield="0/0/0/0/0/0/0" impr="Excavation" impryield="0/0/2/0/3/0/0" model="ruins">
+    <!--<resource name="Ruins" techReveal="Landing" techHarvest="Landing" yield="0/0/0/0/0/0/0" impr="Excavation" impryield="0/0/2/0/3/0/0" model="ruins">
 
-    </resource>
+    </resource>-->
 </resourceroot>

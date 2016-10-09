@@ -50,6 +50,9 @@ public class BitmapHelper {
     }
 
     public static Bitmap findBitmapOrBuild(int resourceId) {
+        if (resourceId == 0) {
+            return null;
+        }
         String name = context.getResources().getResourceEntryName(resourceId);
         Bitmap bitmapStored = getBitmap(name);
         if (bitmapStored != null) {

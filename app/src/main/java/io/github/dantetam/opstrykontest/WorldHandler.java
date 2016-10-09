@@ -44,6 +44,8 @@ import io.github.dantetam.xml.BuildingXmlParser;
  * Created by Dante on 6/17/2016.
  * A connection between the classes of the world package that store world data,
  * and the OpenGL classes that render the world.
+ *
+ * This class primarily handles generation of VBOs that are sent to the OpenGL rendering pipeline.
  */
 public class WorldHandler {
 
@@ -86,6 +88,8 @@ public class WorldHandler {
 
     public MapModel<ItemType> improvementResourceProductionUi;
     public MapModel<Condition> improvementResourceStatUi;
+
+    public boolean needsUpdateOnNextFrame = false;
 
     //public HashMap<Tile, Polygon> hexesShape; //Originally intended to be used for mouse picking. More efficient to use center vertices.
 
@@ -226,6 +230,12 @@ public class WorldHandler {
         //mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
 
         mousePicker.passInTileVertices(storedTileVertexPositions);
+
+        if (needsUpdateOnNextFrame) {
+            needsUpdateOnNextFrame = false;
+            improvementResourceStatUi = null;
+            improvementResourceProductionUi = null;
+        }
 
         if (mRenderer.getCombatMode()) {
             modelsToRender.add(worldRep(world.getAllValidTiles()));
@@ -451,10 +461,10 @@ public class WorldHandler {
                 }
             }
 
-            float[][][] imprData = new float[BuildingXmlParser.globalAllTypes.keySet().size()][][];
+            float[][][] imprData = new float[TechTree.buildingTypes.keySet().size()][][];
 
             int index = 0;
-            for (BuildingType type: BuildingXmlParser.globalAllTypes.values()) {
+            for (BuildingType type: TechTree.buildingTypes.values()) {
                 Condition cond = new Condition() {
                     public BuildingType desiredType;
 
@@ -478,7 +488,7 @@ public class WorldHandler {
             }
 
             int i = 0;
-            for (BuildingType buildingType: BuildingXmlParser.globalAllTypes.values()) {
+            for (BuildingType buildingType: TechTree.buildingTypes.values()) {
                 //float[] color = Tile.Biome.colorFromInt(i);
                 //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
                 //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
@@ -816,13 +826,13 @@ public class WorldHandler {
                 }
             } else {
                 for (Tile tile : chunkTiles) {
-                    if (tile.occupants.size() > 0) {
+                    if (tile.improvement != null) {
                         if (previousImprovements.get(tile) == null || !previousImprovements.get(tile).equals(tile.improvement)) {
                             tilesToUpdate.add(tile);
                             previousImprovements.put(tile, tile.improvement);
                         }
                     } else {
-                        if (previousImprovements.get(tile) != null) {
+                        if (previousImprovements.get(tile) != null && !previousImprovements.get(tile).equals(tile.improvement)) {
                             tilesToUpdate.add(tile);
                             previousImprovements.put(tile, null);
                             //previousUnits.put(tile, tile.occupants.get(0));
@@ -846,6 +856,7 @@ public class WorldHandler {
             if (tile != null && tile.improvement != null) {
                 //Solid improvement = ObjLoader.loadSolid(R.drawable.usb_android, tile.improvement.buildingType.name, assetManager.open(tile.improvement.name + ".obj"));
                 //float[][] objData = assetHelper.loadVertexFromAssets(tile.improvement.name + ".obj");
+                System.out.println("Loading: " + tile.improvement.buildingType.modelName + ".obj");
                 float[][] objData = assetHelper.loadVertexFromAssets(tile.improvement.buildingType.modelName + ".obj");
 
                 final float[] totalCubePositionData = new float[objData[0].length];
@@ -933,7 +944,8 @@ public class WorldHandler {
                 //textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(textures[i]), mActivity, textures[i]);
                 //assetHelper.loadVertexFromAssets(items[i].renderName);
                 int resId = mActivity.getResources().getIdentifier(itemType.name, "drawable", mActivity.getPackageName());
-                textureHandles.put(itemType, TextureHelper.loadTexture(itemType.name, mActivity, resId));
+                //System.out.println(resId + " " + itemType.name);
+                textureHandles.put(itemType, TextureHelper.loadTexture(itemType.iconName, mActivity, resId));
             }
 
             for (int i = 0; i < inputConditions.size(); i++) {
@@ -954,7 +966,7 @@ public class WorldHandler {
                 final float[] totalTexturePositionData = new float[hexData[0].length / POSITION_DATA_SIZE * TEXTURE_COORDINATE_DATA_SIZE * tilesToRender.size()];
                 int cubeTextureDataOffset = 0;
 
-                float[] offset = imprIconInputOffsets[i];
+                float[] offset = imprIconInputOffsets[0];
                 float[] trueOffset = {offset[0] * TRANSLATE_FACTOR_UI_X, offset[1] * TRANSLATE_FACTOR_UI_Z};
 
                 for (Tile tile : tilesToRender) {

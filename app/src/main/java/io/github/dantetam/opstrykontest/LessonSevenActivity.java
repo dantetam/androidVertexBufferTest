@@ -38,6 +38,7 @@ import io.github.dantetam.android.MultiTextureHelper;
 import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
+import io.github.dantetam.world.ai.ArtificialIntelligence;
 import io.github.dantetam.world.ai.RelationModifier;
 import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.action.BuildingAction;
@@ -55,6 +56,11 @@ import io.github.dantetam.world.entity.Recipe;
 import io.github.dantetam.world.entity.Tech;
 import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.Tile;
+
+/*
+Standard Android activity that also has to handle button clicks and event listeners.
+Creates popup menus and includes some GUI logic.
+ */
 
 public class LessonSevenActivity extends Activity implements
         GestureDetector.OnGestureListener,
@@ -299,10 +305,10 @@ public class LessonSevenActivity extends Activity implements
                 clanView.setHeight(120);
 
                 if (clan.equals(playerClan)) {
-                    clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (You)");
+                    clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (You) " + ArtificialIntelligence.calcClanTotalScore(mRenderer.worldSystem.world, clan));
                 } else {
                     String opinion = mRenderer.worldSystem.relations.get(clan).getOpinionString(playerClan);
-                    clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (" + opinion + ")");
+                    clanView.setText(clan.ai.leaderName + " of the " + clan.name + " (" + opinion + ") " + ArtificialIntelligence.calcClanTotalScore(mRenderer.worldSystem.world, clan));
                     if (mRenderer.worldSystem.atWar(playerClan, clan)) {
                         clanView.setText(clanView.getText() + " (WAR!)");
                     }

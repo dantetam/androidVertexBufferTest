@@ -54,6 +54,9 @@ public class TextureHelper
         if (texturesByName.containsKey(name)) {
             return texturesByName.get(name);
         }
+        if (resourceId == 0) {
+            return loadTexture("usb_android", context, R.drawable.usb_android);
+        }
 		final int[] textureHandle = new int[1];
 		GLES20.glGenTextures(1, textureHandle, 0);
 

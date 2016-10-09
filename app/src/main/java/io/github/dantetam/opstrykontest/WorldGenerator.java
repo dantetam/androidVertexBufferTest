@@ -64,6 +64,7 @@ public class WorldGenerator {
         //makeRandomBuildings();
         world.initClans(makeClans());
         makeNewResources(world);
+        makeNewRuins(world);
         setClanLands(world);
     }
 
@@ -96,6 +97,15 @@ public class WorldGenerator {
                 tile.resources.add(new Item(itemType, 1));
             }
         }*/
+    }
+
+    private void makeNewRuins(World world) {
+        for (Tile tile: world.getAllValidTiles()) {
+            if (Math.random() < 0.08) {
+                tile.improvement = BuildingFactory.newBuilding(world, null, TechTree.buildingTypes.get("Ruins"), tile, 1);
+                //System.out.println(tile.improvement.buildingType.modelName + " " + tile.improvement.buildingType.name);
+            }
+        }
     }
 
     /*

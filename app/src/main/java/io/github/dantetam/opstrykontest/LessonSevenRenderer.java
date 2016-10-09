@@ -425,8 +425,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     private int[] texUnits = {GLES20.GL_TEXTURE0, GLES20.GL_TEXTURE1, GLES20.GL_TEXTURE2, GLES20.GL_TEXTURE3, GLES20.GL_TEXTURE4};
 
     private void renderModel(BaseModel model) {
-        for (RenderEntity renderEntity: model.parts()) {
-            renderSolid(renderEntity);
+        if (model != null) {
+            for (RenderEntity renderEntity : model.parts()) {
+                renderSolid(renderEntity);
+            }
         }
     }
 

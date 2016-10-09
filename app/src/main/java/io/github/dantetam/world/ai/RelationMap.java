@@ -266,24 +266,29 @@ public class RelationMap {
     private RelationModifier getFirstFlavor() {
         double sumPersonFlavors = 0;
         String[] flavorNames = new String[subjectClan.ai.personality.size()];
-        double[] flavors = new double[subjectClan.ai.personality.size()];
-        int i = 0;
-        double runSum = 0;
-        for (Map.Entry<String, Integer> entry : subjectClan.ai.personality.entrySet()) {
-            flavorNames[i] = entry.getKey();
-            runSum += entry.getValue();
-            flavors[i] = runSum;
-            i++;
-        }
-        double rand = Math.random();
         String chosenFlavor = null;
-        for (int j = 0; j < flavors.length; j++) {
-            if (rand <= flavors[j] / runSum) {
-                chosenFlavor = flavorNames[j];
-                break;
-            }
+        if (flavorNames.length == 0) {
+            chosenFlavor = "Cooperative";
         }
-        if (chosenFlavor == null) chosenFlavor = flavorNames[flavorNames.length - 1];
+        else {
+            double[] flavors = new double[subjectClan.ai.personality.size()];
+            int i = 0;
+            double runSum = 0;
+            for (Map.Entry<String, Integer> entry : subjectClan.ai.personality.entrySet()) {
+                flavorNames[i] = entry.getKey();
+                runSum += entry.getValue();
+                flavors[i] = runSum;
+                i++;
+            }
+            double rand = Math.random();
+            for (int j = 0; j < flavors.length; j++) {
+                if (rand <= flavors[j] / runSum) {
+                    chosenFlavor = flavorNames[j];
+                    break;
+                }
+            }
+            if (chosenFlavor == null) chosenFlavor = flavorNames[flavorNames.length - 1];
+        }
 
             /*<personalityflavor name="Cooperative" value="6"></personalityflavor>
             <personalityflavor name="Jealous" value="3"></personalityflavor>
@@ -312,8 +317,8 @@ public class RelationMap {
             case "Vicious":
                 return RelationModifier.HOSTILE;
             default:
-                System.out.println("Error, could not find first flavor");
-                return null;
+                System.out.println("Error, could not find first flavor: " + chosenFlavor);
+                return RelationModifier.NEUTRAL;
         }
     }
 

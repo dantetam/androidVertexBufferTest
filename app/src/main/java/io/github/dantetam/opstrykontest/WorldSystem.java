@@ -155,8 +155,8 @@ public class WorldSystem {
             }
         }
 
-        Check for tech when looking at resources and their impr yield
-        Look at phone notes
+        //TODO: Check for tech when looking at resources and their impr yield
+        //Look at phone notes
 
         //When done processing all actions, calculate new scores.
         Clan maxClan = null;
@@ -366,8 +366,10 @@ public class WorldSystem {
         for (IdeologyTree.Ideology ideology: IdeologyTree.globalMap.values()) {
             pressure.put(ideology, 0);
         }
-        if (clan.ideologyTree.primaryIdeology != null) {
-            pressure.put(clan.ideologyTree.primaryIdeology, 100);
+        if (!(clan instanceof CityState)) {
+            if (clan.ideologyTree.primaryIdeology != null) {
+                pressure.put(clan.ideologyTree.primaryIdeology, 100);
+            }
         }
         for (City city: clan.cities) {
             for (Map.Entry<IdeologyTree.Ideology, Integer> entry: city.ideologyInfluence.entrySet()) {

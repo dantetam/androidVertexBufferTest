@@ -39,12 +39,12 @@ import io.github.dantetam.world.entity.UnitTree;
 public class BuildingXmlParser {
     private static final String ns = null;
 
-    public static HashMap<String, BuildingType> globalAllTypes;
+    //public static HashMap<String, BuildingType> globalAllTypes;
 
     public static BuildingTree parseBuildingTree(Clan clan, Context context, int resourceId) {
-        if (globalAllTypes == null) {
+        /*if (globalAllTypes == null) {
             globalAllTypes = new HashMap<>();
-        }
+        }*/
         final InputStream inputStream = context.getResources().openRawResource(
                 resourceId);
         try {
@@ -133,7 +133,11 @@ public class BuildingXmlParser {
                     }
 
                     tree.buildingTypes.put(buildingName, buildingType);
-                    globalAllTypes.put(buildingName, buildingType);
+                    //globalAllTypes.put(buildingName, buildingType);
+
+                    if (!(TechTree.buildingTypes.containsKey(buildingName))) {
+                        TechTree.buildingTypes.put(buildingName, buildingType);
+                    }
                 }
             } else if (eventType == XmlPullParser.END_TAG) {
                 //System.out.println("End tag " + xpp.getName());

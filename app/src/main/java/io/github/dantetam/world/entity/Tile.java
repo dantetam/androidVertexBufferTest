@@ -125,7 +125,7 @@ public class Tile implements Traversable<Tile> {
         private static String[] names = {
                 "No feature",
                 "Oasis",
-                "Forest" <-- Incorporate this into the game
+                "Forest" //TODO: <-- Incorporate this into the game
         };
         public static int numItems;
 

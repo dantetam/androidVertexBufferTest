@@ -8,6 +8,9 @@ import io.github.dantetam.world.entity.World;
 
 /**
  * Created by Dante on 7/14/2016.
+ *
+ * This is a specific extension of the general A* pathfinder to the world containing class Tile.
+ * Note tha Tile must extend Traversable<Tile>
  */
 public class WorldPathfinder extends Pathfinder<Tile> {
 

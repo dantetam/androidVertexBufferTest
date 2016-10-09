@@ -19,6 +19,11 @@ import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.Tile;
 
+/*
+Used by OpenGL ES as a wrapper view for rendering graphics on the screen
+The extra functionality to handle mouse clicks and update the menus accordingly,
+and deal with mouse picker events.
+ */
 public class LessonSevenGLSurfaceView extends GLSurfaceView
 {
     private LessonSevenActivity mActivity;
@@ -144,8 +149,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
                 if (mousePicker.getSelectedTile() != null && mousePicker.getSelectedTile().improvement != null) {
                     //Force update here
-                    mRenderer.worldHandler.improvementResourceStatUi = null;
-                    mRenderer.worldHandler.improvementResourceProductionUi = null;
+                    mRenderer.worldHandler.needsUpdateOnNextFrame = true;
                 }
 
                 executeSelectedAction(mousePicker, previousSelectedTile, previousSelectedEntity);
