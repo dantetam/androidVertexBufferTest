@@ -356,6 +356,18 @@
             android:visibility="invisible"
             android:onClick="onClickNextTurnMenu" />
         <Button
+            android:id="@+id/city_citizen_auto_menu"
+            android:text="@string/turn_menu"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_widthPercent="20%"
+            app:layout_heightPercent="10%"
+            app:layout_marginTopPercent="80%"
+            app:layout_marginLeftPercent="80%"
+            android:contentDescription="@string/city_citizen_auto_menu"
+            android:visibility="invisible"
+            android:onClick="onClickCitizenAutoMenu" />
+        <Button
             android:id="@+id/build_menu"
             android:text="@string/build_menu"
             android:layout_width="0dp"

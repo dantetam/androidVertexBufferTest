@@ -52,6 +52,8 @@ public class GuiHandler {
     }*/
 
     public void forceUpdate() {
+        PercentRelativeLayout guiLayout = (PercentRelativeLayout) mActivity.findViewById(R.id.gui_display);
+        guiLayout.removeAllViews();
         cityTitleGui.clear();
         cityQueueGui.clear();
         cityFoodGui.clear();
@@ -173,8 +175,6 @@ public class GuiHandler {
         newView.setBackgroundColor(Color.TRANSPARENT);
         newView.setLayoutParams(param);
         Entity queued = city.getQueuedEntity();
-        System.out.println(queued);
-        System.out.println(city.actionsQueue.size());
         if (queued != null) {
             float turns = 0;
             if (queued instanceof Person) {
@@ -189,11 +189,14 @@ public class GuiHandler {
         else {
             newView.setText("-");
         }
+        newView.setTextColor(Color.WHITE);
         percentFrame.addView(newView);
 
         percentFrame.setGravity(Gravity.TOP);
         TextView textView = percentBarColorAndText(percent, Color.RED, "");
         percentFrame.addView(textView);
+
+        newView.bringToFront();
 
         cityQueueGui.put(city, percentFrame);
     }
@@ -223,6 +226,7 @@ public class GuiHandler {
         else {
             newView.setText("-");
         }
+        newView.setTextColor(Color.WHITE);
         percentFrame.addView(newView);
 
         float percent = Math.min((float) city.foodStoredForGrowth / (float) city.foodNeededForGrowth, 1);

@@ -309,7 +309,9 @@ public class ArtificialIntelligence {
         //such as trustworthiness, expansion, war, grand strategy, etc. Much like a poker game,
         //the world should escalate in tension, and snowballing should be part of the 4X experience.
 
-        return new Object[]{buildingFlavors, unitFlavors, yieldFlavors, queueFocusType};
+        currentStrategy = new Object[]{buildingFlavors, unitFlavors, yieldFlavors, queueFocusType};
+
+        return currentStrategy;
     }
 
     //This is just a simple naive maximization of immediate ROI + score.

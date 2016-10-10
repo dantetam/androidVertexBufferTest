@@ -776,6 +776,14 @@ public class LessonSevenActivity extends Activity implements
         return true;
     }
 
+    public void onClickCitizenAutoMenu(View v) {
+        PopupMenu actionSelectionMenu = new PopupMenu(this, v);
+        MenuInflater inflater = actionSelectionMenu.getMenuInflater();
+        inflater.inflate(R.menu.action_selection_menu, actionSelectionMenu.getMenu());
+        onCreateCitizenAutoMenu(v, actionSelectionMenu.getMenu());
+        actionSelectionMenu.show();
+    }
+
     public void onClickActionsMenu(View v) {
         actionSelectionMenu = new PopupMenu(this, v);
         MenuInflater inflater = actionSelectionMenu.getMenuInflater();
@@ -906,6 +914,7 @@ public class LessonSevenActivity extends Activity implements
                             city.queueActionBuildModule(buildingType);
                             findViewById(R.id.city_queue_menu_scroll).setVisibility(View.INVISIBLE);
                             findViewById(R.id.city_queue_menu).setVisibility(View.INVISIBLE);
+                            mRenderer.mousePicker.changeSelectedUnit(null);
                         }
                     });
 
@@ -955,6 +964,7 @@ public class LessonSevenActivity extends Activity implements
                             city.queueActionBuildUnit(personType);
                             findViewById(R.id.city_queue_menu_scroll).setVisibility(View.INVISIBLE);
                             findViewById(R.id.city_queue_menu).setVisibility(View.INVISIBLE);
+                            mRenderer.mousePicker.changeSelectedUnit(null);
                         }
                     });
 
@@ -1239,6 +1249,74 @@ public class LessonSevenActivity extends Activity implements
                 }
             });*/
 
+        }
+        return true;
+    }
+
+    public boolean onCreateCitizenAutoMenu(final View chainView, Menu menu) {
+        if (!(mRenderer.mousePicker.getSelectedTile().improvement instanceof City)) {
+            return true;
+        }
+        final City city = (City) mRenderer.mousePicker.getSelectedTile().improvement;
+        Entity entity = mRenderer.mousePicker.getSelectedEntity();
+        final LessonSevenActivity mActivity = this;
+        if (entity != null) {
+            playerClan.ai.currentStrategy = new Object[4];
+            MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "Food");
+            menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    playerClan.ai.currentStrategy[2] = new float[]{6,2,1,1,1,1,1};
+                    city.freeAllTiles();
+                    city.pickBestTiles();
+                    Button button = (Button) chainView;
+                    button.setText("Citizen Work [Food]");
+                    return false;
+                }
+            });
+
+            MenuItem menuItem2 = menu.add(Menu.NONE, 1, Menu.NONE, "Production");
+            menuItem2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    playerClan.ai.currentStrategy[2] = new float[]{3,6,1,1,1,1,1};
+                    city.freeAllTiles();
+                    city.pickBestTiles();
+                    Button button = (Button) chainView;
+                    button.setText("Citizen Work [Production]");
+                    return false;
+                }
+            });
+
+            MenuItem menuItem3 = menu.add(Menu.NONE, 1, Menu.NONE, "Science");
+            menuItem3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    playerClan.ai.currentStrategy[2] = new float[]{4,2,10,1,1,1,1};
+                    city.freeAllTiles();
+                    city.pickBestTiles();
+                    Button button = (Button) chainView;
+                    button.setText("Citizen Work [Science]");
+                    return false;
+                }
+            });
+
+            MenuItem menuItem4 = menu.add(Menu.NONE, 1, Menu.NONE, "Capital");
+            menuItem4.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    playerClan.ai.currentStrategy[2] = new float[]{4,2,1,10,1,1,1};
+                    city.freeAllTiles();
+                    city.pickBestTiles();
+                    Button button = (Button) chainView;
+                    button.setText("Citizen Work [Capital]");
+                    return false;
+                }
+            });
+
+            /*MenuItem menuItem3 = menu.add(Menu.NONE, 3, Menu.NONE, "Fight");
+            menuItem3.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    mRenderer.mousePicker.changeSelectedAction("InitiateCombat");
+                    return false;
+                }
+            });*/
         }
         return true;
     }

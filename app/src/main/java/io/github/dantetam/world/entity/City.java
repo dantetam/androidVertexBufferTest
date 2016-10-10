@@ -289,7 +289,18 @@ public class City extends Building {
             }
         });
         for (Tile tile: cityTiles) {
-            scoreTiles.put(tile, scoreTile(tile));
+            if (clan instanceof CityState) {
+                scoreTiles.put(tile, scoreTile(tile, new float[]{5,2,1,1,1,1,1}));
+            } else {
+                Object[] strategy = clan.ai.currentStrategy;
+                float[] yieldFlavors;
+                if (strategy == null) {
+                    yieldFlavors = new float[]{5,2,1,1,1,1,1};
+                } else {
+                    yieldFlavors = (float[]) strategy[2];
+                }
+                scoreTiles.put(tile, scoreTile(tile, yieldFlavors));
+            }
         }
         Map<Tile, Double> sorted = OpstrykonUtil.sortMapByValue(scoreTiles);
         Set<Tile> tilesToPick = sorted.keySet();
@@ -307,9 +318,9 @@ public class City extends Building {
         }*/
     }
 
-    public double scoreTile(Tile tile) {
+    public double scoreTile(Tile tile, float[] weights) {
         double score = 0;
-        int[] weights = {3, 3, 2, 1, 1, 1, 1};
+        //int[] weights = {3, 3, 2, 1, 1, 1, 1};
         int[] tileYield = tile.yield();
         for (int i = 0; i < tileYield.length; i++) {
             score += weights[i] * tileYield[i];
@@ -354,7 +365,7 @@ public class City extends Building {
 
         List<Tile> expansion = world.getValidExpansionTiles(this);
         for (Tile tile: expansion) {
-            tilesByScore.put(tile, scoreTile(tile));
+            tilesByScore.put(tile, scoreTile(tile, new float[]{5,2,1,1,1,1,1}));
         }
 
         Map<Tile, Double> sorted = OpstrykonUtil.sortMapByValue(tilesByScore);
