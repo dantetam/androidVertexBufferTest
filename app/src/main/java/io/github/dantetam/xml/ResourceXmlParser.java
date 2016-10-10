@@ -98,11 +98,11 @@ public class ResourceXmlParser {
                     String modelName = xpp.getAttributeValue(null, "model");
                     if (modelName != null) {
                         //TODO: Fix this so it randomly splits models
-                        if (modelName.contains("/")) {
+                        /*if (modelName.contains("/")) {
                             String[] modelNames = modelName.split("/");
                             modelName = modelNames[(int)(Math.random()*modelNames.length)];
-                        }
-                        itemType.modelName = modelName;
+                        }*/
+                        itemType.modelName = modelName.split("/");
                     }
                     String textureName = xpp.getAttributeValue(null, "texture");
                     if (textureName != null) {

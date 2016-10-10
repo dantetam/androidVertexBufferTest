@@ -29,7 +29,8 @@ public class BuildingType {
     public String resourceNeeded;
 
     public String iconName;
-    public String modelName, textureName;
+    public String[] modelName;
+    public String textureName;
 
     public boolean created = false;
     /*public void init() {

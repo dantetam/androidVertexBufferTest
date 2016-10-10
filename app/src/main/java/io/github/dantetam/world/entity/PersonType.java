@@ -19,7 +19,7 @@ public class PersonType {
 
     public String iconName;
     public String modelName, textureName;
-    public float modelScale = 1;
+    public float modelScale = 1f;
 
     public boolean created = false;
     /*public void init() {

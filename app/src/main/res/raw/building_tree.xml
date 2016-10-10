@@ -7,7 +7,7 @@ yields are in the form "food/production/science/capital/happiness/health"
 -->
 
 <imprroot>
-    <impr name="City" workNeeded="1" yield="1/1/1/1/1/1/1" tech="Landing" icon="building" model="palace1">
+    <impr name="City" workNeeded="1" yield="1/1/1/1/1/1/1" tech="Landing" icon="building" model="palace1/palace2/palace3">
 
     </impr>
     <impr name="Ruins" workNeeded="1" yield="1/1/1/1/0/1/0" tech="Landing" icon="building" model="ruins1/ruins2/ruins3/ruins4">

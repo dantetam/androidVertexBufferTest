@@ -12,7 +12,8 @@ public class ItemType {
 
     public String name;
     public String iconName;
-    public String modelName, textureName;
+    public String[] modelName;
+    public String textureName;
     //public int food, production, science, capital, happiness, health;
 
     public int[] noImprYield, imprYield;

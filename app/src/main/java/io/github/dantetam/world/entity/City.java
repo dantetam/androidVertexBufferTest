@@ -32,6 +32,7 @@ public class City extends Building {
     public int foodStoredForGrowth, foodNeededForGrowth;
 
     public int lastYieldHealth = 4;
+    public int[] lastYield = new int[]{1,1,1,1,0,0,0};
 
     public IdeologyTree.Ideology dominantIdeology;
     public LinkedHashMap<IdeologyTree.Ideology, Integer> ideologyInfluence;
@@ -161,6 +162,18 @@ public class City extends Building {
             }
         }
         return results;
+    }
+
+    public Entity getQueuedEntity() {
+        if (actionsQueue.size() == 0) {
+            return null;
+        }
+        Action action = actionsQueue.get(0);
+        if (action.type == Action.ActionType.QUEUE_BUILD_UNIT || action.type == Action.ActionType.QUEUE_BUILD_MODULE) {
+            return (Entity) action.data;
+        } else {
+            return null;
+        }
     }
 
     public void executeQueue() {

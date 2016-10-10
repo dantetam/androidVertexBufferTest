@@ -856,8 +856,9 @@ public class WorldHandler {
             if (tile != null && tile.improvement != null) {
                 //Solid improvement = ObjLoader.loadSolid(R.drawable.usb_android, tile.improvement.buildingType.name, assetManager.open(tile.improvement.name + ".obj"));
                 //float[][] objData = assetHelper.loadVertexFromAssets(tile.improvement.name + ".obj");
-                System.out.println("Loading: " + tile.improvement.buildingType.modelName + ".obj");
-                float[][] objData = assetHelper.loadVertexFromAssets(tile.improvement.buildingType.modelName + ".obj");
+                int modelIndex = tile.hashCode() % tile.improvement.buildingType.modelName.length;
+                System.out.println("Loading: " + tile.improvement.buildingType.modelName[modelIndex] + ".obj");
+                float[][] objData = assetHelper.loadVertexFromAssets(tile.improvement.buildingType.modelName[modelIndex] + ".obj");
 
                 final float[] totalCubePositionData = new float[objData[0].length];
                 final float[] totalNormalPositionData = new float[objData[0].length / POSITION_DATA_SIZE * NORMAL_DATA_SIZE];
@@ -866,6 +867,7 @@ public class WorldHandler {
                 Vector3f vertices = storedTileVertexPositions.get(tile);
 
                 final float[] scaledData = scaleData(objData[0], 0.06f, 0.06f, 0.06f);
+                //final float[] scaledData = scaleData(objData[0], 1f, 1f, 1f);
 
                 final float[] thisCubePositionData = translateData(scaledData, vertices.x, vertices.y, vertices.z);
                 System.arraycopy(thisCubePositionData, 0, totalCubePositionData, 0, thisCubePositionData.length);
@@ -1538,6 +1540,7 @@ public class WorldHandler {
                         if (en instanceof Person) {
                             if (((Person) en).personType.modelName != null && ((Person) en).completionPercentage() >= 1.0) {
                                 PersonType personType = ((Person) en).personType;
+                                //int modelIndex = tile.hashCode() % tile.improvement.buildingType.modelName.length;
                                 float[][] unitData = assetHelper.loadVertexFromAssets(personType.modelName + ".obj");
                                 float[] scaledData = scaleData(unitData[0], personType.modelScale, personType.modelScale, personType.modelScale);
                                 finalData[0] = scaledData;

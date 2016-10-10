@@ -13,6 +13,7 @@ public class Tile implements Traversable<Tile> {
     public int elevation;
     public Biome biome; //combined climate of land
     public Terrain terrain; //shape of the land
+    public Feature feature;
     public Building improvement;
     public List<Item> resources;
     public List<Entity> occupants;
@@ -109,9 +110,9 @@ public class Tile implements Traversable<Tile> {
     }
 
     public enum Feature {
-        NO_FEATURE (-1),
-        OASIS (0),
-        FOREST (1);
+        NO_FEATURE (0),
+        OASIS (1),
+        FOREST (2);
         public int id;
         public String renderName;
         Feature(int n) {

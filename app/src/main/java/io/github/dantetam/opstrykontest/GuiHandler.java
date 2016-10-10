@@ -16,9 +16,11 @@ import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.world.action.Action;
+import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.entity.Entity;
+import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.Tile;
 
 /**
@@ -48,6 +50,13 @@ public class GuiHandler {
         public Object chain;
         public Vector2f offset;
     }*/
+
+    public void forceUpdate() {
+        cityTitleGui.clear();
+        cityQueueGui.clear();
+        cityFoodGui.clear();
+        entityHealthGui.clear();
+    }
 
     public void updateGui(MousePicker mousePicker) {
         //System.out.println(storedCityPosition.toString() + " " + guiPosition.toString());
@@ -156,6 +165,32 @@ public class GuiHandler {
         percentFrame.setLayoutParams(param);
         guiLayout.addView(percentFrame);
 
+        param = new PercentRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        param.getPercentLayoutInfo().widthPercent = 1f;
+        param.getPercentLayoutInfo().heightPercent = 1f;
+        //param.getPercentLayoutInfo().leftMarginPercent = 0f;
+        TextView newView = new TextView(mActivity);
+        newView.setBackgroundColor(Color.TRANSPARENT);
+        newView.setLayoutParams(param);
+        Entity queued = city.getQueuedEntity();
+        System.out.println(queued);
+        System.out.println(city.actionsQueue.size());
+        if (queued != null) {
+            float turns = 0;
+            if (queued instanceof Person) {
+                turns = (float) ((Person) queued).personType.workNeeded / (float) city.lastYield[0];
+            } else if (queued instanceof Building) {
+                turns = (float) ((Building) queued).buildingType.workNeeded / (float) city.lastYield[0];
+            } else {
+                turns = 99;
+            }
+            newView.setText((int) turns + "");
+        }
+        else {
+            newView.setText("-");
+        }
+        percentFrame.addView(newView);
+
         percentFrame.setGravity(Gravity.TOP);
         TextView textView = percentBarColorAndText(percent, Color.RED, "");
         percentFrame.addView(textView);
@@ -174,10 +209,28 @@ public class GuiHandler {
         percentFrame.setLayoutParams(param);
         guiLayout.addView(percentFrame);
 
+        param = new PercentRelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        param.getPercentLayoutInfo().widthPercent = 1f;
+        param.getPercentLayoutInfo().heightPercent = 1f;
+        //param.getPercentLayoutInfo().leftMarginPercent = 0f;
+        TextView newView = new TextView(mActivity);
+        newView.setBackgroundColor(Color.TRANSPARENT);
+        newView.setLayoutParams(param);
+        if (city.lastYield[0] != 0) {
+            float turns = (float) city.foodNeededForGrowth / (float) city.lastYield[0];
+            newView.setText((int)turns + "");
+        }
+        else {
+            newView.setText("-");
+        }
+        percentFrame.addView(newView);
+
         float percent = Math.min((float) city.foodStoredForGrowth / (float) city.foodNeededForGrowth, 1);
 
         TextView textView = percentBarColorAndText(percent, Color.GREEN, "");
         percentFrame.addView(textView);
+
+        newView.bringToFront();
 
         cityFoodGui.put(city, percentFrame);
     }

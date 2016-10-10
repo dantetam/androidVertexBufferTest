@@ -204,6 +204,7 @@ public class WorldSystem {
             abilities.add(ability);
         }
 
+        int[] totalClanYield = new int[7];
         int baseIdeologyPower = 0, baseScience = 0;
 
         for (City city: clan.cities) {
@@ -253,7 +254,7 @@ public class WorldSystem {
                 clan.lastHappiness -= rebelDiscontent;
             }
 
-            clan.lastYield = yield;
+            city.lastYield = yield;
 
             if (!(clan instanceof CityState)) {
                 int numIdeologies = clan.ideologyTree.numIdeologiesAndTenetsUnlocked();
@@ -313,6 +314,10 @@ public class WorldSystem {
             }
 
             totalResources.addAnotherInventory(inventory);
+
+            for (int i = 0; i < yield.length; i++) {
+                totalClanYield[i] += yield[i];
+            }
         }
 
         for (Clan otherClan: world.getClans()) {
@@ -351,6 +356,8 @@ public class WorldSystem {
                 }
             }
         }
+
+        clan.lastYield = totalClanYield;
     }
 
     public void parseAllCityAbilities(List<Ability> abilities, City city, int[] yield) {

@@ -112,10 +112,7 @@ public class BuildingXmlParser {
                     String modelName = xpp.getAttributeValue(null, "model");
                     if (modelName != null) {
                         //TODO: Fix this so it randomly splits models
-                        if (modelName.contains("/")) {
-                            modelName = modelName.split("/")[0];
-                        }
-                        buildingType.modelName = modelName;
+                        buildingType.modelName = modelName.split("/");
                     }
                     String textureName = xpp.getAttributeValue(null, "texture");
                     if (textureName != null) {
