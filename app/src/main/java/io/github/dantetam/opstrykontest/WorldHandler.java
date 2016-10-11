@@ -1934,7 +1934,7 @@ public class WorldHandler {
     private static final float TRANSLATE_FACTORZ = 4f;
     private float[][] generateHexes(World world, Collection<Tile> tiles, Condition condition) {
         //Load the vtn data of one hex obj
-        float[][] newHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
+        //float[][] newHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
         float[][] oldHexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.newflathexagon);
 
         //int mRequestedCubeFactor = WORLD_LENGTH;

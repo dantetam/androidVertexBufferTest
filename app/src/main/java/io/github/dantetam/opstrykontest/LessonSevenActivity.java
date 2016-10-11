@@ -1254,13 +1254,16 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public boolean onCreateCitizenAutoMenu(final View chainView, Menu menu) {
+        if (mRenderer.mousePicker.getSelectedTile() == null) {
+            return true;
+        }
         if (!(mRenderer.mousePicker.getSelectedTile().improvement instanceof City)) {
             return true;
         }
         final City city = (City) mRenderer.mousePicker.getSelectedTile().improvement;
-        Entity entity = mRenderer.mousePicker.getSelectedEntity();
-        final LessonSevenActivity mActivity = this;
-        if (entity != null) {
+        //Entity entity = mRenderer.mousePicker.getSelectedEntity();
+        //final LessonSevenActivity mActivity = this;
+        if (city != null) {
             playerClan.ai.currentStrategy = new Object[4];
             MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "Food");
             menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {

@@ -71,31 +71,32 @@ public class MultiTextureHelper {
 
         int shallowSea = load(R.drawable.shallow_sea_texture);
         int deepSea = load(R.drawable.deep_sea_texture);
+        int solidSea = load(R.drawable.sea_texture_plain);
 
         int[] baseColorTextures;
 
         for (Tile.Biome biome: Tile.Biome.values()) {
             switch (biome) {
                 case SEA:
-                    baseColorTextures = new int[]{deepSea, deepSea, shallowSea, shallowSea};
+                    baseColorTextures = new int[]{solidSea, solidSea, solidSea, solidSea};
                     break;
                 case ICE:
                     baseColorTextures = new int[]{ice, ice, forest, shallowSea};
                     break;
                 case TUNDRA:
-                    baseColorTextures = new int[]{dryforest, ice, forest, shallowSea};
+                    baseColorTextures = new int[]{ice, ice, dryforest, dryforest};
                     break;
                 case DESERT:
-                    baseColorTextures = new int[]{desert, desert, desert, shallowSea};
+                    baseColorTextures = new int[]{desert, desert, desert, desert};
                     break;
                 case STEPPE:
-                    baseColorTextures = new int[]{dryforest, dryforest, forest, shallowSea};
+                    baseColorTextures = new int[]{dryforest, dryforest, dryforest, dryforest};
                     break;
                 case FOREST:
-                    baseColorTextures = new int[]{forest, forest, rainforest, shallowSea};
+                    baseColorTextures = new int[]{forest, forest, forest, forest};
                     break;
                 case RAINFOREST:
-                    baseColorTextures = new int[]{rainforest, rainforest, rainforest, shallowSea};
+                    baseColorTextures = new int[]{rainforest, rainforest, rainforest, rainforest};
                     break;
                 default:
                     baseColorTextures = new int[]{};
@@ -107,10 +108,10 @@ public class MultiTextureHelper {
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.HILLS, biome), tex);
 
             List<Texture> tex1 = new ArrayList<>();
-            tex1.add(new MultiTexture("island1", baseColorTextures[3], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
-            tex1.add(new MultiTexture("island2", baseColorTextures[3], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
-            tex1.add(new MultiTexture("island3", baseColorTextures[3], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
-            tex1.add(new MultiTexture("island4", baseColorTextures[3], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_4)));
+            tex1.add(new MultiTexture("island1", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_2)));
+            tex1.add(new MultiTexture("island2", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_2)));
+            tex1.add(new MultiTexture("island3", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_2)));
+            tex1.add(new MultiTexture("island4", baseColorTextures[0], baseColorTextures[1], baseColorTextures[2], baseColorTextures[3], load(R.drawable.island_blendmap_2)));
             terrainBiomeTextures.put(new TerrainBiomePair(Tile.Terrain.ISLANDS, biome), tex1);
 
             List<Texture> tex2 = new ArrayList<>();

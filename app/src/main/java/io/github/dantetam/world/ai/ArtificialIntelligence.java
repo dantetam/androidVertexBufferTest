@@ -69,6 +69,9 @@ public class ArtificialIntelligence {
             Tech tech = computeBestTech();
             clan.techTree.researchingTechQueue.add(tech);
         }
+        if (!(clan instanceof CityState)) {
+            computeDiplomaticOptions();
+        }
     }
 
     public void computerClanCombat() {
@@ -157,7 +160,13 @@ public class ArtificialIntelligence {
                         flavorScore += (clanStrength / otherStrength)*5 / (plusCount - minusCount);
                     }
                     else {
-                        float quality = findFlavor(type);
+                        float quality;
+                        if (findFlavor(type) == null) {
+                            quality = 5;
+                        }
+                        else {
+                            quality = findFlavor(type);
+                        }
                         flavorScore += quality / (plusCount - minusCount);
                     }
                 }

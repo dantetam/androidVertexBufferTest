@@ -13,6 +13,7 @@ import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.entity.Building;
+import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
 import io.github.dantetam.world.action.CombatAction;
 import io.github.dantetam.world.entity.Entity;
@@ -416,6 +417,11 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         "This city can build units and improvements.",
                         "These use production from the city."
                 });
+
+                mActivity.findViewById(R.id.city_citizen_auto_menu).setVisibility(selectedImprovementExists &&
+                        playerClan.equals(selectedTile.world.getTileOwner(selectedTile)) &&
+                        selectedImprovement instanceof City
+                        ? View.VISIBLE : View.INVISIBLE);
 
                 Button selectedEntityMenu = (Button) mActivity.findViewById(R.id.selected_unit_menu);
                 selectedEntityMenu.setVisibility(selectedEntityExists && playerClan.equals(selectedEntity.clan) ? View.VISIBLE : View.INVISIBLE);
