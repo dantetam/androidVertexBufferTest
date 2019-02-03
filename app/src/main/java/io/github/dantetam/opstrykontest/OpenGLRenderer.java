@@ -29,7 +29,6 @@ import io.github.dantetam.opengl.FrameBuffer;
 import io.github.dantetam.opengl.MousePicker;
 import io.github.dantetam.opengl.MultiTexture;
 import io.github.dantetam.opengl.RenderEntity;
-import io.github.dantetam.opengl.Solid;
 import io.github.dantetam.opengl.Texture;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.world.entity.Building;
@@ -46,12 +45,12 @@ import io.github.dantetam.world.entity.Person;
  * which connects graphics and the abstract world representation. This class is directly responsible
  * for most rendering and render calls.
  */
-public class LessonSevenRenderer implements GLSurfaceView.Renderer {
+public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	/** Used for debug logs. */
-	private static final String TAG = "LessonSevenRenderer";
+	private static final String TAG = "OpenGLRenderer";
 
-	private final LessonSevenActivity mLessonSevenActivity;
-	private final LessonSevenGLSurfaceView mGlSurfaceView;
+	public final LessonSevenActivity mLessonSevenActivity;
+    public final OpenGLSurfaceView mGlSurfaceView;
 
     public FrameBuffer frameBufferHelper;
 
@@ -158,6 +157,9 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
     public static int debounceFrames = 0;
     public boolean buildingWorldFinished = false;
 
+    //Whether or not the player is in an active world vs. the menu
+    public boolean inGame = false;
+
     private boolean combatMode = false;
     public boolean getCombatMode() {return combatMode;}
     public void setCombatMode(boolean c) {
@@ -169,8 +171,10 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	/**
 	 * Initialize the model data. Initialize other necessary classes.
 	 */
-	public LessonSevenRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
+	public OpenGLRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
         ClanFactory.init(lessonSevenActivity);
+
+        ColorTextureHelper.init(lessonSevenActivity);
 
 		mLessonSevenActivity = lessonSevenActivity;
         BitmapHelper.init(mLessonSevenActivity);
@@ -179,31 +183,21 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         assetManager = mLessonSevenActivity.getAssets();
         assetHelper = new AssetHelper(lessonSevenActivity, assetManager);
-		mGlSurfaceView = (LessonSevenGLSurfaceView)glSurfaceView;
+		mGlSurfaceView = (OpenGLSurfaceView) glSurfaceView;
         mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
 
         FileParser.mActivity = mLessonSevenActivity;
 
         camera = new Camera();
-        camera.moveTo(5f, 6f, 7.5f);
+        //camera.moveTo(5f, 6f, 7.5f);
+        camera.moveTo(5f, 1f + camera.height, 6f + camera.backOffset);
+        //camera.moveTo(5f, 11f, 9f);
         camera.pointTo(5f, 1f, 6f);
 
-        chunkHelper = new ChunkHelper();
+        guiHandler = new GuiHandler(mLessonSevenActivity, this);
 
         mousePicker = new MousePicker(mProjectionMatrix, camera, getWidth(), getHeight());
         updatePerspectiveMatrix(getWidth(), getHeight());
-
-        worldHandler = new WorldHandler(mLessonSevenActivity, this, mousePicker, assetHelper, chunkHelper, WORLD_LENGTH, WORLD_LENGTH);
-
-        chunkHelper.init(worldHandler.world);
-        guiHandler = new GuiHandler(mLessonSevenActivity, this);
-
-        ColorTextureHelper.init(mLessonSevenActivity);
-
-        worldSystem = new WorldSystem(worldHandler);
-        mousePicker.playerClan = worldSystem.playerClan;
-
-        mGlSurfaceView.init(mLessonSevenActivity, mousePicker, guiHandler, worldSystem.playerClan);
 
         InfoHelper.init(mLessonSevenActivity);
 
@@ -217,6 +211,18 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         //testTree.traverseAndPrint();
         //TechXmlParser.parseTest(worldHandler.world.getClans().get(0), lessonSevenActivity, R.raw.tech_tree);
         //worldHandler.world.getClans().get(0).techTree.traverseAndPrint();
+
+        mLessonSevenActivity.setupGameOptionsMenu();
+    }
+
+    public void loadWorld(WorldParams params) {
+        chunkHelper = new ChunkHelper();
+        worldHandler = new WorldHandler(mLessonSevenActivity, this, mousePicker, assetHelper, chunkHelper, params);
+        chunkHelper.init(worldHandler.world);
+        worldSystem = new WorldSystem(worldHandler);
+        mousePicker.playerClan = worldSystem.playerClan;
+        mGlSurfaceView.init(mLessonSevenActivity, mousePicker, guiHandler, worldSystem.playerClan);
+        mLessonSevenActivity.playerClan = worldSystem.playerClan;
     }
 
     /*
@@ -253,21 +259,21 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 		int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
 		int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
 		mDefaultShaderHandleWithAtlas = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
-				new String[] {"a_Position", "a_Normal", "a_TexCoordinate"});
+                new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
 
         vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.multitexture_atlas_vertex);
         fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.multitexture_atlas_fragment);
         vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
         fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
         mMultiTextureShader = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
-                new String[] {"a_Position", "a_Normal", "a_TexCoordinate"});
+                new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
 
         vertexShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.eight_multitexture_atlas_vertex);
         fragmentShader = RawResourceReader.loadStringOfText(mLessonSevenActivity, R.raw.eight_multitexture_atlas_fragment);
         vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
         fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
         mEightMultiTextureShader = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
-                new String[] {"a_Position", "a_Normal", "a_TexCoordinate"});
+                new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
         
 		// Load the texture
 		mAndroidDataHandle = TextureHelper.loadTexture("usb_android", mLessonSevenActivity, R.drawable.usb_android);
@@ -360,17 +366,23 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         }
 
 		//GLES20.glClearColor(0f/255f, 140f/255f, 255f/255f, 255f/255f);
-		mViewMatrix = camera.getViewMatrix();
+        if (inGame) {
+            mViewMatrix = camera.getViewMatrix();
 
-        mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
+            if (buildingWorldFinished) {
+                mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
+            }
 
-        /*frameBufferHelper.startRender();
-        renderSceneAll();
-        frameBufferHelper.stopRender();*/
+            /*frameBufferHelper.startRender();
+            renderSceneAll();
+            frameBufferHelper.stopRender();*/
 
-        renderSceneAll();
+            renderSceneAll();
 
-        mousePicker.updateAfterFrame();
+            if (buildingWorldFinished) {
+                mousePicker.updateAfterFrame();
+            }
+        }
 
         //System.out.println(mousePicker.getSelectedTile() + " " + mousePicker.getSelectedEntity());
 	}
@@ -380,7 +392,8 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 
         //TODO: Convert to IBOs next?
 
-        mGlSurfaceView.update();
+        if (mLessonSevenActivity != null)
+            mGlSurfaceView.update();
 
         moveCameraToNextUnit();
 
@@ -642,7 +655,6 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
         if (moveCameraInFramesAfter != -1) {
             moveCameraInFramesAfter--;
             if (moveCameraInFramesAfter == 0) {
-                System.out.println("Moving");
                 moveCameraInFramesAfter = -1;
                 //Find the next unit to move, or the next building
                 if (nextUnit == null) {
@@ -651,22 +663,12 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
                         return;
                     }
                 }
-                if (nextUnit.location() == null) { //A queued unit. Interesting.
+                if (nextUnit.location() == null) { //A queued unit.
                     return;
                 }
-                //System.out.println(nextUnit + " " + nextUnit.clan.name + " " + nextUnit.clan.ai.leaderName + " " + nextUnit.name);
                 Vector3f pointAt = worldHandler.storedTileVertexPositions.get(nextUnit.location());
-                /*if (nextUnit instanceof Person) {
-                    pointAt = worldHandler.storedTileVertexPositions.get(nextUnit.location());
-                }
-                else {
-                    pointAt = worldHandler.storedTileVertexPositions.get(nextUnit.location());
-                }*/
 
-                /*camera.moveTo(5f, 6f, 7.5f);
-                camera.pointTo(5f, 1f, 6f);*/
-
-                camera.moveTo(pointAt.x, 6f, pointAt.z + 1.5f);
+                camera.moveTo(pointAt.x, 1f + camera.height, pointAt.z + camera.backOffset);
                 camera.pointTo(pointAt.x, 1f, pointAt.z);
 
                 if (nextUnit instanceof Building) {

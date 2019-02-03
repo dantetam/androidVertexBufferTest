@@ -25,10 +25,10 @@ Used by OpenGL ES as a wrapper view for rendering graphics on the screen
 The extra functionality to handle mouse clicks and update the menus accordingly,
 and deal with mouse picker events.
  */
-public class LessonSevenGLSurfaceView extends GLSurfaceView
+public class OpenGLSurfaceView extends GLSurfaceView
 {
     private LessonSevenActivity mActivity;
-	private LessonSevenRenderer mRenderer;
+	private OpenGLRenderer mRenderer;
     private GuiHandler guiHandler;
 
 	// Offsets for touch events	 
@@ -43,12 +43,12 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 
     //private Tile selectedTile = null;
         	
-	public LessonSevenGLSurfaceView(Context context)
+	public OpenGLSurfaceView(Context context)
 	{
 		super(context);
 	}
 	
-	public LessonSevenGLSurfaceView(Context context, AttributeSet attrs)
+	public OpenGLSurfaceView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
 	}
@@ -106,6 +106,9 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
 	}
 
     public void processMoveAction(float x, float y) {
+        if (!mRenderer.inGame) {
+            return;
+        }
         if (mRenderer != null)
         {
             float deltaX = (x - mPreviousX) / mDensity / 2f;
@@ -204,7 +207,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         personSelected.executeQueue();
                     }
                 }
-                LessonSevenRenderer.debounceFrames = 10;
+                OpenGLRenderer.debounceFrames = 10;
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
             }
@@ -238,7 +241,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     }
                     //previousSelectedEntity.move(mousePicker.getSelectedTile());
                 }
-                LessonSevenRenderer.debounceFrames = 10;
+                OpenGLRenderer.debounceFrames = 10;
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
             }
@@ -260,7 +263,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                     }
                     //previousSelectedEntity.move(mousePicker.getSelectedTile());
                 }
-                LessonSevenRenderer.debounceFrames = 10;
+                OpenGLRenderer.debounceFrames = 10;
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
             }
@@ -286,7 +289,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
                         personSelected.executeQueue();
                     }
                 }
-                LessonSevenRenderer.debounceFrames = 10;
+                OpenGLRenderer.debounceFrames = 10;
                 mousePicker.changeSelectedTile(null);
                 mousePicker.changeSelectedAction("");
             }*/
@@ -313,7 +316,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
     }
 
     public void update() {
-        mActivity.runOnUiThread(new Runnable() {
+        mRenderer.mLessonSevenActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 updateMenu(false);
@@ -491,7 +494,7 @@ public class LessonSevenGLSurfaceView extends GLSurfaceView
     }
 
     // Hides superclass method.
-	public void setRenderer(LessonSevenRenderer renderer, float density) 
+	public void setRenderer(OpenGLRenderer renderer, float density)
 	{
 		mRenderer = renderer;
 		mDensity = density;

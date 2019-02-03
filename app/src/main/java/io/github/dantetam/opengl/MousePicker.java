@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.dantetam.opstrykontest.LessonSevenRenderer;
+import io.github.dantetam.opstrykontest.OpenGLRenderer;
 import io.github.dantetam.utilmath.Vector2f;
 import io.github.dantetam.utilmath.Vector3f;
 import io.github.dantetam.opstrykontest.WorldSystem;
@@ -51,7 +51,7 @@ public class MousePicker {
     public boolean pathNeedsUpdating = false;
     public List<Tile> path;
 
-    //public LessonSevenRenderer renderer;
+    //public OpenGLRenderer renderer;
 
     public MousePicker(float[] p, Camera c, int w, int h) {
         //this.renderer = renderer;
@@ -81,7 +81,7 @@ public class MousePicker {
         );
         rayCastHit.scale(constant);
 
-        if (LessonSevenRenderer.debounceFrames > 0) {
+        if (OpenGLRenderer.debounceFrames > 0) {
             changeSelectedTile(null);
             return;
         }

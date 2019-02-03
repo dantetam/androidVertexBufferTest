@@ -49,65 +49,6 @@ public abstract class RenderEntity {
     //abstract void render(int indexBlock);
     public abstract void release();
 
-   /* FloatBuffer[] getBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
-        // First, copy cube information into client-side floating point buffers.
-        final FloatBuffer cubePositionsBuffer;
-        final FloatBuffer cubeNormalsBuffer;
-        final FloatBuffer cubeTextureCoordinatesBuffer;
-
-        cubePositionsBuffer = ByteBuffer.allocateDirect(cubePositions.length * BYTES_PER_FLOAT)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        cubePositionsBuffer.put(cubePositions).position(0);
-
-        cubeNormalsBuffer = ByteBuffer.allocateDirect(cubeNormals.length * BYTES_PER_FLOAT * generatedCubeFactor * generatedCubeFactor)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-        for (int i = 0; i < (generatedCubeFactor * generatedCubeFactor); i++) {
-            cubeNormalsBuffer.put(cubeNormals);
-        }
-
-        cubeNormalsBuffer.position(0);
-
-        cubeTextureCoordinatesBuffer = ByteBuffer.allocateDirect(cubeTextureCoordinates.length * BYTES_PER_FLOAT * generatedCubeFactor * generatedCubeFactor)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-        for (int i = 0; i < (generatedCubeFactor * generatedCubeFactor); i++) {
-            cubeTextureCoordinatesBuffer.put(cubeTextureCoordinates);
-        }
-
-        cubeTextureCoordinatesBuffer.position(0);
-
-        return new FloatBuffer[] {cubePositionsBuffer, cubeNormalsBuffer, cubeTextureCoordinatesBuffer};
-    }
-
-    FloatBuffer getInterleavedBuffer(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates) {
-        final int cubeDataLength = cubePositions.length
-                + (cubeNormals.length)
-                + (cubeTextureCoordinates.length);
-        int cubePositionOffset = 0;
-        int cubeNormalOffset = 0;
-        int cubeTextureOffset = 0;
-
-        final FloatBuffer cubeBuffer = ByteBuffer.allocateDirect(cubeDataLength * BYTES_PER_FLOAT)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-        for (int v = 0; v < cubePositions.length / POSITION_DATA_SIZE; v++) {
-            //float[] result = new float[cubeBuffer.limit()];
-            //cubeBuffer.get(result);
-            //System.out.println(">>> " + cubePositions.length + " " + cubePositionOffset + " " + cubeDataLength);
-            cubeBuffer.put(cubePositions, cubePositionOffset, POSITION_DATA_SIZE);
-            cubePositionOffset += POSITION_DATA_SIZE;
-            cubeBuffer.put(cubeNormals, cubeNormalOffset, NORMAL_DATA_SIZE);
-            cubeNormalOffset += NORMAL_DATA_SIZE;
-            cubeBuffer.put(cubeTextureCoordinates, cubeTextureOffset, TEXTURE_COORDINATE_DATA_SIZE);
-            cubeTextureOffset += TEXTURE_COORDINATE_DATA_SIZE;
-        }
-
-        cubeBuffer.position(0);
-
-        return cubeBuffer;
-    }*/
-
     /**
      * Generated an interleaved VBO from the data, which contains n number of vertices, normal, and tex coords
      * We defined interleaved to be [vertex1, normal1, tex1, vertex2, normal2, tex2, ... vertexn, normaln, textn)]
@@ -121,18 +62,15 @@ public abstract class RenderEntity {
         final int cubeDataLength = cubePositions.length
                 + (cubeNormals.length * generatedCubeFactor * generatedCubeFactor)
                 + (cubeTextureCoordinates.length * generatedCubeFactor * generatedCubeFactor);
-        int cubePositionOffset = 0;
-        int cubeNormalOffset = 0;
-        int cubeTextureOffset = 0;
 
         final FloatBuffer cubeBuffer = ByteBuffer.allocateDirect(cubeDataLength * BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
         for (int i = 0; i < generatedCubeFactor * generatedCubeFactor; i++) {
+            int cubePositionOffset = 0;
+            int cubeNormalOffset = 0;
+            int cubeTextureOffset = 0;
             for (int v = 0; v < cubePositions.length / POSITION_DATA_SIZE; v++) {
-                //float[] result = new float[cubeBuffer.limit()];
-                //cubeBuffer.get(result);
-                //System.out.println(">>> " + cubePositions.length + " " + cubePositionOffset + " " + cubeDataLength);
                 cubeBuffer.put(cubePositions, cubePositionOffset, POSITION_DATA_SIZE);
                 cubePositionOffset += POSITION_DATA_SIZE;
                 cubeBuffer.put(cubeNormals, cubeNormalOffset, NORMAL_DATA_SIZE);
@@ -140,12 +78,7 @@ public abstract class RenderEntity {
                 cubeBuffer.put(cubeTextureCoordinates, cubeTextureOffset, TEXTURE_COORDINATE_DATA_SIZE);
                 cubeTextureOffset += TEXTURE_COORDINATE_DATA_SIZE;
             }
-
-            // The normal and texture data is repeated for each cube.
-            cubeNormalOffset = 0;
-            cubeTextureOffset = 0;
         }
-
         cubeBuffer.position(0);
 
         return cubeBuffer;

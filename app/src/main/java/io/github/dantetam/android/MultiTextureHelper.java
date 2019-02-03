@@ -28,7 +28,7 @@ public class MultiTextureHelper {
 
     public static HashMap<TerrainBiomePair, List<Texture>> terrainBiomeTextures;
 
-    public static HashMap<ItemType, List<Texture>> resourceTextures;
+    public static HashMap<String, List<Texture>> resourceTextures;
 
     public static boolean init = false;
     public static void init(LessonSevenActivity activity) {
@@ -142,7 +142,7 @@ public class MultiTextureHelper {
 
         List<Texture> tex = new ArrayList<>();
         tex.add(new MultiTexture("extromass", extromass, extromass, extromass, extromass, extromass));
-        resourceTextures.put(TechTree.itemTypes.get("Extromass"), tex);
+        resourceTextures.put("Extromass", tex);
     }
 
     public static class TerrainBiomePair {

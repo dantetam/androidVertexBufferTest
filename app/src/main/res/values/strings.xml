@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>    
-    <string name="app_name">Opstrykon</string>
+    <string name="app_name">Serenine</string>
     <string name="main_menu">Adventure</string>
 
     <string name="new_world">New World</string>
     <string name="new_world_option1">Option 1</string>
     <string name="new_world_option2">Option 2</string>
     <string name="new_world_option3">Option 3</string>
+    <string name="create_new_world">Travel the Stars</string>
 
     <string name="turn_menu">End Turn</string>
     <string name="next_turn_confirmation">Confirm Next Turn</string>

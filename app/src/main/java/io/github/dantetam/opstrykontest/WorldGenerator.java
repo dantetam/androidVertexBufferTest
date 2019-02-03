@@ -11,7 +11,9 @@ import io.github.dantetam.android.RawResourceReader;
 import io.github.dantetam.utilmath.DiamondSquare;
 import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.utilmath.Vector2f;
+import io.github.dantetam.world.entity.Building;
 import io.github.dantetam.world.entity.CityState;
+import io.github.dantetam.world.entity.Tech;
 import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.factory.BuildingFactory;
 import io.github.dantetam.world.entity.City;
@@ -39,10 +41,12 @@ public class WorldGenerator {
 
     private static LessonSevenActivity mActivity;
     private World world;
+    private WorldParams params;
 
-    public WorldGenerator(LessonSevenActivity mActivity, World w) {
+    public WorldGenerator(LessonSevenActivity mActivity, World w, WorldParams params) {
         this.mActivity = mActivity;
         world = w;
+        this.params = params;
     }
 
     /**
@@ -67,6 +71,17 @@ public class WorldGenerator {
         makeNewResources(world);
         makeNewRuins(world);
         setClanLands(world);
+    }
+
+    public int[][] generateTerrainByChoice(String choice) {
+        if (choice.equals("Pangaea")) {
+            //TODO: impl.
+        } else if (choice.equals("Pangaea+")) {
+
+        } else if (choice.equals("Rolling Hills")) {
+
+        }
+        throw new IllegalArgumentException("Cannot find terrain choice: " + choice);
     }
 
     /**
@@ -134,7 +149,12 @@ public class WorldGenerator {
         for (int i = 0; i < num; i++) {
             Clan clan;
             if (i == 0) {
-                clan = ClanFactory.randomAvailableClan();
+                if (params != null) {
+                    clan = ClanFactory.getClanByName(params.civChoice);
+                }
+                else {
+                    clan = ClanFactory.randomAvailableClan();
+                }
                 //clan.name = "PlayerClan";
             }
             else {
@@ -257,6 +277,8 @@ public class WorldGenerator {
             firstCity.pickBestTiles();
             //first.move(clanHome);
 
+            Building capital = BuildingFactory.newModule(world, clan, TechTree.buildingTypes.get("Capital"), clanHome, 1, firstCity);
+
             Person unit = PersonFactory.newPerson(clan.unitTree.personTypes.get("Soldier"), world, clan, 1.0);
             unit.move(clanHome);
         }
@@ -279,7 +301,7 @@ public class WorldGenerator {
             }
         }
     }
-    private Tile findFurthestTileAway(World world, int q, int r) {
+    private Tile findFurthestLandTile(World world, int q, int r) {
         List<Tile> tiles = world.getAllLandTiles();
         Vector2f t = new Vector2f(q,r);
         float maxDist = 0;

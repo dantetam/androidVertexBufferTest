@@ -4,7 +4,7 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
-	<io.github.dantetam.opstrykontest.LessonSevenGLSurfaceView
+	<io.github.dantetam.opstrykontest.OpenGLSurfaceView
 		android:id="@+id/gl_surface_view"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" />
@@ -134,6 +134,93 @@
             app:layout_heightPercent="40%"
             app:layout_marginTopPercent="50%"
             app:layout_marginLeftPercent="50%" />-->
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/game_options_menu_scroll"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:fillViewport="true"
+                    android:fadeScrollbars="false"
+                    app:layout_widthPercent="50%"
+                    app:layout_heightPercent="80%"
+                    app:layout_marginTopPercent="10%"
+                    app:layout_marginLeftPercent="60%"
+                    android:visibility="visible">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:id="@+id/game_options_menu"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:paddingLeft="16dp"
+                          android:padding="20dp"
+                          android:showDividers="middle"
+                          android:divider="@drawable/empty_wide_divider"
+                          android:orientation="vertical"
+                          app:layout_widthPercent="50%"
+                          app:layout_heightPercent="80%"
+                          app:layout_marginTopPercent="10%"
+                          app:layout_marginLeftPercent="60%"
+                          android:visibility="visible">
+            </LinearLayout>
+        </ScrollView>
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/new_world_options_menu_scroll"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:fillViewport="true"
+                    android:fadeScrollbars="false"
+                    app:layout_widthPercent="50%"
+                    app:layout_heightPercent="80%"
+                    app:layout_marginTopPercent="10%"
+                    app:layout_marginLeftPercent="60%"
+                    android:visibility="visible">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:id="@+id/new_world_options_menu"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:paddingLeft="16dp"
+                          android:padding="20dp"
+                          android:showDividers="middle"
+                          android:divider="@drawable/empty_wide_divider"
+                          android:orientation="vertical"
+                          app:layout_widthPercent="50%"
+                          app:layout_heightPercent="80%"
+                          app:layout_marginTopPercent="10%"
+                          app:layout_marginLeftPercent="60%"
+                          android:visibility="visible">
+                <Spinner
+                    android:id="@+id/spinner_world_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top" />
+                <Spinner
+                    android:id="@+id/spinner_world_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top" />
+                <Spinner
+                    android:id="@+id/spinner_difficulty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top" />
+                <Spinner
+                    android:id="@+id/spinner_civchoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top" />
+                <Button
+                    android:id="@+id/create_new_world"
+                    android:text="@string/create_new_world"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:contentDescription="@string/create_new_world"
+                    android:onClick="onClickCreateNewWorld" />
+            </LinearLayout>
+        </ScrollView>
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/city_queue_menu_scroll"

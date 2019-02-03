@@ -6,7 +6,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -29,14 +28,14 @@ import io.github.dantetam.world.entity.Tile;
 public class GuiHandler {
 
     private LessonSevenActivity mActivity;
-    private LessonSevenRenderer mRenderer;
+    private OpenGLRenderer mRenderer;
 
     public HashMap<City, TextView> cityTitleGui = new HashMap<>();
     public HashMap<City, PercentRelativeLayout> cityQueueGui = new HashMap<>();
     public HashMap<City, PercentRelativeLayout> cityFoodGui = new HashMap<>();
     public HashMap<Entity, PercentRelativeLayout> entityHealthGui = new HashMap<>();
 
-    public GuiHandler(LessonSevenActivity activity, LessonSevenRenderer renderer) {
+    public GuiHandler(LessonSevenActivity activity, OpenGLRenderer renderer) {
         mActivity = activity;
         mRenderer = renderer;
 

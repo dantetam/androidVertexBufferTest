@@ -38,7 +38,6 @@ import io.github.dantetam.world.entity.PersonType;
 import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.Tile;
 import io.github.dantetam.world.entity.World;
-import io.github.dantetam.xml.BuildingXmlParser;
 
 /**
  * Created by Dante on 6/17/2016.
@@ -96,7 +95,7 @@ public class WorldHandler {
     //private HashMap<BuildingType, Integer> improvementModels;
 
     private LessonSevenActivity mActivity;
-    private LessonSevenRenderer mRenderer;
+    private OpenGLRenderer mRenderer;
 
     static final int POSITION_DATA_SIZE = 3;
     static final int NORMAL_DATA_SIZE = 3;
@@ -110,9 +109,9 @@ public class WorldHandler {
 
     //TODO: Use change listeners to update 3d models when code is called
 
-    public WorldHandler(LessonSevenActivity mActivity, LessonSevenRenderer mRenderer, MousePicker mousePicker, AssetHelper assetHelper, ChunkHelper chunkHelper, int len1, int len2) {
-        world = new World(len1, len2);
-        worldGenerator = new WorldGenerator(mActivity, world);
+    public WorldHandler(LessonSevenActivity mActivity, OpenGLRenderer mRenderer, MousePicker mousePicker, AssetHelper assetHelper, ChunkHelper chunkHelper, WorldParams params) {
+        world = new World(params);
+        worldGenerator = new WorldGenerator(mActivity, world, params);
         worldGenerator.init();
         this.mActivity = mActivity;
         this.mRenderer = mRenderer;
@@ -184,50 +183,7 @@ public class WorldHandler {
                     chunkTiles.add(tile);
                 }
             }
-
-            //new WorldHandlerTask().execute();
-
-            /*tilesStored = null;
-            storedTerrainBiomeTiles = null;
-
-            improvementsStored = null;
-
-            unitsStored = null;
-
-            tileHighlightOwnerStored = null;
-            tileHighlightInfluenceStored = null;
-
-            tileTerritoryStored = null;
-            tileYieldUiStored = null;
-            tileResourceStored = null;
-
-            highlightedCityTerritory = null;
-
-            improvementResourceProductionUi = null;
-            improvementResourceStatUi = null;*/
         }
-        /*chunkTiles = chunkHelper.getChunkTiles(mousePicker.centerTile, 1);
-        if (chunkTiles == null) {
-            chunkTiles = new ArrayList<>();
-        }*/
-
-        /*if (LessonSevenRenderer.frames % 100 == 0) {
-            for (int x = 0; x < chunkHelper.alignedTiles.length; x++) {
-                for (int z = 0; z < chunkHelper.alignedTiles[0].length; z++) {
-                    if (chunkHelper.alignedTiles[x][z].equals(mousePicker.centerTile)) {
-                        System.out.print("! ");
-                    }
-                    else if (chunkTiles.contains(chunkHelper.alignedTiles[x][z])) {
-                        System.out.print("X ");
-                    }
-                    else
-                        System.out.print("- ");
-                }
-                System.out.println();
-            }
-        }*/
-
-        //mousePicker.passInTileVertices(worldHandler.storedTileVertexPositions);
 
         mousePicker.passInTileVertices(storedTileVertexPositions);
 
@@ -235,6 +191,7 @@ public class WorldHandler {
             needsUpdateOnNextFrame = false;
             improvementResourceStatUi = null;
             improvementResourceProductionUi = null;
+            highlightedCityTerritory = null;
         }
 
         if (mRenderer.getCombatMode()) {
@@ -306,9 +263,6 @@ public class WorldHandler {
             solidsToRender.add(highlightedCityTerritory);
         }*/
 
-        //tileHighlightRep();
-        //modelsToRender.add(tileHighlightOwnerStored);
-
         if (!mRenderer.buildingWorldFinished) {
             mRenderer.buildingWorldFinished = true;
             mActivity.runOnUiThread(new Thread() {
@@ -318,6 +272,11 @@ public class WorldHandler {
                     ImageView splashScreen = (ImageView) mActivity.findViewById(R.id.splash_screen_main);
                     splashScreen.clearAnimation();
                     splashScreen.startAnimation(anim);
+
+                    mActivity.findViewById(R.id.new_world_options_menu).setVisibility(View.INVISIBLE);
+                    mActivity.findViewById(R.id.game_options_menu).setVisibility(View.INVISIBLE);
+                    mActivity.findViewById(R.id.new_world_options_menu_scroll).setVisibility(View.INVISIBLE);
+                    mActivity.findViewById(R.id.game_options_menu_scroll).setVisibility(View.INVISIBLE);
                     //mLessonSevenActivity.findViewById(R.id.splash_screen_main).setVisibility(View.INVISIBLE);
                     try {
                         sleep(2500);
@@ -331,6 +290,9 @@ public class WorldHandler {
             mRenderer.getUserInterfaceReady();
             System.out.println("Done loading.");
         }
+
+        //tileHighlightRep();
+        //modelsToRender.add(tileHighlightOwnerStored);
 
         return new Object[]{modelsToRender, solidsToRender};
     }
@@ -382,26 +344,9 @@ public class WorldHandler {
                         }
                     };
                     cond.init(i, j);
-                    //float[] color = {(int)(Math.random()*256f), (int)(Math.random()*256f), (int)(Math.random()*256f), 255f};
-                    //System.out.println(color[0] + " " + color[1] + " " + color[2] + " " + color[3]);
-                    //int textureHandle = ColorTextureHelper.loadColor(color);
 
-                    /*GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
-                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
-                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);*/
-
-                    //int textureHandle = TextureHelper.loadTexture("usb_android");
                     float[][] solidsOfBiome = generateHexes(world, tiles, cond);
-                    /*for (int p = 0; p < solidsOfBiome[0].length; p += 3) {
-                    if (solidsOfBiome[0][p] < minX || minX == -9999) {
-                        minX = solidsOfBiome[0][p];
-                    }
-                    if (solidsOfBiome[0][p] > maxX || maxX == -9999) {
-                        maxX = solidsOfBiome[0][p];
-                    }
-                    }*/
+
                     solidsOfBiomeData[condIndex] = solidsOfBiome;
                     //tilesStored.add(solidsOfBiome[0]);
                     //tilesStored.add(solidsOfBiome[1]);
@@ -431,26 +376,6 @@ public class WorldHandler {
                 for (int j = 0; j < Tile.Biome.numBiomes; j++) {
                     Tile.Terrain terrain = Tile.Terrain.fromInt(i);
                     Tile.Biome biome = Tile.Biome.fromInt(j);
-                    //float[] color = Tile.Biome.colorFromInt(i);
-                    //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
-                    //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
-
-                    /*int blackTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.dryforest_texture), mActivity, R.drawable.dryforest_texture);
-                    int rTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.desert_texture), mActivity, R.drawable.desert_texture);
-                    int gTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.forest_texture), mActivity, R.drawable.forest_texture);
-                    int bTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.ice_texture), mActivity, R.drawable.ice_texture);
-                    int blendMap;
-                    if (i % 2 == 0) {
-                        blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.blend_map), mActivity, R.drawable.blend_map);
-                    }
-                    else {
-                        blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.blend_map_2), mActivity, R.drawable.blend_map_2);
-                    }
-                    //Solid solid = ObjLoader.loadSolid(new Texture("biomeHandle" + i, textureHandle, 2, i % 4), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
-                    MultiTexture multiTexture = new MultiTexture("biomeHandleMulti" + i, blackTexture, rTexture, gTexture, bTexture, blendMap);
-                    Solid solid = ObjLoader.loadSolid(multiTexture, "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
-                    storedTerrainTiles.put(terrain, solid);
-                    tilesStored.add(solid);*/
 
                     List<Texture> texture = MultiTextureHelper.getTerrainBiomeTexture(terrain, biome);
                     Solid solid = ObjLoader.loadSolid(texture.get((int) (Math.random() * texture.size())), "worldBiomeTiles" + condIndex, solidsOfBiomeData[condIndex]);
@@ -489,31 +414,18 @@ public class WorldHandler {
 
             int i = 0;
             for (BuildingType buildingType: TechTree.buildingTypes.values()) {
-                //float[] color = Tile.Biome.colorFromInt(i);
-                //int textureHandle = biomeTextures.get(Tile.Biome.fromInt(i));
-                //int textureHandle = TextureHelper.loadTexture("usb_android", mActivity, R.drawable.usb_android);
                 int blackTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.dryforest_texture), mActivity, R.drawable.dryforest_texture);
                 int rTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.desert_texture), mActivity, R.drawable.desert_texture);
                 int gTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.forest_texture), mActivity, R.drawable.forest_texture);
                 int bTexture = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.ice_texture), mActivity, R.drawable.ice_texture);
                 int blendMap = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(R.drawable.usb_android), mActivity, R.drawable.usb_android);
-                //Solid solid = ObjLoader.loadSolid(new Texture("biomeHandle" + i, textureHandle, 2, i % 4), "worldBiomeTiles" + Tile.Biome.nameFromInt(i), solidsOfBiomeData[i]);
+
                 MultiTexture multiTexture = new MultiTexture("imprHandleMulti" + i, blackTexture, rTexture, gTexture, bTexture, blendMap);
                 Solid solid = ObjLoader.loadSolid(multiTexture, "imprBiomeTiles", imprData[i]);
                 storedImprTilesTex.put(buildingType, solid);
                 tilesStored.add(solid);
                 i++;
             }
-
-            /*LessonSevenRenderer.Condition cond = new LessonSevenRenderer.Condition() {
-                public boolean allowed(Object obj) {
-                    if (!(obj instanceof Tile)) return false;
-                    Tile t = (Tile) obj;
-                    return t.equals(mousePicker.selectedTile);
-                }
-            };
-            storedSelectedTileSolid = generateHexes(TextureHelper.loadTexture("usb_android"), world, cond);
-            tilesStored.add(storedSelectedTileSolid);*/
         }
         return tilesStored;
     }
@@ -563,12 +475,6 @@ public class WorldHandler {
                     clanTiles.add(t);
                 }
             }
-            /*for (Tile t: influencers.get(clan)) {
-                if (t != null) {
-                    clanTiles.add(t);
-                }
-            }*/
-            //List<Tile> clanTiles = en.getValue();
 
             int numVertices = 0;
             int posOffset = 0, norOffset = 0, texOffset = 0;
@@ -748,7 +654,6 @@ public class WorldHandler {
         Object[] data = world.aggregateOwners(tiles);
         HashMap<Clan, List<Tile>> owners = (HashMap<Clan, List<Tile>>) data[0];
         HashMap<Clan, List<Tile>> influencers = (HashMap<Clan, List<Tile>>) data[1];
-        List<Tile> neutral = (List<Tile>) data[2];
 
         float[][] objData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagonflat);
 
@@ -1111,31 +1016,26 @@ public class WorldHandler {
                 return t.food() > 0;
             }
         };
-
         Condition condition2 = new Condition() {
             public boolean allowedTile(Tile t) {
                 return t.production() > 0;
             }
         };
-
         Condition condition3 = new Condition() {
             public boolean allowedTile(Tile t) {
                 return t.science() > 0;
             }
         };
-
         Condition condition4 = new Condition() {
             public boolean allowedTile(Tile t) {
                 return t.capital() > 0;
             }
         };
-
         Condition condition5 = new Condition() {
             public boolean allowedTile(Tile t) {
                 return t.improvement != null && t.improvement.buildingType.name.equals("City") && ((City) t.improvement).population() > 0;
             }
         };
-
         Condition condition6 = new Condition() {
             public boolean allowedTile(Tile t) {
                 return t.improvement != null;
@@ -1144,7 +1044,6 @@ public class WorldHandler {
 
         Condition[] conditions = {condition1, condition2, condition3, condition4, condition5, condition6};
 
-        //int[][] textureTints = {{0, 255, 0}, {255, 0, 0}, {0, 0, 255}, {255, 255, 0}};
         int[] textureHandles = new int[tileYieldTextures.length];
         for (int i = 0; i < textureHandles.length; i++) {
             textureHandles[i] = TextureHelper.loadTexture(mActivity.getResources().getResourceEntryName(tileYieldTextures[i]), mActivity, tileYieldTextures[i]);
@@ -1862,7 +1761,7 @@ public class WorldHandler {
      *                  under the same texture and VBO.
      * @return A new solid which is a representation of the provided world
      */
-    /*private Solid generateImprovements(int textureHandle, World world, LessonSevenRenderer.Condition condition) {
+    /*private Solid generateImprovements(int textureHandle, World world, OpenGLRenderer.Condition condition) {
         float[][] hexData = ObjLoader.loadObjModelByVertex(mActivity, R.raw.hexagon);
 
         //int mRequestedCubeFactor = WORLD_LENGTH;

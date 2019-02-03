@@ -13,6 +13,8 @@ public class Camera {
     //3 vectors, which align with the Android matrix class
     public float eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ;
 
+    public final float height = 10f, backOffset = 3f;
+
     public Camera() {
         upX = 0; upY = 1; upZ = 0;
     }

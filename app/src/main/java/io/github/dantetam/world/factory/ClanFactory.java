@@ -100,6 +100,11 @@ public class ClanFactory {
         usedCityStates = new HashSet<>();
     }
 
+    public static Clan getClanByName(String name) {
+        Clan ai = parser.clans.get(name);
+        return newClan(ai);
+    }
+
     public static Clan randomAvailableClan() {
         Clan clan = null;
         while (clan == null || usedClans.contains(clan.name)) {
