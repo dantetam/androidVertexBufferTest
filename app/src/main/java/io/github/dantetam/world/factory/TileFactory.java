@@ -21,7 +21,7 @@ public class TileFactory {
         tile.biome = biome;
         tile.terrain = terrain;
         //TODO: tile.feature
-        tile.initBaseResources(1,1,0,0,0,0,0);
+        tile.initBaseResources(2,1,0,0,0,0,0);
         int numSpaces = 3;
         switch (biome) {
             case SEA:
@@ -29,10 +29,10 @@ public class TileFactory {
                 numSpaces = 6;
                 break;
             case ICE:
-                tile.addBaseResources(-1,1,0,0,0,0,0);
+                tile.addBaseResources(-2,1,0,0,0,0,0);
                 break;
             case TUNDRA:
-                tile.addBaseResources(0,1,0,0,0,0,0);
+                tile.addBaseResources(-1,1,0,0,0,0,0);
                 break;
             case DESERT:
                 tile.addBaseResources(-1,1,0,1,0,0,0);

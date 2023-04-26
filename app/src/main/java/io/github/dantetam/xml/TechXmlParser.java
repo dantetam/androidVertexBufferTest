@@ -66,7 +66,7 @@ public class TechXmlParser {
     This builds the tech tree with the help of a stack, where a <tech> tag
     pushes a new tech to the stack and sets the parent if it exists, and a </tech>
     tag pops a tech off the stack. The stackCounter int represents distance from
-    the tech root, where -1 indicates no tech has been parsed.
+    the tech root, where -1 indicates no tech has been parsed (root level).
      */
     public static TechTree parseTechTree(TechTree tree, InputStream inputStream)
             throws XmlPullParserException, IOException {

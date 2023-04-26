@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.github.dantetam.opstrykontest.WorldParams;
 import io.github.dantetam.opstrykontest.WorldSystem;
 import io.github.dantetam.world.factory.TileFactory;
 
@@ -35,8 +36,9 @@ public class World {
     public List<Tile> clanTerritoriesUpdate;
 
     //x represents height, z represents length
-    public World(int q, int r) {
+    public World(WorldParams params) {
         //tree = new WorldTree();
+        int q = params.len1, r = params.len2;
         hexes = new Tile[r][q + r/2];
         validTiles = new ArrayList<Tile>();
         this.totalX = q; this.totalZ = r;

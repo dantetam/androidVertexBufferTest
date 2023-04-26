@@ -77,18 +77,6 @@ public class ObjLoader {
         }
         //System.out.println("Not loading from memory too: " + textureName);
         float[][] data = loadObjModelByVertex(textureName, context, resourceId);
-        //solidData.put(textureName, data);
-        //Solid solid = new Solid(data[0], data[1], data[2], 1);
-        /*for (int t = 0; t < 3; t++) {
-            for (int i = 0; i < data[t].length; i++) {
-                System.out.print(data[t][i] + " ");
-                int f = t == 2 ? 2 : 3;
-                if (i % f == f - 1) {
-                    System.out.print("; ");
-                }
-            }
-            System.out.println();
-        }*/
         return loadSolid(newTexture, textureName, data);
     }
 
@@ -99,11 +87,9 @@ public class ObjLoader {
     public static HashMap<String, float[][]> solidData = new HashMap<>();
 
     private static Solid loadSolid(Texture texture, String textureName) {
-        if (textureName != null && solidData.containsKey(textureName)) {
-            //System.out.println("Loading from memory: " + textureName);
+        if (textureName != null && solidData.containsKey(textureName)) { //Load from memory if possible
             return loadSolid(texture, textureName, solidData.get(textureName));
         }
-        //System.out.println("Not loading from memory: " + textureName);
         return null;
     }
 
@@ -129,23 +115,9 @@ public class ObjLoader {
                                   final int resourceId)
     {
         if (textureName != null && solidData.containsKey(textureName)) {
-            //System.out.println("Loading from memory too: " + textureName);
             return loadSolid(texture, textureName, solidData.get(textureName));
         }
-        //System.out.println("Not loading from memory too: " + textureName);
         float[][] data = loadObjModelByVertex(textureName, context, resourceId);
-        //solidData.put(textureName, data);
-        //Solid solid = new Solid(data[0], data[1], data[2], 1);
-        /*for (int t = 0; t < 3; t++) {
-            for (int i = 0; i < data[t].length; i++) {
-                System.out.print(data[t][i] + " ");
-                int f = t == 2 ? 2 : 3;
-                if (i % f == f - 1) {
-                    System.out.print("; ");
-                }
-            }
-            System.out.println();
-        }*/
         return loadSolid(texture, textureName, data);
     }
     /*
@@ -405,28 +377,6 @@ public class ObjLoader {
                 }
             }
 
-            /*while (line != null)
-            {
-                //Make sure a face line is being read
-                if (!line.startsWith("f "))
-                {
-                    line = reader.readLine();
-                    continue;
-                }
-                //A face is in the from f x/y/z a/b/c d/e/f
-                //Split into these 4 sections
-                //and then split the sections by slashes to get the numbers x, y, z, etc.
-                String[] currentLine = line.split(" ");
-                String[] vertex1 = currentLine[1].split("/");
-                String[] vertex2 = currentLine[2].split("/");
-                String[] vertex3 = currentLine[3].split("/");
-
-                processVertex(vertex1, vertices, textures, normals, allVertices, allTextures, allNormals);
-                processVertex(vertex2, vertices, textures, normals, allVertices, allTextures, allNormals);
-                processVertex(vertex3, vertices, textures, normals, allVertices, allTextures, allNormals);
-
-                line = reader.readLine();
-            }*/
             reader.close();
 
         } catch (Exception e) {e.printStackTrace();}

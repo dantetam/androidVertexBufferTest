@@ -238,7 +238,6 @@ public class Solid extends RenderEntity {
     }
 
     public void render(int blockIndex) {
-
         final int stride = (POSITION_DATA_SIZE + NORMAL_DATA_SIZE + TEXTURE_COORDINATE_DATA_SIZE) * BYTES_PER_FLOAT;
 
         // Pass in the position information

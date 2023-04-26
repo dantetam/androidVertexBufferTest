@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ConfigurationInfo;
 import android.graphics.Color;
-import android.opengl.EGLConfig;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.DisplayMetrics;
@@ -17,16 +16,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SubMenu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -34,17 +32,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.github.dantetam.android.MultiTextureHelper;
 import io.github.dantetam.utilmath.OpstrykonUtil;
 import io.github.dantetam.world.action.Ability;
 import io.github.dantetam.world.action.Action;
 import io.github.dantetam.world.ai.ArtificialIntelligence;
 import io.github.dantetam.world.ai.RelationModifier;
 import io.github.dantetam.world.entity.Building;
-import io.github.dantetam.world.action.BuildingAction;
 import io.github.dantetam.world.entity.CityState;
 import io.github.dantetam.world.entity.ItemType;
-import io.github.dantetam.world.factory.BuildingFactory;
 import io.github.dantetam.world.entity.BuildingType;
 import io.github.dantetam.world.entity.City;
 import io.github.dantetam.world.entity.Clan;
@@ -52,10 +47,11 @@ import io.github.dantetam.world.entity.Entity;
 import io.github.dantetam.world.entity.Item;
 import io.github.dantetam.world.entity.Person;
 import io.github.dantetam.world.entity.PersonType;
-import io.github.dantetam.world.entity.Recipe;
 import io.github.dantetam.world.entity.Tech;
 import io.github.dantetam.world.entity.TechTree;
 import io.github.dantetam.world.entity.Tile;
+import io.github.dantetam.world.factory.ClanFactory;
+import io.github.dantetam.world.factory.PersonFactory;
 
 /*
 Standard Android activity that also has to handle button clicks and event listeners.
@@ -69,8 +65,8 @@ public class LessonSevenActivity extends Activity implements
      * Hold a reference to our GLSurfaceView
      */
     public final LessonSevenActivity mActivity = this; //For use in final classes
-    private LessonSevenGLSurfaceView mGLSurfaceView;
-    public LessonSevenRenderer mRenderer;
+    private OpenGLSurfaceView mGLSurfaceView;
+    public OpenGLRenderer mRenderer;
 
     private GestureDetectorCompat mDetector;
 
@@ -85,7 +81,7 @@ public class LessonSevenActivity extends Activity implements
     private PopupMenu moduleSelectionMenu;
     private PopupMenu infoSelectionMenu;
 
-    private Clan playerClan;
+    public Clan playerClan;
 
     public AutomaticTurn turnStyle = AutomaticTurn.AUTOMATIC;
 
@@ -172,7 +168,7 @@ public class LessonSevenActivity extends Activity implements
 
         findViewById(R.id.splash_screen_main).bringToFront();
 
-        mGLSurfaceView = (LessonSevenGLSurfaceView) findViewById(R.id.gl_surface_view);
+        mGLSurfaceView = (OpenGLSurfaceView) findViewById(R.id.gl_surface_view);
 
         // Check if the system supports OpenGL ES 2.0.
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -187,7 +183,7 @@ public class LessonSevenActivity extends Activity implements
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
             // Set the renderer to our demo renderer, defined below.
-            mRenderer = new LessonSevenRenderer(this, mGLSurfaceView);
+            mRenderer = new OpenGLRenderer(this, mGLSurfaceView);
             mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
         } else {
             // This is where you could create an OpenGL ES 1.x compatible
@@ -201,8 +197,6 @@ public class LessonSevenActivity extends Activity implements
         mDetector.setOnDoubleTapListener(this);
 
         registerForContextMenu(mGLSurfaceView);
-
-        playerClan = mRenderer.worldSystem.playerClan;
     }
 
     @Override
@@ -224,6 +218,134 @@ public class LessonSevenActivity extends Activity implements
     public final String DEBUG_TAG = "Debug (Gesture): ";
 
     private View newWorldMenu;
+
+    public void setupGameOptionsMenu() {
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.game_options_menu_scroll);
+        final LinearLayout layout = (LinearLayout) findViewById(R.id.game_options_menu);
+
+        scrollView.setVisibility(View.VISIBLE);
+        layout.setVisibility(View.VISIBLE);
+
+        scrollView.bringToFront();
+        layout.bringToFront();
+
+        /*Button clanView = new Button(this);
+        clanView.setHeight(120);
+        clanView.setText("Hello, what brings you here today?");
+        layout.addView(clanView);
+*/
+        final Button denounceButton = new Button(this);
+        denounceButton.setHeight(120);
+        denounceButton.setText("New Game");
+        denounceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.setVisibility(View.INVISIBLE);
+                layout.setVisibility(View.INVISIBLE);
+                onClickNewGameOptionsMenu(v);
+            }
+        });
+        layout.addView(denounceButton);
+    }
+
+    public void onClickNewGameOptionsMenu(View v) {
+        ScrollView scrollView = (ScrollView) findViewById(R.id.new_world_options_menu_scroll);
+        LinearLayout newGameOptionsMenu = (LinearLayout) findViewById(R.id.new_world_options_menu);
+
+        scrollView.setVisibility(View.VISIBLE);
+        newGameOptionsMenu.setVisibility(View.VISIBLE);
+
+        scrollView.bringToFront();
+        newGameOptionsMenu.bringToFront();
+
+        List<String> spinnerArray = new ArrayList<>();
+        spinnerArray.add("Pangaea");
+        spinnerArray.add("Pangaea+");
+        spinnerArray.add("Rolling Hills");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner sItems = (Spinner) findViewById(R.id.spinner_world_type);
+        sItems.setAdapter(adapter);
+        sItems.setVisibility(View.VISIBLE);
+
+        spinnerArray = new ArrayList<>();
+        spinnerArray.add("Asteroid (2)");
+        spinnerArray.add("Dwarf Planet (4)");
+        spinnerArray.add("Planetary (6)");
+        spinnerArray.add("Extraplanetary (8)");
+        spinnerArray.add("Interplanetary (10)");
+        spinnerArray.add("Galactic (12)");
+        spinnerArray.add("Supergalactic (16)");
+        adapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, spinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sItems = (Spinner) findViewById(R.id.spinner_world_size);
+        sItems.setAdapter(adapter);
+        sItems.setVisibility(View.VISIBLE);
+
+        spinnerArray = new ArrayList<>();
+        spinnerArray.add("Settler (1)");
+        spinnerArray.add("Scientist (2)");
+        spinnerArray.add("Officer (3)");
+        spinnerArray.add("Captain (4)");
+        spinnerArray.add("Enforcer (5)");
+        spinnerArray.add("Governor (6)");
+        spinnerArray.add("Imperial (7)");
+        spinnerArray.add("Galactian (8)");
+        spinnerArray.add("Deity (9)");
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sItems = (Spinner) findViewById(R.id.spinner_difficulty);
+        sItems.setAdapter(adapter);
+        sItems.setVisibility(View.VISIBLE);
+
+        spinnerArray = new ArrayList<>();
+        for (String name: ClanFactory.parser.clanKeys) {
+            spinnerArray.add(name);
+        }
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sItems = (Spinner) findViewById(R.id.spinner_civchoice);
+        sItems.setAdapter(adapter);
+        sItems.setVisibility(View.VISIBLE);
+
+        /*int[] data = new int[2];
+        findViewById(R.id.spinner_world_type).getLocationInWindow(data);
+        System.out.println(data[0] + " >>>><<<< " + data[1]);
+        findViewById(R.id.spinner_world_size).getLocationInWindow(data);
+        System.out.println(data[0] + " >>>><<<< " + data[1]);
+        findViewById(R.id.spinner_difficulty).getLocationInWindow(data);
+        System.out.println(data[0] + " >>>><<<< " + data[1]);*/
+        //newGameOptionsMenu.addView(sItems);
+    }
+
+    public void onClickCreateNewWorld(View v) {
+        if (!mRenderer.inGame) {
+            Spinner difficulty = (Spinner) findViewById(R.id.spinner_difficulty);
+            String difficultyString = difficulty.getSelectedItem().toString();
+
+            Spinner type = (Spinner) findViewById(R.id.spinner_world_type);
+            String terrainTypeString = type.getSelectedItem().toString();
+
+            Spinner size = (Spinner) findViewById(R.id.spinner_world_size);
+            String sizeString = size.getSelectedItem().toString();
+
+            Spinner choice = (Spinner) findViewById(R.id.spinner_civchoice);
+            String choiceString = choice.getSelectedItem().toString();
+
+            int difficultyLevel = Integer.parseInt(difficultyString.replaceAll("[^\\d.]", ""));
+
+            int numCivs = Integer.parseInt(sizeString.replaceAll("[^\\d.]", ""));
+            int len = numCivs * 12;
+
+            mRenderer.loadWorld(new WorldParams(len, len, numCivs, difficultyLevel, terrainTypeString, choiceString));
+            mRenderer.inGame = true;
+
+            Button button = (Button) findViewById(R.id.create_new_world);
+            //button.setVisibility(View.INVISIBLE);
+            button.setText("Loading New World");
+        }
+    }
 
     public void onClickNewWorld(View v) {
         newWorldMenu = v;
@@ -1201,7 +1323,7 @@ public class LessonSevenActivity extends Activity implements
     }
 
     public boolean onCreateActionSelectionMenu(final View chainView, Menu menu) {
-        Entity entity = mRenderer.mousePicker.getSelectedEntity();
+        final Entity entity = mRenderer.mousePicker.getSelectedEntity();
         final LessonSevenActivity mActivity = this;
         if (entity != null) {
             MenuItem menuItem = menu.add(Menu.NONE, 1, Menu.NONE, "Move");
@@ -1214,29 +1336,44 @@ public class LessonSevenActivity extends Activity implements
                 }
             });
 
-            MenuItem menuItem2 = menu.add(Menu.NONE, 2, Menu.NONE, "Build");
-            menuItem2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    mRenderer.mousePicker.changeSelectedAction("Build");
-                    Button button = (Button) chainView;
-                    button.setText("Build");
+            if (entity instanceof Person) {
+                if (((Person) entity).personType.name.equalsIgnoreCase("Worker")) {
+                    MenuItem menuItem2 = menu.add(Menu.NONE, 2, Menu.NONE, "Build");
+                    menuItem2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            mRenderer.mousePicker.changeSelectedAction("Build");
+                            Button button = (Button) chainView;
+                            button.setText("Build");
 
-                    buildSelectionMenu = new PopupMenu(mActivity, chainView);
-                    MenuInflater inflater = buildSelectionMenu.getMenuInflater();
-                    inflater.inflate(R.menu.build_selection_menu, buildSelectionMenu.getMenu());
-                    onCreateBuildSelectionMenu(buildSelectionMenu.getMenu());
-                    buildSelectionMenu.show();
+                            buildSelectionMenu = new PopupMenu(mActivity, chainView);
+                            MenuInflater inflater = buildSelectionMenu.getMenuInflater();
+                            inflater.inflate(R.menu.build_selection_menu, buildSelectionMenu.getMenu());
+                            onCreateBuildSelectionMenu(buildSelectionMenu.getMenu());
+                            buildSelectionMenu.show();
 
-                    return false;
+                            return false;
+                        }
+                    });
                 }
-            });
+                else if (((Person) entity).personType.category.equalsIgnoreCase("Combat")) {
+                    MenuItem menuItem4 = menu.add(Menu.NONE, 1, Menu.NONE, "Fortify");
+                    menuItem4.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            mRenderer.mousePicker.changeSelectedAction("Fortify");
+                            //Button button = (Button) chainView;
+                            //button.setText("Fortify");
+                            return false;
+                        }
+                    });
+                }
+            }
 
-            MenuItem menuItem4 = menu.add(Menu.NONE, 1, Menu.NONE, "Fortify");
-            menuItem4.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            MenuItem menuItem5 = menu.add(Menu.NONE, 1, Menu.NONE, "Destroy");
+            menuItem5.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 public boolean onMenuItemClick(MenuItem item) {
-                    mRenderer.mousePicker.changeSelectedAction("Fortify");
-                    Button button = (Button) chainView;
-                    button.setText("Fortify");
+                    mRenderer.mousePicker.changeSelectedUnit(null);
+                    mRenderer.mousePicker.changeSelectedAction("");
+                    PersonFactory.removePerson((Person) entity);
                     return false;
                 }
             });
@@ -1273,6 +1410,7 @@ public class LessonSevenActivity extends Activity implements
                     city.pickBestTiles();
                     Button button = (Button) chainView;
                     button.setText("Citizen Work [Food]");
+                    mRenderer.worldHandler.needsUpdateOnNextFrame = true;
                     return false;
                 }
             });
@@ -1285,6 +1423,7 @@ public class LessonSevenActivity extends Activity implements
                     city.pickBestTiles();
                     Button button = (Button) chainView;
                     button.setText("Citizen Work [Production]");
+                    mRenderer.worldHandler.needsUpdateOnNextFrame = true;
                     return false;
                 }
             });
@@ -1297,6 +1436,7 @@ public class LessonSevenActivity extends Activity implements
                     city.pickBestTiles();
                     Button button = (Button) chainView;
                     button.setText("Citizen Work [Science]");
+                    mRenderer.worldHandler.needsUpdateOnNextFrame = true;
                     return false;
                 }
             });
@@ -1309,6 +1449,7 @@ public class LessonSevenActivity extends Activity implements
                     city.pickBestTiles();
                     Button button = (Button) chainView;
                     button.setText("Citizen Work [Capital]");
+                    mRenderer.worldHandler.needsUpdateOnNextFrame = true;
                     return false;
                 }
             });

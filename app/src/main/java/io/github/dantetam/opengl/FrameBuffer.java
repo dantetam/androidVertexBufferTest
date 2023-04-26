@@ -1,15 +1,12 @@
 package io.github.dantetam.opengl;
 
 import android.opengl.GLES20;
-import android.view.Display;
 
-import java.nio.ByteBuffer;
-
-import io.github.dantetam.opstrykontest.LessonSevenRenderer;
+import io.github.dantetam.opstrykontest.OpenGLRenderer;
 
 public class FrameBuffer {
 
-    private LessonSevenRenderer mRenderer;
+    private OpenGLRenderer mRenderer;
 
     public int width;
     public int height;
@@ -30,7 +27,7 @@ public class FrameBuffer {
     public int refractionDepthTexture;
     */
 
-    public FrameBuffer(LessonSevenRenderer mRenderer) {//call when loading the game
+    public FrameBuffer(OpenGLRenderer mRenderer) {//call when loading the game
         this.mRenderer = mRenderer;
         width = mRenderer.getWidth();
         height = mRenderer.getHeight();
